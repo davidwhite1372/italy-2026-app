@@ -1,0 +1,26 @@
+{
+  "name": "Italy 2026 Travel Companion",
+  "short_name": "Italy 2026",
+  "description": "David & Melody – Italy 2026 Shared Travel Companion – Version 10.2.1",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#8B1E3F",
+  "theme_color": "#8B1E3F",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "id": "./",
+  "scope": "./"
+}

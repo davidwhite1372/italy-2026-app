@@ -1,0 +1,13 @@
+ITALY 2026 TRAVEL APP - GITHUB PAGES PACKAGE
+Version 10.2.1 GitHub Migration Build
+
+UPLOAD ALL FILES IN THIS FOLDER TO THE ROOT OF YOUR GITHUB REPOSITORY.
+Do not upload this folder as a folder and do not upload the ZIP itself.
+
+IMPORTANT:
+- .nojekyll is a hidden file. It may not appear in Windows File Explorer unless hidden items are enabled.
+- GitHub's upload page should still accept it when all extracted files are selected.
+- index.html must remain in the repository root.
+- Do not rename any app files.
+
+This package preserves the existing app design and content. Changes are limited to GitHub Pages and PWA compatibility.

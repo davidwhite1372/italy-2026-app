@@ -1,0 +1,3434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#8B1E3F" />
+  <meta name="description" content="Italy 2026 Travel Companion – David & Melody" />
+  <title>Italy 2026 • Travel Companion</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <style>
+    :root {
+      --bg: #faf7f2;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --muted: #6b6560;
+      --primary: #8B1E3F;
+      --primary-dark: #6d1831;
+      --accent: #2d6a4f;
+      --accent-light: #e8f5e9;
+      --gold: #c9a227;
+      --border: #e8e2d9;
+      --danger: #c62828;
+      --warning: #f9a825;
+      --success: #2e7d32;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+      --radius: 14px;
+      --nav-h: 64px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      overflow-x: hidden;
+      padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 80px);
+    }
+    /* extra bottom space handled on body + .page below so content clears the fixed nav */
+    h1,h2,h3 { font-weight: 700; letter-spacing: -0.02em; }
+    a { color: var(--primary); text-decoration: none; }
+    button, .btn {
+      font: inherit; border: none; cursor: pointer; border-radius: 10px;
+      padding: 10px 16px; background: var(--primary); color: #fff; font-weight: 600;
+      transition: background .15s;
+    }
+    button:active, .btn:active { background: var(--primary-dark); }
+    .btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+    .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+    .btn-accent { background: var(--accent); }
+    .hidden { display: none !important; }
+
+    /* Header */
+    .app-header {
+      position: sticky; top: 0; z-index: 100;
+      background: linear-gradient(135deg, #8B1E3F 0%, #5c1429 100%);
+      color: #fff; padding: 12px 16px 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .app-header h1 { font-size: 1.15rem; font-weight: 700; }
+    .app-header .sub { font-size: 0.78rem; opacity: 0.85; margin-top: 2px; }
+    .header-row { display: flex; justify-content: space-between; align-items: center; }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+      height: calc(var(--nav-h) + var(--safe-bottom));
+      background: #fff; border-top: 1px solid var(--border);
+      display: flex; justify-content: space-around; align-items: flex-start;
+      padding-top: 8px; padding-bottom: var(--safe-bottom);
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+    }
+    .nav-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 2px; color: var(--muted); font-size: 0.65rem; font-weight: 600;
+      background: none; border: none; padding: 4px 2px;
+    }
+    .nav-item.active { color: var(--primary); }
+    .nav-item svg { width: 24px; height: 24px; }
+    .nav-item span { white-space: nowrap; }
+
+    /* Pages */
+    .page { display: none; padding: 12px 14px 72px; animation: fadeIn .2s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    /* Cards */
+    .card {
+      background: var(--card); border-radius: var(--radius); padding: 14px 16px;
+      margin-bottom: 12px; box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+    .card-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .card-title .icon { font-size: 1.2rem; }
+    .section-title { font-size: 1.05rem; font-weight: 700; margin: 18px 0 10px; color: var(--primary); }
+
+    /* Status badges */
+    .badge {
+      display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 3px 8px;
+      border-radius: 20px; text-transform: uppercase; letter-spacing: 0.03em;
+    }
+    .badge-confirmed { background: #e8f5e9; color: var(--success); }
+    .badge-pending { background: #fff8e1; color: #f57f17; }
+    .badge-decision { background: #fce4ec; color: #c2185b; }
+    .badge-done { background: #e3f2fd; color: #1565c0; }
+    .badge-high { background: #ffebee; color: var(--danger); }
+    .badge-medium { background: #fff3e0; color: #ef6c00; }
+    .badge-low { background: #f5f5f5; color: #616161; }
+
+    /* Lists */
+    .list-item {
+      display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+    .list-item:last-child { border-bottom: none; }
+    .list-item .num {
+      width: 28px; height: 28px; border-radius: 50%; background: var(--primary);
+      color: #fff; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .list-item .content { flex: 1; min-width: 0; }
+    .list-item .title { font-weight: 600; font-size: 0.92rem; }
+    .list-item .meta { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+
+    /* Checkboxes */
+    .check-row {
+      display: flex; align-items: center; gap: 12px; padding: 11px 0;
+      border-bottom: 1px solid var(--border); cursor: pointer;
+    }
+    .check-row:last-child { border-bottom: none; }
+    .check-row input[type=checkbox] {
+      width: 22px; height: 22px; accent-color: var(--primary); flex-shrink: 0;
+    }
+    .check-row.done span { text-decoration: line-through; color: var(--muted); }
+
+    /* Date chips for Today */
+    .date-scroll {
+      display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 12px;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    }
+    .date-scroll::-webkit-scrollbar { display: none; }
+    .date-chip {
+      flex-shrink: 0; padding: 8px 14px; border-radius: 20px; background: #fff;
+      border: 1.5px solid var(--border); font-size: 0.82rem; font-weight: 600;
+      color: var(--text); cursor: pointer;
+    }
+    .date-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* Filters */
+    .filter-bar {
+      display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    }
+    .filter-bar::-webkit-scrollbar { display: none; }
+    .filter-chip {
+      flex-shrink: 0; padding: 7px 14px; border-radius: 20px; background: #fff;
+      border: 1.5px solid var(--border); font-size: 0.8rem; font-weight: 600; cursor: pointer;
+    }
+    .filter-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* Search */
+    .search-box {
+      width: 100%; padding: 11px 14px 11px 40px; border: 1.5px solid var(--border);
+      border-radius: 12px; font-size: 0.95rem; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%236b6560' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242.656a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E") 12px center no-repeat;
+      margin-bottom: 12px;
+    }
+    .search-box:focus { outline: none; border-color: var(--primary); }
+
+    /* Timeline specific */
+    .tl-step {
+      position: relative; padding-left: 28px; margin-bottom: 16px;
+    }
+    .tl-step::before {
+      content: ''; position: absolute; left: 7px; top: 8px; bottom: -16px;
+      width: 2px; background: var(--border);
+    }
+    .tl-step:last-child::before { display: none; }
+    .tl-dot {
+      position: absolute; left: 0; top: 6px; width: 16px; height: 16px;
+      border-radius: 50%; background: var(--primary); border: 3px solid #fff;
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+    .tl-step.pending .tl-dot { background: var(--warning); box-shadow: 0 0 0 2px var(--warning); }
+    .tl-step.decision .tl-dot { background: #c2185b; box-shadow: 0 0 0 2px #c2185b; }
+    .tl-step.done-step .tl-dot { background: var(--success); box-shadow: 0 0 0 2px var(--success); }
+    .tl-step.done-step { opacity: 0.85; }
+    .tl-step.actual-travel {
+      padding: 13px 12px 13px 40px; margin-left: -12px; margin-right: -2px;
+      background: linear-gradient(135deg, #b9ff9b 0%, #e4ffd6 100%);
+      border: 2px solid #31a600; border-radius: 13px;
+      box-shadow: 0 3px 10px rgba(49,166,0,0.18);
+    }
+    .tl-step.actual-travel::before { left: 19px; top: 32px; bottom: -18px; background: #31a600; }
+    .tl-step.actual-travel .tl-dot { left: 12px; top: 17px; background: #158000; box-shadow: 0 0 0 2px #158000; }
+    .travel-callout {
+      display: flex; align-items: center; gap: 9px; flex-wrap: wrap;
+      margin: 0 0 7px; font-weight: 800; color: #0b4f00;
+    }
+    .travel-time {
+      display: inline-block; padding: 4px 9px; border-radius: 8px;
+      background: #0b6900; color: #fff; font-size: 1rem; letter-spacing: .01em;
+    }
+    .travel-service { font-size: 1rem; }
+    .travel-kind {
+      padding: 3px 8px; border-radius: 12px; background: rgba(255,255,255,.72);
+      border: 1px solid rgba(11,105,0,.35); font-size: .72rem; letter-spacing: .05em;
+    }
+    .tl-step.emphasis-blue { background: linear-gradient(135deg,#d7ecff 0%,#eef7ff 100%); border-color:#1976d2; box-shadow:0 3px 10px rgba(25,118,210,.16); }
+    .tl-step.emphasis-blue::before { background:#1976d2; }
+    .tl-step.emphasis-blue .tl-dot { background:#1565c0; box-shadow:0 0 0 2px #1565c0; }
+    .tl-step.emphasis-blue .travel-callout { color:#0d47a1; }
+    .tl-step.emphasis-blue .travel-time { background:#1565c0; }
+    .tl-step.emphasis-gold { background: linear-gradient(135deg,#fff0b3 0%,#fff9df 100%); border-color:#d29b00; box-shadow:0 3px 10px rgba(210,155,0,.16); }
+    .tl-step.emphasis-gold::before { background:#d29b00; }
+    .tl-step.emphasis-gold .tl-dot { background:#b57f00; box-shadow:0 0 0 2px #b57f00; }
+    .tl-step.emphasis-gold .travel-callout { color:#6d4c00; }
+    .tl-step.emphasis-gold .travel-time { background:#9a6b00; }
+    .tl-step.emphasis-burgundy { background: linear-gradient(135deg,#f6dbe4 0%,#fff1f5 100%); border-color:var(--primary); box-shadow:0 3px 10px rgba(139,30,63,.15); }
+    .tl-step.emphasis-burgundy::before { background:var(--primary); }
+    .tl-step.emphasis-burgundy .tl-dot { background:var(--primary); box-shadow:0 0 0 2px var(--primary); }
+    .tl-step.emphasis-burgundy .travel-callout { color:var(--primary-dark); }
+    .tl-step.emphasis-burgundy .travel-time { background:var(--primary); }
+    .tide-card { overflow:hidden; }
+    .tide-summary { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0; }
+    .tide-pill { padding:5px 9px; border-radius:14px; background:#eef6fb; border:1px solid #c9e2f0; font-size:.75rem; font-weight:700; }
+    .tide-chart { width:100%; height:170px; display:block; margin-top:8px; background:linear-gradient(#f8fcff,#eef8fc); border:1px solid #d6e8f1; border-radius:10px; }
+    .tide-legend { display:flex; justify-content:space-between; gap:8px; font-size:.68rem; color:var(--muted); margin-top:5px; }
+
+    .fx-widget {
+      margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);
+    }
+    .fx-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 8px; }
+    .fx-box { background: #f7fbf8; border: 1px solid #cfe5d5; border-radius: 11px; padding: 10px; }
+    .fx-rate { font-size: 1.02rem; font-weight: 800; color: var(--accent); margin-bottom: 7px; }
+    .fx-box label { display: block; font-size: .72rem; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
+    .fx-box input { width: 100%; padding: 8px 9px; border: 1.5px solid var(--border); border-radius: 8px; font-size: .9rem; background: #fff; }
+    .fx-result { margin-top: 6px; font-size: .86rem; font-weight: 700; }
+    .fx-meta { margin-top: 7px; font-size: .7rem; color: var(--muted); }
+
+    .tl-time { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
+    .tl-title { font-weight: 700; font-size: 0.92rem; margin: 2px 0; }
+    .tl-detail { font-size: 0.82rem; color: var(--muted); }
+
+    /* City tabs */
+    .city-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+    .city-tab {
+      flex: 1; text-align: center; padding: 10px; border-radius: 10px;
+      background: #fff; border: 1.5px solid var(--border); font-weight: 700;
+      font-size: 0.85rem; cursor: pointer;
+    }
+    .city-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* Phrases */
+    .phrase-group { margin-bottom: 16px; }
+    .phrase-group h3 { font-size: 0.85rem; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .phrase-row { padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .phrase-row:last-child { border-bottom: none; }
+    .phrase-en { font-weight: 600; font-size: 0.9rem; }
+    .phrase-it { color: var(--primary); font-size: 0.95rem; margin-top: 1px; }
+    .phrase-pr { font-size: 0.78rem; color: var(--muted); font-style: italic; }
+
+    /* Stats row */
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .stat {
+      background: #fff; border-radius: 12px; padding: 12px; text-align: center;
+      border: 1px solid var(--border); box-shadow: var(--shadow);
+    }
+    .stat .val { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+    .stat .lbl { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+
+    /* Restaurant card */
+    .rest-card { margin-bottom: 12px; }
+    .rest-card .name { font-weight: 700; font-size: 0.95rem; }
+    .rest-card .neigh { font-size: 0.8rem; color: var(--muted); }
+    .rest-card .order { font-size: 0.85rem; margin-top: 4px; }
+    .rest-card .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .tag { font-size: 0.7rem; padding: 2px 8px; border-radius: 12px; background: #f5f0e8; color: #5d4e37; font-weight: 600; }
+    .tag.price { background: #e8f5e9; color: var(--success); }
+    .tag.top { background: #fce4ec; color: #c2185b; }
+
+    /* Expandable */
+    .expand-btn {
+      background: none; border: none; color: var(--primary); font-weight: 600;
+      font-size: 0.85rem; padding: 6px 0; cursor: pointer; display: flex; align-items: center; gap: 4px;
+    }
+
+    /* Alert boxes */
+    .alert {
+      padding: 12px 14px; border-radius: 10px; margin-bottom: 12px; font-size: 0.88rem;
+    }
+    .alert-warn { background: #fff8e1; border-left: 4px solid var(--warning); }
+    .alert-info { background: #e3f2fd; border-left: 4px solid #1976d2; }
+    .alert-danger { background: #ffebee; border-left: 4px solid var(--danger); }
+
+    /* Packing categories */
+    .pack-cat { margin-bottom: 16px; }
+    .pack-cat h3 {
+      font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--muted); margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid var(--border);
+    }
+
+    /* Empty state */
+    .empty { text-align: center; padding: 30px 20px; color: var(--muted); }
+    .empty .icon { font-size: 2.5rem; margin-bottom: 8px; }
+
+    /* Forms & live edit */
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 0.95rem; background: #fff; font-family: inherit;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none; border-color: var(--primary);
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .edit-btn {
+      background: none; border: 1px solid var(--border); color: var(--muted);
+      font-size: 0.75rem; padding: 4px 10px; border-radius: 8px; font-weight: 600;
+    }
+    .edit-btn:active { background: #f5f0e8; }
+    .btn-danger { background: var(--danger); }
+    .btn-row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    .btn-row button { flex: 1; min-width: 100px; }
+    .live-dot {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); margin-right: 6px; vertical-align: middle;
+    }
+
+    /* Modal / detail overlay */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300;
+      display: flex; align-items: flex-end; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    .overlay.open { opacity: 1; pointer-events: auto; }
+    .sheet {
+      background: #fff; width: 100%; max-width: 500px; max-height: 85vh;
+      border-radius: 18px 18px 0 0; padding: 20px 18px calc(20px + var(--safe-bottom));
+      overflow-y: auto; transform: translateY(100%); transition: transform .25s ease;
+    }
+    .overlay.open .sheet { transform: translateY(0); }
+    .sheet-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin: 0 auto 14px; }
+    .sheet h2 { font-size: 1.15rem; margin-bottom: 12px; }
+
+    /* Progress bar */
+    .progress-bar { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; margin: 6px 0 4px; }
+    .progress-bar .fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width .3s; }
+
+
+
+    /* Cross-platform app install prompt */
+    .install-overlay {
+      position: fixed; inset: 0; z-index: 650; background: rgba(0,0,0,0.5);
+      display: flex; align-items: flex-end; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .2s ease;
+    }
+    .install-overlay.open { opacity: 1; pointer-events: auto; }
+    .install-card {
+      width: 100%; max-width: 520px; background: #fff;
+      border-radius: 20px 20px 0 0; padding: 20px 18px calc(20px + var(--safe-bottom));
+      box-shadow: 0 -8px 30px rgba(0,0,0,0.2);
+      transform: translateY(100%); transition: transform .25s ease;
+    }
+    .install-overlay.open .install-card { transform: translateY(0); }
+    .install-app-row { display:flex; gap:12px; align-items:center; margin-bottom:12px; }
+    .install-app-icon { width:56px; height:56px; border-radius:13px; box-shadow:var(--shadow); }
+    .install-title { font-size:1.08rem; font-weight:800; }
+    .install-sub { font-size:.82rem; color:var(--muted); margin-top:2px; }
+    .install-steps { margin:12px 0; padding:0; list-style:none; counter-reset:installstep; }
+    .install-steps li { position:relative; padding:9px 0 9px 36px; font-size:.9rem; border-bottom:1px solid var(--border); }
+    .install-steps li:last-child { border-bottom:none; }
+    .install-steps li::before {
+      counter-increment:installstep; content:counter(installstep);
+      position:absolute; left:0; top:8px; width:24px; height:24px; border-radius:50%;
+      background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center;
+      font-size:.75rem; font-weight:800;
+    }
+    .ios-share-icon { display:inline-block; font-size:1.15rem; line-height:1; }
+
+    /* Utility */
+    .row { display: flex; gap: 8px; align-items: center; }
+    .space-between { justify-content: space-between; }
+    .mt-8 { margin-top: 8px; }
+    .mt-12 { margin-top: 12px; }
+    .mb-8 { margin-bottom: 8px; }
+    .text-muted { color: var(--muted); }
+    .text-sm { font-size: 0.85rem; }
+    .text-xs { font-size: 0.75rem; }
+    .fw-600 { font-weight: 600; }
+    .link-btn { color: var(--primary); font-weight: 600; font-size: 0.85rem; }
+
+
+    /* Automatic dark mode follows the device system setting */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111315;
+        --card: #1b1f22;
+        --text: #f3f4f5;
+        --muted: #aeb5bb;
+        --primary: #e06b91;
+        --primary-dark: #bd4f75;
+        --accent: #6fc49a;
+        --accent-light: #18362a;
+        --gold: #e2c45a;
+        --border: #343a40;
+        --danger: #ff7676;
+        --warning: #f7c65c;
+        --success: #77d181;
+        --shadow: 0 2px 12px rgba(0,0,0,0.35);
+      }
+      html { color-scheme: dark; }
+      body, .page { background: var(--bg); color: var(--text); }
+      .card, .stat, .bottom-nav, .sheet, .date-chip, .filter-chip,
+      .form-group input, .form-group select, .form-group textarea,
+      .search-box, input, select, textarea { background-color: var(--card); color: var(--text); border-color: var(--border); }
+      .bottom-nav { box-shadow: 0 -2px 12px rgba(0,0,0,.35); }
+      .date-chip, .filter-chip, .city-tab { background: var(--card); color: var(--text); border-color: var(--border); }
+      .date-chip.active, .city-tab.active { background: var(--primary); color: #fff; }
+      .filter-chip.active { background: var(--accent); color: #08130d; }
+      .edit-btn, .btn-outline { background: transparent; color: var(--primary); border-color: var(--border); }
+      .tag { background: #302c27; color: #e5d7c5; }
+      .alert-info { background:#142b3a; }
+      .alert-warn { background:#3b3114; }
+      .alert-danger { background:#3a1717; }
+      .badge-confirmed { background:#17351c; color:#8be497; }
+      .badge-pending { background:#3b3114; color:#ffd166; }
+      .badge-decision { background:#3a1728; color:#ff8fbd; }
+      .badge-done { background:#142b3a; color:#7bc4ff; }
+      .badge-high { background:#3a1717; color:#ff8c8c; }
+      .badge-medium { background:#3a2914; color:#ffb56b; }
+      .badge-low { background:#292d31; color:#c5cbd0; }
+      .search-box { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%23aeb5bb' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242.656a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E"); }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-row">
+      <div>
+        <h1>🇮🇹 Italy 2026</h1>
+        <div class="sub">David & Melody · Oct 4–15 · Rome · Florence · Venice</div>
+      </div>
+      <div id="daysBadge" style="text-align:right;font-size:0.75rem;opacity:0.9;"></div>
+    </div>
+  </header>
+
+  <!-- PAGES -->
+  <main>
+    <!-- HOME -->
+    <section id="page-home" class="page active">
+      <div class="stats" id="homeStats"></div>
+      <div class="card">
+        <div class="card-title"><span class="icon">⚡</span> Most Important Open Items</div>
+        <div id="homeOpenItems"></div>
+        <button class="expand-btn" onclick="showPage('bookings')">View all open items →</button>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">📅</span> Trip at a Glance</div>
+        <div id="homeGlance"></div>
+        <div id="homeFx"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🔑</span> Key Confirmations</div>
+        <div id="homeKeys" class="text-sm"></div>
+      </div>
+      <div class="section-title">Quick Access</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="card" style="margin:0;cursor:pointer;text-align:center;padding:16px 10px;" onclick="showPage('pretrip')">
+          <div style="font-size:1.4rem;">✅</div>
+          <div class="text-sm fw-600 mt-8">Pre-Departure</div>
+        </div>
+        <div class="card" style="margin:0;cursor:pointer;text-align:center;padding:16px 10px;" onclick="showPage('wallet')">
+          <div style="font-size:1.4rem;">🪪</div>
+          <div class="text-sm fw-600 mt-8">Conf Wallet</div>
+        </div>
+        <div class="card" style="margin:0;cursor:pointer;text-align:center;padding:16px 10px;" onclick="showPage('bookings')">
+          <div style="font-size:1.4rem;">📋</div>
+          <div class="text-sm fw-600 mt-8">Bookings & Open Items</div>
+        </div>
+        <div class="card" style="margin:0;cursor:pointer;text-align:center;padding:16px 10px;" onclick="showPage('cities')">
+          <div style="font-size:1.4rem;">🏙️</div>
+          <div class="text-sm fw-600 mt-8">City Cards</div>
+        </div>
+        <div class="card" style="margin:0;cursor:pointer;text-align:center;padding:16px 10px;" onclick="showPage('transport')">
+          <div style="font-size:1.4rem;">✈️</div>
+          <div class="text-sm fw-600 mt-8">Flights & Transfers</div>
+        </div>
+        <div class="card" style="margin:0;cursor:pointer;text-align:center;padding:16px 10px;" onclick="showPage('money')">
+          <div style="font-size:1.4rem;">💰</div>
+          <div class="text-sm fw-600 mt-8">Budget</div>
+        </div>
+      </div>
+      <div class="alert alert-info mt-12">
+        <strong>Tip:</strong> Add this page to your Home Screen for full-screen app experience and offline access.
+      </div>
+      <div style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;">App v10.2.1 · Data v10.0.0</div>
+    </section>
+
+    <!-- TODAY -->
+    <section id="page-today" class="page">
+      <div class="date-scroll" id="dateChips"></div>
+      <div id="todayContent"></div>
+    </section>
+
+    <!-- PRE-DEPARTURE -->
+    <section id="page-pretrip" class="page">
+      <button class="btn-outline btn-sm mb-8" onclick="showPage('home')">← Home</button>
+      <div class="section-title">72-Hour Pre-Departure</div>
+      <div id="pretripContent"></div>
+    </section>
+
+    <!-- WALLET -->
+    <section id="page-wallet" class="page">
+      <button class="btn-outline btn-sm mb-8" onclick="showPage('home')">← Home</button>
+      <div class="section-title">Confirmation Wallet</div>
+      <div class="text-sm text-muted mb-8">Show this screen at airline desks, trains, and hotels.</div>
+      <div id="walletContent"></div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section id="page-timeline" class="page">
+      <div class="section-title">Master Timeline</div>
+      <button style="width:100%;margin-bottom:12px;" onclick="addCustomLeg()">＋ Add a leg</button>
+      <div class="text-xs text-muted" style="margin:-4px 2px 10px;">New legs also appear under Maps &amp; Links and Transportation.</div>
+      <input type="search" class="search-box" id="timelineSearch" placeholder="Search train, walk, airport, hotel, flight number..." />
+      <div class="filter-bar" id="tlModeFilters">
+        <div class="filter-chip active" data-mode="all">All modes</div>
+        <div class="filter-chip" data-mode="flight">✈️ Flights</div>
+        <div class="filter-chip" data-mode="train">🚆 Trains</div>
+        <div class="filter-chip" data-mode="walk">🚶 Walk</div>
+        <div class="filter-chip" data-mode="water">🚤 Water</div>
+        <div class="filter-chip" data-mode="road">🚗 Road</div>
+        <div class="filter-chip" data-mode="event">📍 Events</div>
+      </div>
+      <div class="filter-bar" id="tlFilters">
+        <div class="filter-chip active" data-f="all">All</div>
+        <div class="filter-chip" data-f="pending">To Do</div>
+        <div class="filter-chip" data-f="decision">Decisions</div>
+        <div class="filter-chip" data-f="open">Not done</div>
+        <div class="filter-chip" data-f="done">Completed</div>
+        <div class="filter-chip" data-f="hidden">Hidden</div>
+      </div>
+      <div id="timelineList"></div>
+    </section>
+
+    <!-- BOOKINGS -->
+    <section id="page-bookings" class="page">
+      <div class="section-title">Reservations</div>
+      <div id="reservationsList"></div>
+      <div class="section-title">Open Items</div>
+      <div id="openItemsList"></div>
+    </section>
+
+    <!-- CITIES -->
+    <section id="page-cities" class="page">
+      <div class="city-tabs">
+        <div class="city-tab active" data-city="rome">Rome</div>
+        <div class="city-tab" data-city="florence">Florence</div>
+        <div class="city-tab" data-city="venice">Venice</div>
+      </div>
+      <div id="cityContent"></div>
+    </section>
+
+    <!-- FOOD -->
+    <section id="page-food" class="page">
+      <input type="search" class="search-box" id="restSearch" placeholder="Search name, neighborhood, food, dish, price..." />
+      <div class="text-xs text-muted" style="margin:-4px 2px 10px;">Use this when you pass a restaurant—search any part of its name, neighborhood, cuisine, recommended dish, priority, or price.</div>
+      <div class="filter-bar" id="restQuickFilters">
+        <div class="filter-chip active" data-quick="all">All restaurants</div>
+        <div class="filter-chip" data-quick="top">⭐ Top 5</div>
+        <div class="filter-chip" data-quick="favorites">❤️ Favorites</div>
+        <div class="filter-chip" data-quick="unvisited">Hide visited</div>
+      </div>
+      <div class="filter-bar" id="restFilters">
+        <div class="filter-chip active" data-city="all">All</div>
+        <div class="filter-chip" data-city="Rome">Rome</div>
+        <div class="filter-chip" data-city="Florence">Florence</div>
+        <div class="filter-chip" data-city="Venice">Venice</div>
+      </div>
+      <div class="filter-bar" id="restAteFilters">
+        <div class="filter-chip active" data-ate="all">All visits</div>
+        <div class="filter-chip" data-ate="ate">Ate here</div>
+        <div class="filter-chip" data-ate="not">Not yet</div>
+      </div>
+      <div id="restaurantsList"></div>
+    </section>
+
+    <!-- TRAVEL -->
+    <section id="page-transport" class="page">
+      <div class="section-title">✈️ Flights</div>
+      <div id="flightsList"></div>
+      <div class="section-title">🚆 Trains</div>
+      <div id="trainsList"></div>
+      <div class="section-title">🧭 Door-to-Door Transfers</div>
+      <div id="transfersList"></div>
+      <div class="section-title">🚖 Ground & Water Transportation</div>
+      <div id="groundList"></div>
+      <div class="section-title">🚨 Backup & Contingency Plans</div>
+      <div id="contingenciesList"></div>
+    </section>
+
+    <!-- PREP -->
+    <section id="page-prep" class="page">
+      <div class="filter-bar" style="margin-bottom:14px;">
+        <div class="filter-chip active" data-prep="packing">Packing</div>
+        <div class="filter-chip" data-prep="phrases">Phrases</div>
+        <div class="filter-chip" data-prep="safety">Safety</div>
+      </div>
+      <div id="prepContent"></div>
+    </section>
+
+    <!-- MONEY / EXPENSE REPORT -->
+    <section id="page-money" class="page">
+      <div class="section-title">Trip Expense Report</div>
+      <div id="budgetSummary"></div>
+      <div class="filter-bar" id="expOwnerFilters">
+        <div class="filter-chip active" data-owner="all">All</div>
+        <div class="filter-chip" data-owner="David">David</div>
+        <div class="filter-chip" data-owner="Melody">Melody</div>
+        <div class="filter-chip" data-owner="Shared">Shared</div>
+      </div>
+      <div class="filter-bar" id="expTypeFilters">
+        <div class="filter-chip active" data-type="all">All expenses</div>
+        <div class="filter-chip" data-type="personal">Personal</div>
+        <div class="filter-chip" data-type="company">Company paid</div>
+        <div class="filter-chip" data-type="reimbursable">Reimbursable</div>
+        <div class="filter-chip" data-type="missing">Missing receipt</div>
+      </div>
+      <button style="width:100%;margin:12px 0 14px;" onclick="openExpenseSheet()">＋ Add Expense</button>
+      <div class="section-title">Expense Report <span class="text-xs text-muted" id="expCount"></span></div>
+      <div id="budgetExpenses"></div>
+      <div class="section-title">Planned vs Actual</div>
+      <div id="budgetPlanned"></div>
+    </section>
+
+    <!-- MORE -->
+    <section id="page-more" class="page">
+      <div class="section-title" style="margin-top:4px;">Trip Tools</div>
+      <div class="card" onclick="showPage('prep')" style="cursor:pointer;">
+        <div class="card-title"><span class="icon">🎒</span> Packing, Phrases & Safety</div>
+        <div class="text-sm text-muted">Packing by David, Melody or Shared · Italian phrases · emergency guidance</div>
+      </div>
+      <div class="card" onclick="showPage('money')" style="cursor:pointer;">
+        <div class="card-title"><span class="icon">💰</span> Budget & Expenses</div>
+        <div class="text-sm text-muted">Planned costs, live expense log and currency totals</div>
+      </div>
+      <div class="card" onclick="showPage('pretrip')" style="cursor:pointer;">
+        <div class="card-title"><span class="icon">✅</span> Pre-Departure Checklist</div>
+        <div class="text-sm text-muted">72-hour list: decisions, packing, day-of</div>
+      </div>
+      <div class="card" onclick="showPage('wallet')" style="cursor:pointer;">
+        <div class="card-title"><span class="icon">🪪</span> Confirmation Wallet</div>
+        <div class="text-sm text-muted">Flights, trains, hotels, PSA — show at desks</div>
+      </div>
+      <div class="card" onclick="showPage('attractions')" style="cursor:pointer;">
+        <div class="card-title"><span class="icon">🏛️</span> Attractions & Walking Times</div>
+        <div class="text-sm text-muted">Hours, tickets, visit times from each hotel</div>
+      </div>
+      <div class="card" onclick="showPage('maps')" style="cursor:pointer;">
+        <div class="card-title"><span class="icon">🗺️</span> Maps & Official Links</div>
+        <div class="text-sm text-muted">Door-to-door routes and transport sites · editable notes</div>
+      </div>
+      <div class="card" onclick="showPage('journal')" style="cursor:pointer;">
+        <div class="card-title"><span class="icon">📔</span> Journal & Memories</div>
+        <div class="text-sm text-muted">Photos, meals, souvenirs, highlights</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🔗</span> Quick Links</div>
+        <div id="quickLinks" class="text-sm" style="line-height:1.9;"></div>
+      </div>
+      <div class="section-title">Live Data & Backup</div>
+      <div class="card">
+        <div class="text-sm mb-8">
+          <span class="live-dot"></span><strong>Saved on this phone.</strong> Use backup files to move or combine updates between phones.
+        </div>
+        <div id="backupStatus" class="text-sm"></div>
+        <div class="btn-row">
+          <button class="btn-outline" onclick="editBackupOwner()">Name This Device</button>
+          <button class="btn-outline" onclick="exportData()">Export Backup</button>
+          <button class="btn-outline" onclick="document.getElementById('importFile').click()">Import Backup</button>
+        </div>
+        <input type="file" id="importFile" accept=".json,application/json" class="hidden" onchange="importData(event)" />
+        <div class="text-xs text-muted mt-8">Import lets you <strong>Merge</strong> updates safely or <strong>Replace</strong> all saved app data. Attraction photos remain on the phone that took them.</div>
+      </div>
+    </section>
+
+    <!-- ATTRACTIONS (sub) -->
+    <section id="page-attractions" class="page">
+      <button class="btn-outline btn-sm mb-8" onclick="showPage('more')">← Back</button>
+      <div class="section-title">Attractions</div>
+      <div class="filter-bar" id="attrFilters">
+        <div class="filter-chip active" data-city="all">All</div>
+        <div class="filter-chip" data-city="Rome">Rome</div>
+        <div class="filter-chip" data-city="Florence">Florence</div>
+        <div class="filter-chip" data-city="Venice">Venice</div>
+      </div>
+      <div class="filter-bar" id="attrVisitFilters">
+        <div class="filter-chip active" data-visit="all">All</div>
+        <div class="filter-chip" data-visit="visited">Visited</div>
+        <div class="filter-chip" data-visit="not">Not visited</div>
+      </div>
+      <div id="attractionsList"></div>
+    </section>
+
+    <!-- MAPS (sub) -->
+    <section id="page-maps" class="page">
+      <button class="btn-outline btn-sm mb-8" onclick="showPage('more')">← Back</button>
+      <div class="section-title">Door-to-Door Routes</div>
+      <div id="mapsRoutes"></div>
+      <div class="section-title">Airports &amp; Terminals</div>
+      <div id="mapsAirports"></div>
+      <div class="section-title">Hotels &amp; Venues</div>
+      <div id="mapsHotels"></div>
+      <div class="section-title">Official Transport Sites</div>
+      <div id="mapsOfficial"></div>
+      <div class="section-title">Saved Links &amp; Pending</div>
+      <div id="mapsPending"></div>
+    </section>
+
+    <!-- JOURNAL (sub) -->
+    <section id="page-journal" class="page">
+      <button class="btn-outline btn-sm mb-8" onclick="showPage('more')">← Back</button>
+      <div class="section-title">Daily Journal</div>
+      <div id="journalForm" class="card">
+        <label class="text-sm fw-600">Date</label>
+        <input type="date" id="jDate" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;" />
+        <label class="text-sm fw-600">Highlight</label>
+        <input type="text" id="jHighlight" placeholder="Best moment of the day" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;" />
+        <label class="text-sm fw-600">Best Meal</label>
+        <input type="text" id="jMeal" placeholder="Restaurant + dish" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;" />
+        <label class="text-sm fw-600">Notes</label>
+        <textarea id="jNotes" rows="3" placeholder="Anything else..." style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;resize:vertical;"></textarea>
+        <button onclick="saveJournalEntry()">Save Entry</button>
+      </div>
+      <div id="journalEntries"></div>
+    </section>
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-page="home" onclick="showPage('home')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-item" data-page="today" onclick="showPage('today')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg>
+      <span>Today</span>
+    </button>
+    <button class="nav-item" data-page="timeline" onclick="showPage('timeline')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"/></svg>
+      <span>Timeline</span>
+    </button>
+    <button class="nav-item" data-page="food" onclick="showPage('food')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>
+      <span>Food</span>
+    </button>
+    <button class="nav-item" data-page="transport" onclick="showPage('transport')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-5l-8-5V1.5a1.5 1.5 0 0 0-3 0V6l-8 5v5l8-2.5V18l-2 1.5V22l3.5-1 3.5 1v-2.5L13 18v-4.5L21 16z"/></svg>
+      <span>Travel</span>
+    </button>
+    <button class="nav-item" data-page="more" onclick="showPage('more')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+      <span>More</span>
+    </button>
+  </nav>
+
+  <!-- DETAIL OVERLAY -->
+  <div class="overlay" id="overlay" onclick="if(event.target===this)closeSheet()">
+    <div class="sheet" id="sheet">
+      <div class="sheet-handle"></div>
+      <div id="sheetContent"></div>
+    </div>
+  </div>
+
+
+
+  <!-- CROSS-PLATFORM INSTALL PROMPT -->
+  <div class="install-overlay" id="installOverlay" onclick="if(event.target===this)dismissInstallPrompt()">
+    <div class="install-card" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+      <div class="sheet-handle"></div>
+      <div class="install-app-row">
+        <img class="install-app-icon" src="icon-192.png" alt="Italy 2026 app icon" />
+        <div>
+          <div class="install-title" id="installTitle">Install Italy 2026</div>
+          <div class="install-sub" id="installSubtitle">Keep the trip available from your Home Screen and offline.</div>
+        </div>
+      </div>
+      <div id="installBody"></div>
+      <div class="btn-row">
+        <button class="btn-outline" type="button" onclick="dismissInstallPrompt()">Not now</button>
+        <button type="button" id="installActionBtn" onclick="installAppNow()">Install app</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    const APP_VERSION = "10.2.1";
+    const DATA_VERSION = "10.0.0";
+    // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
+
+
+    // ===================== APP INSTALL PROMPT =====================
+    let deferredInstallPrompt = null;
+
+    function isStandaloneApp() {
+      return window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true;
+    }
+
+    function isIOSDevice() {
+      return /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    }
+
+    function isAndroidDevice() {
+      return /android/i.test(navigator.userAgent);
+    }
+
+    function installPromptRecentlyDismissed() {
+      const raw = localStorage.getItem('italy2026_install_dismissed');
+      if (!raw) return false;
+      const when = Number(raw);
+      return Number.isFinite(when) && (Date.now() - when) < 7 * 86400000;
+    }
+
+    function showInstallPrompt(kind) {
+      if (isStandaloneApp() || installPromptRecentlyDismissed()) return;
+      const overlay = document.getElementById('installOverlay');
+      const body = document.getElementById('installBody');
+      const action = document.getElementById('installActionBtn');
+      const subtitle = document.getElementById('installSubtitle');
+      if (!overlay || !body || !action) return;
+
+      if (kind === 'ios') {
+        subtitle.textContent = 'iPhone requires one quick manual step in Safari.';
+        body.innerHTML = `
+          <div class="alert alert-info text-sm">Apple does not allow websites to open the iPhone installation window automatically.</div>
+          <ol class="install-steps">
+            <li>Open this page in <strong>Safari</strong>.</li>
+            <li>Tap the <span class="ios-share-icon">□↑</span> <strong>Share</strong> button.</li>
+            <li>Tap <strong>Add to Home Screen</strong>.</li>
+            <li>Keep <strong>Open as Web App</strong> turned on, then tap <strong>Add</strong>.</li>
+          </ol>`;
+        action.textContent = 'Got it';
+      } else {
+        subtitle.textContent = 'Add the trip to your Home Screen for full-screen and offline use.';
+        body.innerHTML = `<div class="alert alert-info text-sm">Tap Install app below, then approve the browser installation window.</div>`;
+        action.textContent = 'Install app';
+      }
+      overlay.classList.add('open');
+    }
+
+    function dismissInstallPrompt() {
+      const overlay = document.getElementById('installOverlay');
+      if (overlay) overlay.classList.remove('open');
+      localStorage.setItem('italy2026_install_dismissed', String(Date.now()));
+    }
+
+    async function installAppNow() {
+      if (isIOSDevice()) {
+        dismissInstallPrompt();
+        return;
+      }
+      if (!deferredInstallPrompt) {
+        dismissInstallPrompt();
+        showToast('Use your browser menu and choose Install app');
+        return;
+      }
+      deferredInstallPrompt.prompt();
+      try { await deferredInstallPrompt.userChoice; } catch (e) {}
+      deferredInstallPrompt = null;
+      const overlay = document.getElementById('installOverlay');
+      if (overlay) overlay.classList.remove('open');
+    }
+
+    window.addEventListener('beforeinstallprompt', event => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      setTimeout(() => showInstallPrompt('android'), 1200);
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      localStorage.removeItem('italy2026_install_dismissed');
+      const overlay = document.getElementById('installOverlay');
+      if (overlay) overlay.classList.remove('open');
+      showToast('Italy 2026 installed');
+    });
+
+    // ===================== STATE & HELPERS =====================
+    let currentCity = "rome";
+    let restCityFilter = "all";
+    let restAteFilter = "all";
+    let restQuickFilter = "all";
+    let restSearch = "";
+    let tlFilter = "all";
+    let tlModeFilter = "all";
+    let tlSearch = "";
+    let prepTab = "packing";
+    let packingTravelerFilter = "all";
+    let attrCityFilter = "all";
+    let attrVisitFilter = "all";
+    let expOwnerFilter = "all";
+    let expTypeFilter = "all";
+    let selectedDate = DAYS[0].date;
+
+    function daysUntil(dateStr) {
+      const target = new Date(dateStr + "T00:00:00");
+      const now = new Date();
+      now.setHours(0,0,0,0);
+      return Math.ceil((target - now) / 86400000);
+    }
+
+    function fmtDate(d) {
+      const dt = new Date(d + "T00:00:00");
+      return dt.toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric" });
+    }
+
+    function shortDate(d) {
+      const dt = new Date(d + "T00:00:00");
+      return dt.toLocaleDateString("en-US", { month:"short", day:"numeric" });
+    }
+
+    function statusBadge(s) {
+      s = (s || "").toLowerCase();
+      if (s.includes("confirmed") && s.includes("decision")) return '<span class="badge badge-decision">Decision Needed</span>';
+      if (s.includes("confirmed") || s.includes("plan confirmed")) return '<span class="badge badge-confirmed">Confirmed</span>';
+      if (s.includes("pending") || s.includes("verify") || s.includes("partial") || s.includes("timetable")) return '<span class="badge badge-pending">Pending</span>';
+      if (s.includes("decision") || s.includes("needed")) return '<span class="badge badge-decision">Decision</span>';
+      if (s.includes("done")) return '<span class="badge badge-done">Done</span>';
+      return '<span class="badge badge-pending">' + (s || "—") + '</span>';
+    }
+
+    const TIMELINE_ROUTE_MAP = {
+      1:1, 2:2, 5:3, 6:4, 7:5, 8:6, 9:7, 10:8, 11:9, 12:10,
+      17:11, 19:12, 22:13, 23:14, 24:15, 31:16, 32:16.1, 41:16.2,
+      34:17, 35:18, 43:19, 36:20, 37:21, 38:22, 39:23, 40:23.1
+    };
+
+    function modeIcon(mode) {
+      const m = (mode || "").toLowerCase();
+      if (/flight|sas|delta/.test(m)) return "✈️";
+      if (/train|italo|leonardo/.test(m)) return "🚆";
+      if (/vaporetto|water bus/.test(m)) return "🚤";
+      if (/shuttle boat|water transfer|water taxi|boat/.test(m)) return "🛥️";
+      if (/bus|coach/.test(m)) return "🚌";
+      if (/drive|vehicle|car/.test(m)) return "🚗";
+      if (/tram/.test(m)) return "🚋";
+      if (/passport|immigration|tsa|security|airtrain|airport shuttle/.test(m)) return "🛂";
+      if (/walk/.test(m)) return "🚶";
+      if (/hotel/.test(m)) return "🏨";
+      return "📍";
+    }
+
+    function autoTravelHighlight(t) {
+      const mode = (t.mode || "").toLowerCase();
+      const status = (t.status || "").toLowerCase();
+      const hasExactStart = /^\d{1,2}:\d{2}/.test((t.start || "").toString().trim());
+      const isScheduledTravel = /flight|\b(?:dl|sk)\s*\d+|train|rail|italo|leonardo express|vaporetto|water bus|shuttle boat|water transfer|water taxi|\bboat\b|ferry/.test(mode);
+      const isUnconfirmed = /pending|verify|partial|tbd/.test(status);
+      return hasExactStart && isScheduledTravel && !isUnconfirmed;
+    }
+
+    function timelineEmphasis(t) {
+      const e = (t.emphasis || "auto").toLowerCase();
+      if (e === "standard" || e === "none") return "";
+      if (["green","blue","gold","burgundy"].includes(e)) return e;
+      return autoTravelHighlight(t) ? "green" : "";
+    }
+
+    function isActualTravelStep(t) { return !!timelineEmphasis(t); }
+    function timelineStyleClass(t) {
+      const e = timelineEmphasis(t);
+      if (!e) return "";
+      return e === "green" ? "actual-travel" : `actual-travel emphasis-${e}`;
+    }
+
+    function actualTravelLabel(t) {
+      const text = `${t.instructions || ""} ${t.mode || ""}`;
+      const flight = text.match(/(?:Delta\s+)?DL\d+|SAS\s+SK\d+|SK\d+/i);
+      const italo = text.match(/Italo\s+\d+/i);
+      if (flight) {
+        let label = flight[0].replace(/^SK/i, "SAS SK");
+        if (/DL2706/i.test(label) && !/^Delta/i.test(label)) label = "Delta " + label;
+        if (/SK3438/i.test(label)) label = "Delta-operated SAS SK3438";
+        return label;
+      }
+      if (italo) return italo[0];
+      if (/leonardo express/i.test(text)) return "Leonardo Express";
+      return t.mode || "Travel";
+    }
+
+    function actualTravelKind(t) {
+      const mode = (t.mode || "").toLowerCase();
+      if (/flight|\b(?:dl|sk)\s*\d+/.test(mode)) return "FLIGHT";
+      if (/train|rail|italo|leonardo express/.test(mode)) return "TRAIN";
+      if (/vaporetto|water bus|boat|ferry|water taxi|water transfer/.test(mode)) return "WATER";
+      return "HIGHLIGHT";
+    }
+
+    function normalizedLink(raw) {
+      const v = (raw || "").trim();
+      if (!v) return "";
+      if (/^https?:\/\//i.test(v)) return v;
+      // Google Plus Codes such as XF88+QC Tampa, Florida
+      if (/^[23456789CFGHJMPQRVWX]{4,8}\+[23456789CFGHJMPQRVWX]{2,3}(?:\s+.+)?$/i.test(v)) {
+        return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(v);
+      }
+      return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(v);
+    }
+
+    function linkLabel(raw, backup) {
+      const v = (raw || "").toLowerCase();
+      if (/google\.com\/maps|maps\.app\.goo\.gl|^[23456789cfghjmpqrvwx]{4,8}\+/i.test(raw || "")) return backup ? "Backup Map" : "Open Map";
+      return backup ? "Backup / Alternate" : "Official Site";
+    }
+
+    function routeForTimelineStep(step) {
+      const order = TIMELINE_ROUTE_MAP[step];
+      if (order == null) return null;
+      return getAllDoorRoutes().find(r => Number(r.order) === Number(order)) || null;
+    }
+
+    function timelineStepForRoute(route) {
+      const entry = Object.entries(TIMELINE_ROUTE_MAP).find(([, order]) => Number(order) === Number(route.order));
+      return entry ? Number(entry[0]) : null;
+    }
+
+    function urgencyBadge(u) {
+      u = (u || "").toLowerCase();
+      if (u === "high") return '<span class="badge badge-high">High</span>';
+      if (u === "medium") return '<span class="badge badge-medium">Medium</span>';
+      if (u === "low" || u === "optional") return '<span class="badge badge-low">Low</span>';
+      if (u === "done") return '<span class="badge badge-done">Done</span>';
+      return '';
+    }
+
+    function getPackCatalogData() {
+      try { return JSON.parse(localStorage.getItem("italy2026_packcatalog") || '{"edits":{},"custom":{},"deleted":{}}'); }
+      catch(e) { return {edits:{},custom:{},deleted:{}}; }
+    }
+    function setPackCatalogData(obj) { localStorage.setItem("italy2026_packcatalog", JSON.stringify(obj)); }
+    function getPackingItems() {
+      const cat=getPackCatalogData();
+      const base=PACKING.map((p,i)=>({...p,_id:"base_"+i,_base:true}));
+      const activeBase=base.filter(p=>!cat.deleted[p._id]).map(p=>({...p,...(cat.edits[p._id]||{}),_id:p._id,_base:true}));
+      const custom=Object.values(cat.custom||{}).filter(p=>!cat.deleted[p._id]).map(p=>({...p,_base:false}));
+      return activeBase.concat(custom);
+    }
+    function mergePackCatalog(local,incoming) {
+      const out={edits:{...(local&&local.edits||{})},custom:{...(local&&local.custom||{})},deleted:{...(local&&local.deleted||{})}};
+      let added=0,updated=0,skipped=0;
+      ["edits","custom","deleted"].forEach(group=>{
+        Object.entries((incoming&&incoming[group])||{}).forEach(([id,val])=>{
+          if(!(id in out[group])) { out[group][id]=val; added++; return; }
+          const old=out[group][id];
+          const ot=Date.parse((old&&old.updatedAt)||old||0)||0, nt=Date.parse((val&&val.updatedAt)||val||0)||0;
+          if(nt>ot) { out[group][id]=val; updated++; } else skipped++;
+        });
+      });
+      return {value:out,added,updated,skipped};
+    }
+    function packStateKey(item) { return item._id || packKey(item); }
+    function openAddPackingItem() {
+      openPackingItemEditor(null);
+    }
+    function openPackingItemEditor(id) {
+      const item=id ? getPackingItems().find(p=>p._id===id) : null;
+      openEditSheet(item ? "Edit packing item" : "Add packing item", [
+        {key:"traveler",label:"List",type:"select",value:item?packingOwner(item.traveler):(packingTravelerFilter==="all"?"Shared":packingTravelerFilter),options:["David","Melody","Shared"]},
+        {key:"cat",label:"Category",value:item?item.cat:"Travel Gear"},
+        {key:"item",label:"Item",value:item?item.item:""},
+        {key:"qty",label:"Quantity",type:"number",value:item?item.qty:1},
+        {key:"bag",label:"Bag / location",value:item?item.bag:"Checked"},
+        {key:"pri",label:"Priority",type:"select",value:item?item.pri:"Medium",options:["Critical","High","Medium","Low"]}
+      ], data=>{
+        if(!data.item.trim()) { alert("Item name is required."); return; }
+        const cat=getPackCatalogData(), now=new Date().toISOString();
+        const record={traveler:data.traveler,cat:data.cat.trim()||"Other",item:data.item.trim(),qty:Math.max(1,Number(data.qty)||1),bag:data.bag.trim()||"Not assigned",pri:data.pri,updatedAt:now};
+        if(item && item._base) cat.edits[id]={...record,updatedAt:now};
+        else if(item) cat.custom[id]={...cat.custom[id],...record,_id:id,updatedAt:now};
+        else { const newId="pack_"+Date.now(); cat.custom[newId]={...record,_id:newId,createdAt:now,updatedAt:now}; }
+        setPackCatalogData(cat); renderPrep(); showToast(item?"Packing item updated":"Packing item added");
+      }, item ? ()=>deletePackingItem(id) : null);
+      const del=document.getElementById("efDelete"); if(del) del.textContent="Remove this packing item";
+    }
+    function deletePackingItem(id) {
+      if(!confirm("Remove this item from the packing list?")) return false;
+      const cat=getPackCatalogData(); cat.deleted[id]={updatedAt:new Date().toISOString(),by:getBackupOwner()}; setPackCatalogData(cat);
+      const st=getPackState(); delete st[id]; setPackState(st); renderPrep(); showToast("Packing item removed"); return true;
+    }
+
+    const LEGACY_PACKING_KEYS = ["David|Passport book", "Melody|Passport book", "Shared|Printed flight/train/hotel confirmations", "David|Driver license", "Melody|Driver license", "Shared|Travel insurance details", "David|Work cellphone", "David|Personal cellphone", "Melody|Personal cellphone", "David|Work laptop + charger", "Shared|Multi-port USB charger", "David|Power bank", "Melody|Power bank", "Shared|Universal Type C/F/L adapters", "David|Prescription medications", "Melody|Prescription medications", "Shared|Advil", "David|Primary credit card (no FTF)", "Melody|Primary credit card (no FTF)", "Shared|Backup credit card", "Shared|Limited euros (€100)", "David|Primary walking shoes", "Melody|Primary walking shoes", "David|Collared shirts", "Melody|Business-casual outfits", "David|Long pants", "Shared|Socks + Underwear", "Shared|Rain jacket / windbreaker", "Shared|Light sweater / layer", "Shared|Second pair of shoes", "Shared|Sleepwear + Casual outfits", "Shared|Checked roller suitcase", "David|Backpack", "Melody|Personal item bag", "Shared|Crossbody anti-pickpocket bag", "Shared|Luggage tags", "Shared|Reusable water bottles", "Shared|Toiletries (travel size carry-on)", "Melody|Makeup bag", "David|Reading glasses", "Shared|Sunglasses", "Shared|Compact umbrella", "David|Business cards", "David|Conference badge / registration", "David|Pen and notebook"];
+    function packKey(item) { return packingOwner(item.traveler) + "|" + item.item; }
+    function getPackState() {
+      let raw={}; try { raw=JSON.parse(localStorage.getItem("italy2026_pack") || "{}"); } catch(e) { raw={}; }
+      // Migrate older index-based checkmarks to stable traveler/item keys once.
+      if (Object.keys(raw).some(k => /^\d+$/.test(k))) {
+        const migrated={};
+        Object.entries(raw).forEach(([k,v]) => {
+          const key=/^\d+$/.test(k) ? LEGACY_PACKING_KEYS[Number(k)] : k;
+          if (!key) return;
+          migrated[key] = (v && typeof v === "object") ? v : {checked:!!v,by:"Legacy import",updatedAt:new Date(0).toISOString()};
+        });
+        raw=migrated; setPackState(raw);
+      }
+      // Migrate stable owner/item keys to stable catalog IDs so renamed items keep their checkmarks.
+      const byLegacy={}; PACKING.forEach((p,i)=>{byLegacy[packKey(p)]="base_"+i;});
+      let changed=false;
+      Object.keys(raw).forEach(k=>{ if(byLegacy[k] && !(byLegacy[k] in raw)) { raw[byLegacy[k]]=raw[k]; delete raw[k]; changed=true; } });
+      if(changed) setPackState(raw);
+      return raw;
+    }
+    function setPackState(obj) { localStorage.setItem("italy2026_pack", JSON.stringify(obj)); }
+    function packingRecordChecked(rec) { return rec === true || !!(rec && rec.checked); }
+    function mergePackingState(local, incoming) {
+      const out={...(local||{})}; let added=0,updated=0,skipped=0;
+      Object.entries(incoming||{}).forEach(([k,v])=>{
+        const inc=(v && typeof v==="object")?v:{checked:!!v,by:"Imported backup",updatedAt:new Date(0).toISOString()};
+        if (!(k in out)) { out[k]=inc; added++; return; }
+        const cur=(out[k] && typeof out[k]==="object")?out[k]:{checked:!!out[k],by:"Legacy",updatedAt:new Date(0).toISOString()};
+        const ct=Date.parse(cur.updatedAt||0)||0, it=Date.parse(inc.updatedAt||0)||0;
+        if (it>ct) { out[k]=inc; updated++; } else if (JSON.stringify(cur)===JSON.stringify(inc)) skipped++; else skipped++;
+      });
+      return {value:out,added,updated,skipped};
+    }
+    function getOpenState() {
+      try { return JSON.parse(localStorage.getItem("italy2026_open") || "{}"); } catch(e) { return {}; }
+    }
+    function setOpenState(obj) {
+      localStorage.setItem("italy2026_open", JSON.stringify(obj));
+    }
+    function getJournal() {
+      try { return JSON.parse(localStorage.getItem("italy2026_journal") || "[]"); } catch(e) { return []; }
+    }
+    function setJournal(arr) {
+      localStorage.setItem("italy2026_journal", JSON.stringify(arr));
+    }
+
+    // ---- Live overrides (timeline notes, train times, transfer notes, reservation notes) ----
+    function getLive() {
+      try { return JSON.parse(localStorage.getItem("italy2026_live") || "{}"); } catch(e) { return {}; }
+    }
+    function setLive(obj) {
+      localStorage.setItem("italy2026_live", JSON.stringify(obj));
+    }
+    function getExpenses() {
+      try { return JSON.parse(localStorage.getItem("italy2026_expenses") || "[]"); } catch(e) { return []; }
+    }
+    function setExpenses(arr) {
+      localStorage.setItem("italy2026_expenses", JSON.stringify(arr));
+    }
+    function getPlannedEdits() {
+      try { return JSON.parse(localStorage.getItem("italy2026_plannededits") || "{}"); } catch(e) { return {}; }
+    }
+    function setPlannedEdits(obj) {
+      localStorage.setItem("italy2026_plannededits", JSON.stringify(obj));
+    }
+    function liveBudgetPlanned() {
+      const edits = getPlannedEdits();
+      return BUDGET_PLANNED.map((b, i) => ({ ...b, ...(edits[i] || {}), _index: i }));
+    }
+    function getTimelineDone() {
+      try { return JSON.parse(localStorage.getItem("italy2026_tldone") || "{}"); } catch(e) { return {}; }
+    }
+    function setTimelineDone(obj) {
+      localStorage.setItem("italy2026_tldone", JSON.stringify(obj));
+    }
+    function toggleTimelineDone(step, checked) {
+      const st = getTimelineDone();
+      if (checked) st[step] = true; else delete st[step];
+      setTimelineDone(st);
+      renderTimeline();
+    }
+    function getTimelineHidden() {
+      try { return JSON.parse(localStorage.getItem("italy2026_tlhidden") || "{}"); } catch(e) { return {}; }
+    }
+    function setTimelineHidden(obj) {
+      localStorage.setItem("italy2026_tlhidden", JSON.stringify(obj));
+    }
+    function hideTimelineStep(step) {
+      if (!confirm("Hide this step from the Master Timeline? (e.g. cancelled hotel or transfer)\n\nYou can restore it anytime from the Hidden filter.")) return false;
+      const st = getTimelineHidden();
+      st[step] = true;
+      setTimelineHidden(st);
+      renderTimeline();
+      showToast("Step hidden — use Hidden filter to restore");
+      return true;
+    }
+    function restoreTimelineStep(step) {
+      const st = getTimelineHidden();
+      delete st[step];
+      setTimelineHidden(st);
+      renderTimeline();
+      showToast("Step restored to timeline");
+      return true;
+    }
+    function getRestLog() {
+      try { return JSON.parse(localStorage.getItem("italy2026_restlog") || "{}"); } catch(e) { return {}; }
+    }
+    function setRestLog(obj) {
+      localStorage.setItem("italy2026_restlog", JSON.stringify(obj));
+    }
+    function restKey(r) {
+      return r.city + "|" + r.name;
+    }
+    function toggleRestAte(key, checked) {
+      const log = getRestLog();
+      if (!log[key]) log[key] = {};
+      log[key].ate = !!checked;
+      if (!checked) { /* keep notes/rating */ }
+      setRestLog(log);
+      renderFood();
+    }
+    function saveRestNotes(key, notes) {
+      const log = getRestLog();
+      if (!log[key]) log[key] = {};
+      log[key].notes = notes;
+      setRestLog(log);
+    }
+    function saveRestRating(key, rating) {
+      const log = getRestLog();
+      if (!log[key]) log[key] = {};
+      log[key].rating = rating;
+      if (rating) log[key].ate = true;
+      setRestLog(log);
+      renderFood();
+    }
+    function toggleRestFavorite(key) {
+      const log = getRestLog();
+      if (!log[key]) log[key] = {};
+      log[key].favorite = !log[key].favorite;
+      setRestLog(log);
+      renderFood();
+    }
+
+    function getAttrLog() {
+      try { return JSON.parse(localStorage.getItem("italy2026_attrlog") || "{}"); } catch(e) { return {}; }
+    }
+    function setAttrLog(obj) {
+      localStorage.setItem("italy2026_attrlog", JSON.stringify(obj));
+    }
+    function attrKey(a) {
+      return a.city + "|" + a.name;
+    }
+    function toggleAttrVisited(key, checked) {
+      const log = getAttrLog();
+      if (!log[key]) log[key] = {};
+      log[key].visited = !!checked;
+      setAttrLog(log);
+      renderAttractions();
+    }
+
+    // Photo storage (IndexedDB) — survives offline, larger than localStorage
+    function openPhotoDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open("italy2026_photos", 1);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains("photos")) db.createObjectStore("photos");
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+    async function getAttrPhotos(key) {
+      try {
+        const db = await openPhotoDB();
+        return await new Promise((resolve, reject) => {
+          const tx = db.transaction("photos", "readonly");
+          const req = tx.objectStore("photos").get(key);
+          req.onsuccess = () => resolve(req.result || []);
+          req.onerror = () => reject(req.error);
+        });
+      } catch (e) { return []; }
+    }
+    async function setAttrPhotos(key, photos) {
+      const db = await openPhotoDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction("photos", "readwrite");
+        tx.objectStore("photos").put(photos, key);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+    function compressImage(file, maxW, quality) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            const scale = Math.min(1, maxW / img.width);
+            const w = Math.round(img.width * scale);
+            const h = Math.round(img.height * scale);
+            const canvas = document.createElement("canvas");
+            canvas.width = w; canvas.height = h;
+            canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL("image/jpeg", quality));
+          };
+          img.onerror = reject;
+          img.src = reader.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Merge live overrides onto a timeline step
+    function getCustomLegs() {
+      try { return JSON.parse(localStorage.getItem("italy2026_customlegs") || "[]"); } catch(e) { return []; }
+    }
+    function setCustomLegs(arr) {
+      localStorage.setItem("italy2026_customlegs", JSON.stringify(arr));
+    }
+    function getRouteEdits() {
+      try { return JSON.parse(localStorage.getItem("italy2026_routeedits") || "{}"); } catch(e) { return {}; }
+    }
+    function setRouteEdits(obj) {
+      localStorage.setItem("italy2026_routeedits", JSON.stringify(obj));
+    }
+    function baseRouteId(r) {
+      return "route_" + String(r.order || ((r.from || "") + "_" + (r.to || ""))).replace(/[^a-zA-Z0-9_-]/g, "_");
+    }
+
+    function liveTimeline() {
+      const live = getLive();
+      const base = TIMELINE.map(t => {
+        const o = (live.timeline || {})[t.step];
+        return o ? { ...t, ...o } : { ...t };
+      });
+      // Custom door-to-door legs appear on the master timeline too
+      const custom = getCustomLegs().map((leg, i) => ({
+        step: 9000 + i,
+        date: leg.date,
+        start: leg.start || "",
+        end: leg.end || "",
+        from: leg.from,
+        to: leg.to,
+        mode: leg.mode || "Custom leg",
+        emphasis: leg.emphasis || "auto",
+        time: leg.duration || "",
+        status: leg.status || "Confirmed",
+        instructions: leg.note || "",
+        notes: leg.link ? "Map link saved on Door-to-Door" : "",
+        title: leg.title || "",
+        _customId: leg.id,
+        _isCustom: true
+      }));
+      return base.concat(custom);
+    }
+    function liveTrains() {
+      const live = getLive();
+      return TRAINS.map((t, i) => {
+        const o = (live.trains || {})[i];
+        return o ? { ...t, ...o } : { ...t };
+      });
+    }
+    function liveTransfers() {
+      const live = getLive();
+      const base = TRANSFERS.map((t, i) => {
+        const o = (live.transfers || {})[i];
+        return o ? { ...t, ...o } : { ...t };
+      });
+      const custom = getCustomLegs().map((leg, i) => ({
+        id: leg.id || ("CL" + (i + 1)),
+        date: leg.date ? shortDateLabel(leg.date) : "",
+        name: (leg.title && leg.title.trim()) ? leg.title.trim() : `${leg.from} → ${leg.to}`,
+        mode: leg.mode || "Custom",
+        time: leg.duration || ((leg.start || "") + (leg.end ? "–" + leg.end : "")),
+        priority: "Medium",
+        status: leg.status || "Confirmed",
+        steps: leg.note || "",
+        backup: "",
+        mistake: "",
+        _isCustom: true,
+        _customId: leg.id
+      }));
+      return base.concat(custom);
+    }
+    function shortDateLabel(iso) {
+      if (!iso) return "";
+      const d = new Date(iso + "T00:00:00");
+      if (isNaN(d)) return iso;
+      return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    }
+    function liveReservations() {
+      const live = getLive();
+      return RESERVATIONS.map((r, i) => {
+        const o = (live.reservations || {})[i];
+        return o ? { ...r, ...o } : { ...r };
+      });
+    }
+
+    function openEditSheet(title, fields, onSave, onDelete) {
+      const html = `
+        <h2>${title}</h2>
+        <form id="editForm" onsubmit="return false;">
+          ${fields.map(f => `
+            <div class="form-group">
+              <label>${f.label}</label>
+              ${f.type === "textarea"
+                ? `<textarea id="ef_${f.key}" rows="3">${f.value || ""}</textarea>`
+                : f.type === "select"
+                  ? `<select id="ef_${f.key}">${f.options.map(o => `<option value="${o}" ${o === f.value ? "selected" : ""}>${o}</option>`).join("")}</select>`
+                  : `<input type="${f.type || "text"}" id="ef_${f.key}" value="${(f.value || "").toString().replace(/"/g, "&quot;")}" />`
+              }
+            </div>
+          `).join("")}
+          <div class="btn-row">
+            <button type="button" class="btn-outline" onclick="closeSheet()">Cancel</button>
+            <button type="button" id="efSave">Save</button>
+          </div>
+          ${onDelete ? `<button type="button" id="efDelete" class="btn-danger" style="width:100%;margin-top:12px;">Delete this leg</button>` : ""}
+        </form>
+      `;
+      document.getElementById("sheetContent").innerHTML = html;
+      document.getElementById("overlay").classList.add("open");
+      document.getElementById("efSave").onclick = () => {
+        const data = {};
+        fields.forEach(f => {
+          const el = document.getElementById("ef_" + f.key);
+          data[f.key] = el ? el.value : "";
+        });
+        onSave(data);
+        closeSheet();
+      };
+      if (onDelete) {
+        document.getElementById("efDelete").onclick = () => {
+          // onDelete should return false if user cancels so the sheet stays open
+          if (onDelete() !== false) closeSheet();
+        };
+      }
+    }
+
+    function currentExpenseRate() {
+      const cache = getFxCache();
+      return cache && cache.rate ? Number(cache.rate) : Number(TRIP.fx || 1.1367);
+    }
+    function moneyPair(usd, eur, primary) {
+      const u = Number(usd || 0).toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2});
+      const e = Number(eur || 0).toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2});
+      return primary === "EUR" ? `€${e}<div class="text-xs text-muted">$${u} USD</div>` : `$${u}<div class="text-xs text-muted">€${e} EUR</div>`;
+    }
+    function expenseUsdAmount(e) {
+      if (Number.isFinite(Number(e.statementUsd)) && Number(e.statementUsd) > 0) return Number(e.statementUsd);
+      if ((e.cur || "USD") === "USD") return Number(e.amt || 0);
+      return Number(e.amt || 0) * Number(e.fx || TRIP.fx || 1.1367);
+    }
+    function expenseEurAmount(e) {
+      if ((e.cur || "USD") === "EUR") return Number(e.amt || 0);
+      return expenseUsdAmount(e) / currentExpenseRate();
+    }
+    function expenseFormHtml(e) {
+      e = e || {};
+      const isEdit = !!e.id;
+      const cur = e.cur || "EUR";
+      const fx = Number(e.fx || (cur === "USD" ? 1 : currentExpenseRate()));
+      const opt = (value, current) => value === current ? "selected" : "";
+      return `
+        <h2>${isEdit ? "Edit Expense" : "Add Expense"}</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Date</label><input type="date" id="sxDate" value="${e.date || new Date().toISOString().slice(0,10)}" /></div>
+          <div class="form-group"><label>City / Segment</label><select id="sxCity">${["Rome","Florence","Venice","Transit","Home","Other"].map(x=>`<option ${opt(x,e.city||"Rome")}>${x}</option>`).join("")}</select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Category</label><select id="sxCat">${["Dining","Ground Transportation","Hotels","Attractions","Shopping","Tips & Fees","Flights","Trains","Insurance","Miscellaneous"].map(x=>`<option ${opt(x,e.cat||"Dining")}>${x}</option>`).join("")}</select></div>
+          <div class="form-group"><label>Paid by</label><select id="sxTraveler">${["David","Melody","Shared"].map(x=>`<option ${opt(x,e.traveler||"Shared")}>${x}</option>`).join("")}</select></div>
+        </div>
+        <div class="form-group"><label>Vendor / Description</label><input type="text" id="sxDesc" value="${(e.desc||"").replace(/"/g,"&quot;")}" /></div>
+        <div class="form-row">
+          <div class="form-group"><label>Original amount</label><input type="number" id="sxAmt" step="0.01" min="0" value="${e.amt ?? ""}" oninput="updateSheetExpensePreview()" /></div>
+          <div class="form-group"><label>Original currency</label><select id="sxCur" onchange="syncSheetExpenseRate();updateSheetExpensePreview()"><option ${opt("EUR",cur)}>EUR</option><option ${opt("USD",cur)}>USD</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>EUR→USD rate used</label><input type="number" id="sxFx" step="0.0001" min="0" value="${fx.toFixed(4)}" oninput="updateSheetExpensePreview()" /></div>
+          <div class="form-group"><label>Final card-statement USD</label><input type="number" id="sxStatementUsd" step="0.01" min="0" value="${e.statementUsd || ""}" oninput="updateSheetExpensePreview()" placeholder="Optional" /></div>
+        </div>
+        <div class="alert alert-info text-sm" id="sxPreview">USD: — · EUR: —</div>
+        <div class="form-row">
+          <div class="form-group"><label>Payment method</label><select id="sxPayment">${["Credit Card","Debit Card","Cash","Company Card","Other"].map(x=>`<option ${opt(x,e.payment||"Credit Card")}>${x}</option>`).join("")}</select></div>
+          <div class="form-group"><label>Receipt saved?</label><select id="sxReceipt"><option value="yes" ${e.receipt!==false&&e.receipt!=="no"?"selected":""}>Yes</option><option value="no" ${e.receipt===false||e.receipt==="no"?"selected":""}>No</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Company paid?</label><select id="sxCompany"><option value="no" ${!e.company?"selected":""}>No</option><option value="yes" ${e.company?"selected":""}>Yes</option></select></div>
+          <div class="form-group"><label>Reimbursable?</label><select id="sxReimb"><option value="no" ${!e.reimbursable?"selected":""}>No</option><option value="yes" ${e.reimbursable?"selected":""}>Yes</option></select></div>
+        </div>
+        <div class="form-group"><label>Notes</label><textarea id="sxNotes" rows="3">${e.notes||""}</textarea></div>
+        <div class="btn-row"><button class="btn-outline" onclick="closeSheet()">Cancel</button><button onclick="saveExpenseSheet(${isEdit ? e.id : "null"})">${isEdit ? "Save Changes" : "Save Expense"}</button></div>
+        ${isEdit ? `<button class="btn-danger" style="width:100%;margin-top:12px;" onclick="deleteExpense(${e.id});closeSheet();">Delete Expense</button>` : ""}`;
+    }
+    function openExpenseSheet(id) {
+      const e = id ? getExpenses().find(x => x.id === id) : null;
+      document.getElementById("sheetContent").innerHTML = expenseFormHtml(e);
+      document.getElementById("overlay").classList.add("open");
+      syncSheetExpenseRate(); updateSheetExpensePreview();
+    }
+    function syncSheetExpenseRate() {
+      const cur=document.getElementById("sxCur"), fx=document.getElementById("sxFx");
+      if(!cur||!fx)return; fx.disabled=cur.value==="USD"; if(cur.value==="USD")fx.value="1.0000"; else if(Number(fx.value)===1)fx.value=currentExpenseRate().toFixed(4);
+    }
+    function updateSheetExpensePreview() {
+      const amt=parseFloat(document.getElementById("sxAmt")?.value), cur=document.getElementById("sxCur")?.value||"EUR";
+      const fx=parseFloat(document.getElementById("sxFx")?.value)||currentExpenseRate(), posted=parseFloat(document.getElementById("sxStatementUsd")?.value);
+      let usd=Number.isFinite(posted)&&posted>0?posted:(Number.isFinite(amt)?(cur==="USD"?amt:amt*fx):NaN);
+      let eur=Number.isFinite(amt)?(cur==="EUR"?amt:usd/currentExpenseRate()):NaN;
+      const el=document.getElementById("sxPreview"); if(el)el.innerHTML=`<strong>USD:</strong> ${Number.isFinite(usd)?"$"+usd.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"—"} &nbsp; · &nbsp; <strong>EUR:</strong> ${Number.isFinite(eur)?"€"+eur.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"—"}`;
+    }
+    function saveExpenseSheet(id) {
+      const date=document.getElementById("sxDate").value, desc=document.getElementById("sxDesc").value.trim(), amt=parseFloat(document.getElementById("sxAmt").value);
+      if(!date||!desc||!Number.isFinite(amt)||amt<0){alert("Please fill date, description, and a valid amount.");return;}
+      const cur=document.getElementById("sxCur").value, statement=parseFloat(document.getElementById("sxStatementUsd").value);
+      const item={id:id||Date.now(),date,city:document.getElementById("sxCity").value,cat:document.getElementById("sxCat").value,desc,amt,cur,fx:cur==="USD"?1:(parseFloat(document.getElementById("sxFx").value)||currentExpenseRate()),statementUsd:Number.isFinite(statement)?statement:null,traveler:document.getElementById("sxTraveler").value,payment:document.getElementById("sxPayment").value,company:document.getElementById("sxCompany").value==="yes",reimbursable:document.getElementById("sxReimb").value==="yes",receipt:document.getElementById("sxReceipt").value==="yes",notes:document.getElementById("sxNotes").value.trim()};
+      const arr=getExpenses(); const idx=arr.findIndex(x=>x.id===id); if(idx>=0)arr[idx]=item;else arr.push(item); clearDeleted("expenses",item.id); setExpenses(arr); closeSheet(); renderMoney(); showToast(id?"Expense updated":"Expense added");
+    }
+    function deleteExpense(id) {
+      if (!confirm("Delete this expense?")) return false;
+      markDeleted("expenses",id); setExpenses(getExpenses().filter(e => e.id !== id)); renderMoney(); showToast("Expense deleted"); return true;
+    }
+    function editPlannedItem(i) {
+      const b=liveBudgetPlanned().find(x=>x._index===i); if(!b)return;
+      openEditSheet("Edit planned cost",[
+        {key:"sub",label:"Item / description",value:b.sub},{key:"cat",label:"Category",value:b.cat},
+        {key:"amt",label:"Amount",type:"number",value:b.amt},{key:"cur",label:"Currency",type:"select",value:b.cur,options:["USD","EUR"]},
+        {key:"status",label:"Status",type:"select",value:b.status,options:["Planned","Booked","Paid","Refunded","Canceled","Company Paid","Due On Site","Pending"]},
+        {key:"company",label:"Company paid?",type:"select",value:b.company?"Yes":"No",options:["No","Yes"]},{key:"notes",label:"Notes",type:"textarea",value:b.notes||""}
+      ],data=>{const edits=getPlannedEdits();edits[i]={sub:data.sub,cat:data.cat,amt:Number(data.amt||0),cur:data.cur,status:data.status,company:data.company==="Yes",notes:data.notes};setPlannedEdits(edits);renderMoney();showToast("Planned cost updated");});
+    }
+
+    function getDeletedRecords() { try { return JSON.parse(localStorage.getItem("italy2026_deleted") || "{}"); } catch(e) { return {}; } }
+    function setDeletedRecords(obj) { localStorage.setItem("italy2026_deleted", JSON.stringify(obj)); }
+    function markDeleted(type, id) {
+      const all=getDeletedRecords(); if(!all[type]) all[type]={}; all[type][String(id)]=new Date().toISOString(); setDeletedRecords(all);
+    }
+    function clearDeleted(type, id) {
+      const all=getDeletedRecords(); if(all[type]) delete all[type][String(id)]; setDeletedRecords(all);
+    }
+    function mergeDeleted(local, incoming) {
+      const out={...(local||{})};
+      Object.entries(incoming||{}).forEach(([type,items])=>{ if(!out[type])out[type]={}; Object.entries(items||{}).forEach(([id,ts])=>{ if(!out[type][id] || (Date.parse(ts)||0)>(Date.parse(out[type][id])||0)) out[type][id]=ts; }); });
+      return out;
+    }
+    function applyDeleted(arr, type, idFn, deleted) { const d=(deleted&&deleted[type])||{}; return (arr||[]).filter(x=>!(String(idFn(x)) in d)); }
+    const SAVED_DATA_KEYS = ["italy2026_live","italy2026_expenses","italy2026_pack","italy2026_open","italy2026_journal","italy2026_tldone","italy2026_tlhidden","italy2026_restlog","italy2026_attrlog","italy2026_pretrip","italy2026_customlegs","italy2026_routeedits","italy2026_plannededits","italy2026_deleted","italy2026_packcatalog"];
+    function clearAllSupportedSavedData() { SAVED_DATA_KEYS.forEach(k=>localStorage.removeItem(k)); }
+
+    function getBackupMeta() {
+      try { return JSON.parse(localStorage.getItem("italy2026_backupmeta") || "{}"); } catch(e) { return {}; }
+    }
+    function setBackupMeta(obj) { localStorage.setItem("italy2026_backupmeta", JSON.stringify(obj)); }
+    function getBackupOwner() { return localStorage.getItem("italy2026_backupowner") || "Unnamed device"; }
+    function editBackupOwner() {
+      const name = prompt("Name this phone or user (for example, David or Melody):", getBackupOwner() === "Unnamed device" ? "" : getBackupOwner());
+      if (name === null) return;
+      localStorage.setItem("italy2026_backupowner", name.trim() || "Unnamed device");
+      renderBackupStatus();
+    }
+    function countKeys(obj) { return obj && typeof obj === "object" ? Object.keys(obj).length : 0; }
+    function backupCounts(src) {
+      return {
+        journal: Array.isArray(src.journal) ? src.journal.length : 0,
+        expenses: Array.isArray(src.expenses) ? src.expenses.length : 0,
+        customlegs: Array.isArray(src.customlegs) ? src.customlegs.length : 0,
+        timeline: countKeys(src.tldone),
+        restaurants: countKeys(src.restlog),
+        attractions: countKeys(src.attrlog),
+        packing: countKeys(src.pack)
+      };
+    }
+    function renderBackupStatus() {
+      const el = document.getElementById("backupStatus");
+      if (!el) return;
+      const meta = getBackupMeta();
+      const current = backupCounts({journal:getJournal(),expenses:getExpenses(),customlegs:getCustomLegs(),tldone:getTimelineDone(),restlog:getRestLog(),attrlog:getAttrLog(),pack:getPackState()});
+      const fmt = iso => iso ? new Date(iso).toLocaleString("en-US", {dateStyle:"medium",timeStyle:"short"}) : "Never";
+      el.innerHTML = `<div style="line-height:1.8;"><strong>Device:</strong> ${getBackupOwner()}<br><strong>Last export:</strong> ${fmt(meta.lastExport)}<br><strong>Last import:</strong> ${fmt(meta.lastImport)}${meta.lastImportFrom ? ` · from ${meta.lastImportFrom}` : ""}<br><strong>Current saved data:</strong> ${current.journal} journal · ${current.expenses} expenses · ${current.customlegs} custom legs · ${current.restaurants} restaurant records · ${current.packing} packing records</div>`;
+    }
+    function mergeArrayById(local, incoming, idFn) {
+      const map = new Map();
+      (local || []).forEach(x => map.set(String(idFn(x)), x));
+      let added=0, updated=0, skipped=0;
+      (incoming || []).forEach(x => {
+        const id=String(idFn(x));
+        if (!map.has(id)) { map.set(id,x); added++; }
+        else {
+          const old=map.get(id);
+          if (JSON.stringify(old) !== JSON.stringify(x)) { map.set(id,{...old,...x}); updated++; }
+          else skipped++;
+        }
+      });
+      return {value:Array.from(map.values()),added,updated,skipped};
+    }
+    function mergeObject(local, incoming) {
+      const out={...(local||{})}; let added=0,updated=0,skipped=0;
+      Object.entries(incoming||{}).forEach(([k,v])=>{
+        if (!(k in out)) { out[k]=v; added++; }
+        else if (JSON.stringify(out[k]) !== JSON.stringify(v)) { out[k] = (out[k] && v && typeof out[k]==="object" && typeof v==="object" && !Array.isArray(v)) ? {...out[k],...v} : v; updated++; }
+        else skipped++;
+      });
+      return {value:out,added,updated,skipped};
+    }
+    function exportData() {
+      const now = new Date().toISOString();
+      const payload = {
+        version: 4, appVersion: APP_VERSION, dataVersion: DATA_VERSION, exported: now,
+        exportedBy: getBackupOwner(),
+        live: getLive(), expenses: getExpenses(), pack: getPackState(), open: getOpenState(), journal: getJournal(),
+        tldone: getTimelineDone(), tlhidden: getTimelineHidden(), restlog: getRestLog(), attrlog: getAttrLog(),
+        pretrip: getPretripState(), customlegs: getCustomLegs(), routeedits: getRouteEdits(), plannededits: getPlannedEdits(), deleted: getDeletedRecords(), packcatalog: getPackCatalogData()
+      };
+      const meta=getBackupMeta(); meta.lastExport=now; setBackupMeta(meta); renderBackupStatus();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+      a.download = "italy2026-backup-" + getBackupOwner().replace(/[^a-z0-9]+/gi,"-").replace(/^-|-$/g,"").toLowerCase() + "-" + now.slice(0,10) + ".json";
+      a.click(); URL.revokeObjectURL(a.href);
+      showToast("Backup exported successfully");
+    }
+    function chooseImportMode(data, fileName) {
+      const owner=data.exportedBy || "another device";
+      const counts=backupCounts(data);
+      document.getElementById("sheetContent").innerHTML = `<h2>Import Backup</h2>
+        <div class="alert alert-info"><strong>File:</strong> ${fileName}<br><strong>From:</strong> ${owner}<br><strong>Created:</strong> ${data.exported ? new Date(data.exported).toLocaleString("en-US") : "Unknown"}</div>
+        <div class="text-sm" style="line-height:1.8;"><strong>Contains:</strong><br>${counts.journal} journal entries · ${counts.expenses} expenses<br>${counts.customlegs} custom legs · ${counts.restaurants} restaurant records<br>${counts.attractions} attraction records · ${counts.timeline} completed timeline steps<br>${counts.packing} packing records</div>
+        <div class="alert alert-warn mt-12"><strong>Merge</strong> keeps this phone's data and adds/updates records from the file.<br><strong>Replace</strong> erases this phone's saved app data and uses the file instead.</div>
+        <div class="btn-row"><button class="btn-outline" onclick="closeSheet()">Cancel</button><button class="btn-accent" id="mergeImportBtn">Merge</button><button class="btn-danger" id="replaceImportBtn">Replace</button></div>`;
+      document.getElementById("overlay").classList.add("open");
+      document.getElementById("mergeImportBtn").onclick=()=>performImport(data,"merge");
+      document.getElementById("replaceImportBtn").onclick=()=>{ if(confirm("Replace all saved app data on this phone with this backup?")) performImport(data,"replace"); };
+    }
+    function performImport(data, mode) {
+      const totals={added:0,updated:0,skipped:0,deleted:0};
+      const tally=r=>{totals.added+=r.added||0;totals.updated+=r.updated||0;totals.skipped+=r.skipped||0;return r.value;};
+      if (mode === "replace") {
+        clearAllSupportedSavedData();
+        setLive(data.live||{}); setExpenses(data.expenses||[]); setPackState(data.pack||{}); setOpenState(data.open||{});
+        setJournal(data.journal||[]); setTimelineDone(data.tldone||{}); setTimelineHidden(data.tlhidden||{});
+        setRestLog(data.restlog||{}); setAttrLog(data.attrlog||{}); setPretripState(data.pretrip||{});
+        setCustomLegs(data.customlegs||[]); setRouteEdits(data.routeedits||{}); setPlannedEdits(data.plannededits||{});
+        setDeletedRecords(data.deleted||{}); setPackCatalogData(data.packcatalog||{edits:{},custom:{},deleted:{}});
+      } else {
+        const deleted=mergeDeleted(getDeletedRecords(),data.deleted||{}); setDeletedRecords(deleted);
+        const expenseId=x=>x.id||`${x.date}|${x.desc}|${x.amt}`;
+        const journalId=x=>x.ts||`${x.date}|${x.highlight}|${x.meal}`;
+        const legId=x=>x.id||`${x.date}|${x.from}|${x.to}|${x.start}`;
+        let r=mergeArrayById(applyDeleted(getExpenses(),"expenses",expenseId,deleted),applyDeleted(data.expenses||[],"expenses",expenseId,deleted),expenseId); totals.deleted += getExpenses().length-r.value.length; setExpenses(tally(r));
+        r=mergeArrayById(applyDeleted(getJournal(),"journal",journalId,deleted),applyDeleted(data.journal||[],"journal",journalId,deleted),journalId); totals.deleted += getJournal().length-r.value.length; setJournal(tally(r));
+        r=mergeArrayById(applyDeleted(getCustomLegs(),"customlegs",legId,deleted),applyDeleted(data.customlegs||[],"customlegs",legId,deleted),legId); totals.deleted += getCustomLegs().length-r.value.length; setCustomLegs(tally(r));
+        if (data.live) setLive(tally(mergeObject(getLive(),data.live)));
+        if (data.pack) setPackState(tally(mergePackingState(getPackState(),data.pack)));
+        if (data.packcatalog) setPackCatalogData(tally(mergePackCatalog(getPackCatalogData(),data.packcatalog)));
+        if (data.open) setOpenState(tally(mergeObject(getOpenState(),data.open)));
+        if (data.tldone) setTimelineDone(tally(mergeObject(getTimelineDone(),data.tldone)));
+        if (data.tlhidden) setTimelineHidden(tally(mergeObject(getTimelineHidden(),data.tlhidden)));
+        if (data.restlog) setRestLog(tally(mergeObject(getRestLog(),data.restlog)));
+        if (data.attrlog) setAttrLog(tally(mergeObject(getAttrLog(),data.attrlog)));
+        if (data.pretrip) setPretripState(tally(mergeObject(getPretripState(),data.pretrip)));
+        if (data.routeedits) setRouteEdits(tally(mergeObject(getRouteEdits(),data.routeedits)));
+        if (data.plannededits) setPlannedEdits(tally(mergeObject(getPlannedEdits(),data.plannededits)));
+      }
+      const now=new Date().toISOString(), meta=getBackupMeta(); meta.lastImport=now; meta.lastImportFrom=data.exportedBy||"Unknown device"; meta.lastImportMode=mode; setBackupMeta(meta);
+      closeSheet(); renderBackupStatus(); renderHome();
+      document.getElementById("sheetContent").innerHTML=`<h2>Import Complete</h2><div class="alert alert-info"><strong>${mode === "merge" ? "Merged" : "Replaced"} successfully</strong><br>Source: ${data.exportedBy||"Unknown device"}<br>Backup: ${data.exported ? new Date(data.exported).toLocaleString("en-US") : "Unknown date"}</div>${mode==="merge"?`<div class="text-sm" style="line-height:1.9;"><strong>Added:</strong> ${totals.added}<br><strong>Updated:</strong> ${totals.updated}<br><strong>Deleted:</strong> ${totals.deleted}<br><strong>Already identical / skipped:</strong> ${totals.skipped}</div>`:`<div class="text-sm">All supported saved app data was cleared first, then replaced by the selected backup.</div>`}<div class="alert alert-warn mt-12">Attraction photos are stored separately and were not imported.</div><button style="width:100%;" onclick="closeSheet();showPage('more')">Done</button>`;
+      document.getElementById("overlay").classList.add("open");
+    }
+
+    function importData(ev) {
+      const file = ev.target.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => { try { const data=JSON.parse(reader.result); if(!data || typeof data!=="object" || (!data.appVersion && !data.version)) throw new Error("Not an Italy backup"); chooseImportMode(data,file.name); } catch(e) { alert("Could not read that file. Make sure it is an Italy 2026 backup JSON."); } };
+      reader.readAsText(file); ev.target.value = "";
+    }
+
+    // ===================== LIVE EUR / USD EXCHANGE RATE =====================
+    function getFxCache() {
+      try { return JSON.parse(localStorage.getItem("italy2026_fx") || "null"); } catch (e) { return null; }
+    }
+    function setFxCache(data) {
+      localStorage.setItem("italy2026_fx", JSON.stringify(data));
+    }
+    function formatFx(n, digits = 4) {
+      return Number(n).toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits });
+    }
+    function updateFxConversions() {
+      const cache = getFxCache();
+      const eurUsd = cache && cache.rate ? Number(cache.rate) : Number(TRIP.fx || 1.1367);
+      const usdEur = 1 / eurUsd;
+      const eurIn = document.getElementById("fxEurInput");
+      const usdIn = document.getElementById("fxUsdInput");
+      const eurOut = document.getElementById("fxEurResult");
+      const usdOut = document.getElementById("fxUsdResult");
+      if (eurIn && eurOut) {
+        const amount = parseFloat(eurIn.value);
+        eurOut.textContent = Number.isFinite(amount) ? `${amount.toLocaleString("en-US")} EUR = $${(amount * eurUsd).toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2})} USD` : "";
+      }
+      if (usdIn && usdOut) {
+        const amount = parseFloat(usdIn.value);
+        usdOut.textContent = Number.isFinite(amount) ? `$${amount.toLocaleString("en-US")} USD = €${(amount * usdEur).toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2})} EUR` : "";
+      }
+    }
+    function renderFxWidget(data, loading = false) {
+      const el = document.getElementById("homeFx");
+      if (!el) return;
+      const rate = data && data.rate ? Number(data.rate) : Number(TRIP.fx || 1.1367);
+      const inverse = 1 / rate;
+      const sourceDate = data && data.date ? data.date : "saved fallback";
+      const sourceText = data && data.live ? `Latest available rate · ${sourceDate}` : `Offline saved rate · ${sourceDate}`;
+      el.innerHTML = `
+        <div class="fx-widget">
+          <div class="row space-between"><div class="fw-600">💱 EUR ↔ USD Exchange Rate</div><button class="edit-btn" onclick="refreshFxRate(true)">${loading ? "Updating…" : "Refresh"}</button></div>
+          <div class="fx-grid">
+            <div class="fx-box">
+              <div class="fx-rate">€1 = $${formatFx(rate)} USD</div>
+              <label>Convert EUR to USD</label>
+              <input id="fxEurInput" type="number" min="0" step="0.01" value="100" oninput="updateFxConversions()">
+              <div id="fxEurResult" class="fx-result"></div>
+            </div>
+            <div class="fx-box">
+              <div class="fx-rate">$1 = €${formatFx(inverse)} EUR</div>
+              <label>Convert USD to EUR</label>
+              <input id="fxUsdInput" type="number" min="0" step="0.01" value="100" oninput="updateFxConversions()">
+              <div id="fxUsdResult" class="fx-result"></div>
+            </div>
+          </div>
+          <div class="fx-meta">${sourceText}${loading ? " · checking for an update" : ""}. Rates are informational and card/bank rates may differ.</div>
+        </div>`;
+      updateFxConversions();
+    }
+    async function refreshFxRate(force = false) {
+      const cached = getFxCache();
+      const age = cached && cached.fetchedAt ? Date.now() - cached.fetchedAt : Infinity;
+      if (!force && cached && age < 6 * 60 * 60 * 1000) { renderFxWidget(cached); return; }
+      renderFxWidget(cached || { rate: TRIP.fx, date: "app fallback", live: false }, true);
+      try {
+        const response = await fetch("https://api.frankfurter.dev/v2/rate/EUR/USD", { cache: "no-store" });
+        if (!response.ok) throw new Error("Rate request failed");
+        const json = await response.json();
+        if (!json || !Number.isFinite(Number(json.rate))) throw new Error("Invalid rate");
+        const next = { rate: Number(json.rate), date: json.date || new Date().toISOString().slice(0,10), fetchedAt: Date.now(), live: true };
+        setFxCache(next);
+        TRIP.fx = next.rate;
+        renderFxWidget(next);
+      } catch (e) {
+        renderFxWidget(cached || { rate: TRIP.fx, date: "app fallback", live: false });
+        if (force) showToast("Live rate unavailable — showing the saved offline rate");
+      }
+    }
+
+    // ===================== RENDERERS =====================
+    function renderHome() {
+      const dep = daysUntil(TRIP.start);
+      const home = daysUntil(TRIP.end);
+      document.getElementById("daysBadge").innerHTML = dep > 0
+        ? `<div style="font-size:1.4rem;font-weight:800;">${dep}</div><div>days to go</div>`
+        : dep === 0 ? `<div style="font-size:1.1rem;font-weight:800;">Today!</div>` : `<div>On trip</div>`;
+
+      document.getElementById("homeStats").innerHTML = `
+        <div class="stat"><div class="val">${dep > 0 ? dep : "—"}</div><div class="lbl">Days to departure</div></div>
+        <div class="stat"><div class="val">12</div><div class="lbl">Days / 11 nights</div></div>
+      `;
+      const openState = getOpenState();
+      const highItems = OPEN_ITEMS.filter(o => o.urgency === "High" && o.status !== "Done" && !openState[o.pri]);
+      document.getElementById("homeOpenItems").innerHTML = highItems.slice(0,5).map(o => `
+        <div class="list-item">
+          <div class="num">${o.pri}</div>
+          <div class="content">
+            <div class="title">${o.item}</div>
+            <div class="meta">${o.area} · ${o.why}</div>
+          </div>
+        </div>
+      `).join("") || '<div class="text-muted text-sm">All high-priority items checked!</div>';
+
+      document.getElementById("homeGlance").innerHTML = `
+        <div class="text-sm" style="line-height:1.8;">
+          <strong>Depart</strong> Sun Oct 4 · TPA → BOS → CPH<br>
+          <strong>Rome</strong> Oct 5–8 · Anantara Palazzo Naiadi<br>
+          <strong>Florence</strong> Oct 8–10 · W Florence<br>
+          <strong>Venice</strong> Oct 10–13 · JW Marriott<br>
+          <strong>Venice</strong> Oct 13–15 · Hotel Antiche Figure<br>
+          <strong>Return</strong> Thu Oct 15 · VCE → CPH → JFK → TPA
+        </div>
+      `;
+
+      document.getElementById("homeKeys").innerHTML = `
+        <strong>Air:</strong> ${TRIP.air}<br>
+        <strong>Italo 8904:</strong> ${TRIP.italo} · Coach 1 · seats 13 & 16<br>
+        <strong>Antiche Figure:</strong> ${TRIP.hotels[3].conf}<br>
+        <strong>PSA Rom/Flo:</strong> ${TRIP.confRomeFlo}<br>
+        <strong>PSA Ven:</strong> ${TRIP.confVen}<br>
+        <strong>Emergency:</strong> 112
+      `;      refreshFxRate(false);
+    }
+
+    function renderToday() {
+      const chips = document.getElementById("dateChips");
+      chips.innerHTML = DAYS.map(d => `
+        <div class="date-chip ${d.date === selectedDate ? 'active' : ''}" data-date="${d.date}">
+          ${shortDate(d.date)}
+        </div>
+      `).join("");
+      chips.querySelectorAll(".date-chip").forEach(c => {
+        c.onclick = () => { selectedDate = c.dataset.date; renderToday(); };
+      });
+
+      const day = DAYS.find(d => d.date === selectedDate) || DAYS[0];
+      document.getElementById("todayContent").innerHTML = `
+        <div class="card" style="padding:10px 14px;">
+          <button style="width:100%;" onclick="shareToday()">📤 Share today’s plan</button>
+          <div class="text-xs text-muted mt-8" style="text-align:center;">Copies a text summary to paste in Messages</div>
+        </div>
+        <div class="card">
+          <div class="card-title">${day.theme}</div>
+          <div class="text-sm text-muted mb-8">${fmtDate(day.date)} · ${day.city} · ${day.hotel}</div>
+          <div class="section-title" style="margin-top:0;font-size:0.9rem;">Schedule</div>
+          <div class="text-sm">${day.schedule}</div>
+        </div>
+        ${isVeniceDay(day.date) ? `<div id="veniceTideCard" class="card tide-card"><div class="card-title"><span class="icon">🌊</span> Venice Tide Forecast</div><div class="text-sm text-muted">Loading the official City of Venice forecast…</div></div>` : ""}
+        <div class="card">
+          <div class="card-title"><span class="icon">🚕</span> Transportation</div>
+          <div class="text-sm">${day.transport}</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">🍽️</span> Dining</div>
+          <div class="text-sm">${day.dining}</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">💡</span> Travel Tip</div>
+          <div class="text-sm">${day.tip}</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">🇮🇹</span> Phrase of the Day</div>
+          <div class="text-sm" style="font-size:1rem;color:var(--primary);font-weight:600;">${day.phrase}</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">✅</span> Ready-Check</div>
+          ${day.checklist.map(c => `<div class="check-row"><input type="checkbox"> <span>${c}</span></div>`).join("")}
+        </div>
+      `;
+      if (isVeniceDay(day.date)) loadVeniceTides(day.date);
+    }
+
+    function isVeniceDay(dateISO) { return dateISO >= "2026-10-10" && dateISO <= "2026-10-15"; }
+    function tideLevelClass(cm) { return cm >= 130 ? "High risk" : cm >= 110 ? "Elevated" : cm >= 80 ? "Watch" : "Normal"; }
+    function parseVeniceStamp(v) {
+      const m=(v||"").match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})/);
+      return m ? { date:`${m[1]}-${m[2]}-${m[3]}`, time:`${m[4]}:${m[5]}`, mins:(+m[4])*60+(+m[5]) } : null;
+    }
+    async function loadVeniceTides(dateISO) {
+      const el=document.getElementById("veniceTideCard"); if(!el) return;
+      const url="https://dati.venezia.it/sites/default/files/dataset/opendata/previsione.json";
+      try {
+        const res=await fetch(url,{cache:"no-store"}); if(!res.ok) throw new Error("forecast unavailable");
+        const all=await res.json();
+        localStorage.setItem("italy2026_tides",JSON.stringify({saved:new Date().toISOString(),data:all}));
+        renderVeniceTides(el,dateISO,all,false);
+      } catch(e) {
+        try { const c=JSON.parse(localStorage.getItem("italy2026_tides")||"null"); if(c&&c.data) return renderVeniceTides(el,dateISO,c.data,true,c.saved); } catch(_){}
+        renderVeniceTides(el,dateISO,[],true);
+      }
+    }
+    function renderVeniceTides(el,dateISO,all,cached,saved) {
+      const rows=(all||[]).map(x=>({...x,_p:parseVeniceStamp(x.DATA_ESTREMALE)})).filter(x=>x._p&&x._p.date===dateISO);
+      const official='<a class="link-btn" href="https://www.comune.venezia.it/it/content/centro-previsioni-e-segnalazioni-maree" target="_blank" rel="noopener">Official Venice Tide Center →</a>';
+      if(!rows.length){
+        el.innerHTML=`<div class="card-title"><span class="icon">🌊</span> Venice Tide Forecast</div><div class="alert alert-info text-sm">The official forecast is published only about 72 hours ahead. Reopen this Venice day during the trip for the live chart.</div>${official}${cached&&saved?`<div class="text-xs text-muted mt-8">Last successful tide update: ${new Date(saved).toLocaleString()}</div>`:""}`; return;
+      }
+      rows.sort((a,b)=>a._p.mins-b._p.mins); const vals=rows.map(r=>+r.VALORE); const min=Math.min(...vals,0)-10,max=Math.max(...vals,80)+10;
+      const w=320,h=145,pad=24; const pts=rows.map((r,i)=>{const x=pad+(i*(w-2*pad)/Math.max(1,rows.length-1));const y=h-pad-((+r.VALORE-min)/(max-min))*(h-2*pad);return {x,y,r};});
+      const path=pts.map((p,i)=>(i?'L':'M')+p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ');
+      const peak=rows.reduce((a,b)=>(+b.VALORE>+a.VALORE?b:a),rows[0]);
+      const circles=pts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="4" fill="${+p.r.VALORE>=110?'#c62828':+p.r.VALORE>=80?'#f9a825':'#1976d2'}"/><text x="${p.x}" y="${p.y-8}" text-anchor="middle" font-size="10" font-weight="700">${Math.round(+p.r.VALORE)}cm</text><text x="${p.x}" y="${h-6}" text-anchor="middle" font-size="9">${p.r._p.time}</text>`).join('');
+      el.innerHTML=`<div class="card-title"><span class="icon">🌊</span> Venice Tide Forecast</div><div class="tide-summary"><span class="tide-pill">Peak ${Math.round(+peak.VALORE)} cm at ${peak._p.time}</span><span class="tide-pill">${tideLevelClass(+peak.VALORE)}</span>${cached?'<span class="tide-pill">Cached</span>':''}</div><svg class="tide-chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="Venice tide forecast chart"><line x1="${pad}" y1="${h-pad}" x2="${w-pad}" y2="${h-pad}" stroke="#9bb7c5"/><path d="${path}" fill="none" stroke="#1976d2" stroke-width="3"/>${circles}</svg><div class="tide-legend"><span>Official forecast extrema</span><span>centimeters</span></div><div class="text-xs text-muted mt-8">Forecasts can change with weather. Updated by the City of Venice Tide Center.</div>${official}`;
+    }
+
+    function shareToday() {
+      const day = DAYS.find(d => d.date === selectedDate) || DAYS[0];
+      const text = [
+        `🇮🇹 Italy 2026 — ${day.theme}`,
+        `${fmtDate(day.date)} · ${day.city}`,
+        `Hotel: ${day.hotel}`,
+        "",
+        "SCHEDULE",
+        day.schedule,
+        "",
+        "TRANSPORT",
+        day.transport,
+        "",
+        "DINING",
+        day.dining,
+        "",
+        "TIP",
+        day.tip,
+        "",
+        "PHRASE",
+        day.phrase,
+        "",
+        "CHECKLIST",
+        ...day.checklist.map(c => `☐ ${c}`)
+      ].join("\n");
+
+      const done = () => {
+        const tip = document.createElement("div");
+        tip.className = "alert alert-info";
+        tip.style.cssText = "position:fixed;bottom:80px;left:16px;right:16px;z-index:400;text-align:center;";
+        tip.textContent = "Today’s plan copied — paste it in Messages";
+        document.body.appendChild(tip);
+        setTimeout(() => tip.remove(), 2200);
+      };
+
+      if (navigator.share) {
+        navigator.share({ title: day.theme, text }).then(done).catch(() => {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done);
+          } else {
+            prompt("Copy this plan:", text);
+          }
+        });
+      } else if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done);
+      } else {
+        prompt("Copy this plan:", text);
+      }
+    }
+
+    function getPretripState() {
+      try { return JSON.parse(localStorage.getItem("italy2026_pretrip") || "{}"); } catch(e) { return {}; }
+    }
+    function setPretripState(obj) {
+      localStorage.setItem("italy2026_pretrip", JSON.stringify(obj));
+    }
+    function togglePretrip(id, checked) {
+      const st = getPretripState();
+      if (checked) st[id] = true; else delete st[id];
+      setPretripState(st);
+      renderPretrip();
+    }
+
+    const PRETRIP = [
+      { id: "p1", group: "Decisions (do first)", items: [
+        { id: "d1", text: "Reconfirm Italo 8904 remains primary; cancel only if PSA transfer becomes clearly preferable" },
+        { id: "d2", text: "Select Oct 11 Venice excursion (Ciao Venice OR Murano & Burano)" },
+        { id: "d3", text: "Get Joe Lynch private Rome agenda (or confirm official fallback)" },
+        { id: "d4", text: "Get Rome → Florence train details from PSA (station, times, seats)" }
+      ]},
+      { id: "p2", group: "72 hours before departure", items: [
+        { id: "h1", text: "Pay Hotel Antiche Figure balance (€620) when payment link arrives" },
+        { id: "h2", text: "Confirm JW Venice room / shuttle / arrival transfer details" },
+        { id: "h3", text: "Confirm awards dinner dress code and coach time" },
+        { id: "h4", text: "Confirm Giardino Corsini transport and dress code" },
+        { id: "h5", text: "Download Venice Excursions page for offline use" },
+        { id: "h6", text: "Verify flight seat assignments; save seat maps offline" },
+        { id: "h7", text: "Check TPA Economy Parking rate and SunPass" },
+        { id: "h8", text: "Update EUR→USD rate in Budget if needed" }
+      ]},
+      { id: "p3", group: "Packing — critical (carry-on)", items: [
+        { id: "c1", text: "Passports (check names match tickets)" },
+        { id: "c2", text: "Prescription meds in original containers" },
+        { id: "c3", text: "Power banks + phone chargers" },
+        { id: "c4", text: "Printed backup of flight/train/hotel confirmations" },
+        { id: "c5", text: "Crossbody anti-pickpocket bags" },
+        { id: "c6", text: "Universal adapters (Type C/F/L)" }
+      ]},
+      { id: "p4", group: "Night before / morning of Oct 4", items: [
+        { id: "m1", text: "Set two alarms; stage wallets and passports" },
+        { id: "m2", text: "Screenshot boarding passes / download airline apps offline" },
+        { id: "m3", text: "Plan 6:45 AM leave Spring Hill → TPA Economy Parking" },
+        { id: "m4", text: "Remember: photograph parking location and bag tags" },
+        { id: "m5", text: "Confirm bags tagged through to FCO at Delta" },
+        { id: "m6", text: "Know BOS A→E connection plan for SK928" }
+      ]},
+      { id: "p5", group: "Before Oct 15 return", items: [
+        { id: "r1", text: "Buy/stage ATVO or ACTV airport bus tickets on Oct 14" },
+        { id: "r2", text: "Confirm first morning bus time or pre-book water taxi" },
+        { id: "r3", text: "Online check-in; verify bags tagged to TPA" },
+        { id: "r4", text: "Stage passports + boarding passes the night before" }
+      ]}
+    ];
+
+    function renderPretrip() {
+      const st = getPretripState();
+      let total = 0, done = 0;
+      PRETRIP.forEach(g => g.items.forEach(i => { total++; if (st[i.id]) done++; }));
+      const pct = total ? Math.round(done / total * 100) : 0;
+      let html = `
+        <div class="card">
+          <div class="row space-between">
+            <div class="fw-600">Checklist progress</div>
+            <div class="text-sm">${done}/${total} (${pct}%)</div>
+          </div>
+          <div class="progress-bar"><div class="fill" style="width:${pct}%"></div></div>
+          <div class="text-xs text-muted mt-8">Days to departure: ${daysUntil(TRIP.start) > 0 ? daysUntil(TRIP.start) : "Departed / on trip"}</div>
+        </div>`;
+      PRETRIP.forEach(g => {
+        html += `<div class="pack-cat"><h3>${g.group}</h3>`;
+        g.items.forEach(i => {
+          const checked = !!st[i.id];
+          html += `
+            <div class="check-row ${checked ? "done" : ""}">
+              <input type="checkbox" ${checked ? "checked" : ""} onchange="togglePretrip('${i.id}', this.checked)">
+              <span class="text-sm">${i.text}</span>
+            </div>`;
+        });
+        html += `</div>`;
+      });
+      document.getElementById("pretripContent").innerHTML = html;
+    }
+
+    function renderWallet() {
+      const res = liveReservations();
+      document.getElementById("walletContent").innerHTML = `
+        <div class="card">
+          <div class="card-title">✈️ Flights · Delta / SAS</div>
+          <div class="text-sm" style="line-height:1.85;">
+            <strong>Record locators:</strong> ${TRIP.air}<br>
+            <strong>Outbound:</strong> DL2706 TPA→BOS · SK928 BOS→CPH · SK681 CPH→FCO<br>
+            <strong>Return:</strong> SK2692 VCE→CPH · SK915 CPH→JFK · SK3438 JFK→TPA<br>
+            <strong>Cabins:</strong> Premium Economy on SAS long-hauls; Economy on Delta legs<br>
+            <span class="text-muted">Store PDFs offline on both phones. Confirm bags tagged FCO out / TPA home.</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🚂 Trains</div>
+          <div class="text-sm" style="line-height:1.85;">
+            <strong>Leonardo Express:</strong> FCO → Roma Termini (buy on arrival via Trenitalia)<br>
+            <strong>Rome → Florence:</strong> PSA group train — details pending<br>
+            <strong>Italo 8904:</strong> ${TRIP.italo} / Rec. 118932941<br>
+            Firenze S.M.N. Train Station 9:39 AM → Venezia Santa Lucia Train Station 11:55 AM<br>
+            <strong>Confirmed primary plan · Club Executive · Coach 1 · David 13 · Melody 16</strong><br>
+            <span class="text-muted">Cancel only if the final PSA group transfer becomes clearly preferable.</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🏨 Hotels</div>
+          <div class="text-sm" style="line-height:1.85;">
+            <strong>Rome Oct 5–8:</strong> Anantara Palazzo Naiadi<br>
+            Piazza della Repubblica 48-49 · Event-provided<br><br>
+            <strong>Florence Oct 8–10:</strong> W Florence<br>
+            Via del Melarancio 1 · Event-provided<br><br>
+            <strong>Venice Oct 10–13:</strong> JW Marriott Venice Resort & Spa<br>
+            Isola delle Rose · Event-provided · confirm shuttle<br><br>
+            <strong>Venice Oct 13–15:</strong> Hotel Antiche Figure<br>
+            Conf <strong>${TRIP.hotels[3].conf}</strong> · Santa Croce 686<br>
+            Superior Double · €620 due via link · €16 city tax on site<br>
+            Breakfast + gluten-free breakfast included
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🎫 Conference / PSA</div>
+          <div class="text-sm" style="line-height:1.85;">
+            <strong>Rom/Flo:</strong> ${TRIP.confRomeFlo}<br>
+            <strong>Ven:</strong> ${TRIP.confVen}<br>
+            <span class="text-muted">Registration confirmed; add final agenda offline when available.</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🚨 Emergency</div>
+          <div class="text-sm" style="line-height:1.85;">
+            <strong>Italy emergency:</strong> 112<br>
+            <strong>U.S. Embassy Rome:</strong> +39 06 4674 1<br>
+            Via Vittorio Veneto 121
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📌 Live reservation notes</div>
+          ${res.map(r => `
+            <div class="text-sm" style="padding:8px 0;border-bottom:1px solid var(--border);">
+              <strong>${r.item}</strong> ${statusBadge(r.status)}<br>
+              ${r.conf} · ${r.dates}<br>
+              <span class="text-muted">${r.notes}</span>
+            </div>
+          `).join("")}
+        </div>
+        <button style="width:100%;margin-top:8px;" class="btn-outline" onclick="shareWallet()">📤 Share wallet text</button>
+      `;
+    }
+
+    function shareWallet() {
+      const text = [
+        "ITALY 2026 — CONFIRMATION WALLET",
+        `Air: ${TRIP.air}`,
+        "DL2706 TPA-BOS | SK928 BOS-CPH | SK681 CPH-FCO",
+        "SK2692 VCE-CPH | SK915 CPH-JFK | SK3438 JFK-TPA",
+        "",
+        `Italo 8904: ${TRIP.italo} Coach 1 seats 13 & 16 (9:39–11:55)`,
+        `Hotel Antiche Figure: ${TRIP.hotels[3].conf}`,
+        `PSA Rom/Flo: ${TRIP.confRomeFlo}`,
+        `PSA Ven: ${TRIP.confVen}`,
+        "",
+        "Emergency Italy: 112",
+        "US Embassy Rome: +39 06 4674 1"
+      ].join("\n");
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => alert("Wallet text copied"));
+      } else {
+        prompt("Copy:", text);
+      }
+    }
+
+    function parseTimelineSortKey(t) {
+      // Sort by date, then by start time (minutes from midnight). Handles "07:00+1", "Flexible", blanks.
+      const date = t.date || "9999-99-99";
+      let start = (t.start || "").toString().trim();
+      let dayOffset = 0;
+      if (/\+1/.test(start)) {
+        dayOffset = 1;
+        start = start.replace(/\+1/, "");
+      }
+      const m = start.match(/(\d{1,2}):(\d{2})/);
+      let mins = 24 * 60; // flexible / unknown → end of day
+      if (m) mins = (+m[1]) * 60 + (+m[2]) + dayOffset * 24 * 60;
+      return date + "|" + String(mins).padStart(5, "0") + "|" + String(t.step).padStart(3, "0");
+    }
+
+    function timelineModeGroup(t) {
+      const text = [t.mode,t.title,t.from,t.to,t.instructions].filter(Boolean).join(" ").toLowerCase();
+      if (/flight|\b(?:dl|sk)\s*\d+/.test(text)) return "flight";
+      if (/train|rail|italo|leonardo express|station/.test(text)) return "train";
+      if (/vaporetto|water bus|boat|ferry|water taxi|water transfer|shuttle boat/.test(text)) return "water";
+      if (/walk|walking|pedestrian/.test(text)) return "walk";
+      if (/drive|car|taxi|bus|coach|tram|shuttle|skyconnect|airtrain/.test(text)) return "road";
+      return "event";
+    }
+
+    function renderTimeline() {
+      const doneMap = getTimelineDone();
+      const hiddenMap = getTimelineHidden();
+      let items = liveTimeline();
+      // Always chronological by date + start time (after live edits)
+      items = items.slice().sort((a, b) => parseTimelineSortKey(a).localeCompare(parseTimelineSortKey(b)));
+
+      // Soft-hidden base steps (cancelled hotel, dropped transfer, etc.)
+      if (tlFilter === "hidden") {
+        items = items.filter(t => !t._isCustom && hiddenMap[t.step]);
+      } else {
+        items = items.filter(t => t._isCustom || !hiddenMap[t.step]);
+        if (tlFilter === "pending") items = items.filter(t => /pending|verify|partial|timetable/i.test(t.status));
+        if (tlFilter === "decision") items = items.filter(t => /decision/i.test(t.status));
+        if (tlFilter === "open") items = items.filter(t => !doneMap[t.step]);
+        if (tlFilter === "done") items = items.filter(t => !!doneMap[t.step]);
+      }
+
+      // Search and transportation-mode filters work together with the status filters above.
+      if (tlModeFilter !== "all") {
+        items = items.filter(t => timelineModeGroup(t) === tlModeFilter);
+      }
+      if (tlSearch.trim()) {
+        const q = tlSearch.trim().toLowerCase();
+        items = items.filter(t => [t.title,t.from,t.to,t.mode,t.time,t.status,t.instructions,t.notes,t.date,t.start,t.end]
+          .filter(Boolean).join(" ").toLowerCase().includes(q));
+      }
+
+      // Progress excludes hidden base steps
+      const allActive = liveTimeline().filter(t => t._isCustom || !hiddenMap[t.step]);
+      const total = allActive.length;
+      const doneCount = allActive.filter(t => doneMap[t.step]).length;
+      const hiddenCount = Object.keys(hiddenMap).length;
+
+      document.getElementById("timelineList").innerHTML = `
+        <div class="card" style="padding:10px 14px;margin-bottom:12px;">
+          <div class="row space-between">
+            <div class="text-sm fw-600">Progress</div>
+            <div class="text-sm">${doneCount} / ${total} completed${hiddenCount ? " · " + hiddenCount + " hidden" : ""}</div>
+          </div>
+          <div class="progress-bar"><div class="fill" style="width:${total ? Math.round(doneCount/total*100) : 0}%"></div></div>
+          <div class="text-xs text-muted mt-8">Steps reorder automatically when you change date or start time. Hide a step if a hotel or transfer is cancelled — restore from the Hidden filter.</div>
+        </div>
+      ` + (items.length ? items.map(t => {
+        let cls = "";
+        const isDone = !!doneMap[t.step];
+        const isHidden = !t._isCustom && !!hiddenMap[t.step];
+        if (isDone) cls = "done-step";
+        else if (/decision/i.test(t.status)) cls = "decision";
+        else if (/pending|verify|partial|timetable/i.test(t.status)) cls = "pending";
+        const title = (t.title && t.title.trim()) ? t.title.trim() : `${t.from} → ${t.to}`;
+        let actionBtns;
+        if (t._isCustom && t._customId) {
+          actionBtns = `<button class="edit-btn" style="float:right;margin-left:6px;color:var(--danger);" onclick="event.stopPropagation();deleteCustomLeg('${t._customId}')">Delete</button>
+              <button class="edit-btn" style="float:right;" onclick="editTimelineStep(${t.step})">Edit</button>`;
+        } else if (isHidden) {
+          actionBtns = `<button class="edit-btn" style="float:right;margin-left:6px;color:var(--accent);" onclick="event.stopPropagation();restoreTimelineStep(${t.step})">Restore</button>
+              <button class="edit-btn" style="float:right;" onclick="editTimelineStep(${t.step})">Edit</button>`;
+        } else {
+          actionBtns = `<button class="edit-btn" style="float:right;margin-left:6px;color:var(--danger);" onclick="event.stopPropagation();hideTimelineStep(${t.step})">Hide</button>
+              <button class="edit-btn" style="float:right;" onclick="editTimelineStep(${t.step})">Edit</button>`;
+        }
+        return `
+          <div class="tl-step ${cls} ${timelineStyleClass(t)}" style="${isHidden ? 'opacity:0.75;' : ''}">
+            <div class="tl-dot"></div>
+            ${isActualTravelStep(t) ? `<div class="travel-callout"><span class="travel-time">${t.start}</span><span class="travel-service">${modeIcon(t.mode)} ${actualTravelLabel(t)}</span><span class="travel-kind">${actualTravelKind(t)}</span></div>` : ""}
+            <div class="tl-time">${fmtDate(t.date)} ${t.start ? "· " + t.start + (t.end ? "–" + t.end : "") : ""}</div>
+            <div class="tl-title" style="${isDone ? 'text-decoration:line-through;opacity:0.65;' : ''}">${title}
+              ${actionBtns}
+            </div>
+            <div class="tl-detail">${modeIcon(t.mode)} ${t.mode} · ${t.time} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
+            <div class="tl-detail mt-8">${t.instructions}</div>
+            ${(() => {
+              const route = t._isCustom && t._customId ? getAllDoorRoutes().find(r => r._isCustom && r._id === t._customId) : routeForTimelineStep(t.step);
+              if (!route) return "";
+              const primary = normalizedLink(route.link);
+              const backup = normalizedLink(route.backupLink);
+              if (!primary && !backup) return "";
+              return `<div class="row mt-8" style="gap:10px;flex-wrap:wrap;">${primary ? `<a class="link-btn" href="${primary}" target="_blank" rel="noopener">${linkLabel(route.link, false)} →</a>` : ""}${backup ? `<a class="link-btn" href="${backup}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(route.backupLink, true)} →</a>` : ""}</div>`;
+            })()}
+            ${t.notes ? `<div class="tl-detail" style="color:var(--primary);margin-top:4px;">${t.notes}</div>` : ""}
+            ${isHidden ? "" : `<label class="check-row" style="padding:8px 0 0;border:none;margin-top:6px;">
+              <input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTimelineDone(${t.step}, this.checked)">
+              <span class="text-sm fw-600">${isDone ? "Completed" : "Mark completed"}</span>
+            </label>`}
+          </div>
+        `;
+      }).join("") : `<div class="empty"><div class="icon">${tlFilter === "hidden" ? "🙈" : "📋"}</div>${tlFilter === "hidden" ? "No hidden steps. Hide a cancelled hotel or transfer from its Edit / Hide button." : "No steps match this filter."}</div>`);
+    }
+
+    function editTimelineStep(step) {
+      const t = liveTimeline().find(x => x.step === step);
+      if (!t) return;
+      // Custom legs from Door-to-Door: edit the shared source
+      if (t._isCustom && t._customId) {
+        editCustomLeg(t._customId);
+        return;
+      }
+      const isHidden = !!getTimelineHidden()[step];
+      openEditSheet("Edit timeline step", [
+        { key: "title", label: "Title (optional — overrides From → To)", value: t.title || "" },
+        { key: "from", label: "From", value: t.from },
+        { key: "to", label: "To", value: t.to },
+        { key: "date", label: "Date (YYYY-MM-DD)", value: t.date },
+        { key: "start", label: "Start time (e.g. 09:39 or 07:00+1)", value: t.start },
+        { key: "end", label: "End time", value: t.end },
+        { key: "mode", label: "Mode (e.g. train name)", value: t.mode },
+        { key: "emphasis", label: "Timeline emphasis", type: "select", value: t.emphasis || "auto", options: ["auto","green","blue","gold","burgundy","standard"] },
+        { key: "time", label: "Duration / est. time", value: t.time },
+        { key: "status", label: "Status", type: "select", value: t.status,
+          options: ["Confirmed","Pending","Verify Day-Of","Partial","Confirmed - Decision Needed","Decision Needed","Plan Confirmed / Timetable Pending","Done"] },
+        { key: "instructions", label: "Instructions", type: "textarea", value: t.instructions },
+        { key: "notes", label: "Notes", type: "textarea", value: t.notes }
+      ], (data) => {
+        const live = getLive();
+        if (!live.timeline) live.timeline = {};
+        live.timeline[step] = { ...(live.timeline[step] || {}), ...data };
+        setLive(live);
+        const route = routeForTimelineStep(step);
+        if (route && !route._isCustom) {
+          const edits = getRouteEdits();
+          edits[route._id] = {
+            ...(edits[route._id] || {}),
+            from: data.from, to: data.to, dateISO: data.date, start: data.start, end: data.end,
+            mode: data.mode, duration: data.time, status: data.status, note: data.instructions, secondaryNote: data.notes
+          };
+          setRouteEdits(edits);
+        }
+        renderTimeline();
+      }, () => {
+        // Hide or restore from the edit sheet
+        return isHidden ? restoreTimelineStep(step) : hideTimelineStep(step);
+      });
+      // Relabel the danger button for base steps
+      const emphasisSel=document.getElementById("ef_emphasis");
+      if(emphasisSel){ const labels={auto:"Automatic — flights/trains/water",green:"Green + bold",blue:"Blue + bold",gold:"Gold + bold",burgundy:"Burgundy + bold",standard:"Standard card"}; Array.from(emphasisSel.options).forEach(o=>o.textContent=labels[o.value]||o.value); }
+      const delBtn = document.getElementById("efDelete");
+      if (delBtn) delBtn.textContent = isHidden ? "Restore this step" : "Hide / cancel this step";
+    }
+
+    function renderBookings() {
+      document.getElementById("reservationsList").innerHTML = liveReservations().map((r, i) => `
+        <div class="card">
+          <div class="row space-between">
+            <div class="fw-600">${r.item}</div>
+            <div>${statusBadge(r.status)} <button class="edit-btn" onclick="editReservation(${i})">Edit</button></div>
+          </div>
+          <div class="text-sm text-muted mt-8">${r.provider} · ${r.dates}</div>
+          <div class="text-sm mt-8"><strong>Conf:</strong> ${r.conf}</div>
+          <div class="text-sm text-muted">${r.notes}</div>
+        </div>
+      `).join("");
+
+      const openState = getOpenState();
+      document.getElementById("openItemsList").innerHTML = OPEN_ITEMS.map(o => {
+        const done = openState[o.pri] || o.status === "Done";
+        return `
+          <div class="check-row ${done ? 'done' : ''}" data-pri="${o.pri}">
+            <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleOpen(${o.pri}, this.checked)">
+            <div style="flex:1;">
+              <div class="fw-600">${o.pri}. ${o.item} ${urgencyBadge(o.urgency)}</div>
+              <div class="text-xs text-muted">${o.area} · ${o.why}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function editReservation(i) {
+      const r = liveReservations()[i];
+      openEditSheet("Edit reservation", [
+        { key: "conf", label: "Confirmation #", value: r.conf },
+        { key: "status", label: "Status", type: "select", value: r.status,
+          options: ["Confirmed","Pending","Confirmed - Decision Needed","Decision Needed","Confirmed / Pay Later","Done"] },
+        { key: "notes", label: "Notes / Action", type: "textarea", value: r.notes }
+      ], (data) => {
+        const live = getLive();
+        if (!live.reservations) live.reservations = {};
+        live.reservations[i] = data;
+        setLive(live);
+        renderBookings();
+      });
+    }
+
+    function toggleOpen(pri, checked) {
+      const st = getOpenState();
+      if (checked) st[pri] = true; else delete st[pri];
+      setOpenState(st);
+      renderBookings();
+      renderHome();
+    }
+
+    function renderCities() {
+      const c = CITY_CARDS[currentCity];
+      const name = currentCity.charAt(0).toUpperCase() + currentCity.slice(1);
+      document.getElementById("cityContent").innerHTML = `
+        <div class="card">
+          <div class="card-title">🏨 ${c.hotel}</div>
+          <div class="text-sm text-muted">Today's Mission</div>
+          <div class="text-sm mt-8">${c.mission}</div>
+        </div>
+        <div class="card">
+          <div class="card-title">⭐ Top 5</div>
+          <div class="text-sm">${c.top5.map((t,i) => `${i+1}. ${t}`).join("<br>")}</div>
+        </div>
+        <div class="card">
+          <div class="card-title">🍽️ Best Eats</div>
+          <div class="text-sm">${c.eats.join(" · ")}</div>
+          ${c.gelato ? `<div class="text-sm mt-8"><strong>Gelato:</strong> ${c.gelato.join(" · ")}</div>` : ""}
+          ${c.shopping ? `<div class="text-sm mt-8"><strong>Shopping:</strong> ${c.shopping}</div>` : ""}
+        </div>
+        <div class="card">
+          <div class="card-title">🚇 Transit</div>
+          <div class="text-sm">${c.transit}</div>
+          ${c.reminder ? `<div class="text-sm mt-8" style="color:var(--primary);">${c.reminder}</div>` : ""}
+        </div>
+        <div class="card">
+          <div class="card-title">🚨 Emergency</div>
+          <div class="text-sm" style="font-size:1.3rem;font-weight:800;color:var(--danger);">${c.emergency}</div>
+        </div>
+        <div class="card">
+          <div class="card-title">✅ Quick Checklist</div>
+          ${["Passport","Phone","Wallet","Tickets","Power Bank","Hotel Key"].map(i => `
+            <div class="check-row"><input type="checkbox"> <span>${i}</span></div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderFood() {
+      const log = getRestLog();
+      let list = RESTAURANTS.map((r, i) => ({ ...r, _i: i, _key: restKey(r) }));
+      if (restCityFilter !== "all") list = list.filter(r => r.city === restCityFilter);
+      if (restAteFilter === "ate") list = list.filter(r => log[r._key] && log[r._key].ate);
+      if (restAteFilter === "not") list = list.filter(r => !(log[r._key] && log[r._key].ate));
+      if (restQuickFilter === "top") list = list.filter(r => r.priority === "Top 5");
+      if (restQuickFilter === "favorites") list = list.filter(r => log[r._key] && log[r._key].favorite);
+      if (restQuickFilter === "unvisited") list = list.filter(r => !(log[r._key] && log[r._key].ate));
+      if (restSearch) {
+        const q = restSearch.toLowerCase().trim();
+        list = list.filter(r => [r.name, r.city, r.neigh, r.style, r.price, r.order, r.best, r.res, r.access, r.why, r.priority]
+          .filter(Boolean).join(" ").toLowerCase().includes(q));
+      }
+      document.getElementById("restaurantsList").innerHTML = list.map(r => {
+        const entry = log[r._key] || {};
+        const ate = !!entry.ate;
+        const notes = entry.notes || "";
+        const rating = entry.rating || "";
+        const favorite = !!entry.favorite;
+        const stars = rating ? "★".repeat(+rating) + "☆".repeat(5 - +rating) : "";
+        const hasVisit = ate || notes || rating;
+        return `
+        <div class="card rest-card" style="${ate ? 'border-color:#a5d6a7;' : ''}">
+          <div class="row space-between">
+            <div style="flex:1;min-width:0;">
+              <div class="name">${r.name} ${ate ? '<span class="badge badge-confirmed">Ate here</span>' : ''} ${favorite ? '<span title="Favorite">❤️</span>' : ''}</div>
+              <div class="neigh">${r.city} · ${r.neigh} · ${r.style}</div>
+            </div>
+            <div class="tag price">${r.price}</div>
+          </div>
+          <div class="order"><strong>Order:</strong> ${r.order}</div>
+          <div class="text-xs text-muted mt-8">${r.why}</div>
+          <div class="tags">
+            ${r.priority === "Top 5" ? '<span class="tag top">Top 5</span>' : `<span class="tag">${r.priority}</span>`}
+            <span class="tag">${r.best}</span>
+            <span class="tag">Res: ${r.res}</span>
+            ${stars ? `<span class="tag" style="background:#fff8e1;color:#f57f17;">${stars}</span>` : ""}
+          </div>
+          ${notes ? `<div class="text-xs text-muted mt-8" style="font-style:italic;">“${(notes.length > 80 ? notes.slice(0,80) + "…" : notes).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}”</div>` : ""}
+          <div class="row space-between mt-8" style="align-items:center;">
+            <label class="check-row" style="padding:0;border:none;margin:0;">
+              <input type="checkbox" ${ate ? "checked" : ""} data-rk="${encodeURIComponent(r._key)}" onchange="toggleRestAte(decodeURIComponent(this.dataset.rk), this.checked)">
+              <span class="text-sm fw-600">Ate here</span>
+            </label>
+            <div class="row" style="gap:8px;align-items:center;">
+              <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="toggleRestFavorite(decodeURIComponent(this.dataset.rk))" aria-label="Toggle favorite">${favorite ? "❤️ Saved" : "♡ Favorite"}</button>
+              <a class="link-btn" href="${r.maps}" target="_blank" rel="noopener">Maps</a>
+              <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="editRestaurant(decodeURIComponent(this.dataset.rk))">${hasVisit ? "Edit visit" : "Log visit"}</button>
+            </div>
+          </div>
+        </div>
+      `;
+      }).join("") || '<div class="empty"><div class="icon">🍽️</div>No restaurants match</div>';
+    }
+
+    function editRestaurant(key) {
+      const r = RESTAURANTS.find(x => restKey(x) === key);
+      if (!r) return;
+      const entry = getRestLog()[key] || {};
+      openEditSheet(r.name, [
+        { key: "ate", label: "Ate here", type: "select", value: entry.ate ? "yes" : "no", options: ["yes", "no"] },
+        { key: "rating", label: "Rating", type: "select", value: entry.rating || "", options: ["", "5", "4", "3", "2", "1"] },
+        { key: "notes", label: "What we ate / notes", type: "textarea", value: entry.notes || "" }
+      ], (data) => {
+        const log = getRestLog();
+        const ate = data.ate === "yes" || (!!data.rating && data.rating !== "");
+        log[key] = { ate: data.ate === "no" && !data.rating ? false : ate, rating: data.rating || "", notes: data.notes || "", favorite: !!(log[key] && log[key].favorite) };
+        if (data.ate === "no" && !data.rating) log[key].ate = false;
+        setRestLog(log);
+        renderFood();
+      });
+      setTimeout(() => {
+        const ratingSel = document.getElementById("ef_rating");
+        if (ratingSel) {
+          const labels = { "": "— no rating —", "5": "★★★★★ Excellent", "4": "★★★★☆ Great", "3": "★★★☆☆ Good", "2": "★★☆☆☆ OK", "1": "★☆☆☆☆ Poor" };
+          Array.from(ratingSel.options).forEach(o => { o.textContent = labels[o.value] || o.value; });
+        }
+        const ateSel = document.getElementById("ef_ate");
+        if (ateSel) {
+          Array.from(ateSel.options).forEach(o => { o.textContent = o.value === "yes" ? "Yes — we ate here" : "No — not yet"; });
+        }
+      }, 0);
+    }
+
+    function renderTransport() {
+      document.getElementById("flightsList").innerHTML = FLIGHTS.map(f => `
+        <div class="card">
+          <div class="row space-between">
+            <div class="fw-600">✈️ ${f.flight} · ${f.op}</div>
+            <div class="text-xs text-muted">${fmtDate(f.date)}</div>
+          </div>
+          <div class="text-sm mt-8">${f.from} ${f.dep} → ${f.to} ${f.arr}</div>
+          <div class="text-xs text-muted">${f.dur} · ${f.cabin}</div>
+          <div class="text-sm mt-8">${f.notes}</div>
+        </div>
+      `).join("");
+
+      document.getElementById("trainsList").innerHTML = liveTrains().map((t, i) => `
+        <div class="card">
+          <div class="row space-between">
+            <div class="fw-600">🚆 ${t.service}</div>
+            <div>${statusBadge(/decision/i.test(t.notes + t.status) ? "Decision Needed" : (t.status || "Confirmed"))}
+              <button class="edit-btn" onclick="editTrain(${i})">Edit</button></div>
+          </div>
+          <div class="text-sm mt-8">${t.from} → ${t.to}</div>
+          <div class="text-xs text-muted">${t.dep} – ${t.arr} · ${t.dur} · ${t.cls}</div>
+          <div class="text-sm mt-8"><strong>Seats:</strong> ${t.seats}<br><strong>Conf:</strong> ${t.conf}</div>
+          <div class="text-sm text-muted">${t.notes}</div>
+        </div>
+      `).join("");
+
+      document.getElementById("transfersList").innerHTML = liveTransfers().map((t, i) => `
+        <div class="card">
+          <div class="row space-between">
+            <div class="fw-600">${t.id} · ${t.name}</div>
+            <div>${statusBadge(t.status)} <button class="edit-btn" onclick="editTransfer(${i})">Edit</button></div>
+          </div>
+          <div class="text-xs text-muted">${t.date} · ${t.mode} · ${t.time} · ${t.priority}</div>
+          <div class="text-sm mt-8"><strong>Steps:</strong> ${t.steps}</div>
+          ${t.backup ? `<div class="text-sm mt-8" style="color:var(--accent);"><strong>Backup:</strong> ${t.backup}</div>` : ""}
+          ${t.mistake ? `<div class="text-sm text-muted mt-8"><strong>Avoid:</strong> ${t.mistake}</div>` : ""}
+        </div>
+      `).join("");
+
+      document.getElementById("groundList").innerHTML = GROUND.map(g => `
+        <div class="card">
+          <div class="row space-between">
+            <div class="fw-600">${g.mode}</div>
+            <div class="text-xs text-muted">${g.city}</div>
+          </div>
+          <div class="text-sm mt-8"><strong>Best for:</strong> ${g.best}</div>
+          <div class="text-sm"><strong>Pay / buy:</strong> ${g.pay}</div>
+          <div class="text-sm text-muted mt-8">${g.notes}</div>
+        </div>
+      `).join("");
+
+      document.getElementById("contingenciesList").innerHTML = CONTINGENCIES.map(c => `
+        <div class="card">
+          <div class="row space-between">
+            <div class="fw-600" style="color:var(--danger);">${c.scenario}</div>
+            ${c.priority ? urgencyBadge(c.priority) : ""}
+          </div>
+          <div class="text-sm mt-8"><strong>Do:</strong> ${c.action}</div>
+          <div class="text-sm"><strong>Contact:</strong> ${c.contact}</div>
+          <div class="text-sm text-muted"><strong>Avoid:</strong> ${c.avoid}</div>
+          ${c.docs ? `<div class="text-xs text-muted mt-8"><strong>Keep:</strong> ${c.docs}</div>` : ""}
+        </div>
+      `).join("");
+    }
+
+    function editTrain(i) {
+      const t = liveTrains()[i];
+      openEditSheet("Edit train", [
+        { key: "dep", label: "Depart", value: t.dep },
+        { key: "arr", label: "Arrive", value: t.arr },
+        { key: "dur", label: "Duration", value: t.dur },
+        { key: "seats", label: "Coach / Seats", value: t.seats },
+        { key: "conf", label: "Confirmation", value: t.conf },
+        { key: "notes", label: "Notes / Status", type: "textarea", value: t.notes }
+      ], (data) => {
+        const live = getLive();
+        if (!live.trains) live.trains = {};
+        live.trains[i] = data;
+        setLive(live);
+        renderTransport();
+      });
+    }
+
+    function editTransfer(i) {
+      const t = liveTransfers()[i];
+      if (!t) return;
+      if (t._isCustom && t._customId) {
+        editCustomLeg(t._customId);
+        return;
+      }
+      openEditSheet("Edit transfer / route", [
+        { key: "mode", label: "Mode", value: t.mode },
+        { key: "time", label: "Est. time", value: t.time },
+        { key: "status", label: "Status", type: "select", value: t.status,
+          options: ["Confirmed","Verify","Pending","Timetable Pending","Critical","Done"] },
+        { key: "steps", label: "Step-by-step instructions", type: "textarea", value: t.steps },
+        { key: "backup", label: "Backup plan", type: "textarea", value: t.backup || "" },
+        { key: "mistake", label: "Common mistake to avoid", type: "textarea", value: t.mistake || "" }
+      ], (data) => {
+        const live = getLive();
+        if (!live.transfers) live.transfers = {};
+        live.transfers[i] = data;
+        setLive(live);
+        renderTransport();
+      });
+    }
+
+    function packingOwner(traveler) {
+      return /^(both|shared)$/i.test((traveler || "").trim()) ? "Shared" : traveler;
+    }
+
+    function setPackingTravelerFilter(owner) {
+      packingTravelerFilter = owner;
+      renderPrep();
+    }
+
+    function renderPrep() {
+      if (prepTab === "packing") {
+        const state = getPackState();
+        const allItems = getPackingItems().map((p, i) => ({ ...p, idx: i, owner: packingOwner(p.traveler) }));
+        const visibleItems = packingTravelerFilter === "all"
+          ? allItems
+          : allItems.filter(p => p.owner === packingTravelerFilter);
+        const cats = [...new Set(visibleItems.map(p => p.cat))];
+        let total = visibleItems.length, done = 0;
+        visibleItems.forEach(p => { if (packingRecordChecked(state[packStateKey(p)])) done++; });
+        const pct = total ? Math.round(done / total * 100) : 0;
+        const filterLabel = packingTravelerFilter === "all" ? "Everyone" : packingTravelerFilter;
+
+        const packOwners = ["David", "Melody", "Shared"];
+        const packRows = packOwners.map(owner => {
+          const list = allItems.filter(p => p.owner === owner);
+          const ownerDone = list.filter(p => packingRecordChecked(state[packStateKey(p)])).length;
+          const ownerPct = list.length ? Math.round(ownerDone / list.length * 100) : 0;
+          return `<div style="margin-top:8px;">
+            <div class="row space-between text-sm"><strong>${owner}</strong><span>${ownerDone}/${list.length} · ${ownerPct}%</span></div>
+            <div class="progress-bar"><div class="fill" style="width:${ownerPct}%"></div></div>
+          </div>`;
+        }).join("");
+
+        let html = `
+          <div class="card">
+            <div class="card-title"><span class="icon">🧳</span> Packing Status</div>
+            ${packRows}
+          </div>
+          <div class="filter-bar" id="packingTravelerFilters" style="margin-bottom:12px;">
+            <div class="filter-chip ${packingTravelerFilter === "all" ? "active" : ""}" onclick="setPackingTravelerFilter('all')">All</div>
+            <div class="filter-chip ${packingTravelerFilter === "David" ? "active" : ""}" onclick="setPackingTravelerFilter('David')">David</div>
+            <div class="filter-chip ${packingTravelerFilter === "Melody" ? "active" : ""}" onclick="setPackingTravelerFilter('Melody')">Melody</div>
+            <div class="filter-chip ${packingTravelerFilter === "Shared" ? "active" : ""}" onclick="setPackingTravelerFilter('Shared')">Shared</div>
+          </div>
+          <button style="width:100%;margin-bottom:12px;" onclick="openAddPackingItem()">＋ Add Packing Item</button>
+          <div class="card">
+            <div class="row space-between">
+              <div class="fw-600">${filterLabel} Packing Progress</div>
+              <div class="text-sm">${done}/${total} (${pct}%)</div>
+            </div>
+            <div class="progress-bar"><div class="fill" style="width:${pct}%"></div></div>
+            <div class="text-xs text-muted mt-8">Use the buttons above to view David's, Melody's, or shared items.</div>
+          </div>
+        `;
+        cats.forEach(cat => {
+          const items = visibleItems.filter(p => p.cat === cat);
+          if (!items.length) return;
+          html += `<div class="pack-cat"><h3>${cat}</h3>`;
+          items.forEach(p => {
+            const rec=state[packStateKey(p)]||{};
+            const checked = packingRecordChecked(rec);
+            html += `
+              <div class="check-row ${checked ? 'done' : ''}">
+                <input type="checkbox" ${checked ? 'checked' : ''} onchange="togglePack('${encodeURIComponent(packStateKey(p))}', this.checked)">
+                <div style="flex:1;">
+                  <div class="fw-600">${p.item} ${p.pri === 'Critical' ? '<span class="badge badge-high">Critical</span>' : ''}</div>
+                  <div class="text-xs text-muted">${p.owner} · ${p.bag} · qty ${p.qty}${checked && rec.by ? ` · Packed by ${rec.by}` : ""}</div>
+                </div>
+                <button class="edit-btn" onclick="event.preventDefault();event.stopPropagation();openPackingItemEditor('${p._id}')">Edit</button>
+              </div>
+            `;
+          });
+          html += `</div>`;
+        });
+        document.getElementById("prepContent").innerHTML = html || '<div class="empty"><div class="icon">🧳</div>No packing items match this filter.</div>';
+      } else if (prepTab === "phrases") {
+        let html = "";
+        Object.keys(PHRASES).forEach(g => {
+          html += `<div class="phrase-group"><h3>${g}</h3>`;
+          PHRASES[g].forEach(p => {
+            html += `
+              <div class="phrase-row">
+                <div class="phrase-en">${p.en}</div>
+                <div class="phrase-it">${p.it}</div>
+                ${p.pr ? `<div class="phrase-pr">${p.pr}</div>` : ""}
+              </div>
+            `;
+          });
+          html += `</div>`;
+        });
+        document.getElementById("prepContent").innerHTML = html;
+      } else {
+        let html = `<div class="card"><div class="card-title">🚨 Emergency Contacts</div>`;
+        SAFETY.emergency.forEach(e => {
+          html += `<div class="list-item" style="padding:8px 0;">
+            <div class="content">
+              <div class="title">${e.cat}</div>
+              <div class="meta" style="font-size:1rem;font-weight:700;color:var(--primary);">${e.contact}</div>
+              <div class="meta">${e.note}</div>
+            </div>
+          </div>`;
+        });
+        html += `</div><div class="card"><div class="card-title">🏥 Medical</div>`;
+        SAFETY.medical.forEach(t => { html += `<div class="text-sm" style="padding:6px 0;border-bottom:1px solid var(--border);">• ${t}</div>`; });
+        html += `</div><div class="card"><div class="card-title">🛡️ Safety Tips</div>`;
+        SAFETY.tips.forEach(t => { html += `<div class="text-sm" style="padding:6px 0;border-bottom:1px solid var(--border);">• ${t}</div>`; });
+        html += `</div><div class="card"><div class="card-title">🔎 Lost & Found</div>`;
+        SAFETY.lost.forEach(l => { html += `<div class="text-sm" style="padding:8px 0;border-bottom:1px solid var(--border);"><strong>${l.item}:</strong> ${l.action}</div>`; });
+        html += `</div><div class="card"><div class="card-title">📡 Weather & Alerts</div>`;
+        SAFETY.alerts.forEach(t => { html += `<div class="text-sm" style="padding:6px 0;border-bottom:1px solid var(--border);">• ${t}</div>`; });
+        html += `</div>`;
+        document.getElementById("prepContent").innerHTML = html;
+      }
+    }
+
+    function togglePack(encodedKey, checked) {
+      const key=decodeURIComponent(encodedKey), st=getPackState();
+      st[key]={checked:!!checked,by:getBackupOwner(),updatedAt:new Date().toISOString()};
+      setPackState(st); renderPrep(); renderHome();
+    }
+
+    function renderMoney() {
+      const rate=currentExpenseRate();
+      const all=getExpenses().map(e=>({...e,traveler:e.traveler||"Shared",payment:e.payment||"Not recorded",company:e.company===true||e.company==="yes",reimbursable:e.reimbursable===true||e.reimbursable==="yes",receipt:e.receipt===true||e.receipt==="yes",fx:Number(e.fx||(e.cur==="USD"?1:TRIP.fx)),_usd:expenseUsdAmount(e),_eur:expenseEurAmount(e)})).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
+      let expenses=all; if(expOwnerFilter!=="all")expenses=expenses.filter(e=>e.traveler===expOwnerFilter); if(expTypeFilter==="personal")expenses=expenses.filter(e=>!e.company); if(expTypeFilter==="company")expenses=expenses.filter(e=>e.company); if(expTypeFilter==="reimbursable")expenses=expenses.filter(e=>e.reimbursable); if(expTypeFilter==="missing")expenses=expenses.filter(e=>!e.receipt);
+      const sum=f=>all.filter(f).reduce((a,e)=>a+e._usd,0), personalSpent=sum(e=>!e.company),companyPaid=sum(e=>e.company),reimb=sum(e=>e.reimbursable),missing=all.filter(e=>!e.receipt).length;
+      const planned=liveBudgetPlanned(); const plannedPersonal=planned.filter(b=>!b.company&&!/canceled|refunded/i.test(b.status||"")).reduce((a,b)=>a+(b.cur==="USD"?Number(b.amt):Number(b.amt)*rate),0),remaining=plannedPersonal-personalSpent;
+      const stat=(usd,label,bad)=>`<div class="stat"><div class="val" ${bad?'style="color:var(--danger);"':''}>$${Math.round(usd).toLocaleString("en-US")}</div><div class="text-xs text-muted">€${Math.round(usd/rate).toLocaleString("en-US")}</div><div class="lbl">${label}</div></div>`;
+      document.getElementById("budgetSummary").innerHTML=`<div class="stats">${stat(personalSpent,"Personal actual")}${stat(companyPaid,"Company paid")}${stat(reimb,"Reimbursable")}${stat(remaining,"Personal remaining",remaining<0)}</div><div class="alert ${missing?'alert-warn':'alert-info'} text-sm"><strong>${missing}</strong> receipt${missing===1?'':'s'} missing. Every total is shown in USD and EUR. EUR purchases retain their locked transaction rate; USD-to-EUR reference values use the latest saved live rate of 1 EUR = $${rate.toFixed(4)}.</div>`;
+      document.getElementById("expCount").textContent=`(${expenses.length} shown / ${all.length} total)`;
+      document.getElementById("budgetExpenses").innerHTML=expenses.length?expenses.map(e=>`<div class="card" style="${!e.receipt?'border-left:4px solid var(--warning);':''}"><div class="row space-between"><div class="fw-600">${e.desc}</div><div class="fw-600" style="text-align:right;">${moneyPair(e._usd,e._eur,e.cur)}</div></div><div class="text-xs text-muted mt-8">${fmtDate(e.date)} · ${e.city} · ${e.cat} · Paid by ${e.traveler}</div><div class="text-sm mt-8"><strong>Original charge:</strong> ${e.cur==="EUR"?'€':'$'}${Number(e.amt).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} ${e.cur}${e.cur==="EUR"?` · locked FX ${Number(e.fx).toFixed(4)}`:''}${e.statementUsd?' · final card USD used':''}</div><div class="tags mt-8"><span class="tag">${e.payment}</span>${e.company?'<span class="tag top">Company paid</span>':'<span class="tag">Personal</span>'}${e.reimbursable?'<span class="tag price">Reimbursable</span>':''}<span class="tag ${e.receipt?'price':'top'}">${e.receipt?'Receipt saved':'Receipt missing'}</span></div>${e.notes?`<div class="text-sm text-muted mt-8">${e.notes}</div>`:''}<div class="btn-row"><button class="btn-outline" onclick="openExpenseSheet(${e.id})">Edit</button><button class="btn-danger" onclick="deleteExpense(${e.id})">Delete</button></div></div>`).join(""):'<div class="empty"><div class="icon">🧾</div>No expenses match these filters.</div>';
+      const byCat={};all.filter(e=>!e.company).forEach(e=>byCat[e.cat]=(byCat[e.cat]||0)+e._usd);
+      document.getElementById("budgetPlanned").innerHTML=planned.map(b=>{const plannedUsd=b.cur==="USD"?Number(b.amt):Number(b.amt)*rate,plannedEur=plannedUsd/rate,actual=byCat[b.cat]||0,rem=plannedUsd-actual,canceled=/canceled|refunded/i.test(b.status||"");return `<div class="card" style="${canceled?'opacity:.65;':''}"><div class="row space-between"><div><div class="fw-600" style="${canceled?'text-decoration:line-through;':''}">${b.sub}</div><div class="text-xs text-muted">${b.cat} · ${b.status}${b.company?' · Company provided':''}</div></div><div style="text-align:right;">${moneyPair(plannedUsd,plannedEur,b.cur)}</div></div><div class="text-sm mt-8"><strong>Category actual:</strong> $${actual.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} · €${(actual/rate).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}<br><strong>Remaining:</strong> <span style="${rem<0?'color:var(--danger);':''}">$${rem.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} · €${(rem/rate).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>${b.notes?`<div class="text-sm text-muted mt-8">${b.notes}</div>`:''}<button class="edit-btn mt-8" onclick="editPlannedItem(${b._index})">Edit planned item</button></div>`}).join("");
+    }
+
+    function renderMore() {
+      document.getElementById("quickLinks").innerHTML = `
+        <a href="https://www.delta.com" target="_blank">Delta</a> ·
+        <a href="https://www.flysas.com" target="_blank">SAS</a> ·
+        <a href="https://www.italotreno.com/en" target="_blank">Italo</a> ·
+        <a href="https://www.trenitalia.com/en/services/leonardo-express.html" target="_blank">Leonardo Express</a><br>
+        <a href="https://actv.avmspa.it/en" target="_blank">ACTV Vaporetto</a> ·
+        <a href="https://www.atvo.it/en-venice-airport.html" target="_blank">ATVO Airport Bus</a> ·
+        <a href="https://www.veneziaairport.it/en/transport/transfers.html" target="_blank">VCE Transfers</a><br>
+        <a href="https://www.hotelantichefigure.it/" target="_blank">Hotel Antiche Figure</a> ·
+        <strong>Emergency 112</strong>
+      `;
+      renderBackupStatus();
+    }
+
+    async function renderAttractions() {
+      const log = getAttrLog();
+      let list = ATTRACTIONS.map(a => ({ ...a, _key: attrKey(a) }));
+      if (attrCityFilter !== "all") list = list.filter(a => a.city === attrCityFilter);
+      if (attrVisitFilter === "visited") list = list.filter(a => log[a._key] && log[a._key].visited);
+      if (attrVisitFilter === "not") list = list.filter(a => !(log[a._key] && log[a._key].visited));
+
+      // Load photo counts/thumbnails
+      const photoMap = {};
+      await Promise.all(list.map(async a => {
+        photoMap[a._key] = await getAttrPhotos(a._key);
+      }));
+
+      document.getElementById("attractionsList").innerHTML = list.map(a => {
+        const entry = log[a._key] || {};
+        const visited = !!entry.visited;
+        const notes = entry.notes || "";
+        const photos = photoMap[a._key] || [];
+        const thumb = photos[0] || "";
+        return `
+        <div class="card" style="${visited ? 'border-color:#a5d6a7;' : ''}">
+          <div class="row space-between">
+            <div style="flex:1;min-width:0;">
+              <div class="fw-600">${a.name} ${visited ? '<span class="badge badge-confirmed">Visited</span>' : ''}</div>
+              <div class="text-xs text-muted">${a.city} · ${a.area}</div>
+            </div>
+            ${thumb ? `<img src="${thumb}" alt="" style="width:56px;height:56px;object-fit:cover;border-radius:8px;margin-left:10px;" />` : ""}
+          </div>
+          <div class="text-sm text-muted mt-8">${a.why}</div>
+          <div class="text-sm mt-8">
+            <strong>Visit:</strong> ${a.visit} · <strong>From hotel:</strong> ${a.fromHotel}<br>
+            <strong>Hours:</strong> ${a.hours} · <strong>Cost:</strong> ${a.cost}<br>
+            <strong>Reserve:</strong> ${a.reserve} · <strong>Transport:</strong> ${a.transport}
+          </div>
+          ${notes ? `<div class="text-xs text-muted mt-8" style="font-style:italic;">“${(notes.length > 80 ? notes.slice(0,80)+"…" : notes).replace(/&/g,"&amp;").replace(/</g,"&lt;")}”</div>` : ""}
+          ${photos.length > 1 ? `<div class="text-xs text-muted mt-8">${photos.length} photos</div>` : ""}
+          <div class="row space-between mt-8" style="align-items:center;">
+            <label class="check-row" style="padding:0;border:none;margin:0;">
+              <input type="checkbox" ${visited ? "checked" : ""} data-ak="${encodeURIComponent(a._key)}" onchange="toggleAttrVisited(decodeURIComponent(this.dataset.ak), this.checked)">
+              <span class="text-sm fw-600">Visited</span>
+            </label>
+            <div class="row" style="gap:10px;align-items:center;">
+              <a class="link-btn" href="${a.maps}" target="_blank" rel="noopener">Maps</a>
+              <button class="edit-btn" data-ak="${encodeURIComponent(a._key)}" onclick="editAttraction(decodeURIComponent(this.dataset.ak))">${visited || notes || photos.length ? "Edit visit" : "Log visit"}</button>
+            </div>
+          </div>
+        </div>`;
+      }).join("") || '<div class="empty"><div class="icon">🏛️</div>No attractions match</div>';
+    }
+
+    async function editAttraction(key) {
+      const a = ATTRACTIONS.find(x => attrKey(x) === key);
+      if (!a) return;
+      const entry = getAttrLog()[key] || {};
+      let photos = await getAttrPhotos(key);
+
+      const renderSheet = () => {
+        document.getElementById("sheetContent").innerHTML = `
+          <h2>${a.name}</h2>
+          <div class="form-group">
+            <label>Visited</label>
+            <select id="ef_visited">
+              <option value="yes" ${entry.visited ? "selected" : ""}>Yes — visited</option>
+              <option value="no" ${!entry.visited ? "selected" : ""}>No — not yet</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Notes</label>
+            <textarea id="ef_notes" rows="3" placeholder="Highlights, tips, ticket times...">${(entry.notes || "").replace(/</g,"&lt;")}</textarea>
+          </div>
+          <div class="form-group">
+            <label>Photos (up to 5 · stored on this phone)</label>
+            <div id="ef_photoGrid" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+              ${photos.map((p, i) => `
+                <div style="position:relative;width:72px;height:72px;">
+                  <img src="${p}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;" />
+                  <button type="button" data-i="${i}" class="ef-del-photo" style="position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--danger);color:#fff;border:none;font-size:12px;padding:0;line-height:22px;">×</button>
+                </div>
+              `).join("")}
+            </div>
+            ${photos.length < 5 ? `<input type="file" id="ef_photo" accept="image/*" capture="environment" />` : `<div class="text-xs text-muted">Maximum 5 photos</div>`}
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn-outline" onclick="closeSheet()">Cancel</button>
+            <button type="button" id="efSave">Save</button>
+          </div>
+        `;
+        document.getElementById("overlay").classList.add("open");
+
+        document.querySelectorAll(".ef-del-photo").forEach(btn => {
+          btn.onclick = async () => {
+            photos.splice(+btn.dataset.i, 1);
+            await setAttrPhotos(key, photos);
+            renderSheet();
+          };
+        });
+
+        const fileInput = document.getElementById("ef_photo");
+        if (fileInput) {
+          fileInput.onchange = async () => {
+            const file = fileInput.files && fileInput.files[0];
+            if (!file) return;
+            try {
+              const dataUrl = await compressImage(file, 1200, 0.72);
+              photos.push(dataUrl);
+              await setAttrPhotos(key, photos);
+              // Mark visited when adding a photo
+              const log = getAttrLog();
+              if (!log[key]) log[key] = {};
+              log[key].visited = true;
+              setAttrLog(log);
+              entry.visited = true;
+              renderSheet();
+            } catch (e) {
+              alert("Could not add that photo. Try a smaller image.");
+            }
+          };
+        }
+
+        document.getElementById("efSave").onclick = async () => {
+          const log = getAttrLog();
+          log[key] = {
+            visited: document.getElementById("ef_visited").value === "yes",
+            notes: document.getElementById("ef_notes").value.trim()
+          };
+          setAttrLog(log);
+          await setAttrPhotos(key, photos);
+          closeSheet();
+          renderAttractions();
+        };
+      };
+      renderSheet();
+    }
+
+    function baseDoorRoutes() {
+      return MAP_DOOR_ROUTES.concat(MAP_CITY_ROUTES).map(r => ({ ...r }));
+    }
+
+    function routeSortKey(r) {
+      if (Number.isFinite(r.order)) return String(r.order).padStart(5, "0");
+      const date = r.dateISO || r.date || "9999-99-99";
+      let start = (r.start || "").toString().trim();
+      let dayOffset = 0;
+      if (/\+1/.test(start)) { dayOffset = 1; start = start.replace(/\+1/, ""); }
+      const m = start.match(/(\d{1,2}):(\d{2})/);
+      let mins = 24 * 60;
+      if (m) mins = (+m[1]) * 60 + (+m[2]) + dayOffset * 24 * 60;
+      return date + "|" + String(mins).padStart(5, "0");
+    }
+
+    function getAllDoorRoutes() {
+      const routeEdits = getRouteEdits();
+      const base = baseDoorRoutes().map(r => {
+        const id = baseRouteId(r);
+        return { ...r, ...(routeEdits[id] || {}), _isCustom: false, _id: id };
+      });
+      const custom = getCustomLegs().map(leg => ({
+        dateISO: leg.date,
+        start: leg.start || "",
+        end: leg.end || "",
+        date: leg.date ? shortDateLabel(leg.date) : "",
+        from: leg.from,
+        to: leg.to,
+        mode: leg.mode || "Custom leg",
+        duration: leg.duration || "",
+        link: leg.link || mapsLinkFor(leg.from, leg.to),
+        backupLink: leg.backupLink || "",
+        note: leg.note || "",
+        secondaryNote: leg.secondaryNote || "",
+        title: leg.title || "",
+        status: leg.status || "Confirmed",
+        _isCustom: true,
+        _id: leg.id
+      }));
+      return base.concat(custom).sort((a, b) => routeSortKey(a).localeCompare(routeSortKey(b)));
+    }
+
+    function mapsLinkFor(from, to) {
+      const o = encodeURIComponent(from || "");
+      const d = encodeURIComponent(to || "");
+      return `https://www.google.com/maps/dir/?api=1&origin=${o}&destination=${d}`;
+    }
+
+    function editBaseRoute(id) {
+      const route = getAllDoorRoutes().find(r => !r._isCustom && r._id === id);
+      if (!route) return;
+      openEditSheet("Edit door-to-door route", [
+        { key: "title", label: "Title (optional)", value: route.title || "" },
+        { key: "from", label: "From", value: route.from || "" },
+        { key: "to", label: "To", value: route.to || "" },
+        { key: "dateISO", label: "Date (YYYY-MM-DD)", value: route.dateISO || "" },
+        { key: "date", label: "Display date / category", value: route.date || "" },
+        { key: "start", label: "Start time", value: route.start || "" },
+        { key: "end", label: "End time", value: route.end || "" },
+        { key: "mode", label: "Mode", value: route.mode || "" },
+        { key: "duration", label: "Duration", value: route.duration || "" },
+        { key: "status", label: "Status", value: route.status || "" },
+        { key: "note", label: "Primary notes / instructions", type: "textarea", value: route.note || "" },
+        { key: "secondaryNote", label: "Secondary note / backup instructions", type: "textarea", value: route.secondaryNote || "" },
+        { key: "link", label: "Primary map / route URL", value: route.link || "" },
+        { key: "backupLink", label: "Backup link", value: route.backupLink || "" }
+      ], (data) => {
+        const edits = getRouteEdits();
+        edits[id] = {
+          title: (data.title || "").trim(),
+          from: (data.from || "").trim(),
+          to: (data.to || "").trim(),
+          dateISO: (data.dateISO || "").trim(),
+          date: (data.date || "").trim(),
+          start: (data.start || "").trim(),
+          end: (data.end || "").trim(),
+          mode: (data.mode || "").trim(),
+          duration: (data.duration || "").trim(),
+          status: (data.status || "").trim(),
+          note: (data.note || "").trim(),
+          secondaryNote: (data.secondaryNote || "").trim(),
+          link: (data.link || "").trim(),
+          backupLink: (data.backupLink || "").trim()
+        };
+        setRouteEdits(edits);
+        const step = timelineStepForRoute(route);
+        if (step != null) {
+          const live = getLive();
+          if (!live.timeline) live.timeline = {};
+          live.timeline[step] = {
+            ...(live.timeline[step] || {}),
+            from: data.from, to: data.to, date: data.dateISO, start: data.start, end: data.end,
+            mode: data.mode, time: data.duration, status: data.status, instructions: data.note, notes: data.secondaryNote
+          };
+          setLive(live);
+        }
+        renderMaps();
+        showToast("Route updated — Timeline stays in sync");
+      });
+    }
+
+    function restoreBaseRoute(id) {
+      const edits = getRouteEdits();
+      if (!edits[id]) return;
+      if (!confirm("Restore this route to the original spreadsheet data?")) return;
+      delete edits[id];
+      setRouteEdits(edits);
+      renderMaps();
+      showToast("Original route restored");
+    }
+
+    function addCustomLeg() {
+      openEditSheet("Add door-to-door leg", [
+        { key: "title", label: "Title (optional)", value: "" },
+        { key: "from", label: "From", value: "" },
+        { key: "to", label: "To", value: "" },
+        { key: "date", label: "Date (YYYY-MM-DD)", value: "2026-10-05" },
+        { key: "start", label: "Start time (e.g. 14:30)", value: "" },
+        { key: "end", label: "End time", value: "" },
+        { key: "mode", label: "Mode (walk, taxi, train…)", value: "" },
+        { key: "emphasis", label: "Timeline emphasis", type: "select", value: "auto", options: ["auto","green","blue","gold","burgundy","standard"] },
+        { key: "duration", label: "Duration", value: "" },
+        { key: "status", label: "Status", type: "select", value: "Confirmed",
+          options: ["Confirmed","Pending","Verify Day-Of","Decision Needed","Done"] },
+        { key: "note", label: "Primary notes / instructions", type: "textarea", value: "" },
+        { key: "secondaryNote", label: "Secondary note / backup instructions", type: "textarea", value: "" },
+        { key: "link", label: "Primary map / route URL (optional)", value: "" },
+        { key: "backupLink", label: "Backup link (optional)", value: "" }
+      ], (data) => {
+        if (!(data.from || "").trim() || !(data.to || "").trim()) {
+          alert("From and To are required.");
+          return;
+        }
+        if (!(data.date || "").trim()) {
+          alert("Date is required (YYYY-MM-DD).");
+          return;
+        }
+        const leg = {
+          id: "cl_" + Date.now(),
+          title: (data.title || "").trim(),
+          from: data.from.trim(),
+          to: data.to.trim(),
+          date: data.date.trim(),
+          start: (data.start || "").trim(),
+          end: (data.end || "").trim(),
+          mode: (data.mode || "").trim() || "Custom leg",
+          emphasis: data.emphasis || "auto",
+          duration: (data.duration || "").trim(),
+          status: data.status || "Confirmed",
+          note: (data.note || "").trim(),
+          secondaryNote: (data.secondaryNote || "").trim(),
+          link: (data.link || "").trim() || mapsLinkFor(data.from, data.to),
+          backupLink: (data.backupLink || "").trim()
+        };
+        const arr = getCustomLegs();
+        arr.push(leg);
+        clearDeleted("customlegs",leg.id);
+        setCustomLegs(arr);
+        // Refresh related tabs so the new leg is visible immediately
+        try { renderMaps(); } catch (e) {}
+        try { renderTimeline(); } catch (e) {}
+        try { renderTransport(); } catch (e) {}
+        showToast("Leg added — also appears on Timeline & Transport");
+      });
+    }
+
+    function editCustomLeg(id) {
+      const arr = getCustomLegs();
+      const leg = arr.find(x => x.id === id);
+      if (!leg) return;
+      openEditSheet("Edit door-to-door leg", [
+        { key: "title", label: "Title (optional)", value: leg.title || "" },
+        { key: "from", label: "From", value: leg.from },
+        { key: "to", label: "To", value: leg.to },
+        { key: "date", label: "Date (YYYY-MM-DD)", value: leg.date },
+        { key: "start", label: "Start time", value: leg.start || "" },
+        { key: "end", label: "End time", value: leg.end || "" },
+        { key: "mode", label: "Mode", value: leg.mode || "" },
+        { key: "emphasis", label: "Timeline emphasis", type: "select", value: leg.emphasis || "auto", options: ["auto","green","blue","gold","burgundy","standard"] },
+        { key: "duration", label: "Duration", value: leg.duration || "" },
+        { key: "status", label: "Status", type: "select", value: leg.status || "Confirmed",
+          options: ["Confirmed","Pending","Verify Day-Of","Decision Needed","Done"] },
+        { key: "note", label: "Primary notes / instructions", type: "textarea", value: leg.note || "" },
+        { key: "secondaryNote", label: "Secondary note / backup instructions", type: "textarea", value: leg.secondaryNote || "" },
+        { key: "link", label: "Primary map / route URL", value: leg.link || "" },
+        { key: "backupLink", label: "Backup link", value: leg.backupLink || "" }
+      ], (data) => {
+        const next = getCustomLegs().map(x => x.id === id ? {
+          ...x,
+          title: (data.title || "").trim(),
+          from: data.from.trim(),
+          to: data.to.trim(),
+          date: data.date.trim(),
+          start: (data.start || "").trim(),
+          end: (data.end || "").trim(),
+          mode: (data.mode || "").trim() || "Custom leg",
+          emphasis: data.emphasis || "auto",
+          duration: (data.duration || "").trim(),
+          status: data.status || "Confirmed",
+          note: (data.note || "").trim(),
+          secondaryNote: (data.secondaryNote || "").trim(),
+          link: (data.link || "").trim() || mapsLinkFor(data.from, data.to),
+          backupLink: (data.backupLink || "").trim()
+        } : x);
+        clearDeleted("customlegs",id);
+        setCustomLegs(next);
+        if (currentPage === "maps") renderMaps();
+        if (currentPage === "timeline") renderTimeline();
+        if (currentPage === "transport") renderTransport();
+        showToast("Leg updated — Timeline & Transport stay in sync");
+      }, () => {
+        // Delete from edit sheet — return false if user cancels so the sheet stays open
+        return deleteCustomLeg(id);
+      });
+    }
+
+    function deleteCustomLeg(id) {
+      if (!confirm("Delete this custom leg? It will be removed from Timeline, Transport, and Maps.")) return false;
+      markDeleted("customlegs",id); setCustomLegs(getCustomLegs().filter(x => x.id !== id));
+      // Always refresh related views so lists stay in sync
+      try { renderMaps(); } catch (e) {}
+      try { renderTimeline(); } catch (e) {}
+      try { renderTransport(); } catch (e) {}
+      showToast("Leg removed");
+      return true;
+    }
+
+    function renderMaps() {
+      const routes = getAllDoorRoutes();
+
+      document.getElementById("mapsRoutes").innerHTML = routes.map(r => {
+        const title = (r.title && r.title.trim()) ? r.title.trim() : `${r.from} → ${r.to}`;
+        const timeBits = [r.start, r.end].filter(Boolean).join("–");
+        const dateShow = r.date || (r.dateISO ? shortDateLabel(r.dateISO) : "");
+        return `
+        <div class="card" style="${r._isCustom ? 'border-color:#90caf9;' : ''}">
+          <div class="row space-between">
+            <div class="fw-600">${title}${r._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ''}</div>
+            <div class="text-xs text-muted">${dateShow}${timeBits ? " · " + timeBits : ""}</div>
+          </div>
+          <div class="text-sm text-muted mt-8">${modeIcon(r.mode)} ${r.mode}${r.duration ? " · " + r.duration : ""} ${r.status ? statusBadge(r.status) : ""}</div>
+          ${r.note ? `<div class="text-sm mt-8"><strong>Primary:</strong> ${r.note}</div>` : ""}
+          ${r.secondaryNote ? `<div class="text-sm text-muted mt-8"><strong>Secondary:</strong> ${r.secondaryNote}</div>` : ""}
+          <div class="row space-between mt-8" style="align-items:center;flex-wrap:wrap;">
+            <div class="row" style="gap:12px;flex-wrap:wrap;">
+              ${r.link ? `<a class="link-btn" href="${normalizedLink(r.link)}" target="_blank" rel="noopener">${linkLabel(r.link, false)} →</a>` : ""}
+              ${r.backupLink ? `<a class="link-btn" href="${normalizedLink(r.backupLink)}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(r.backupLink, true)} →</a>` : ""}
+            </div>
+            <div class="row" style="gap:8px;">
+              ${r._isCustom
+                ? `<button class="edit-btn" onclick="editCustomLeg('${r._id}')">Edit</button><button class="edit-btn" style="color:var(--danger);" onclick="deleteCustomLeg('${r._id}')">Delete</button>`
+                : `<button class="edit-btn" onclick="editBaseRoute('${r._id}')">Edit</button>${getRouteEdits()[r._id] ? `<button class="edit-btn" style="color:var(--accent);" onclick="restoreBaseRoute('${r._id}')">Restore</button>` : ""}`}
+            </div>
+          </div>
+        </div>`;
+      }).join("");
+
+      document.getElementById("mapsAirports").innerHTML = MAP_AIRPORTS.map(a => `
+        <div class="card">
+          <div class="row space-between"><div class="fw-600">${a.name} (${a.code})</div>${statusBadge(a.status)}</div>
+          <div class="text-sm text-muted mt-8">${a.tripUse}</div>
+          <div class="text-sm mt-8"><strong>Concern:</strong> ${a.concern}</div>
+          <div class="text-sm"><strong>Action:</strong> ${a.action}</div>
+          <div class="row mt-8" style="gap:12px;flex-wrap:wrap;">
+            <a class="link-btn" href="${normalizedLink(a.official)}" target="_blank" rel="noopener">Official site →</a>
+            ${a.secondary ? `<a class="link-btn" href="${normalizedLink(a.secondary)}" target="_blank" rel="noopener" style="color:var(--accent);">Terminal / transfer link →</a>` : ""}
+          </div>
+        </div>`).join("");
+
+      document.getElementById("mapsHotels").innerHTML = MAP_HOTELS_VENUES.map(h => `
+        <div class="card">
+          <div class="row space-between"><div class="fw-600">${h.name}</div>${statusBadge(h.status)}</div>
+          <div class="text-xs text-muted">${h.city} · ${h.purpose}</div>
+          ${h.address ? `<div class="text-sm mt-8"><strong>Address:</strong> ${h.address}</div>` : ""}
+          ${h.access ? `<div class="text-sm mt-8"><strong>Access:</strong> ${h.access}</div>` : ""}
+          ${h.note ? `<div class="text-sm text-muted mt-8"><strong>Note:</strong> ${h.note}</div>` : ""}
+          ${h.link ? `<a class="link-btn" href="${normalizedLink(h.link)}" target="_blank" rel="noopener">Open map →</a>` : ""}
+        </div>`).join("");
+
+      document.getElementById("mapsOfficial").innerHTML = MAP_OFFICIAL_SITES.map(s => `
+        <div class="card">
+          <div class="fw-600">${s.name}</div>
+          <div class="text-xs text-muted">${s.area} · Verify: ${s.verify}</div>
+          <div class="text-sm mt-8"><strong>Use:</strong> ${s.use}</div>
+          <div class="text-sm text-muted"><strong>Note:</strong> ${s.note}</div>
+          <a class="link-btn" href="${normalizedLink(s.link)}" target="_blank" rel="noopener">Open official site →</a>
+        </div>`).join("");
+
+      document.getElementById("mapsPending").innerHTML = MAP_SAVED_PENDING.map(p => `
+        <div class="card">
+          <div class="row space-between"><div class="fw-600">${p.item}</div>${statusBadge(p.status)}</div>
+          <div class="text-xs text-muted">${p.priority} priority · Owner: ${p.owner} · Due: ${p.due}</div>
+          <div class="text-sm mt-8"><strong>Dependency:</strong> ${p.dependency}</div>
+          <div class="text-sm text-muted"><strong>Note:</strong> ${p.note}</div>
+          ${p.link ? `<a class="link-btn" href="${normalizedLink(p.link)}" target="_blank" rel="noopener">Open saved link →</a>` : ""}
+        </div>`).join("");
+    }
+
+    function renderJournal() {
+      const entries = getJournal().sort((a,b) => b.date.localeCompare(a.date));
+      let html = `
+        <div class="section-title">Photo Wishlist</div>
+        <div class="card">
+          ${PHOTO_WISHLIST.map(p => `
+            <div class="text-sm" style="padding:8px 0;border-bottom:1px solid var(--border);">
+              <strong>${p.city}:</strong> ${p.subject}
+              <span class="text-muted"> · ${p.bestTime} · ${p.priority}</span>
+            </div>
+          `).join("")}
+        </div>
+        <div class="section-title">Your Entries</div>
+      `;
+      html += entries.length ? entries.map((e,i) => `
+        <div class="card">
+          <div class="row space-between">
+            <div class="fw-600">${fmtDate(e.date)}</div>
+            <button class="btn-sm btn-outline" onclick="deleteJournal(${i})">Delete</button>
+          </div>
+          <div class="text-sm mt-8"><strong>Highlight:</strong> ${e.highlight || "—"}</div>
+          <div class="text-sm"><strong>Best meal:</strong> ${e.meal || "—"}</div>
+          <div class="text-sm text-muted">${e.notes || ""}</div>
+        </div>
+      `).join("") : '<div class="empty"><div class="icon">📔</div>No entries yet. Add your first memory above!</div>';
+      document.getElementById("journalEntries").innerHTML = html;
+    }
+
+    function saveJournalEntry() {
+      const date = document.getElementById("jDate").value;
+      const highlight = document.getElementById("jHighlight").value.trim();
+      const meal = document.getElementById("jMeal").value.trim();
+      const notes = document.getElementById("jNotes").value.trim();
+      if (!date) { alert("Please select a date"); return; }
+      const arr = getJournal();
+      const entry={ date, highlight, meal, notes, ts: Date.now() }; arr.push(entry); clearDeleted("journal",entry.ts);
+      setJournal(arr);
+      document.getElementById("jHighlight").value = "";
+      document.getElementById("jMeal").value = "";
+      document.getElementById("jNotes").value = "";
+      renderJournal();
+    }
+
+    function deleteJournal(idx) {
+      const arr = getJournal().sort((a,b) => b.date.localeCompare(a.date));
+      const removed=arr[idx]; if(removed) markDeleted("journal",removed.ts||`${removed.date}|${removed.highlight}|${removed.meal}`);
+      arr.splice(idx, 1); setJournal(arr); renderJournal();
+    }
+
+    // ===================== NAVIGATION =====================
+    let currentPage = "home";
+    let lastBackPress = 0;
+
+    function showToast(msg) {
+      const old = document.getElementById("appToast");
+      if (old) old.remove();
+      const tip = document.createElement("div");
+      tip.id = "appToast";
+      tip.className = "alert alert-info";
+      tip.style.cssText = "position:fixed;bottom:80px;left:16px;right:16px;z-index:500;text-align:center;margin:0;";
+      tip.textContent = msg;
+      document.body.appendChild(tip);
+      setTimeout(() => tip.remove(), 2000);
+    }
+
+    function showPage(id, fromHistory) {
+      if (!document.getElementById("page-" + id)) id = "home";
+
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      const page = document.getElementById("page-" + id);
+      if (page) page.classList.add("active");
+
+      document.querySelectorAll(".nav-item").forEach(n => {
+        n.classList.toggle("active", n.dataset.page === id ||
+          (["attractions","maps","journal","prep","money","pretrip","wallet"].includes(id) && n.dataset.page === "more") ||
+          false);
+      });
+      if (["attractions","maps","journal","prep","money","pretrip","wallet"].includes(id)) {
+        document.querySelector('.nav-item[data-page="more"]').classList.add("active");
+      }
+
+      if (id === "home") renderHome();
+      if (id === "today") renderToday();
+      if (id === "timeline") renderTimeline();
+      if (id === "bookings") renderBookings();
+      if (id === "cities") renderCities();
+      if (id === "food") renderFood();
+      if (id === "transport") renderTransport();
+      if (id === "prep") renderPrep();
+      if (id === "money") renderMoney();
+      if (id === "more") renderMore();
+      if (id === "attractions") renderAttractions();
+      if (id === "maps") renderMaps();
+      if (id === "journal") renderJournal();
+      if (id === "pretrip") renderPretrip();
+      if (id === "wallet") renderWallet();
+
+      currentPage = id;
+      window.scrollTo(0,0);
+
+      // Each page visit becomes a real history entry. The phone Back button
+      // therefore returns to the page that was actually viewed previously.
+      if (!fromHistory) {
+        try { history.pushState({ page: id }, "", "#" + id); } catch (e) {}
+      }
+    }
+
+    function closeSheet() {
+      document.getElementById("overlay").classList.remove("open");
+    }
+
+    window.addEventListener("popstate", event => {
+      // A Back press closes an open popup/edit sheet before changing pages.
+      const overlay = document.getElementById("overlay");
+      if (overlay && overlay.classList.contains("open")) {
+        closeSheet();
+        try { history.pushState({ page: currentPage }, "", "#" + currentPage); } catch (e) {}
+        return;
+      }
+
+      const targetPage = event.state && event.state.page;
+      if (targetPage && document.getElementById("page-" + targetPage)) {
+        showPage(targetPage, true);
+        return;
+      }
+
+      // At Home, require a second Back press to leave the installed app/browser tab.
+      if (currentPage === "home") {
+        const now = Date.now();
+        if (now - lastBackPress < 2000) {
+          lastBackPress = 0;
+          try { history.go(-1); } catch (e) {}
+        } else {
+          lastBackPress = now;
+          showToast("Press back again to exit");
+          try { history.pushState({ page: "home" }, "", "#home"); } catch (e) {}
+        }
+      } else {
+        showPage("home", true);
+        try { history.replaceState({ page: "home" }, "", "#home"); } catch (e) {}
+      }
+    });
+
+    function syncSystemThemeColor() {
+      const dark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", dark ? "#111315" : "#8B1E3F");
+    }
+    if (window.matchMedia) {
+      const themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
+      if (themeMedia.addEventListener) themeMedia.addEventListener("change", syncSystemThemeColor);
+    }
+
+    // ===================== INIT =====================
+    document.addEventListener("DOMContentLoaded", () => {
+      syncSystemThemeColor();
+      // iPhone/iPad cannot trigger Apple's native install sheet from JavaScript,
+      // so show matching in-app directions automatically instead.
+      if (isIOSDevice() && !isStandaloneApp()) {
+        setTimeout(() => showInstallPrompt('ios'), 1400);
+      }
+
+      // Create a guarded Home entry, then open a deep-linked page if one was requested.
+      try {
+        const hashPage = (location.hash || "").replace(/^#/, "");
+        const startPage = hashPage && document.getElementById("page-" + hashPage) ? hashPage : "home";
+        history.replaceState({ page: "home", root: true }, "", "#home");
+        history.pushState({ page: "home" }, "", "#home");
+        if (startPage !== "home") {
+          showPage(startPage, false);
+        }
+      } catch (e) {}
+
+      // Force all external links to open in a new tab
+      document.body.addEventListener("click", e => {
+        const a = e.target.closest("a[href]");
+        if (!a) return;
+        const href = a.getAttribute("href") || "";
+        if (href.startsWith("http") || href.startsWith("//")) {
+          a.setAttribute("target", "_blank");
+          a.setAttribute("rel", "noopener noreferrer");
+        }
+      }, true);
+
+      // Timeline filters
+      document.getElementById("tlFilters").addEventListener("click", e => {
+        if (e.target.classList.contains("filter-chip")) {
+          document.querySelectorAll("#tlFilters .filter-chip").forEach(c => c.classList.remove("active"));
+          e.target.classList.add("active");
+          tlFilter = e.target.dataset.f;
+          renderTimeline();
+        }
+      });
+
+      // Timeline search and mode filters
+      document.getElementById("timelineSearch").addEventListener("input", e => {
+        tlSearch = e.target.value || "";
+        renderTimeline();
+      });
+      document.getElementById("tlModeFilters").addEventListener("click", e => {
+        if (!e.target.classList.contains("filter-chip")) return;
+        document.querySelectorAll("#tlModeFilters .filter-chip").forEach(c => c.classList.remove("active"));
+        e.target.classList.add("active");
+        tlModeFilter = e.target.dataset.mode || "all";
+        renderTimeline();
+      });
+
+      // City tabs
+      document.querySelectorAll(".city-tab").forEach(t => {
+        t.onclick = () => {
+          document.querySelectorAll(".city-tab").forEach(x => x.classList.remove("active"));
+          t.classList.add("active");
+          currentCity = t.dataset.city;
+          renderCities();
+        };
+      });
+
+      // Restaurant filters
+      document.getElementById("restQuickFilters").addEventListener("click", e => {
+        if (e.target.classList.contains("filter-chip")) {
+          document.querySelectorAll("#restQuickFilters .filter-chip").forEach(c => c.classList.remove("active"));
+          e.target.classList.add("active");
+          restQuickFilter = e.target.dataset.quick;
+          renderFood();
+        }
+      });
+      document.getElementById("restFilters").addEventListener("click", e => {
+        if (e.target.classList.contains("filter-chip")) {
+          document.querySelectorAll("#restFilters .filter-chip").forEach(c => c.classList.remove("active"));
+          e.target.classList.add("active");
+          restCityFilter = e.target.dataset.city;
+          renderFood();
+        }
+      });
+      document.getElementById("restSearch").addEventListener("input", e => {
+        restSearch = e.target.value;
+        renderFood();
+      });
+      document.getElementById("restAteFilters").addEventListener("click", e => {
+        if (e.target.classList.contains("filter-chip")) {
+          document.querySelectorAll("#restAteFilters .filter-chip").forEach(c => c.classList.remove("active"));
+          e.target.classList.add("active");
+          restAteFilter = e.target.dataset.ate;
+          renderFood();
+        }
+      });
+
+      // Prep tabs
+      document.querySelectorAll("[data-prep]").forEach(t => {
+        t.onclick = () => {
+          document.querySelectorAll("[data-prep]").forEach(x => x.classList.remove("active"));
+          t.classList.add("active");
+          prepTab = t.dataset.prep;
+          renderPrep();
+        };
+      });
+
+      // Attractions filters
+      document.getElementById("attrFilters").addEventListener("click", e => {
+        if (e.target.classList.contains("filter-chip")) {
+          document.querySelectorAll("#attrFilters .filter-chip").forEach(c => c.classList.remove("active"));
+          e.target.classList.add("active");
+          attrCityFilter = e.target.dataset.city;
+          renderAttractions();
+        }
+      });
+      document.getElementById("attrVisitFilters").addEventListener("click", e => {
+        if (e.target.classList.contains("filter-chip")) {
+          document.querySelectorAll("#attrVisitFilters .filter-chip").forEach(c => c.classList.remove("active"));
+          e.target.classList.add("active");
+          attrVisitFilter = e.target.dataset.visit;
+          renderAttractions();
+        }
+      });
+
+      // Expense report filters
+      document.getElementById("expOwnerFilters").addEventListener("click", e => {
+        if (e.target.classList.contains("filter-chip")) {
+          document.querySelectorAll("#expOwnerFilters .filter-chip").forEach(c=>c.classList.remove("active"));
+          e.target.classList.add("active"); expOwnerFilter=e.target.dataset.owner; renderMoney();
+        }
+      });
+      document.getElementById("expTypeFilters").addEventListener("click", e => {
+        if (e.target.classList.contains("filter-chip")) {
+          document.querySelectorAll("#expTypeFilters .filter-chip").forEach(c=>c.classList.remove("active"));
+          e.target.classList.add("active"); expTypeFilter=e.target.dataset.type; renderMoney();
+        }
+      });
+
+      // Default journal date
+      document.getElementById("jDate").value = new Date().toISOString().slice(0,10);
+
+      // Initial render
+      renderHome();
+
+      // Real service worker for installable offline use.
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      }
+    });
+  </script>
+</body>
+</html>
