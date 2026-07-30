@@ -1,0 +1,17 @@
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+*.log
+.vscode/
+.idea/
+*.zip
+*.7z
+*.rar
+backup/
+backups/
+*conflicted copy*
