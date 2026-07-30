@@ -212,6 +212,21 @@
     .tl-step.emphasis-blue .tl-dot { background:#1565c0; box-shadow:0 0 0 2px #1565c0; }
     .tl-step.emphasis-blue .travel-callout { color:#0d47a1; }
     .tl-step.emphasis-blue .travel-time { background:#1565c0; }
+    .tl-step.emphasis-purple { background: linear-gradient(135deg,#eadcff 0%,#f7f0ff 100%); border-color:#7b1fa2; box-shadow:0 3px 10px rgba(123,31,162,.16); }
+    .tl-step.emphasis-purple::before { background:#7b1fa2; }
+    .tl-step.emphasis-purple .tl-dot { background:#6a1b9a; box-shadow:0 0 0 2px #6a1b9a; }
+    .tl-step.emphasis-purple .travel-callout { color:#4a148c; }
+    .tl-step.emphasis-purple .travel-time { background:#6a1b9a; }
+    .tl-step.emphasis-orange { background: linear-gradient(135deg,#ffe0b2 0%,#fff4e3 100%); border-color:#ef6c00; box-shadow:0 3px 10px rgba(239,108,0,.16); }
+    .tl-step.emphasis-orange::before { background:#ef6c00; }
+    .tl-step.emphasis-orange .tl-dot { background:#e65100; box-shadow:0 0 0 2px #e65100; }
+    .tl-step.emphasis-orange .travel-callout { color:#bf360c; }
+    .tl-step.emphasis-orange .travel-time { background:#e65100; }
+    .tl-step.emphasis-black { background: linear-gradient(135deg,#e5e5e5 0%,#f7f7f7 100%); border-color:#111; box-shadow:0 3px 10px rgba(0,0,0,.16); }
+    .tl-step.emphasis-black::before { background:#111; }
+    .tl-step.emphasis-black .tl-dot { background:#111; box-shadow:0 0 0 2px #111; }
+    .tl-step.emphasis-black .travel-callout { color:#111; }
+    .tl-step.emphasis-black .travel-time { background:#111; }
     .tl-step.emphasis-gold { background: linear-gradient(135deg,#fff0b3 0%,#fff9df 100%); border-color:#d29b00; box-shadow:0 3px 10px rgba(210,155,0,.16); }
     .tl-step.emphasis-gold::before { background:#d29b00; }
     .tl-step.emphasis-gold .tl-dot { background:#b57f00; box-shadow:0 0 0 2px #b57f00; }
@@ -497,7 +512,7 @@
       <div class="alert alert-info mt-12">
         <strong>Tip:</strong> Add this page to your Home Screen for full-screen app experience and offline access.
       </div>
-      <div style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;">App v10.2.1 · Data v10.0.0</div>
+      <div style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;">App v10.3.0 · Data v10.0.0</div>
     </section>
 
     <!-- TODAY -->
@@ -799,7 +814,7 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.2.1";
+    const APP_VERSION = "10.3.0";
     const DATA_VERSION = "10.0.0";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
@@ -949,6 +964,7 @@
       if (/vaporetto|water bus/.test(m)) return "🚤";
       if (/shuttle boat|water transfer|water taxi|boat/.test(m)) return "🛥️";
       if (/bus|coach/.test(m)) return "🚌";
+      if (/taxi|cab/.test(m)) return "🚕";
       if (/drive|vehicle|car/.test(m)) return "🚗";
       if (/tram/.test(m)) return "🚋";
       if (/passport|immigration|tsa|security|airtrain|airport shuttle/.test(m)) return "🛂";
@@ -957,20 +973,40 @@
       return "📍";
     }
 
-    function autoTravelHighlight(t) {
-      const mode = (t.mode || "").toLowerCase();
+    const DEFAULT_TRAVEL_EMPHASIS = Object.freeze({
+      flight: "green",
+      train: "blue",
+      boat: "purple",
+      bus: "orange",
+      taxi: "black",
+      walk: ""
+    });
+
+    function travelModeFamily(mode) {
+      const m = (mode || "").toLowerCase();
+      if (/flight|\b(?:dl|sk)\s*\d+|sas|delta/.test(m)) return "flight";
+      if (/train|rail|italo|leonardo express/.test(m)) return "train";
+      if (/vaporetto|water bus|shuttle boat|water transfer|water taxi|\bboat\b|ferry/.test(m)) return "boat";
+      if (/bus|coach|airport shuttle/.test(m)) return "bus";
+      if (/taxi|\bcab\b/.test(m)) return "taxi";
+      if (/walk|walking/.test(m)) return "walk";
+      return "";
+    }
+
+    function automaticTravelEmphasis(t) {
       const status = (t.status || "").toLowerCase();
       const hasExactStart = /^\d{1,2}:\d{2}/.test((t.start || "").toString().trim());
-      const isScheduledTravel = /flight|\b(?:dl|sk)\s*\d+|train|rail|italo|leonardo express|vaporetto|water bus|shuttle boat|water transfer|water taxi|\bboat\b|ferry/.test(mode);
+      const family = travelModeFamily(t.mode);
       const isUnconfirmed = /pending|verify|partial|tbd/.test(status);
-      return hasExactStart && isScheduledTravel && !isUnconfirmed;
+      if (!hasExactStart || isUnconfirmed || !family) return "";
+      return DEFAULT_TRAVEL_EMPHASIS[family] || "";
     }
 
     function timelineEmphasis(t) {
       const e = (t.emphasis || "auto").toLowerCase();
       if (e === "standard" || e === "none") return "";
-      if (["green","blue","gold","burgundy"].includes(e)) return e;
-      return autoTravelHighlight(t) ? "green" : "";
+      if (["green","blue","purple","orange","black","gold","burgundy"].includes(e)) return e;
+      return automaticTravelEmphasis(t);
     }
 
     function isActualTravelStep(t) { return !!timelineEmphasis(t); }
@@ -2231,7 +2267,7 @@
         { key: "start", label: "Start time (e.g. 09:39 or 07:00+1)", value: t.start },
         { key: "end", label: "End time", value: t.end },
         { key: "mode", label: "Mode (e.g. train name)", value: t.mode },
-        { key: "emphasis", label: "Timeline emphasis", type: "select", value: t.emphasis || "auto", options: ["auto","green","blue","gold","burgundy","standard"] },
+        { key: "emphasis", label: "Timeline emphasis", type: "select", value: t.emphasis || "auto", options: ["auto","green","blue","purple","orange","black","gold","burgundy","standard"] },
         { key: "time", label: "Duration / est. time", value: t.time },
         { key: "status", label: "Status", type: "select", value: t.status,
           options: ["Confirmed","Pending","Verify Day-Of","Partial","Confirmed - Decision Needed","Decision Needed","Plan Confirmed / Timetable Pending","Done"] },
@@ -2259,7 +2295,7 @@
       });
       // Relabel the danger button for base steps
       const emphasisSel=document.getElementById("ef_emphasis");
-      if(emphasisSel){ const labels={auto:"Automatic — flights/trains/water",green:"Green + bold",blue:"Blue + bold",gold:"Gold + bold",burgundy:"Burgundy + bold",standard:"Standard card"}; Array.from(emphasisSel.options).forEach(o=>o.textContent=labels[o.value]||o.value); }
+      if(emphasisSel){ const labels={auto:"Automatic — flight green, train blue, boat purple, bus orange, taxi black",green:"Green + bold",blue:"Blue + bold",purple:"Purple + bold",orange:"Orange + bold",black:"Black + bold",gold:"Gold + bold",burgundy:"Burgundy + bold",standard:"Standard card"}; Array.from(emphasisSel.options).forEach(o=>o.textContent=labels[o.value]||o.value); }
       const delBtn = document.getElementById("efDelete");
       if (delBtn) delBtn.textContent = isHidden ? "Restore this step" : "Hide / cancel this step";
     }
@@ -2951,7 +2987,7 @@
         { key: "start", label: "Start time (e.g. 14:30)", value: "" },
         { key: "end", label: "End time", value: "" },
         { key: "mode", label: "Mode (walk, taxi, train…)", value: "" },
-        { key: "emphasis", label: "Timeline emphasis", type: "select", value: "auto", options: ["auto","green","blue","gold","burgundy","standard"] },
+        { key: "emphasis", label: "Timeline emphasis", type: "select", value: "auto", options: ["auto","green","blue","purple","orange","black","gold","burgundy","standard"] },
         { key: "duration", label: "Duration", value: "" },
         { key: "status", label: "Status", type: "select", value: "Confirmed",
           options: ["Confirmed","Pending","Verify Day-Of","Decision Needed","Done"] },
@@ -3009,7 +3045,7 @@
         { key: "start", label: "Start time", value: leg.start || "" },
         { key: "end", label: "End time", value: leg.end || "" },
         { key: "mode", label: "Mode", value: leg.mode || "" },
-        { key: "emphasis", label: "Timeline emphasis", type: "select", value: leg.emphasis || "auto", options: ["auto","green","blue","gold","burgundy","standard"] },
+        { key: "emphasis", label: "Timeline emphasis", type: "select", value: leg.emphasis || "auto", options: ["auto","green","blue","purple","orange","black","gold","burgundy","standard"] },
         { key: "duration", label: "Duration", value: leg.duration || "" },
         { key: "status", label: "Status", type: "select", value: leg.status || "Confirmed",
           options: ["Confirmed","Pending","Verify Day-Of","Decision Needed","Done"] },
