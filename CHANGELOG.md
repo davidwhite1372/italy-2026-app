@@ -1,5 +1,19 @@
 # Changelog
 
+## [10.5.0 DEV Phase 4.5] - 2026-07-31
+
+### Added
+
+- Data-owner guidance banners on editable pages.
+- Linked Home Quick Tips for common update tasks.
+- Timeline links to the correct source page for flight, hotel, and shared travel changes.
+
+### Changed
+
+- Timeline is now mostly read-only for shared records.
+- Timeline retains completion, visibility, item-type, and detail controls.
+
+
 ## [10.5.0 DEV Phase 4] - 2026-07-31
 
 ### Changed
