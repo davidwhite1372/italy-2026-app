@@ -850,7 +850,7 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.4.0-dev";
+    const APP_VERSION = "10.4.0-dev-r2";
     const DATA_VERSION = "10.0.0";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
@@ -2287,7 +2287,7 @@
         } else if (isHidden) {
           actionBtns = `<button class="edit-btn" style="color:var(--accent);" onclick="restoreTimelineStep(${t.step})">Restore</button><button class="edit-btn" onclick="editTimelineStep(${t.step})">Edit</button>`;
         } else {
-          actionBtns = `<button class="edit-btn" style="color:var(--danger);" onclick="hideTimelineStep(${t.step})">Hide</button><button class="edit-btn" onclick="editTimelineStep(${t.step})">Edit</button>`;
+          actionBtns = `<button class="edit-btn" style="color:var(--danger);" onclick="hideTimelineStep(${t.step})">Hide Event</button><button class="edit-btn" onclick="editTimelineStep(${t.step})">Edit</button>`;
         }
         const route = t._isCustom && t._customId ? getAllDoorRoutes().find(r => r._isCustom && r._id === t._customId) : routeForTimelineStep(t.step);
         const primary = route ? normalizedLink(route.link) : "";
@@ -2295,7 +2295,7 @@
         return `
           <div class="tl-step ${cls} ${timelineStyleClass(t)}" data-step="${t.step}" style="${isHidden ? 'opacity:0.75;' : ''}">
             <div class="tl-dot"></div>
-            ${isNext ? `<div class="tl-current-marker">Next item</div>` : ""}
+            ${isNext ? `<div class="tl-current-marker">NEXT</div>` : ""}
             <div class="tl-summary">
               ${isActualTravelStep(t) ? `<div class="travel-callout"><span class="travel-time">${t.start}</span><span class="travel-service">${modeIcon(t.mode)} ${actualTravelLabel(t)}</span><span class="travel-kind">${actualTravelKind(t)}</span></div>` : ""}
               <div class="tl-time">${fmtDate(t.date)} ${t.start ? "· " + t.start + (t.end ? "–" + t.end : "") : ""}</div>
@@ -2304,7 +2304,7 @@
                   <div class="tl-title">${title}</div>
                   <div class="tl-detail">${modeIcon(t.mode)} ${t.mode} · ${t.time} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
                 </div>
-                <button class="tl-toggle" onclick="toggleTimelineDetails(${t.step})">${isExpanded ? "Hide" : "Details"}</button>
+                <button class="tl-toggle" onclick="toggleTimelineDetails(${t.step})" aria-expanded="${isExpanded}">${isExpanded ? "▼ Details" : "▶ Details"}</button>
               </div>
             </div>
             ${isExpanded ? `<div class="tl-expanded">
@@ -2324,11 +2324,13 @@
         timelineAutoScrollPending = false;
         requestAnimationFrame(() => {
           const nodes = Array.from(document.querySelectorAll("#timelineList .tl-step[data-step]"));
-          const openIndex = nodes.findIndex(n => Number(n.dataset.step) === Number(firstOpenStep));
-          const target = openIndex > 0 ? nodes[openIndex - 1] : (nodes[openIndex] || nodes[0]);
-          if (target) {
-            const offset = 76;
-            window.scrollTo({ top: Math.max(0, target.getBoundingClientRect().top + window.scrollY - offset), behavior:"smooth" });
+          const nextItem = nodes.find(n => Number(n.dataset.step) === Number(firstOpenStep));
+          if (nextItem) {
+            // Place the next unfinished item about one-third down the screen so the
+            // most recent completed item remains visible above it for context.
+            const desiredTop = Math.max(90, Math.round(window.innerHeight * 0.33));
+            const absoluteTop = nextItem.getBoundingClientRect().top + window.scrollY;
+            window.scrollTo({ top: Math.max(0, absoluteTop - desiredTop), behavior:"smooth" });
           }
         });
       }
