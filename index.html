@@ -590,7 +590,7 @@
       <div class="alert alert-info mt-12">
         <strong>Tip:</strong> Add this page to your Home Screen for full-screen app experience and offline access.
       </div>
-      <div style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;">App v10.4.0 DEV R3 · Data v10.0.0</div>
+      <div style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;">App v10.5.0 DEV Phase 3 · Data v10.5.0</div>
     </section>
 
     <!-- TODAY -->
@@ -892,8 +892,8 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.4.0-dev-r1";
-    const DATA_VERSION = "10.0.0";
+    const APP_VERSION = "10.5.0-dev-phase3-hotels";
+    const DATA_VERSION = "10.5.0";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -1559,12 +1559,87 @@
       });
     }
 
+    function liveHotels() {
+      const live = getLive();
+      const edits = live.hotels || {};
+      return HOTELS.map(h => edits[h.id] ? { ...h, ...edits[h.id], id:h.id, aliases:h.aliases || [] } : { ...h });
+    }
+
+    function hotelById(id) {
+      return liveHotels().find(h => h.id === id) || null;
+    }
+
+    function hotelForDate(date) {
+      if (!date) return null;
+      return liveHotels().find(h => date >= h.checkIn && date < h.checkOut) || null;
+    }
+
+    function saveHotelEdit(id, data) {
+      const live = getLive();
+      if (!live.hotels) live.hotels = {};
+      live.hotels[id] = { ...(live.hotels[id] || {}), ...data, updatedAt:new Date().toISOString() };
+      setLive(live);
+    }
+
+    function editHotelById(id) {
+      const h = hotelById(id);
+      if (!h) return;
+      openEditSheet("Edit master hotel", [
+        {key:"name",label:"Hotel name",value:h.name},
+        {key:"city",label:"City",value:h.city},
+        {key:"checkIn",label:"Check-in date (YYYY-MM-DD)",value:h.checkIn},
+        {key:"checkOut",label:"Check-out date (YYYY-MM-DD)",value:h.checkOut},
+        {key:"dates",label:"Display dates",value:h.dates},
+        {key:"conf",label:"Confirmation #",value:h.conf},
+        {key:"status",label:"Status",type:"select",value:h.status || "Confirmed",options:["Confirmed","Pending","Confirmed / Pay Later","Changed","Cancelled"]},
+        {key:"address",label:"Address",value:h.address},
+        {key:"room",label:"Room",value:h.room || ""},
+        {key:"payment",label:"Payment",value:h.payment || ""},
+        {key:"tax",label:"Taxes / fees",value:h.tax || ""},
+        {key:"breakfast",label:"Breakfast",value:h.breakfast || ""},
+        {key:"notes",label:"Hotel notes",type:"textarea",value:h.notes || ""},
+        {key:"maps",label:"Map link",value:h.maps || ""}
+      ], data => {
+        saveHotelEdit(id, data);
+        closeSheet();
+        renderHome();
+        renderToday();
+        renderTimeline();
+        renderBookings();
+        renderWallet();
+        renderCities();
+      });
+    }
+
+    function replaceHotelReferences(text) {
+      if (!text) return text;
+      let out = String(text);
+      liveHotels().forEach(h => {
+        const base = HOTELS.find(x => x.id === h.id) || h;
+        const names = [base.name, ...(base.aliases || [])].filter(Boolean).sort((a,b)=>b.length-a.length);
+        names.forEach(name => { out = out.split(name).join(h.name); });
+        if (base.address && h.address && base.address !== h.address) out = out.split(base.address).join(h.address);
+      });
+      return out;
+    }
+
+    function syncTimelineHotels(t) {
+      return {
+        ...t,
+        title:replaceHotelReferences(t.title),
+        from:replaceHotelReferences(t.from),
+        to:replaceHotelReferences(t.to),
+        instructions:replaceHotelReferences(t.instructions),
+        notes:replaceHotelReferences(t.notes)
+      };
+    }
+
     function liveTimeline() {
       const live = getLive();
       const base = TIMELINE.map(t => {
         const o = (live.timeline || {})[t.step];
         const merged = o ? { ...t, ...o } : { ...t };
-        return syncTimelineFlight(merged);
+        return syncTimelineHotels(syncTimelineFlight(merged));
       });
       // Custom door-to-door legs appear on the master timeline too
       const custom = getCustomLegs().map((leg, i) => ({
@@ -1632,6 +1707,17 @@
           merged.conf = airConfirmationText();
           merged.dates = flights.length ? `${shortDateLabel(flights[0].date)}–${shortDateLabel(flights[flights.length-1].date)}` : merged.dates;
           merged.notes = liveAirBooking().notes;
+        }
+        if (r.hotelId) {
+          const h = hotelById(r.hotelId);
+          if (h) {
+            merged.provider = h.name;
+            merged.conf = h.conf;
+            merged.dates = h.dates;
+            merged.status = h.status;
+            merged.notes = [h.address, h.room, h.payment, h.tax, h.breakfast, h.notes].filter(Boolean).join(" · ");
+            merged.hotelId = h.id;
+          }
         }
         return merged;
       });
@@ -2046,21 +2132,20 @@
         </div>
       `).join("") || '<div class="text-muted text-sm">All high-priority items checked!</div>';
 
+      const hotels = liveHotels();
       document.getElementById("homeGlance").innerHTML = `
         <div class="text-sm" style="line-height:1.8;">
           <strong>Depart</strong> Sun Oct 4 · TPA → BOS → CPH<br>
-          <strong>Rome</strong> Oct 5–8 · Anantara Palazzo Naiadi<br>
-          <strong>Florence</strong> Oct 8–10 · W Florence<br>
-          <strong>Venice</strong> Oct 10–13 · JW Marriott<br>
-          <strong>Venice</strong> Oct 13–15 · Hotel Antiche Figure<br>
+          ${hotels.map(h => `<strong>${escapeHtml(h.city)}</strong> ${escapeHtml(h.dates)} · ${escapeHtml(h.name)}<br>`).join("")}
           <strong>Return</strong> Thu Oct 15 · VCE → CPH → JFK → TPA
         </div>
       `;
 
+      const antiche = hotelById("hotel-venice-antiche");
       document.getElementById("homeKeys").innerHTML = `
         <strong>Air:</strong> ${airConfirmationText()}<br>
         <strong>Italo 8904:</strong> ${TRIP.italo} · Coach 1 · seats 13 & 16<br>
-        <strong>Antiche Figure:</strong> ${TRIP.hotels[3].conf}<br>
+        <strong>Antiche Figure:</strong> ${antiche ? escapeHtml(antiche.conf) : ""}<br>
         <strong>PSA Rom/Flo:</strong> ${TRIP.confRomeFlo}<br>
         <strong>PSA Ven:</strong> ${TRIP.confVen}<br>
         <strong>Emergency:</strong> 112
@@ -2086,6 +2171,7 @@
       });
 
       const day = DAYS.find(d => d.date === selectedDate) || DAYS[0];
+      const dayHotel = hotelForDate(day.date);
       document.getElementById("todayContent").innerHTML = `
         <div class="card" style="padding:10px 14px;">
           <button style="width:100%;" onclick="shareToday()">📤 Share today’s plan</button>
@@ -2093,7 +2179,7 @@
         </div>
         <div class="card">
           <div class="card-title">${day.theme}</div>
-          <div class="text-sm text-muted mb-8">${fmtDate(day.date)} · ${day.city} · ${day.hotel}</div>
+          <div class="text-sm text-muted mb-8">${fmtDate(day.date)} · ${day.city} · ${dayHotel ? dayHotel.name : day.hotel}</div>
           <div class="section-title" style="margin-top:0;font-size:0.9rem;">Schedule</div>
           <div class="text-sm">${day.schedule}</div>
         </div>
@@ -2160,7 +2246,7 @@
       const text = [
         `🇮🇹 Italy 2026 — ${day.theme}`,
         `${fmtDate(day.date)} · ${day.city}`,
-        `Hotel: ${day.hotel}`,
+        `Hotel: ${(hotelForDate(day.date) || {}).name || day.hotel}`,
         "",
         "SCHEDULE",
         day.schedule,
@@ -2318,12 +2404,9 @@
           </div>
         </div>
         <div class="card">
-          <div class="row space-between"><div class="card-title">🏨 Hotels</div><button class="edit-btn" onclick="copyTextValue(TRIP.hotels[3].conf,'Hotel confirmation copied')">Copy Antiche conf.</button></div>
+          <div class="row space-between"><div class="card-title">🏨 Hotels</div><button class="edit-btn" onclick="copyTextValue((hotelById('hotel-venice-antiche')||{}).conf,'Hotel confirmation copied')">Copy Antiche conf.</button></div>
           <div class="text-sm" style="line-height:1.85;">
-            <strong>Rome Oct 5–8:</strong> Anantara Palazzo Naiadi<br>Piazza della Repubblica 48-49 · Event-provided<br><br>
-            <strong>Florence Oct 8–10:</strong> W Florence<br>Via del Melarancio 1 · Event-provided<br><br>
-            <strong>Venice Oct 10–13:</strong> JW Marriott Venice Resort & Spa<br>Isola delle Rose · Event-provided · confirm shuttle<br><br>
-            <strong>Venice Oct 13–15:</strong> Hotel Antiche Figure<br>Conf <strong>${TRIP.hotels[3].conf}</strong> · Santa Croce 686<br>Superior Double · €620 due via link · €16 city tax on site<br>Breakfast + gluten-free breakfast included
+            ${liveHotels().map(h => `<div style="padding:8px 0;border-bottom:1px solid var(--border);"><strong>${escapeHtml(h.city)} ${escapeHtml(h.dates)}:</strong> ${escapeHtml(h.name)} <button class="edit-btn" onclick="editHotelById('${h.id}')">Edit</button><br>${escapeHtml(h.address)} · ${escapeHtml(h.conf)}${h.room?`<br>${escapeHtml(h.room)}`:""}${h.payment?` · ${escapeHtml(h.payment)}`:""}${h.tax?` · ${escapeHtml(h.tax)}`:""}${h.breakfast?`<br>${escapeHtml(h.breakfast)}`:""}</div>`).join("")}
           </div>
         </div>
         <div class="card"><div class="card-title">🎫 Conference / PSA</div><div class="text-sm" style="line-height:1.85;"><strong>Rom/Flo:</strong> ${TRIP.confRomeFlo}<br><strong>Ven:</strong> ${TRIP.confVen}<br><span class="text-muted">Registration confirmed; add final agenda offline when available.</span></div></div>
@@ -2341,7 +2424,7 @@
         ...flights.map(f => `${f.flight}: ${f.from} ${f.dep} → ${f.to} ${f.arr}`),
         "",
         `Italo 8904: ${TRIP.italo} Coach 1 seats 13 & 16 (9:39–11:55)`,
-        `Hotel Antiche Figure: ${TRIP.hotels[3].conf}`,
+        ...liveHotels().map(h => `${h.name}: ${h.conf} · ${h.dates} · ${h.address}`),
         `PSA Rom/Flo: ${TRIP.confRomeFlo}`,
         `PSA Ven: ${TRIP.confVen}`,
         "",
@@ -2538,7 +2621,7 @@ const delBtn = document.getElementById("efDelete");
         <div class="card">
           <div class="row space-between">
             <div class="fw-600">${r.item}</div>
-            <div>${statusBadge(r.status)} <button class="edit-btn" onclick="${i === 0 ? "editAirBooking()" : `editReservation(${i})`}">${i === 0 ? "Edit Booking" : "Edit"}</button></div>
+            <div>${statusBadge(r.status)} <button class="edit-btn" onclick="${i === 0 ? "editAirBooking()" : (r.hotelId ? `editHotelById('${r.hotelId}')` : `editReservation(${i})`)}">${i === 0 ? "Edit Booking" : "Edit"}</button></div>
           </div>
           <div class="text-sm text-muted mt-8">${r.provider} · ${r.dates}</div>
           <div class="text-sm mt-8"><strong>Conf:</strong> ${r.conf}</div>
@@ -2590,7 +2673,7 @@ const delBtn = document.getElementById("efDelete");
       const name = currentCity.charAt(0).toUpperCase() + currentCity.slice(1);
       document.getElementById("cityContent").innerHTML = `
         <div class="card">
-          <div class="card-title">🏨 ${c.hotel}</div>
+          <div class="card-title">🏨 ${(liveHotels().find(h => h.city.toLowerCase() === currentCity) || {}).name || c.hotel}</div>
           <div class="text-sm text-muted">Today's Mission</div>
           <div class="text-sm mt-8">${c.mission}</div>
         </div>

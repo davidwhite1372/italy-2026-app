@@ -81,3 +81,8 @@ Each timeline item can still be manually changed using Timeline emphasis.
 - Flight edits now originate from the Travel page or linked Timeline/Wallet controls.
 - Timeline, Travel, Reservations, Confirmation Wallet, Maps routes, Home Next Up, and shared wallet text read from the same flight records.
 - Existing duplicate flight data remains in the source as a rollback fallback, but is no longer used by the linked views.
+
+
+## Version 10.5 DEV Phase 3 — Hotels
+
+Hotel data is now unified into master hotel records. Editing a hotel from Reservations or the Confirmation Wallet updates hotel references in Home, Today, Timeline, Reservations, Wallet, and city cards.

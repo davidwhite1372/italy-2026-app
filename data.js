@@ -158,15 +158,15 @@
 
     const RESERVATIONS = [
       { item:"Air reservation", provider:"Delta / SAS", conf:"H9BVBD / AZ3BUA", dates:"Oct 4–15", status:"Confirmed", notes:"Store PDFs offline on both phones" },
-      { item:"Rome hotel", provider:"Anantara Palazzo Naiadi", conf:"Event-provided", dates:"Oct 5–8", status:"Confirmed", notes:"Need room confirmation and check-in details" },
-      { item:"Florence hotel", provider:"W Florence", conf:"Event-provided", dates:"Oct 8–10", status:"Confirmed", notes:"Need room confirmation and breakfast details" },
+      { item:"Rome hotel", hotelId:"hotel-rome-anantara", provider:"Anantara Palazzo Naiadi", conf:"Event-provided", dates:"Oct 5–8", status:"Confirmed", notes:"Need room confirmation and check-in details" },
+      { item:"Florence hotel", hotelId:"hotel-florence-w", provider:"W Florence", conf:"Event-provided", dates:"Oct 8–10", status:"Confirmed", notes:"Need room confirmation and breakfast details" },
       { item:"Rome to Florence train", provider:"PSA group travel", conf:"TBD", dates:"Oct 8", status:"Pending", notes:"Need station, train number, times, coach, seats" },
       { item:"Possible PSA Florence-to-Venice group transfer", provider:"PSA", conf:"Event-provided", dates:"Oct 10", status:"Alternative", notes:"Possible backup only. Italo 8904 Club Executive remains the confirmed primary plan." },
       { item:"Italo Florence-to-Venice ticket", provider:"Italo", conf:"EM7VNB / Rec. 118932941", dates:"Oct 10", status:"Confirmed", notes:"Primary plan: Italo 8904, 9:39–11:55 AM; Club Executive; Coach 1 seats 13 & 16; €177.76. Cancel only if the final PSA group transfer becomes clearly preferable." },
-      { item:"Venice hotel (group)", provider:"JW Marriott Venice", conf:"Event-provided", dates:"Oct 10–13", status:"Confirmed", notes:"Confirm room details, island shuttle schedule and transfer from central Venice." },
+      { item:"Venice hotel (group)", hotelId:"hotel-venice-jw", provider:"JW Marriott Venice", conf:"Event-provided", dates:"Oct 10–13", status:"Confirmed", notes:"Confirm room details, island shuttle schedule and transfer from central Venice." },
       { item:"Venice excursion selection", provider:"PSA", conf:"TBD", dates:"Oct 11", status:"Decision Needed", notes:"Choose Ciao Venice OR Murano & Burano" },
       { item:"Conference registration", provider:"PSA Convention 2026", conf:"NCN4K9C4SJD / WGNRXC5J54C", dates:"Oct 5–12", status:"Confirmed", notes:"Add final registration record and excursion page offline" },
-      { item:"Venice hotel 2", provider:"Hotel Antiche Figure", conf:"PO55JT57ZW", dates:"Oct 13–15", status:"Confirmed / Pay Later", notes:"Superior Double; €620 due 7 days before via payment link; €16 city tax on site. Free cancellation until 5 days before." }
+      { item:"Venice hotel 2", hotelId:"hotel-venice-antiche", provider:"Hotel Antiche Figure", conf:"PO55JT57ZW", dates:"Oct 13–15", status:"Confirmed / Pay Later", notes:"Superior Double; €620 due 7 days before via payment link; €16 city tax on site. Free cancellation until 5 days before." }
     ];
 
     const OPEN_ITEMS = [
@@ -300,6 +300,16 @@
       {id:"flight-sk2692",bookingId:"air-main",date:"2026-10-15",flight:"SK2692",op:"SAS Connect",from:"VCE - Venice Marco Polo Airport",dep:"11:00 AM",to:"CPH - Copenhagen Airport",arr:"1:05 PM",dur:"2h 5m",cabin:"Premium Economy",status:"Confirmed",notes:"Confirm bags tagged to TPA.",timelineNotes:"Connection 1h 15m."},
       {id:"flight-sk915",bookingId:"air-main",date:"2026-10-15",flight:"SK915",op:"SAS",from:"CPH - Copenhagen Airport",dep:"2:20 PM",to:"JFK - New York John F. Kennedy Airport Terminal 1",arr:"5:00 PM",dur:"8h 40m",cabin:"Premium Economy",status:"Confirmed",notes:"Reclaim checked bags at JFK.",timelineNotes:"Most time-sensitive connection at CPH (exit passport control)."},
       {id:"flight-sk3438",bookingId:"air-main",date:"2026-10-15",flight:"SK3438",op:"Delta (operated)",from:"JFK - New York John F. Kennedy Airport Terminal 4",dep:"7:50 PM",to:"TPA - Tampa International Airport",arr:"11:13 PM",dur:"3h 11m",cabin:"Economy",status:"Confirmed",notes:"Check the Delta app for the departure gate.",timelineNotes:""}
+    ];
+
+
+
+    // Master hotel records. All hotel views read from these records.
+    const HOTELS = [
+      {id:"hotel-rome-anantara",city:"Rome",name:"Anantara Palazzo Naiadi",aliases:["Anantara Palazzo Naiadi Hotel"],checkIn:"2026-10-05",checkOut:"2026-10-08",dates:"Oct 5–8",conf:"Event-provided",status:"Confirmed",address:"Piazza della Repubblica 48-49",room:"Event-provided room",payment:"Provided by PSA / Joe Lynch program",tax:"Confirm with hotel",breakfast:"Confirm program inclusions",notes:"Need final room confirmation and check-in details.",maps:"https://www.google.com/maps/search/?api=1&query=Anantara+Palazzo+Naiadi+Rome"},
+      {id:"hotel-florence-w",city:"Florence",name:"W Florence",aliases:["W Florence Hotel"],checkIn:"2026-10-08",checkOut:"2026-10-10",dates:"Oct 8–10",conf:"Event-provided",status:"Confirmed",address:"Via del Melarancio 1",room:"Event-provided room",payment:"Provided by PSA / Joe Lynch program",tax:"Confirm with hotel",breakfast:"Confirm breakfast details",notes:"Need final room confirmation and breakfast details.",maps:"https://www.google.com/maps/search/?api=1&query=W+Florence+Via+del+Melarancio+1"},
+      {id:"hotel-venice-jw",city:"Venice",name:"JW Marriott Venice Resort & Spa",aliases:["JW Marriott Venice","JW Venice","JW Marriott Venice Resort & Spa Hotel"],checkIn:"2026-10-10",checkOut:"2026-10-13",dates:"Oct 10–13",conf:"Event-provided",status:"Confirmed",address:"Isola delle Rose",room:"Event-provided room",payment:"Provided by PSA / Joe Lynch program",tax:"Confirm with hotel",breakfast:"Confirm program inclusions",notes:"Confirm room details, island shuttle schedule, and transfer from central Venice.",maps:"https://www.google.com/maps/search/?api=1&query=JW+Marriott+Venice+Resort+Spa"},
+      {id:"hotel-venice-antiche",city:"Venice",name:"Hotel Antiche Figure",aliases:["Antiche Figure"],checkIn:"2026-10-13",checkOut:"2026-10-15",dates:"Oct 13–15",conf:"PO55JT57ZW",status:"Confirmed / Pay Later",address:"Santa Croce 686, Fondamenta San Simeon Piccolo",room:"Superior Double",payment:"€620 due 7 days before via payment link",tax:"€16 city tax on site",breakfast:"Breakfast and gluten-free breakfast included",notes:"Free cancellation until 5 days before arrival.",maps:"https://www.google.com/maps/search/?api=1&query=Hotel+Antiche+Figure+Venice"}
     ];
 
     const TRAINS = [

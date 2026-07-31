@@ -24,6 +24,14 @@ All notable changes to the Italy 2026 Travel Companion will be documented here.
 
 ## [Unreleased]
 
+### Added — Version 10.5 DEV Phase 3 Hotels
+
+- Added four master hotel records.
+- Unified hotel names, dates, confirmations, addresses, room details, payment notes, taxes, breakfast notes and map links.
+- Hotel edits now flow to Home, Today, Timeline, Reservations, Confirmation Wallet and city cards.
+- Preserved existing duplicate source data as a rollback safety net during development.
+
+
 ## [10.4.0 DEV R2] - 2026-07-31
 
 ### Changed
