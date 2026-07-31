@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-4-0-dev-r5-countdown-first';
+const CACHE = 'italy-2026-github-v10-5-phase2-flights';
 const APP_SHELL = [
   './',
   './index.html',

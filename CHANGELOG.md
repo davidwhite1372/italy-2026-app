@@ -1,5 +1,17 @@
 # Changelog
 
+## [10.5.0-dev-phase2-flights] - 2026-07-31
+
+### Added
+
+- Master air booking and flight records.
+- Flight editor on the Travel page, Timeline, and Confirmation Wallet.
+
+### Changed
+
+- Timeline flight legs, Reservations, Wallet, Maps routes, Home Next Up, and shared wallet text now read from the same flight records.
+- Editing a flight number, route, date, time, cabin, status, or notes updates all linked flight views.
+
 All notable changes to the Italy 2026 Travel Companion will be documented here.
 
 ## [10.4.0-dev-r5] - 2026-07-31

@@ -73,3 +73,11 @@ Each timeline item can still be manually changed using Timeline emphasis.
 - Kept Next Up directly below the clocks.
 - Left all other Home page content unchanged.
 
+
+
+## Version 10.5 Development — Phase 2 Flights
+
+- Added a master air booking record and six master flight records.
+- Flight edits now originate from the Travel page or linked Timeline/Wallet controls.
+- Timeline, Travel, Reservations, Confirmation Wallet, Maps routes, Home Next Up, and shared wallet text read from the same flight records.
+- Existing duplicate flight data remains in the source as a rollback fallback, but is no longer used by the linked views.

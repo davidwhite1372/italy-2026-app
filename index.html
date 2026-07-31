@@ -238,7 +238,7 @@
     .tl-step.emphasis-burgundy .travel-callout { color:var(--primary-dark); }
     .tl-step.emphasis-burgundy .travel-time { background:var(--primary); }
 
-    /* Version 10.4 DEV R2: explicit item types; no legacy emphasis guessing */
+    /* Version 10.5 DEV R2: explicit item types; no legacy emphasis guessing */
     .tl-step { margin-bottom:16px; border-bottom-width:3px; }
     .tl-step.type-train { background:linear-gradient(135deg,#ffe0b2 0%,#fff4e3 100%); border-color:#ef6c00; }
     .tl-step.type-train .travel-time { background:#e65100; }
@@ -439,7 +439,7 @@
 
 
 
-    /* Version 10.4 development: compact dual clock */
+    /* Version 10.5 development: compact dual clock */
     .dual-clock {
       display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 14px;
     }
@@ -451,7 +451,7 @@
     .clock-time { font-size:1.08rem; font-weight:800; color:var(--primary); margin-top:2px; }
     .clock-date { font-size:.65rem; color:var(--muted); margin-top:1px; }
 
-    /* Version 10.4 development: quieter, expandable timeline */
+    /* Version 10.5 development: quieter, expandable timeline */
     .tl-step.done-step { opacity:.48; }
     .tl-step.done-step .tl-title,
     .tl-step.done-step .travel-callout,
@@ -1448,11 +1448,123 @@
       return "route_" + String(r.order || ((r.from || "") + "_" + (r.to || ""))).replace(/[^a-zA-Z0-9_-]/g, "_");
     }
 
+    function liveAirBooking() {
+      const live = getLive();
+      return { ...AIR_BOOKING, ...(live.airBooking || {}) };
+    }
+
+    function airConfirmationText() {
+      return (liveAirBooking().recordLocators || []).join(" / ");
+    }
+
+    function editAirBooking() {
+      const b = liveAirBooking();
+      openEditSheet("Edit air booking", [
+        {key:"recordLocators",label:"Record locators (separate with /)",value:(b.recordLocators || []).join(" / ")},
+        {key:"travelers",label:"Travelers",value:b.travelers || ""},
+        {key:"notes",label:"Booking notes",type:"textarea",value:b.notes || ""}
+      ], data => {
+        const live = getLive();
+        live.airBooking = {
+          ...live.airBooking,
+          recordLocators:String(data.recordLocators || "").split("/").map(x=>x.trim()).filter(Boolean),
+          travelers:data.travelers,
+          notes:data.notes,
+          updatedAt:new Date().toISOString()
+        };
+        setLive(live);
+        closeSheet();
+        renderHome();
+        renderBookings();
+        renderWallet();
+      });
+    }
+
+    function liveFlights() {
+      const live = getLive();
+      const edits = live.flights || {};
+      return FLIGHTS.map(f => edits[f.id] ? { ...f, ...edits[f.id], id:f.id, bookingId:f.bookingId } : { ...f });
+    }
+
+    function flightById(id) {
+      return liveFlights().find(f => f.id === id) || null;
+    }
+
+    function timelineTimeFromDisplay(value) {
+      const raw = (value || "").trim();
+      if (!raw) return "";
+      const plusOne = /\+1/.test(raw);
+      const clean = raw.replace(/\+1/g, "").trim();
+      const m = clean.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
+      if (!m) return raw;
+      let h = Number(m[1]);
+      const min = m[2];
+      const ap = (m[3] || "").toUpperCase();
+      if (ap === "PM" && h !== 12) h += 12;
+      if (ap === "AM" && h === 12) h = 0;
+      return String(h).padStart(2,"0") + ":" + min + (plusOne ? "+1" : "");
+    }
+
+    function syncTimelineFlight(t) {
+      if (!t.flightId) return t;
+      const f = flightById(t.flightId);
+      if (!f) return t;
+      return {
+        ...t,
+        date:f.date,
+        start:timelineTimeFromDisplay(f.dep),
+        end:timelineTimeFromDisplay(f.arr),
+        title:`${f.from} → ${f.to}`,
+        from:f.from,
+        to:f.to,
+        mode:`Flight ${f.flight}`,
+        time:f.dur,
+        status:f.status || "Confirmed",
+        instructions:[f.cabin, f.notes].filter(Boolean).join(" · "),
+        notes:f.timelineNotes || ""
+      };
+    }
+
+    function saveFlightEdit(id, data) {
+      const live = getLive();
+      if (!live.flights) live.flights = {};
+      live.flights[id] = { ...(live.flights[id] || {}), ...data, updatedAt:new Date().toISOString() };
+      setLive(live);
+    }
+
+    function editFlightById(id) {
+      const f = flightById(id);
+      if (!f) return;
+      openEditSheet("Edit master flight", [
+        {key:"date",label:"Date (YYYY-MM-DD)",value:f.date},
+        {key:"flight",label:"Flight number",value:f.flight},
+        {key:"op",label:"Airline / operator",value:f.op},
+        {key:"from",label:"From airport / terminal",value:f.from},
+        {key:"dep",label:"Departure time",value:f.dep},
+        {key:"to",label:"To airport / terminal",value:f.to},
+        {key:"arr",label:"Arrival time",value:f.arr},
+        {key:"dur",label:"Duration",value:f.dur},
+        {key:"cabin",label:"Cabin",value:f.cabin},
+        {key:"status",label:"Status",type:"select",value:f.status || "Confirmed",options:["Confirmed","Pending","Verify Day-Of","Changed","Cancelled"]},
+        {key:"notes",label:"Flight notes",type:"textarea",value:f.notes || ""},
+        {key:"timelineNotes",label:"Connection / timeline notes",type:"textarea",value:f.timelineNotes || ""}
+      ], data => {
+        saveFlightEdit(id, data);
+        closeSheet();
+        renderTransport();
+        renderTimeline();
+        renderWallet();
+        renderBookings();
+        renderHome();
+      });
+    }
+
     function liveTimeline() {
       const live = getLive();
       const base = TIMELINE.map(t => {
         const o = (live.timeline || {})[t.step];
-        return o ? { ...t, ...o } : { ...t };
+        const merged = o ? { ...t, ...o } : { ...t };
+        return syncTimelineFlight(merged);
       });
       // Custom door-to-door legs appear on the master timeline too
       const custom = getCustomLegs().map((leg, i) => ({
@@ -1513,7 +1625,15 @@
       const live = getLive();
       return RESERVATIONS.map((r, i) => {
         const o = (live.reservations || {})[i];
-        return o ? { ...r, ...o } : { ...r };
+        const merged = o ? { ...r, ...o } : { ...r };
+        if (i === 0) {
+          const flights = liveFlights();
+          merged.provider = [...new Set(flights.map(f => f.op.replace(/ \(operated\)$/i,"")))].join(" / ");
+          merged.conf = airConfirmationText();
+          merged.dates = flights.length ? `${shortDateLabel(flights[0].date)}–${shortDateLabel(flights[flights.length-1].date)}` : merged.dates;
+          merged.notes = liveAirBooking().notes;
+        }
+        return merged;
       });
     }
 
@@ -1938,7 +2058,7 @@
       `;
 
       document.getElementById("homeKeys").innerHTML = `
-        <strong>Air:</strong> ${TRIP.air}<br>
+        <strong>Air:</strong> ${airConfirmationText()}<br>
         <strong>Italo 8904:</strong> ${TRIP.italo} · Coach 1 · seats 13 & 16<br>
         <strong>Antiche Figure:</strong> ${TRIP.hotels[3].conf}<br>
         <strong>PSA Rom/Flo:</strong> ${TRIP.confRomeFlo}<br>
@@ -2170,16 +2290,21 @@
 
     function renderWallet() {
       const res = liveReservations();
+      const flights = liveFlights();
+      const outbound = flights.slice(0,3);
+      const returning = flights.slice(3);
+      const flightSummary = list => list.map(f => `${f.flight} ${f.from.split(" - ")[0]}→${f.to.split(" - ")[0]}`).join(" · ");
       document.getElementById("walletContent").innerHTML = `
         <div class="card">
-          <div class="row space-between"><div class="card-title">✈️ Flights · Delta / SAS</div><button class="edit-btn" onclick="copyTextValue(TRIP.air,'Air confirmation copied')">Copy conf.</button></div><div class="wallet-key">${TRIP.air}</div>
+          <div class="row space-between"><div class="card-title">✈️ Flights · Delta / SAS</div><button class="edit-btn" onclick="copyTextValue(airConfirmationText(),'Air confirmation copied')">Copy conf.</button></div><div class="wallet-key">${airConfirmationText()}</div>
           <div class="text-sm" style="line-height:1.85;">
-            <strong>Record locators:</strong> ${TRIP.air}<br>
-            <strong>Outbound:</strong> DL2706 TPA→BOS · SK928 BOS→CPH · SK681 CPH→FCO<br>
-            <strong>Return:</strong> SK2692 VCE→CPH · SK915 CPH→JFK · SK3438 JFK→TPA<br>
-            <strong>Cabins:</strong> Premium Economy on SAS long-hauls; Economy on Delta legs<br>
-            <span class="text-muted">Store PDFs offline on both phones. Confirm bags tagged FCO out / TPA home.</span>
+            <strong>Record locators:</strong> ${airConfirmationText()}<br>
+            <strong>Outbound:</strong> ${flightSummary(outbound)}<br>
+            <strong>Return:</strong> ${flightSummary(returning)}<br>
+            <strong>Cabins:</strong> ${[...new Set(flights.map(f=>f.cabin))].join(" / ")}<br>
+            <span class="text-muted">${AIR_BOOKING.notes}</span>
           </div>
+          <div class="mt-8">${flights.map(f=>`<div class="text-sm" style="padding:7px 0;border-top:1px solid var(--border);"><strong>${f.flight}</strong> · ${fmtDate(f.date)} · ${f.dep}–${f.arr}<br><span class="text-muted">${f.from} → ${f.to}</span> <button class="edit-btn" onclick="editFlightById('${f.id}')">Edit</button></div>`).join("")}</div>
         </div>
         <div class="card">
           <div class="row space-between"><div class="card-title">🚂 Trains</div><button class="edit-btn" onclick="copyTextValue(TRIP.italo,'Train confirmation copied')">Copy conf.</button></div><div class="wallet-key">Italo ${TRIP.italo}</div>
@@ -2195,54 +2320,25 @@
         <div class="card">
           <div class="row space-between"><div class="card-title">🏨 Hotels</div><button class="edit-btn" onclick="copyTextValue(TRIP.hotels[3].conf,'Hotel confirmation copied')">Copy Antiche conf.</button></div>
           <div class="text-sm" style="line-height:1.85;">
-            <strong>Rome Oct 5–8:</strong> Anantara Palazzo Naiadi<br>
-            Piazza della Repubblica 48-49 · Event-provided<br><br>
-            <strong>Florence Oct 8–10:</strong> W Florence<br>
-            Via del Melarancio 1 · Event-provided<br><br>
-            <strong>Venice Oct 10–13:</strong> JW Marriott Venice Resort & Spa<br>
-            Isola delle Rose · Event-provided · confirm shuttle<br><br>
-            <strong>Venice Oct 13–15:</strong> Hotel Antiche Figure<br>
-            Conf <strong>${TRIP.hotels[3].conf}</strong> · Santa Croce 686<br>
-            Superior Double · €620 due via link · €16 city tax on site<br>
-            Breakfast + gluten-free breakfast included
+            <strong>Rome Oct 5–8:</strong> Anantara Palazzo Naiadi<br>Piazza della Repubblica 48-49 · Event-provided<br><br>
+            <strong>Florence Oct 8–10:</strong> W Florence<br>Via del Melarancio 1 · Event-provided<br><br>
+            <strong>Venice Oct 10–13:</strong> JW Marriott Venice Resort & Spa<br>Isola delle Rose · Event-provided · confirm shuttle<br><br>
+            <strong>Venice Oct 13–15:</strong> Hotel Antiche Figure<br>Conf <strong>${TRIP.hotels[3].conf}</strong> · Santa Croce 686<br>Superior Double · €620 due via link · €16 city tax on site<br>Breakfast + gluten-free breakfast included
           </div>
         </div>
-        <div class="card">
-          <div class="card-title">🎫 Conference / PSA</div>
-          <div class="text-sm" style="line-height:1.85;">
-            <strong>Rom/Flo:</strong> ${TRIP.confRomeFlo}<br>
-            <strong>Ven:</strong> ${TRIP.confVen}<br>
-            <span class="text-muted">Registration confirmed; add final agenda offline when available.</span>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">🚨 Emergency</div>
-          <div class="text-sm" style="line-height:1.85;">
-            <strong>Italy emergency:</strong> 112<br>
-            <strong>U.S. Embassy Rome:</strong> +39 06 4674 1<br>
-            Via Vittorio Veneto 121
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">📌 Live reservation notes</div>
-          ${res.map(r => `
-            <div class="text-sm" style="padding:8px 0;border-bottom:1px solid var(--border);">
-              <strong>${r.item}</strong> ${statusBadge(r.status)}<br>
-              ${r.conf} · ${r.dates}<br>
-              <span class="text-muted">${r.notes}</span>
-            </div>
-          `).join("")}
-        </div>
+        <div class="card"><div class="card-title">🎫 Conference / PSA</div><div class="text-sm" style="line-height:1.85;"><strong>Rom/Flo:</strong> ${TRIP.confRomeFlo}<br><strong>Ven:</strong> ${TRIP.confVen}<br><span class="text-muted">Registration confirmed; add final agenda offline when available.</span></div></div>
+        <div class="card"><div class="card-title">🚨 Emergency</div><div class="text-sm" style="line-height:1.85;"><strong>Italy emergency:</strong> 112<br><strong>U.S. Embassy Rome:</strong> +39 06 4674 1<br>Via Vittorio Veneto 121</div></div>
+        <div class="card"><div class="card-title">📌 Live reservation notes</div>${res.map(r => `<div class="text-sm" style="padding:8px 0;border-bottom:1px solid var(--border);"><strong>${r.item}</strong> ${statusBadge(r.status)}<br>${r.conf} · ${r.dates}<br><span class="text-muted">${r.notes}</span></div>`).join("")}</div>
         <button style="width:100%;margin-top:8px;" class="btn-outline" onclick="shareWallet()">📤 Share wallet text</button>
       `;
     }
 
     function shareWallet() {
+      const flights = liveFlights();
       const text = [
         "ITALY 2026 — CONFIRMATION WALLET",
-        `Air: ${TRIP.air}`,
-        "DL2706 TPA-BOS | SK928 BOS-CPH | SK681 CPH-FCO",
-        "SK2692 VCE-CPH | SK915 CPH-JFK | SK3438 JFK-TPA",
+        `Air: ${airConfirmationText()}`,
+        ...flights.map(f => `${f.flight}: ${f.from} ${f.dep} → ${f.to} ${f.arr}`),
         "",
         `Italo 8904: ${TRIP.italo} Coach 1 seats 13 & 16 (9:39–11:55)`,
         `Hotel Antiche Figure: ${TRIP.hotels[3].conf}`,
@@ -2258,7 +2354,6 @@
         prompt("Copy:", text);
       }
     }
-
     function parseTimelineSortKey(t) {
       // Sort by date, then by start time (minutes from midnight). Handles "07:00+1", "Flexible", blanks.
       const date = t.date || "9999-99-99";
@@ -2340,7 +2435,7 @@
         } else if (isHidden) {
           actionBtns = `<button class="edit-btn" style="color:var(--accent);" onclick="restoreTimelineStep(${t.step})">Restore</button><button class="edit-btn" onclick="editTimelineStep(${t.step})">Edit</button>`;
         } else {
-          actionBtns = `<button class="edit-btn" style="color:var(--danger);" onclick="hideTimelineStep(${t.step})">Hide Event</button><button class="edit-btn" onclick="editTimelineStep(${t.step})">Edit</button>`;
+          actionBtns = `<button class="edit-btn" style="color:var(--danger);" onclick="hideTimelineStep(${t.step})">Hide Event</button><button class="edit-btn" onclick="${t.flightId ? `editFlightById('${t.flightId}')` : `editTimelineStep(${t.step})`}">${t.flightId ? "Edit Flight" : "Edit"}</button>`;
         }
         const route = t._isCustom && t._customId ? getAllDoorRoutes().find(r => r._isCustom && r._id === t._customId) : routeForTimelineStep(t.step);
         const primary = route ? normalizedLink(route.link) : "";
@@ -2394,6 +2489,10 @@
         editCustomLeg(t._customId);
         return;
       }
+      if (t.flightId) {
+        editFlightById(t.flightId);
+        return;
+      }
       const isHidden = !!getTimelineHidden()[step];
       openEditSheet("Edit timeline step", [
         { key: "title", label: "Title (optional — overrides From → To)", value: t.title || "" },
@@ -2439,7 +2538,7 @@ const delBtn = document.getElementById("efDelete");
         <div class="card">
           <div class="row space-between">
             <div class="fw-600">${r.item}</div>
-            <div>${statusBadge(r.status)} <button class="edit-btn" onclick="editReservation(${i})">Edit</button></div>
+            <div>${statusBadge(r.status)} <button class="edit-btn" onclick="${i === 0 ? "editAirBooking()" : `editReservation(${i})`}">${i === 0 ? "Edit Booking" : "Edit"}</button></div>
           </div>
           <div class="text-sm text-muted mt-8">${r.provider} · ${r.dates}</div>
           <div class="text-sm mt-8"><strong>Conf:</strong> ${r.conf}</div>
@@ -2609,15 +2708,16 @@ const delBtn = document.getElementById("efDelete");
     }
 
     function renderTransport() {
-      document.getElementById("flightsList").innerHTML = FLIGHTS.map(f => `
+      document.getElementById("flightsList").innerHTML = liveFlights().map(f => `
         <div class="card">
           <div class="row space-between">
             <div class="fw-600">✈️ ${f.flight} · ${f.op}</div>
-            <div class="text-xs text-muted">${fmtDate(f.date)}</div>
+            <div><span class="text-xs text-muted">${fmtDate(f.date)}</span> <button class="edit-btn" onclick="editFlightById('${f.id}')">Edit</button></div>
           </div>
           <div class="text-sm mt-8">${f.from} ${f.dep} → ${f.to} ${f.arr}</div>
-          <div class="text-xs text-muted">${f.dur} · ${f.cabin}</div>
-          <div class="text-sm mt-8">${f.notes}</div>
+          <div class="text-xs text-muted">${f.dur} · ${f.cabin} · ${f.status || "Confirmed"}</div>
+          <div class="text-sm mt-8">${f.notes || ""}</div>
+          <div class="text-xs text-muted mt-8">Master flight record · updates Timeline, Travel, Reservations, Wallet, Maps and Next Up</div>
         </div>
       `).join("");
 
@@ -3021,7 +3121,15 @@ const delBtn = document.getElementById("efDelete");
       const routeEdits = getRouteEdits();
       const base = baseDoorRoutes().map(r => {
         const id = baseRouteId(r);
-        return { ...r, ...(routeEdits[id] || {}), _isCustom: false, _id: id };
+        let merged = { ...r, ...(routeEdits[id] || {}), _isCustom: false, _id: id };
+        const step = timelineStepForRoute(merged);
+        const linked = step == null ? null : liveTimeline().find(t => Number(t.step) === Number(step) && t.flightId);
+        if (linked) {
+          merged = { ...merged, dateISO:linked.date, date:shortDateLabel(linked.date), start:linked.start, end:linked.end,
+            from:linked.from, to:linked.to, mode:linked.mode, duration:linked.time,
+            note:linked.instructions, secondaryNote:linked.notes };
+        }
+        return merged;
       });
       const custom = getCustomLegs().map(leg => ({
         dateISO: leg.date,
