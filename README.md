@@ -43,3 +43,13 @@ Each timeline item can still be manually changed using Timeline emphasis.
 - The first unfinished item is marked NEXT.
 - Opening Timeline automatically scrolls near the last completed item and next unfinished item.
 - Existing Version 10.3 timeline emphasis and trip content are preserved for this first test.
+
+
+## Version 10.4.0 DEV R2 — Timeline Data Cleanup
+
+- Replaced legacy timeline emphasis guessing with explicit Item Types.
+- Added separate Event and Tour types.
+- Classified SkyConnect people-mover legs as Train.
+- Removed timeline rows marked REMOVE in the review workbook.
+- Added visible separation between timeline events.
+- Applied the approved timeline review data, including the ATVO departure split.

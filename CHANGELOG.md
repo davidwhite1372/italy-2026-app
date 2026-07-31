@@ -3,6 +3,18 @@
 All notable changes to the Italy 2026 Travel Companion will be documented here.
 
 ## [Unreleased]
+
+## [10.4.0 DEV R2] - 2026-07-31
+
+### Changed
+
+- Rebuilt timeline data from the approved cleanup workbook.
+- Replaced legacy color/emphasis guessing with explicit Item Types.
+- Split Event and Tour into separate types.
+- Classified train-like people movers as Train.
+- Removed rows marked REMOVE until final agendas are available.
+- Added stronger visual separation between timeline cards.
+
 ### Version 10.4.0 Development R1
 
 - Added side-by-side Home and Italy clocks.
