@@ -33,3 +33,13 @@ Automatic timeline emphasis defaults:
 - Walk: standard existing appearance
 
 Each timeline item can still be manually changed using Timeline emphasis.
+
+
+## Version 10.4.0 Development R1
+
+- Added compact Home and Italy clocks on the Home page.
+- Timeline details are collapsed by default and can be expanded per item.
+- Completed timeline items stay in place, fade, and show strike-through formatting.
+- The first unfinished item is marked NEXT.
+- Opening Timeline automatically scrolls near the last completed item and next unfinished item.
+- Existing Version 10.3 timeline emphasis and trip content are preserved for this first test.
