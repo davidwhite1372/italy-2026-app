@@ -65,3 +65,10 @@ Each timeline item can still be manually changed using Timeline emphasis.
 - Preserved restaurant favorites, ratings, visit logging, and packing progress.
 - Added David's Cell Phone Stand under Travel Gear.
 - Removed the last obsolete Timeline Emphasis editor code.
+
+
+## Version 10.4.0 DEV R4 — Home Page Order
+
+- Moved the trip countdown to the top of the Home page
+- Home page order is now Countdown → Home/Italy clocks → Next Up
+- Preserved all Version 10.4 timeline and experience changes

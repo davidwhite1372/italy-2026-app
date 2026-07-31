@@ -60,3 +60,11 @@ All notable changes to the Italy 2026 Travel Companion will be documented here.
 
 ### Fixed
 - Removed obsolete Timeline Emphasis code remaining after Item Type migration.
+
+
+## [10.4.0-dev-r4] - 2026-07-31
+
+### Changed
+
+- Reordered the Home page top section to Countdown, dual clocks, then Next Up.
+- Moved the countdown out of the header and made it a compact Home-page card.
