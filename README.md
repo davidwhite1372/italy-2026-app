@@ -1,35 +1,21 @@
 # Italy 2026 Travel Companion
 
-GitHub Pages deployment package for David and Melody's Italy 2026 Travel Companion.
+## Version 10.4.0 Development Test
 
-## Current build
+This development build preserves the existing app data and appearance while testing a cleaner Timeline workflow.
 
-**Version 10.3.0 — Timeline mode formatting**
+### Added
 
-The existing appearance, itinerary content, navigation, pinch-zoom behavior, backup/import tools, and installable PWA experience are preserved. Deployment-specific changes are limited to relative GitHub Pages paths, PWA scope/identity, cache isolation, and the `.nojekyll` marker.
+- Small Home and Italy clocks, displayed side by side on the Home page
+- Timeline details collapsed by default and available through a Details button
+- Completed timeline items remain in chronological position, show a checkmark, fade, and strike through
+- Timeline automatically scrolls to the last completed item with the next unfinished item immediately below it
+- A subtle “Next item” marker identifies the first unfinished timeline step
 
-## Publishing
+### Existing behavior preserved
 
-Upload every file in this repository to the repository root. In GitHub, open **Settings → Pages**, choose **Deploy from a branch**, select **main** and **/(root)**, and save.
+- Timeline editing, hiding, restoring, search, filters, route links, and manual emphasis
+- User-entered local data and backup/import tools
+- GitHub Pages and installable PWA behavior
 
-The published address will normally be:
-
-`https://YOUR-USERNAME.github.io/YOUR-REPOSITORY-NAME/`
-
-## Important data note
-
-User-entered app data is stored locally in each browser/device. Before removing an older Netlify installation, export a backup from that installation and import it into the newly installed GitHub Pages app.
-
-
-## Version 10.3.0
-
-Automatic timeline emphasis defaults:
-
-- Flight: green + bold
-- Train: blue + bold
-- Boat/ferry/water transport: purple + bold
-- Bus/coach: orange + bold
-- Taxi/cab: black + bold
-- Walk: standard existing appearance
-
-Each timeline item can still be manually changed using Timeline emphasis.
+Publish and test this build from the `develop` branch before merging it into `main`.
