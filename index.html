@@ -222,6 +222,16 @@
     .tl-step.emphasis-orange .tl-dot { background:#e65100; box-shadow:0 0 0 2px #e65100; }
     .tl-step.emphasis-orange .travel-callout { color:#bf360c; }
     .tl-step.emphasis-orange .travel-time { background:#e65100; }
+    .tl-step.emphasis-brown { background: linear-gradient(135deg,#ead9c7 0%,#f8f0e8 100%); border-color:#795548; box-shadow:0 3px 10px rgba(121,85,72,.16); }
+    .tl-step.emphasis-brown::before { background:#795548; }
+    .tl-step.emphasis-brown .tl-dot { background:#5d4037; box-shadow:0 0 0 2px #5d4037; }
+    .tl-step.emphasis-brown .travel-callout { color:#4e342e; }
+    .tl-step.emphasis-brown .travel-time { background:#5d4037; }
+    .tl-step.emphasis-red { background: linear-gradient(135deg,#ffd9d9 0%,#fff2f2 100%); border-color:#d32f2f; box-shadow:0 3px 10px rgba(211,47,47,.16); }
+    .tl-step.emphasis-red::before { background:#d32f2f; }
+    .tl-step.emphasis-red .tl-dot { background:#b71c1c; box-shadow:0 0 0 2px #b71c1c; }
+    .tl-step.emphasis-red .travel-callout { color:#8b0000; }
+    .tl-step.emphasis-red .travel-time { background:#b71c1c; }
     .tl-step.emphasis-black { background: linear-gradient(135deg,#e5e5e5 0%,#f7f7f7 100%); border-color:#111; box-shadow:0 3px 10px rgba(0,0,0,.16); }
     .tl-step.emphasis-black::before { background:#111; }
     .tl-step.emphasis-black .tl-dot { background:#111; box-shadow:0 0 0 2px #111; }
@@ -548,7 +558,7 @@
       <div class="alert alert-info mt-12">
         <strong>Tip:</strong> Add this page to your Home Screen for full-screen app experience and offline access.
       </div>
-      <div style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;">App v10.4.0 DEV · Data v10.0.0</div>
+      <div style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;">App v10.4.0 DEV R3 · Data v10.0.0</div>
     </section>
 
     <!-- TODAY -->
@@ -850,7 +860,7 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.4.0-dev-r2";
+    const APP_VERSION = "10.4.0-dev-r3";
     const DATA_VERSION = "10.0.0";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
@@ -1042,13 +1052,15 @@
       return "📍";
     }
 
-    const DEFAULT_TRAVEL_EMPHASIS = Object.freeze({
-      flight: "green",
-      train: "blue",
-      boat: "purple",
-      bus: "orange",
-      taxi: "black",
-      walk: ""
+    const TIMELINE_ITEM_TYPES = Object.freeze({
+      flight:      { label: "✈️ Flight",       emphasis: "green",  icon: "✈️", kind: "FLIGHT" },
+      boat:        { label: "⛴️ Boat / Ferry", emphasis: "blue",   icon: "⛴️", kind: "BOAT" },
+      train:       { label: "🚆 Train",        emphasis: "orange", icon: "🚆", kind: "TRAIN" },
+      walk:        { label: "🚶 Walk",         emphasis: "purple", icon: "🚶", kind: "WALK" },
+      bus:         { label: "🚌 Bus",          emphasis: "brown",  icon: "🚌", kind: "BUS" },
+      taxi:        { label: "🚕 Taxi",         emphasis: "red",    icon: "🚕", kind: "TAXI" },
+      event:       { label: "🎟️ Event / Tour", emphasis: "gold",   icon: "🎟️", kind: "EVENT" },
+      information: { label: "ℹ️ Information",  emphasis: "",       icon: "ℹ️", kind: "INFO" }
     });
 
     function travelModeFamily(mode) {
@@ -1062,20 +1074,28 @@
       return "";
     }
 
-    function automaticTravelEmphasis(t) {
-      const status = (t.status || "").toLowerCase();
-      const hasExactStart = /^\d{1,2}:\d{2}/.test((t.start || "").toString().trim());
-      const family = travelModeFamily(t.mode);
-      const isUnconfirmed = /pending|verify|partial|tbd/.test(status);
-      if (!hasExactStart || isUnconfirmed || !family) return "";
-      return DEFAULT_TRAVEL_EMPHASIS[family] || "";
+    function inferTimelineItemType(t) {
+      const selected = (t.itemType || "").toLowerCase();
+      if (TIMELINE_ITEM_TYPES[selected]) return selected;
+      const text = [t.mode,t.title,t.from,t.to,t.instructions].filter(Boolean).join(" ").toLowerCase();
+      const family = travelModeFamily(text);
+      if (family) return family;
+      if (/tour|event|reservation|dinner|lunch|museum|attraction|check[- ]?in|check[- ]?out|meeting|reception|ceremony/.test(text)) return "event";
+      return "information";
+    }
+
+    function timelineItemType(t) {
+      return inferTimelineItemType(t);
+    }
+
+    function timelineItemIcon(t) {
+      const def = TIMELINE_ITEM_TYPES[timelineItemType(t)];
+      return def ? def.icon : modeIcon(t.mode);
     }
 
     function timelineEmphasis(t) {
-      const e = (t.emphasis || "auto").toLowerCase();
-      if (e === "standard" || e === "none") return "";
-      if (["green","blue","purple","orange","black","gold","burgundy"].includes(e)) return e;
-      return automaticTravelEmphasis(t);
+      const def = TIMELINE_ITEM_TYPES[timelineItemType(t)];
+      return def ? def.emphasis : "";
     }
 
     function isActualTravelStep(t) { return !!timelineEmphasis(t); }
@@ -1101,11 +1121,8 @@
     }
 
     function actualTravelKind(t) {
-      const mode = (t.mode || "").toLowerCase();
-      if (/flight|\b(?:dl|sk)\s*\d+/.test(mode)) return "FLIGHT";
-      if (/train|rail|italo|leonardo express/.test(mode)) return "TRAIN";
-      if (/vaporetto|water bus|boat|ferry|water taxi|water transfer/.test(mode)) return "WATER";
-      return "HIGHLIGHT";
+      const def = TIMELINE_ITEM_TYPES[timelineItemType(t)];
+      return def ? def.kind : "ITEM";
     }
 
     function normalizedLink(raw) {
@@ -1448,6 +1465,7 @@
         from: leg.from,
         to: leg.to,
         mode: leg.mode || "Custom leg",
+        itemType: leg.itemType || "",
         emphasis: leg.emphasis || "auto",
         time: leg.duration || "",
         status: leg.status || "Confirmed",
@@ -1512,7 +1530,7 @@
               ${f.type === "textarea"
                 ? `<textarea id="ef_${f.key}" rows="3">${f.value || ""}</textarea>`
                 : f.type === "select"
-                  ? `<select id="ef_${f.key}">${f.options.map(o => `<option value="${o}" ${o === f.value ? "selected" : ""}>${o}</option>`).join("")}</select>`
+                  ? `<select id="ef_${f.key}">${f.options.map(o => `<option value="${o}" ${o === f.value ? "selected" : ""}>${f.key === "itemType" && TIMELINE_ITEM_TYPES[o] ? TIMELINE_ITEM_TYPES[o].label : o}</option>`).join("")}</select>`
                   : `<input type="${f.type || "text"}" id="ef_${f.key}" value="${(f.value || "").toString().replace(/"/g, "&quot;")}" />`
               }
             </div>
@@ -2297,12 +2315,12 @@
             <div class="tl-dot"></div>
             ${isNext ? `<div class="tl-current-marker">NEXT</div>` : ""}
             <div class="tl-summary">
-              ${isActualTravelStep(t) ? `<div class="travel-callout"><span class="travel-time">${t.start}</span><span class="travel-service">${modeIcon(t.mode)} ${actualTravelLabel(t)}</span><span class="travel-kind">${actualTravelKind(t)}</span></div>` : ""}
+              ${isActualTravelStep(t) ? `<div class="travel-callout"><span class="travel-time">${t.start}</span><span class="travel-service">${timelineItemIcon(t)} ${actualTravelLabel(t)}</span><span class="travel-kind">${actualTravelKind(t)}</span></div>` : ""}
               <div class="tl-time">${fmtDate(t.date)} ${t.start ? "· " + t.start + (t.end ? "–" + t.end : "") : ""}</div>
               <div class="tl-compact-row">
                 <div class="tl-compact-main">
                   <div class="tl-title">${title}</div>
-                  <div class="tl-detail">${modeIcon(t.mode)} ${t.mode} · ${t.time} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
+                  <div class="tl-detail">${timelineItemIcon(t)} ${t.mode} · ${t.time} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
                 </div>
                 <button class="tl-toggle" onclick="toggleTimelineDetails(${t.step})" aria-expanded="${isExpanded}">${isExpanded ? "▼ Details" : "▶ Details"}</button>
               </div>
@@ -2353,7 +2371,7 @@
         { key: "start", label: "Start time (e.g. 09:39 or 07:00+1)", value: t.start },
         { key: "end", label: "End time", value: t.end },
         { key: "mode", label: "Mode (e.g. train name)", value: t.mode },
-        { key: "emphasis", label: "Timeline emphasis", type: "select", value: t.emphasis || "auto", options: ["auto","green","blue","purple","orange","black","gold","burgundy","standard"] },
+        { key: "itemType", label: "Item type", type: "select", value: timelineItemType(t), options: ["flight","boat","train","walk","bus","taxi","event","information"] },
         { key: "time", label: "Duration / est. time", value: t.time },
         { key: "status", label: "Status", type: "select", value: t.status,
           options: ["Confirmed","Pending","Verify Day-Of","Partial","Confirmed - Decision Needed","Decision Needed","Plan Confirmed / Timetable Pending","Done"] },
@@ -2380,8 +2398,8 @@
         return isHidden ? restoreTimelineStep(step) : hideTimelineStep(step);
       });
       // Relabel the danger button for base steps
-      const emphasisSel=document.getElementById("ef_emphasis");
-      if(emphasisSel){ const labels={auto:"Automatic — flight green, train blue, boat purple, bus orange, taxi black",green:"Green + bold",blue:"Blue + bold",purple:"Purple + bold",orange:"Orange + bold",black:"Black + bold",gold:"Gold + bold",burgundy:"Burgundy + bold",standard:"Standard card"}; Array.from(emphasisSel.options).forEach(o=>o.textContent=labels[o.value]||o.value); }
+      const itemTypeSel=document.getElementById("ef_itemType");
+      if(itemTypeSel){ Array.from(itemTypeSel.options).forEach(o=>o.textContent=(TIMELINE_ITEM_TYPES[o.value]||{}).label||o.value); }
       const delBtn = document.getElementById("efDelete");
       if (delBtn) delBtn.textContent = isHidden ? "Restore this step" : "Hide / cancel this step";
     }
@@ -3073,7 +3091,7 @@
         { key: "start", label: "Start time (e.g. 14:30)", value: "" },
         { key: "end", label: "End time", value: "" },
         { key: "mode", label: "Mode (walk, taxi, train…)", value: "" },
-        { key: "emphasis", label: "Timeline emphasis", type: "select", value: "auto", options: ["auto","green","blue","purple","orange","black","gold","burgundy","standard"] },
+        { key: "itemType", label: "Item type", type: "select", value: "information", options: ["flight","boat","train","walk","bus","taxi","event","information"] },
         { key: "duration", label: "Duration", value: "" },
         { key: "status", label: "Status", type: "select", value: "Confirmed",
           options: ["Confirmed","Pending","Verify Day-Of","Decision Needed","Done"] },
@@ -3099,7 +3117,8 @@
           start: (data.start || "").trim(),
           end: (data.end || "").trim(),
           mode: (data.mode || "").trim() || "Custom leg",
-          emphasis: data.emphasis || "auto",
+          itemType: data.itemType || "information",
+          emphasis: "auto",
           duration: (data.duration || "").trim(),
           status: data.status || "Confirmed",
           note: (data.note || "").trim(),
@@ -3131,7 +3150,7 @@
         { key: "start", label: "Start time", value: leg.start || "" },
         { key: "end", label: "End time", value: leg.end || "" },
         { key: "mode", label: "Mode", value: leg.mode || "" },
-        { key: "emphasis", label: "Timeline emphasis", type: "select", value: leg.emphasis || "auto", options: ["auto","green","blue","purple","orange","black","gold","burgundy","standard"] },
+        { key: "itemType", label: "Item type", type: "select", value: leg.itemType || inferTimelineItemType(leg), options: ["flight","boat","train","walk","bus","taxi","event","information"] },
         { key: "duration", label: "Duration", value: leg.duration || "" },
         { key: "status", label: "Status", type: "select", value: leg.status || "Confirmed",
           options: ["Confirmed","Pending","Verify Day-Of","Decision Needed","Done"] },
@@ -3149,7 +3168,8 @@
           start: (data.start || "").trim(),
           end: (data.end || "").trim(),
           mode: (data.mode || "").trim() || "Custom leg",
-          emphasis: data.emphasis || "auto",
+          itemType: data.itemType || "information",
+          emphasis: "auto",
           duration: (data.duration || "").trim(),
           status: data.status || "Confirmed",
           note: (data.note || "").trim(),

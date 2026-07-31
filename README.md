@@ -1,6 +1,6 @@
 # Italy 2026 Travel Companion
 
-## Version 10.4.0 Development Test — Revision 2
+## Version 10.4.0 Development Test — Revision 3
 
 This development build preserves the existing app data and appearance while testing a cleaner Timeline workflow.
 
@@ -20,3 +20,19 @@ This development build preserves the existing app data and appearance while test
 - GitHub Pages and installable PWA behavior
 
 Publish and test this build from the `develop` branch before merging it into `main`.
+
+
+### Revision 3 — Timeline Item Types
+
+- Replaced the technical “Timeline emphasis” control with an easy “Item type” selector.
+- Item types now control icons and default styling:
+  - Flight — green and bold
+  - Boat / Ferry — blue and bold
+  - Train — orange and bold
+  - Walk — purple and bold
+  - Bus — brown and bold
+  - Taxi — red and bold
+  - Event / Tour — yellow and bold
+  - Information — standard, without forced color or bold styling
+- Existing timeline items are automatically classified from their mode/content until manually changed.
+- Individual items can be changed to Information when a line should remain visually neutral.
