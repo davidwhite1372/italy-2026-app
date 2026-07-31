@@ -1,38 +1,35 @@
 # Italy 2026 Travel Companion
 
-## Version 10.4.0 Development Test — Revision 3
+GitHub Pages deployment package for David and Melody's Italy 2026 Travel Companion.
 
-This development build preserves the existing app data and appearance while testing a cleaner Timeline workflow.
+## Current build
 
-### Added
+**Version 10.3.0 — Timeline mode formatting**
 
-- Small Home and Italy clocks, displayed side by side on the Home page
-- Timeline details collapsed by default with a single ▶ Details / ▼ Details toggle
-- Completed timeline items remain in chronological position, show a checkmark, fade, and strike through
-- Timeline automatically scrolls with the next unfinished item about one-third down the screen, leaving recent completed context above
-- A subtle “NEXT” marker identifies the first unfinished timeline step
-- The timeline action is labeled “Hide Event” to distinguish it from collapsing details
+The existing appearance, itinerary content, navigation, pinch-zoom behavior, backup/import tools, and installable PWA experience are preserved. Deployment-specific changes are limited to relative GitHub Pages paths, PWA scope/identity, cache isolation, and the `.nojekyll` marker.
 
-### Existing behavior preserved
+## Publishing
 
-- Timeline editing, hiding, restoring, search, filters, route links, and manual emphasis
-- User-entered local data and backup/import tools
-- GitHub Pages and installable PWA behavior
+Upload every file in this repository to the repository root. In GitHub, open **Settings → Pages**, choose **Deploy from a branch**, select **main** and **/(root)**, and save.
 
-Publish and test this build from the `develop` branch before merging it into `main`.
+The published address will normally be:
+
+`https://YOUR-USERNAME.github.io/YOUR-REPOSITORY-NAME/`
+
+## Important data note
+
+User-entered app data is stored locally in each browser/device. Before removing an older Netlify installation, export a backup from that installation and import it into the newly installed GitHub Pages app.
 
 
-### Revision 3 — Timeline Item Types
+## Version 10.3.0
 
-- Replaced the technical “Timeline emphasis” control with an easy “Item type” selector.
-- Item types now control icons and default styling:
-  - Flight — green and bold
-  - Boat / Ferry — blue and bold
-  - Train — orange and bold
-  - Walk — purple and bold
-  - Bus — brown and bold
-  - Taxi — red and bold
-  - Event / Tour — yellow and bold
-  - Information — standard, without forced color or bold styling
-- Existing timeline items are automatically classified from their mode/content until manually changed.
-- Individual items can be changed to Information when a line should remain visually neutral.
+Automatic timeline emphasis defaults:
+
+- Flight: green + bold
+- Train: blue + bold
+- Boat/ferry/water transport: purple + bold
+- Bus/coach: orange + bold
+- Taxi/cab: black + bold
+- Walk: standard existing appearance
+
+Each timeline item can still be manually changed using Timeline emphasis.

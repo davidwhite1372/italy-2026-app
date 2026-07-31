@@ -222,16 +222,6 @@
     .tl-step.emphasis-orange .tl-dot { background:#e65100; box-shadow:0 0 0 2px #e65100; }
     .tl-step.emphasis-orange .travel-callout { color:#bf360c; }
     .tl-step.emphasis-orange .travel-time { background:#e65100; }
-    .tl-step.emphasis-brown { background: linear-gradient(135deg,#ead9c7 0%,#f8f0e8 100%); border-color:#795548; box-shadow:0 3px 10px rgba(121,85,72,.16); }
-    .tl-step.emphasis-brown::before { background:#795548; }
-    .tl-step.emphasis-brown .tl-dot { background:#5d4037; box-shadow:0 0 0 2px #5d4037; }
-    .tl-step.emphasis-brown .travel-callout { color:#4e342e; }
-    .tl-step.emphasis-brown .travel-time { background:#5d4037; }
-    .tl-step.emphasis-red { background: linear-gradient(135deg,#ffd9d9 0%,#fff2f2 100%); border-color:#d32f2f; box-shadow:0 3px 10px rgba(211,47,47,.16); }
-    .tl-step.emphasis-red::before { background:#d32f2f; }
-    .tl-step.emphasis-red .tl-dot { background:#b71c1c; box-shadow:0 0 0 2px #b71c1c; }
-    .tl-step.emphasis-red .travel-callout { color:#8b0000; }
-    .tl-step.emphasis-red .travel-time { background:#b71c1c; }
     .tl-step.emphasis-black { background: linear-gradient(135deg,#e5e5e5 0%,#f7f7f7 100%); border-color:#111; box-shadow:0 3px 10px rgba(0,0,0,.16); }
     .tl-step.emphasis-black::before { background:#111; }
     .tl-step.emphasis-black .tl-dot { background:#111; box-shadow:0 0 0 2px #111; }
@@ -419,41 +409,6 @@
 
 
     /* Automatic dark mode follows the device system setting */
-
-    /* Version 10.4 development: compact dual clock */
-    .dual-clock {
-      display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 14px;
-    }
-    .clock-cell {
-      background:var(--card); border:1px solid var(--border); border-radius:12px;
-      padding:9px 12px; text-align:center; box-shadow:var(--shadow);
-    }
-    .clock-label { font-size:.68rem; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.07em; }
-    .clock-time { font-size:1.08rem; font-weight:800; color:var(--primary); margin-top:2px; }
-    .clock-date { font-size:.65rem; color:var(--muted); margin-top:1px; }
-
-    /* Version 10.4 development: quieter, expandable timeline */
-    .tl-step.done-step { opacity:.48; }
-    .tl-step.done-step .tl-title,
-    .tl-step.done-step .travel-callout,
-    .tl-step.done-step .tl-time,
-    .tl-step.done-step .tl-detail { text-decoration:line-through; }
-    .tl-summary { cursor:pointer; }
-    .tl-compact-row { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
-    .tl-compact-main { min-width:0; flex:1; }
-    .tl-toggle {
-      flex:0 0 auto; border:1px solid var(--border); background:var(--card); color:var(--primary);
-      border-radius:9px; padding:6px 9px; font-size:.72rem; font-weight:700;
-    }
-    .tl-expanded {
-      margin-top:9px; padding-top:9px; border-top:1px dashed var(--border);
-    }
-    .tl-action-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:9px; }
-    .tl-current-marker {
-      font-size:.68rem; font-weight:800; color:var(--primary); text-transform:uppercase;
-      letter-spacing:.07em; margin-bottom:5px;
-    }
-
     @media (prefers-color-scheme: dark) {
       :root {
         --bg: #111315;
@@ -513,7 +468,6 @@
     <!-- HOME -->
     <section id="page-home" class="page active">
       <div class="stats" id="homeStats"></div>
-      <div id="homeClocks" class="dual-clock" aria-label="Home and Italy clocks"></div>
       <div class="card">
         <div class="card-title"><span class="icon">⚡</span> Most Important Open Items</div>
         <div id="homeOpenItems"></div>
@@ -558,7 +512,7 @@
       <div class="alert alert-info mt-12">
         <strong>Tip:</strong> Add this page to your Home Screen for full-screen app experience and offline access.
       </div>
-      <div style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;">App v10.4.0 DEV R3 · Data v10.0.0</div>
+      <div style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;">App v10.3.0 · Data v10.0.0</div>
     </section>
 
     <!-- TODAY -->
@@ -860,42 +814,9 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.4.0-dev-r3";
+    const APP_VERSION = "10.3.0";
     const DATA_VERSION = "10.0.0";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
-
-    const expandedTimelineSteps = new Set();
-    let timelineAutoScrollPending = false;
-    let clockTimer = null;
-
-    function clockParts(timeZone) {
-      const now = new Date();
-      return {
-        time: new Intl.DateTimeFormat("en-US", { timeZone, hour:"numeric", minute:"2-digit" }).format(now),
-        date: new Intl.DateTimeFormat("en-US", { timeZone, weekday:"short", month:"short", day:"numeric" }).format(now)
-      };
-    }
-
-    function renderDualClocks() {
-      const el = document.getElementById("homeClocks");
-      if (!el) return;
-      const home = clockParts("America/New_York");
-      const italy = clockParts("Europe/Rome");
-      el.innerHTML = `
-        <div class="clock-cell"><div class="clock-label">🏠 Home</div><div class="clock-time">${home.time}</div><div class="clock-date">${home.date}</div></div>
-        <div class="clock-cell"><div class="clock-label">🇮🇹 Italy</div><div class="clock-time">${italy.time}</div><div class="clock-date">${italy.date}</div></div>`;
-      if (!clockTimer) clockTimer = setInterval(renderDualClocks, 30000);
-    }
-
-    function toggleTimelineDetails(step) {
-      if (expandedTimelineSteps.has(step)) expandedTimelineSteps.delete(step);
-      else expandedTimelineSteps.add(step);
-      renderTimeline();
-    }
-
-    function requestTimelineAutoScroll() {
-      timelineAutoScrollPending = true;
-    }
 
 
     // ===================== APP INSTALL PROMPT =====================
@@ -1052,15 +973,13 @@
       return "📍";
     }
 
-    const TIMELINE_ITEM_TYPES = Object.freeze({
-      flight:      { label: "✈️ Flight",       emphasis: "green",  icon: "✈️", kind: "FLIGHT" },
-      boat:        { label: "⛴️ Boat / Ferry", emphasis: "blue",   icon: "⛴️", kind: "BOAT" },
-      train:       { label: "🚆 Train",        emphasis: "orange", icon: "🚆", kind: "TRAIN" },
-      walk:        { label: "🚶 Walk",         emphasis: "purple", icon: "🚶", kind: "WALK" },
-      bus:         { label: "🚌 Bus",          emphasis: "brown",  icon: "🚌", kind: "BUS" },
-      taxi:        { label: "🚕 Taxi",         emphasis: "red",    icon: "🚕", kind: "TAXI" },
-      event:       { label: "🎟️ Event / Tour", emphasis: "gold",   icon: "🎟️", kind: "EVENT" },
-      information: { label: "ℹ️ Information",  emphasis: "",       icon: "ℹ️", kind: "INFO" }
+    const DEFAULT_TRAVEL_EMPHASIS = Object.freeze({
+      flight: "green",
+      train: "blue",
+      boat: "purple",
+      bus: "orange",
+      taxi: "black",
+      walk: ""
     });
 
     function travelModeFamily(mode) {
@@ -1074,28 +993,20 @@
       return "";
     }
 
-    function inferTimelineItemType(t) {
-      const selected = (t.itemType || "").toLowerCase();
-      if (TIMELINE_ITEM_TYPES[selected]) return selected;
-      const text = [t.mode,t.title,t.from,t.to,t.instructions].filter(Boolean).join(" ").toLowerCase();
-      const family = travelModeFamily(text);
-      if (family) return family;
-      if (/tour|event|reservation|dinner|lunch|museum|attraction|check[- ]?in|check[- ]?out|meeting|reception|ceremony/.test(text)) return "event";
-      return "information";
-    }
-
-    function timelineItemType(t) {
-      return inferTimelineItemType(t);
-    }
-
-    function timelineItemIcon(t) {
-      const def = TIMELINE_ITEM_TYPES[timelineItemType(t)];
-      return def ? def.icon : modeIcon(t.mode);
+    function automaticTravelEmphasis(t) {
+      const status = (t.status || "").toLowerCase();
+      const hasExactStart = /^\d{1,2}:\d{2}/.test((t.start || "").toString().trim());
+      const family = travelModeFamily(t.mode);
+      const isUnconfirmed = /pending|verify|partial|tbd/.test(status);
+      if (!hasExactStart || isUnconfirmed || !family) return "";
+      return DEFAULT_TRAVEL_EMPHASIS[family] || "";
     }
 
     function timelineEmphasis(t) {
-      const def = TIMELINE_ITEM_TYPES[timelineItemType(t)];
-      return def ? def.emphasis : "";
+      const e = (t.emphasis || "auto").toLowerCase();
+      if (e === "standard" || e === "none") return "";
+      if (["green","blue","purple","orange","black","gold","burgundy"].includes(e)) return e;
+      return automaticTravelEmphasis(t);
     }
 
     function isActualTravelStep(t) { return !!timelineEmphasis(t); }
@@ -1121,8 +1032,11 @@
     }
 
     function actualTravelKind(t) {
-      const def = TIMELINE_ITEM_TYPES[timelineItemType(t)];
-      return def ? def.kind : "ITEM";
+      const mode = (t.mode || "").toLowerCase();
+      if (/flight|\b(?:dl|sk)\s*\d+/.test(mode)) return "FLIGHT";
+      if (/train|rail|italo|leonardo express/.test(mode)) return "TRAIN";
+      if (/vaporetto|water bus|boat|ferry|water taxi|water transfer/.test(mode)) return "WATER";
+      return "HIGHLIGHT";
     }
 
     function normalizedLink(raw) {
@@ -1297,7 +1211,6 @@
       const st = getTimelineDone();
       if (checked) st[step] = true; else delete st[step];
       setTimelineDone(st);
-      requestTimelineAutoScroll();
       renderTimeline();
     }
     function getTimelineHidden() {
@@ -1465,7 +1378,6 @@
         from: leg.from,
         to: leg.to,
         mode: leg.mode || "Custom leg",
-        itemType: leg.itemType || "",
         emphasis: leg.emphasis || "auto",
         time: leg.duration || "",
         status: leg.status || "Confirmed",
@@ -1530,7 +1442,7 @@
               ${f.type === "textarea"
                 ? `<textarea id="ef_${f.key}" rows="3">${f.value || ""}</textarea>`
                 : f.type === "select"
-                  ? `<select id="ef_${f.key}">${f.options.map(o => `<option value="${o}" ${o === f.value ? "selected" : ""}>${f.key === "itemType" && TIMELINE_ITEM_TYPES[o] ? TIMELINE_ITEM_TYPES[o].label : o}</option>`).join("")}</select>`
+                  ? `<select id="ef_${f.key}">${f.options.map(o => `<option value="${o}" ${o === f.value ? "selected" : ""}>${o}</option>`).join("")}</select>`
                   : `<input type="${f.type || "text"}" id="ef_${f.key}" value="${(f.value || "").toString().replace(/"/g, "&quot;")}" />`
               }
             </div>
@@ -1875,7 +1787,6 @@
 
     // ===================== RENDERERS =====================
     function renderHome() {
-      renderDualClocks();
       const dep = daysUntil(TRIP.start);
       const home = daysUntil(TRIP.end);
       document.getElementById("daysBadge").innerHTML = dep > 0
@@ -2253,8 +2164,10 @@
       const doneMap = getTimelineDone();
       const hiddenMap = getTimelineHidden();
       let items = liveTimeline();
+      // Always chronological by date + start time (after live edits)
       items = items.slice().sort((a, b) => parseTimelineSortKey(a).localeCompare(parseTimelineSortKey(b)));
 
+      // Soft-hidden base steps (cancelled hotel, dropped transfer, etc.)
       if (tlFilter === "hidden") {
         items = items.filter(t => !t._isCustom && hiddenMap[t.step]);
       } else {
@@ -2265,20 +2178,21 @@
         if (tlFilter === "done") items = items.filter(t => !!doneMap[t.step]);
       }
 
-      if (tlModeFilter !== "all") items = items.filter(t => timelineModeGroup(t) === tlModeFilter);
+      // Search and transportation-mode filters work together with the status filters above.
+      if (tlModeFilter !== "all") {
+        items = items.filter(t => timelineModeGroup(t) === tlModeFilter);
+      }
       if (tlSearch.trim()) {
         const q = tlSearch.trim().toLowerCase();
         items = items.filter(t => [t.title,t.from,t.to,t.mode,t.time,t.status,t.instructions,t.notes,t.date,t.start,t.end]
           .filter(Boolean).join(" ").toLowerCase().includes(q));
       }
 
-      const allActive = liveTimeline()
-        .filter(t => t._isCustom || !hiddenMap[t.step])
-        .slice().sort((a,b) => parseTimelineSortKey(a).localeCompare(parseTimelineSortKey(b)));
+      // Progress excludes hidden base steps
+      const allActive = liveTimeline().filter(t => t._isCustom || !hiddenMap[t.step]);
       const total = allActive.length;
       const doneCount = allActive.filter(t => doneMap[t.step]).length;
       const hiddenCount = Object.keys(hiddenMap).length;
-      const firstOpenStep = (allActive.find(t => !doneMap[t.step]) || {}).step;
 
       document.getElementById("timelineList").innerHTML = `
         <div class="card" style="padding:10px 14px;margin-bottom:12px;">
@@ -2287,71 +2201,53 @@
             <div class="text-sm">${doneCount} / ${total} completed${hiddenCount ? " · " + hiddenCount + " hidden" : ""}</div>
           </div>
           <div class="progress-bar"><div class="fill" style="width:${total ? Math.round(doneCount/total*100) : 0}%"></div></div>
-          <div class="text-xs text-muted mt-8">Completed steps stay in place but fade into the background. When Timeline opens, it jumps to your last completed step and the next item.</div>
+          <div class="text-xs text-muted mt-8">Steps reorder automatically when you change date or start time. Hide a step if a hotel or transfer is cancelled — restore from the Hidden filter.</div>
         </div>
       ` + (items.length ? items.map(t => {
         let cls = "";
         const isDone = !!doneMap[t.step];
         const isHidden = !t._isCustom && !!hiddenMap[t.step];
-        const isExpanded = expandedTimelineSteps.has(t.step);
-        const isNext = !isDone && t.step === firstOpenStep && tlFilter === "all" && tlModeFilter === "all" && !tlSearch.trim();
         if (isDone) cls = "done-step";
         else if (/decision/i.test(t.status)) cls = "decision";
         else if (/pending|verify|partial|timetable/i.test(t.status)) cls = "pending";
         const title = (t.title && t.title.trim()) ? t.title.trim() : `${t.from} → ${t.to}`;
         let actionBtns;
         if (t._isCustom && t._customId) {
-          actionBtns = `<button class="edit-btn" onclick="deleteCustomLeg('${t._customId}')">Delete</button><button class="edit-btn" onclick="editTimelineStep(${t.step})">Edit</button>`;
+          actionBtns = `<button class="edit-btn" style="float:right;margin-left:6px;color:var(--danger);" onclick="event.stopPropagation();deleteCustomLeg('${t._customId}')">Delete</button>
+              <button class="edit-btn" style="float:right;" onclick="editTimelineStep(${t.step})">Edit</button>`;
         } else if (isHidden) {
-          actionBtns = `<button class="edit-btn" style="color:var(--accent);" onclick="restoreTimelineStep(${t.step})">Restore</button><button class="edit-btn" onclick="editTimelineStep(${t.step})">Edit</button>`;
+          actionBtns = `<button class="edit-btn" style="float:right;margin-left:6px;color:var(--accent);" onclick="event.stopPropagation();restoreTimelineStep(${t.step})">Restore</button>
+              <button class="edit-btn" style="float:right;" onclick="editTimelineStep(${t.step})">Edit</button>`;
         } else {
-          actionBtns = `<button class="edit-btn" style="color:var(--danger);" onclick="hideTimelineStep(${t.step})">Hide Event</button><button class="edit-btn" onclick="editTimelineStep(${t.step})">Edit</button>`;
+          actionBtns = `<button class="edit-btn" style="float:right;margin-left:6px;color:var(--danger);" onclick="event.stopPropagation();hideTimelineStep(${t.step})">Hide</button>
+              <button class="edit-btn" style="float:right;" onclick="editTimelineStep(${t.step})">Edit</button>`;
         }
-        const route = t._isCustom && t._customId ? getAllDoorRoutes().find(r => r._isCustom && r._id === t._customId) : routeForTimelineStep(t.step);
-        const primary = route ? normalizedLink(route.link) : "";
-        const backup = route ? normalizedLink(route.backupLink) : "";
         return `
-          <div class="tl-step ${cls} ${timelineStyleClass(t)}" data-step="${t.step}" style="${isHidden ? 'opacity:0.75;' : ''}">
+          <div class="tl-step ${cls} ${timelineStyleClass(t)}" style="${isHidden ? 'opacity:0.75;' : ''}">
             <div class="tl-dot"></div>
-            ${isNext ? `<div class="tl-current-marker">NEXT</div>` : ""}
-            <div class="tl-summary">
-              ${isActualTravelStep(t) ? `<div class="travel-callout"><span class="travel-time">${t.start}</span><span class="travel-service">${timelineItemIcon(t)} ${actualTravelLabel(t)}</span><span class="travel-kind">${actualTravelKind(t)}</span></div>` : ""}
-              <div class="tl-time">${fmtDate(t.date)} ${t.start ? "· " + t.start + (t.end ? "–" + t.end : "") : ""}</div>
-              <div class="tl-compact-row">
-                <div class="tl-compact-main">
-                  <div class="tl-title">${title}</div>
-                  <div class="tl-detail">${timelineItemIcon(t)} ${t.mode} · ${t.time} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
-                </div>
-                <button class="tl-toggle" onclick="toggleTimelineDetails(${t.step})" aria-expanded="${isExpanded}">${isExpanded ? "▼ Details" : "▶ Details"}</button>
-              </div>
+            ${isActualTravelStep(t) ? `<div class="travel-callout"><span class="travel-time">${t.start}</span><span class="travel-service">${modeIcon(t.mode)} ${actualTravelLabel(t)}</span><span class="travel-kind">${actualTravelKind(t)}</span></div>` : ""}
+            <div class="tl-time">${fmtDate(t.date)} ${t.start ? "· " + t.start + (t.end ? "–" + t.end : "") : ""}</div>
+            <div class="tl-title" style="${isDone ? 'text-decoration:line-through;opacity:0.65;' : ''}">${title}
+              ${actionBtns}
             </div>
-            ${isExpanded ? `<div class="tl-expanded">
-              <div class="tl-detail">${t.instructions || "No additional instructions."}</div>
-              ${(primary || backup) ? `<div class="row mt-8" style="gap:10px;flex-wrap:wrap;">${primary ? `<a class="link-btn" href="${primary}" target="_blank" rel="noopener">${linkLabel(route.link, false)} →</a>` : ""}${backup ? `<a class="link-btn" href="${backup}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(route.backupLink, true)} →</a>` : ""}</div>` : ""}
-              ${t.notes ? `<div class="tl-detail" style="color:var(--primary);margin-top:6px;">${t.notes}</div>` : ""}
-              <div class="tl-action-row">${actionBtns}</div>
-            </div>` : ""}
+            <div class="tl-detail">${modeIcon(t.mode)} ${t.mode} · ${t.time} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
+            <div class="tl-detail mt-8">${t.instructions}</div>
+            ${(() => {
+              const route = t._isCustom && t._customId ? getAllDoorRoutes().find(r => r._isCustom && r._id === t._customId) : routeForTimelineStep(t.step);
+              if (!route) return "";
+              const primary = normalizedLink(route.link);
+              const backup = normalizedLink(route.backupLink);
+              if (!primary && !backup) return "";
+              return `<div class="row mt-8" style="gap:10px;flex-wrap:wrap;">${primary ? `<a class="link-btn" href="${primary}" target="_blank" rel="noopener">${linkLabel(route.link, false)} →</a>` : ""}${backup ? `<a class="link-btn" href="${backup}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(route.backupLink, true)} →</a>` : ""}</div>`;
+            })()}
+            ${t.notes ? `<div class="tl-detail" style="color:var(--primary);margin-top:4px;">${t.notes}</div>` : ""}
             ${isHidden ? "" : `<label class="check-row" style="padding:8px 0 0;border:none;margin-top:6px;">
               <input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTimelineDone(${t.step}, this.checked)">
               <span class="text-sm fw-600">${isDone ? "Completed" : "Mark completed"}</span>
             </label>`}
-          </div>`;
-      }).join("") : `<div class="empty"><div class="icon">${tlFilter === "hidden" ? "🙈" : "📋"}</div>${tlFilter === "hidden" ? "No hidden steps." : "No steps match this filter."}</div>`);
-
-      if (timelineAutoScrollPending && tlFilter === "all" && tlModeFilter === "all" && !tlSearch.trim()) {
-        timelineAutoScrollPending = false;
-        requestAnimationFrame(() => {
-          const nodes = Array.from(document.querySelectorAll("#timelineList .tl-step[data-step]"));
-          const nextItem = nodes.find(n => Number(n.dataset.step) === Number(firstOpenStep));
-          if (nextItem) {
-            // Place the next unfinished item about one-third down the screen so the
-            // most recent completed item remains visible above it for context.
-            const desiredTop = Math.max(90, Math.round(window.innerHeight * 0.33));
-            const absoluteTop = nextItem.getBoundingClientRect().top + window.scrollY;
-            window.scrollTo({ top: Math.max(0, absoluteTop - desiredTop), behavior:"smooth" });
-          }
-        });
-      }
+          </div>
+        `;
+      }).join("") : `<div class="empty"><div class="icon">${tlFilter === "hidden" ? "🙈" : "📋"}</div>${tlFilter === "hidden" ? "No hidden steps. Hide a cancelled hotel or transfer from its Edit / Hide button." : "No steps match this filter."}</div>`);
     }
 
     function editTimelineStep(step) {
@@ -2371,7 +2267,7 @@
         { key: "start", label: "Start time (e.g. 09:39 or 07:00+1)", value: t.start },
         { key: "end", label: "End time", value: t.end },
         { key: "mode", label: "Mode (e.g. train name)", value: t.mode },
-        { key: "itemType", label: "Item type", type: "select", value: timelineItemType(t), options: ["flight","boat","train","walk","bus","taxi","event","information"] },
+        { key: "emphasis", label: "Timeline emphasis", type: "select", value: t.emphasis || "auto", options: ["auto","green","blue","purple","orange","black","gold","burgundy","standard"] },
         { key: "time", label: "Duration / est. time", value: t.time },
         { key: "status", label: "Status", type: "select", value: t.status,
           options: ["Confirmed","Pending","Verify Day-Of","Partial","Confirmed - Decision Needed","Decision Needed","Plan Confirmed / Timetable Pending","Done"] },
@@ -2398,8 +2294,8 @@
         return isHidden ? restoreTimelineStep(step) : hideTimelineStep(step);
       });
       // Relabel the danger button for base steps
-      const itemTypeSel=document.getElementById("ef_itemType");
-      if(itemTypeSel){ Array.from(itemTypeSel.options).forEach(o=>o.textContent=(TIMELINE_ITEM_TYPES[o.value]||{}).label||o.value); }
+      const emphasisSel=document.getElementById("ef_emphasis");
+      if(emphasisSel){ const labels={auto:"Automatic — flight green, train blue, boat purple, bus orange, taxi black",green:"Green + bold",blue:"Blue + bold",purple:"Purple + bold",orange:"Orange + bold",black:"Black + bold",gold:"Gold + bold",burgundy:"Burgundy + bold",standard:"Standard card"}; Array.from(emphasisSel.options).forEach(o=>o.textContent=labels[o.value]||o.value); }
       const delBtn = document.getElementById("efDelete");
       if (delBtn) delBtn.textContent = isHidden ? "Restore this step" : "Hide / cancel this step";
     }
@@ -3091,7 +2987,7 @@
         { key: "start", label: "Start time (e.g. 14:30)", value: "" },
         { key: "end", label: "End time", value: "" },
         { key: "mode", label: "Mode (walk, taxi, train…)", value: "" },
-        { key: "itemType", label: "Item type", type: "select", value: "information", options: ["flight","boat","train","walk","bus","taxi","event","information"] },
+        { key: "emphasis", label: "Timeline emphasis", type: "select", value: "auto", options: ["auto","green","blue","purple","orange","black","gold","burgundy","standard"] },
         { key: "duration", label: "Duration", value: "" },
         { key: "status", label: "Status", type: "select", value: "Confirmed",
           options: ["Confirmed","Pending","Verify Day-Of","Decision Needed","Done"] },
@@ -3117,8 +3013,7 @@
           start: (data.start || "").trim(),
           end: (data.end || "").trim(),
           mode: (data.mode || "").trim() || "Custom leg",
-          itemType: data.itemType || "information",
-          emphasis: "auto",
+          emphasis: data.emphasis || "auto",
           duration: (data.duration || "").trim(),
           status: data.status || "Confirmed",
           note: (data.note || "").trim(),
@@ -3150,7 +3045,7 @@
         { key: "start", label: "Start time", value: leg.start || "" },
         { key: "end", label: "End time", value: leg.end || "" },
         { key: "mode", label: "Mode", value: leg.mode || "" },
-        { key: "itemType", label: "Item type", type: "select", value: leg.itemType || inferTimelineItemType(leg), options: ["flight","boat","train","walk","bus","taxi","event","information"] },
+        { key: "emphasis", label: "Timeline emphasis", type: "select", value: leg.emphasis || "auto", options: ["auto","green","blue","purple","orange","black","gold","burgundy","standard"] },
         { key: "duration", label: "Duration", value: leg.duration || "" },
         { key: "status", label: "Status", type: "select", value: leg.status || "Confirmed",
           options: ["Confirmed","Pending","Verify Day-Of","Decision Needed","Done"] },
@@ -3168,8 +3063,7 @@
           start: (data.start || "").trim(),
           end: (data.end || "").trim(),
           mode: (data.mode || "").trim() || "Custom leg",
-          itemType: data.itemType || "information",
-          emphasis: "auto",
+          emphasis: data.emphasis || "auto",
           duration: (data.duration || "").trim(),
           status: data.status || "Confirmed",
           note: (data.note || "").trim(),
@@ -3354,7 +3248,7 @@
 
       if (id === "home") renderHome();
       if (id === "today") renderToday();
-      if (id === "timeline") { requestTimelineAutoScroll(); renderTimeline(); }
+      if (id === "timeline") renderTimeline();
       if (id === "bookings") renderBookings();
       if (id === "cities") renderCities();
       if (id === "food") renderFood();
@@ -3369,7 +3263,7 @@
       if (id === "wallet") renderWallet();
 
       currentPage = id;
-      if (id !== "timeline") window.scrollTo(0,0);
+      window.scrollTo(0,0);
 
       // Each page visit becomes a real history entry. The phone Back button
       // therefore returns to the page that was actually viewed previously.
