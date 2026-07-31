@@ -66,9 +66,10 @@ Each timeline item can still be manually changed using Timeline emphasis.
 - Added David's Cell Phone Stand under Travel Gear.
 - Removed the last obsolete Timeline Emphasis editor code.
 
+## Version 10.4.0 DEV R5 — Home Page Order
 
-## Version 10.4.0 DEV R4 — Home Page Order
+- Preserved the existing countdown statistics bar exactly as designed.
+- Moved the countdown bar above the Home/Italy clocks.
+- Kept Next Up directly below the clocks.
+- Left all other Home page content unchanged.
 
-- Moved the trip countdown to the top of the Home page
-- Home page order is now Countdown → Home/Italy clocks → Next Up
-- Preserved all Version 10.4 timeline and experience changes

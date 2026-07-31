@@ -439,16 +439,6 @@
 
 
 
-    /* Version 10.4 development: home countdown, clocks, then next up */
-    .home-countdown {
-      margin: 12px 14px 8px; padding: 12px 14px; text-align:center;
-      background: linear-gradient(135deg, rgba(139,30,63,.12), rgba(139,30,63,.04));
-      border: 1px solid rgba(139,30,63,.18); border-radius: 14px;
-      color: var(--primary);
-    }
-    .home-countdown .countdown-number { font-size: 1.75rem; line-height:1; font-weight:900; }
-    .home-countdown .countdown-label { margin-top:4px; font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
-
     /* Version 10.4 development: compact dual clock */
     .dual-clock {
       display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 14px;
@@ -545,7 +535,7 @@
         <h1>🇮🇹 Italy 2026</h1>
         <div class="sub">David & Melody · Oct 4–15 · Rome · Florence · Venice</div>
       </div>
-
+      <div id="daysBadge" style="text-align:right;font-size:0.75rem;opacity:0.9;"></div>
     </div>
   </header>
 
@@ -553,10 +543,9 @@
   <main>
     <!-- HOME -->
     <section id="page-home" class="page active">
-      <div id="daysBadge" class="home-countdown" aria-label="Trip countdown"></div>
+      <div class="stats" id="homeStats"></div>
       <div id="homeClocks" class="dual-clock" aria-label="Home and Italy clocks"></div>
       <div id="homeNextUp"></div>
-      <div class="stats" id="homeStats"></div>
       <div class="card">
         <div class="card-title"><span class="icon">⚡</span> Most Important Open Items</div>
         <div id="homeOpenItems"></div>
@@ -1918,12 +1907,8 @@
       const dep = daysUntil(TRIP.start);
       const home = daysUntil(TRIP.end);
       document.getElementById("daysBadge").innerHTML = dep > 0
-        ? `<div class="countdown-number">${dep}</div><div class="countdown-label">Days Until Departure</div>`
-        : dep === 0
-          ? `<div class="countdown-number">Today!</div><div class="countdown-label">Departure Day</div>`
-          : home >= 0
-            ? `<div class="countdown-number">Day ${Math.min(12, Math.max(1, 12 - home))}</div><div class="countdown-label">Italy Trip In Progress</div>`
-            : `<div class="countdown-number">Complete</div><div class="countdown-label">Italy 2026</div>`;
+        ? `<div style="font-size:1.4rem;font-weight:800;">${dep}</div><div>days to go</div>`
+        : dep === 0 ? `<div style="font-size:1.1rem;font-weight:800;">Today!</div>` : `<div>On trip</div>`;
 
       document.getElementById("homeStats").innerHTML = `
         <div class="stat"><div class="val">${dep > 0 ? dep : "—"}</div><div class="lbl">Days to departure</div></div>
