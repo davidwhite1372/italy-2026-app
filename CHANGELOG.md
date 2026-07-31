@@ -1,5 +1,15 @@
 # Changelog
 
+## [10.5.0 DEV Phase 4] - 2026-07-31
+
+### Changed
+
+- Unified trains, transfers, walks, boats, buses, taxis, car/drive legs, tours, events, and information items into shared master travel records.
+- Travel, Timeline, and Maps now stay synchronized when those records are edited.
+- Added a Tours, Events & Information section to the Travel page.
+- Updated the visible app version label to Phase 4.
+
+
 ## [10.5.0-dev-phase2-flights] - 2026-07-31
 
 ### Added

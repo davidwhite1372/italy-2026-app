@@ -86,3 +86,11 @@ Each timeline item can still be manually changed using Timeline emphasis.
 ## Version 10.5 DEV Phase 3 — Hotels
 
 Hotel data is now unified into master hotel records. Editing a hotel from Reservations or the Confirmation Wallet updates hotel references in Home, Today, Timeline, Reservations, Wallet, and city cards.
+
+
+## Version 10.5 DEV Phase 4
+
+- Added one master shared record for each train, boat, bus, taxi, car/drive, walk, event, tour, and information item.
+- Timeline, Travel, and linked Maps routes now read from the same shared travel records.
+- Editing a shared travel item from Travel or Timeline updates all linked views.
+- Existing local timeline edits are migrated into the new shared record layer on first use.

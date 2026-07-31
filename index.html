@@ -590,7 +590,7 @@
       <div class="alert alert-info mt-12">
         <strong>Tip:</strong> Add this page to your Home Screen for full-screen app experience and offline access.
       </div>
-      <div style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;">App v10.5.0 DEV Phase 3 · Data v10.5.0</div>
+      <div style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;">App v10.5.0 DEV Phase 4 · Data v10.5.0</div>
     </section>
 
     <!-- TODAY -->
@@ -690,6 +690,8 @@
       <div id="trainsList"></div>
       <div class="section-title">🧭 Door-to-Door Transfers</div>
       <div id="transfersList"></div>
+      <div class="section-title">🎟️ Tours, Events & Information</div>
+      <div id="activitiesList"></div>
       <div class="section-title">🚖 Ground & Water Transportation</div>
       <div id="groundList"></div>
       <div class="section-title">🚨 Backup & Contingency Plans</div>
@@ -1634,12 +1636,86 @@
       };
     }
 
+    function sharedTravelById(id) {
+      return liveSharedTravelItems().find(x => x.id === id) || null;
+    }
+
+    function liveSharedTravelItems() {
+      const live = getLive();
+      const edits = live.sharedTravel || {};
+      const oldTimeline = live.timeline || {};
+      return SHARED_TRAVEL_ITEMS.map(base => {
+        // Preserve any older timeline edits during the migration, then let the new master record win.
+        const old = oldTimeline[base.timelineStep] || {};
+        const migrated = {
+          ...base,
+          date: old.date ?? base.date, start: old.start ?? base.start, end: old.end ?? base.end,
+          itemType: old.itemType ?? base.itemType, title: old.title ?? base.title,
+          from: old.from ?? base.from, to: old.to ?? base.to, mode: old.mode ?? base.mode,
+          duration: old.time ?? base.duration, status: old.status ?? base.status,
+          instructions: old.instructions ?? base.instructions, notes: old.notes ?? base.notes
+        };
+        return edits[base.id] ? { ...migrated, ...edits[base.id] } : migrated;
+      });
+    }
+
+    function syncTimelineTravel(t) {
+      if (!t.travelId) return t;
+      const x = sharedTravelById(t.travelId);
+      if (!x) return t;
+      return {
+        ...t, date:x.date, start:x.start, end:x.end, itemType:x.itemType, title:x.title,
+        from:x.from, to:x.to, mode:x.mode, time:x.duration, status:x.status,
+        instructions:x.instructions, notes:x.notes
+      };
+    }
+
+    function saveSharedTravelEdit(id, data) {
+      const live = getLive();
+      if (!live.sharedTravel) live.sharedTravel = {};
+      live.sharedTravel[id] = {
+        date:(data.date || "").trim(), start:(data.start || "").trim(), end:(data.end || "").trim(),
+        itemType:data.itemType || "Information", title:(data.title || "").trim(),
+        from:(data.from || "").trim(), to:(data.to || "").trim(), mode:(data.mode || "").trim(),
+        duration:(data.duration || "").trim(), status:data.status || "Confirmed",
+        instructions:(data.instructions || "").trim(), notes:(data.notes || "").trim()
+      };
+      // Remove obsolete duplicated timeline fields for this linked record.
+      const base = SHARED_TRAVEL_ITEMS.find(x => x.id === id);
+      if (base && live.timeline && live.timeline[base.timelineStep]) delete live.timeline[base.timelineStep];
+      setLive(live);
+    }
+
+    function editSharedTravelById(id) {
+      const x = sharedTravelById(id);
+      if (!x) return;
+      openEditSheet("Edit shared travel item", [
+        {key:"date",label:"Date (YYYY-MM-DD)",value:x.date || ""},
+        {key:"start",label:"Start",value:x.start || ""},
+        {key:"end",label:"End",value:x.end || ""},
+        {key:"itemType",label:"Item Type",type:"select",value:x.itemType || "Information",options:ITEM_TYPE_OPTIONS},
+        {key:"title",label:"Title",value:x.title || ""},
+        {key:"from",label:"From",value:x.from || ""},
+        {key:"to",label:"To",value:x.to || ""},
+        {key:"mode",label:"Mode / service",value:x.mode || ""},
+        {key:"duration",label:"Duration",value:x.duration || ""},
+        {key:"status",label:"Status",type:"select",value:x.status || "Confirmed",options:["Confirmed","Pending","Partial","Verify Day-Of","Decision Needed","Plan Confirmed / Timetable Pending","Done"]},
+        {key:"instructions",label:"Instructions",type:"textarea",value:x.instructions || ""},
+        {key:"notes",label:"Notes",type:"textarea",value:x.notes || ""}
+      ], data => {
+        saveSharedTravelEdit(id,data);
+        closeSheet();
+        renderHome(); renderToday(); renderTimeline(); renderTransport(); renderMaps();
+        showToast("Travel item updated everywhere");
+      });
+    }
+
     function liveTimeline() {
       const live = getLive();
       const base = TIMELINE.map(t => {
         const o = (live.timeline || {})[t.step];
         const merged = o ? { ...t, ...o } : { ...t };
-        return syncTimelineHotels(syncTimelineFlight(merged));
+        return syncTimelineHotels(syncTimelineFlight(syncTimelineTravel(merged)));
       });
       // Custom door-to-door legs appear on the master timeline too
       const custom = getCustomLegs().map((leg, i) => ({
@@ -1662,33 +1738,15 @@
       return base.concat(custom);
     }
     function liveTrains() {
-      const live = getLive();
-      return TRAINS.map((t, i) => {
-        const o = (live.trains || {})[i];
-        return o ? { ...t, ...o } : { ...t };
-      });
+      return liveSharedTravelItems().filter(x => x.itemType === "Train");
     }
     function liveTransfers() {
-      const live = getLive();
-      const base = TRANSFERS.map((t, i) => {
-        const o = (live.transfers || {})[i];
-        return o ? { ...t, ...o } : { ...t };
-      });
-      const custom = getCustomLegs().map((leg, i) => ({
-        id: leg.id || ("CL" + (i + 1)),
-        date: leg.date ? shortDateLabel(leg.date) : "",
-        name: (leg.title && leg.title.trim()) ? leg.title.trim() : `${leg.from} → ${leg.to}`,
-        mode: leg.mode || "Custom",
-        time: leg.duration || ((leg.start || "") + (leg.end ? "–" + leg.end : "")),
-        priority: "Medium",
-        status: leg.status || "Confirmed",
-        steps: leg.note || "",
-        backup: "",
-        mistake: "",
-        _isCustom: true,
-        _customId: leg.id
-      }));
-      return base.concat(custom);
+      const transferTypes = new Set(["Boat / Ferry","Bus","Taxi","Car / Drive","Walk"]);
+      return liveSharedTravelItems().filter(x => transferTypes.has(x.itemType));
+    }
+    function liveActivities() {
+      const activityTypes = new Set(["Event","Tour","Information"]);
+      return liveSharedTravelItems().filter(x => activityTypes.has(x.itemType));
     }
     function shortDateLabel(iso) {
       if (!iso) return "";
@@ -2518,7 +2576,7 @@
         } else if (isHidden) {
           actionBtns = `<button class="edit-btn" style="color:var(--accent);" onclick="restoreTimelineStep(${t.step})">Restore</button><button class="edit-btn" onclick="editTimelineStep(${t.step})">Edit</button>`;
         } else {
-          actionBtns = `<button class="edit-btn" style="color:var(--danger);" onclick="hideTimelineStep(${t.step})">Hide Event</button><button class="edit-btn" onclick="${t.flightId ? `editFlightById('${t.flightId}')` : `editTimelineStep(${t.step})`}">${t.flightId ? "Edit Flight" : "Edit"}</button>`;
+          actionBtns = `<button class="edit-btn" style="color:var(--danger);" onclick="hideTimelineStep(${t.step})">Hide Event</button><button class="edit-btn" onclick="${t.flightId ? `editFlightById('${t.flightId}')` : (t.travelId ? `editSharedTravelById('${t.travelId}')` : `editTimelineStep(${t.step})`)}">${t.flightId ? "Edit Flight" : (t.travelId ? "Edit Travel Item" : "Edit")}</button>`;
         }
         const route = t._isCustom && t._customId ? getAllDoorRoutes().find(r => r._isCustom && r._id === t._customId) : routeForTimelineStep(t.step);
         const primary = route ? normalizedLink(route.link) : "";
@@ -2804,30 +2862,45 @@ const delBtn = document.getElementById("efDelete");
         </div>
       `).join("");
 
-      document.getElementById("trainsList").innerHTML = liveTrains().map((t, i) => `
+      document.getElementById("trainsList").innerHTML = liveTrains().map(t => `
         <div class="card">
           <div class="row space-between">
-            <div class="fw-600">🚆 ${t.service}</div>
-            <div>${statusBadge(/decision/i.test(t.notes + t.status) ? "Decision Needed" : (t.status || "Confirmed"))}
-              <button class="edit-btn" onclick="editTrain(${i})">Edit</button></div>
+            <div class="fw-600">🚆 ${t.mode || t.title}</div>
+            <div>${statusBadge(t.status || "Confirmed")} <button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit</button></div>
           </div>
           <div class="text-sm mt-8">${t.from} → ${t.to}</div>
-          <div class="text-xs text-muted">${t.dep} – ${t.arr} · ${t.dur} · ${t.cls}</div>
-          <div class="text-sm mt-8"><strong>Seats:</strong> ${t.seats}<br><strong>Conf:</strong> ${t.conf}</div>
-          <div class="text-sm text-muted">${t.notes}</div>
+          <div class="text-xs text-muted">${fmtDate(t.date)} · ${[t.start,t.end].filter(Boolean).join(" – ")}${t.duration ? " · " + t.duration : ""}</div>
+          ${t.instructions ? `<div class="text-sm mt-8">${t.instructions}</div>` : ""}
+          ${t.notes ? `<div class="text-sm text-muted mt-8">${t.notes}</div>` : ""}
+          <div class="text-xs text-muted mt-8">Master travel record · updates Timeline, Travel and Maps</div>
         </div>
       `).join("");
 
-      document.getElementById("transfersList").innerHTML = liveTransfers().map((t, i) => `
+      document.getElementById("transfersList").innerHTML = liveTransfers().map(t => `
         <div class="card">
           <div class="row space-between">
-            <div class="fw-600">${t.id} · ${t.name}</div>
-            <div>${statusBadge(t.status)} <button class="edit-btn" onclick="editTransfer(${i})">Edit</button></div>
+            <div class="fw-600">${itemTypeIcon(t.itemType)} ${t.title || `${t.from} → ${t.to}`}</div>
+            <div>${statusBadge(t.status || "Confirmed")} <button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit</button></div>
           </div>
-          <div class="text-xs text-muted">${t.date} · ${t.mode} · ${t.time} · ${t.priority}</div>
-          <div class="text-sm mt-8"><strong>Steps:</strong> ${t.steps}</div>
-          ${t.backup ? `<div class="text-sm mt-8" style="color:var(--accent);"><strong>Backup:</strong> ${t.backup}</div>` : ""}
-          ${t.mistake ? `<div class="text-sm text-muted mt-8"><strong>Avoid:</strong> ${t.mistake}</div>` : ""}
+          <div class="text-sm mt-8">${t.from} → ${t.to}</div>
+          <div class="text-xs text-muted">${fmtDate(t.date)} · ${t.mode || t.itemType}${t.duration ? " · " + t.duration : ""}</div>
+          ${t.instructions ? `<div class="text-sm mt-8"><strong>Steps:</strong> ${t.instructions}</div>` : ""}
+          ${t.notes ? `<div class="text-sm text-muted mt-8">${t.notes}</div>` : ""}
+          <div class="text-xs text-muted mt-8">Master travel record · updates Timeline, Travel and Maps</div>
+        </div>
+      `).join("");
+
+      document.getElementById("activitiesList").innerHTML = liveActivities().map(t => `
+        <div class="card">
+          <div class="row space-between">
+            <div class="fw-600">${itemTypeIcon(t.itemType)} ${t.title}</div>
+            <div>${statusBadge(t.status || "Confirmed")} <button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit</button></div>
+          </div>
+          <div class="text-xs text-muted mt-8">${fmtDate(t.date)}${t.start ? " · " + t.start : ""}${t.end ? "–" + t.end : ""} · ${t.itemType}</div>
+          ${(t.from || t.to) ? `<div class="text-sm mt-8">${t.from || ""}${t.to ? " → " + t.to : ""}</div>` : ""}
+          ${t.instructions ? `<div class="text-sm mt-8">${t.instructions}</div>` : ""}
+          ${t.notes ? `<div class="text-sm text-muted mt-8">${t.notes}</div>` : ""}
+          <div class="text-xs text-muted mt-8">Master activity record · updates Timeline and related views</div>
         </div>
       `).join("");
 
@@ -3206,7 +3279,7 @@ const delBtn = document.getElementById("efDelete");
         const id = baseRouteId(r);
         let merged = { ...r, ...(routeEdits[id] || {}), _isCustom: false, _id: id };
         const step = timelineStepForRoute(merged);
-        const linked = step == null ? null : liveTimeline().find(t => Number(t.step) === Number(step) && t.flightId);
+        const linked = step == null ? null : liveTimeline().find(t => Number(t.step) === Number(step) && (t.flightId || t.travelId));
         if (linked) {
           merged = { ...merged, dateISO:linked.date, date:shortDateLabel(linked.date), start:linked.start, end:linked.end,
             from:linked.from, to:linked.to, mode:linked.mode, duration:linked.time,
