@@ -404,6 +404,7 @@
       {"cat":"Travel Gear","traveler":"David","item":"Backpack","qty":1,"bag":"Personal item","pri":"Critical","notes":""},
       {"cat":"Travel Gear","traveler":"Melody","item":"Personal item bag","qty":1,"bag":"Personal item","pri":"Critical","notes":""},
       {"cat":"Travel Gear","traveler":"David","item":"Crossbody anti-pickpocket bag","qty":1,"bag":"Wear","pri":"Critical","notes":""},
+      {"cat":"Travel Gear","traveler":"David","item":"Cell Phone Stand","qty":1,"bag":"Backpack","pri":"Medium","notes":"For flights, hotel room and hands-free viewing"},
       {"cat":"Travel Gear","traveler":"Melody","item":"Crossbody anti-pickpocket bag","qty":1,"bag":"Wear","pri":"Critical","notes":""},
       {"cat":"Clothing","traveler":"David","item":"Rain jacket/windbreaker","qty":1,"bag":"Backpack","pri":"High","notes":""},
       {"cat":"Clothing","traveler":"Melody","item":"Business-casual outfits","qty":5,"bag":"Checked roller","pri":"High","notes":""},

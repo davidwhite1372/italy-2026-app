@@ -53,3 +53,15 @@ Each timeline item can still be manually changed using Timeline emphasis.
 - Removed timeline rows marked REMOVE in the review workbook.
 - Added visible separation between timeline events.
 - Applied the approved timeline review data, including the ATVO departure split.
+
+
+## Version 10.4.0 DEV R3 — Experience Polish
+
+- Added Home-page Next Up card sourced from the first unfinished timeline item.
+- Added clearer From → To route flow inside timeline details.
+- Added Google Maps and Apple Maps shortcuts to routes and hotels.
+- Polished Confirmation Wallet with prominent confirmations and copy buttons.
+- Added Today, Trip Total, and Personal Budget Left summary cards.
+- Preserved restaurant favorites, ratings, visit logging, and packing progress.
+- Added David's Cell Phone Stand under Travel Gear.
+- Removed the last obsolete Timeline Emphasis editor code.

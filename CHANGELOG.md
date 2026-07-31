@@ -46,3 +46,17 @@ All notable changes to the Italy 2026 Travel Companion will be documented here.
 
 - Migrated production hosting from Netlify to GitHub Pages.
 - Production URL: `https://davidwhite1372.github.io/italy-2026-app/`
+
+
+## [10.4.0-dev-r3] - 2026-07-31
+
+### Added
+- Home Next Up timeline summary.
+- Timeline route-flow details.
+- Google and Apple Maps quick actions.
+- Wallet copy controls and larger confirmation display.
+- Expanded budget-at-a-glance totals.
+- Cell Phone Stand to David's Travel Gear packing list.
+
+### Fixed
+- Removed obsolete Timeline Emphasis code remaining after Item Type migration.

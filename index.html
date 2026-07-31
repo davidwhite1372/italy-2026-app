@@ -469,6 +469,20 @@
       font-size:.68rem; font-weight:800; color:var(--primary); text-transform:uppercase;
       letter-spacing:.07em; margin-bottom:5px;
     }
+    .next-up-card { border-left:5px solid var(--accent); padding:14px 15px; }
+    .next-up-label { font-size:.7rem; font-weight:800; letter-spacing:.08em; color:var(--accent); text-transform:uppercase; }
+    .next-up-title { font-size:1rem; font-weight:800; margin-top:4px; }
+    .next-up-meta { font-size:.78rem; color:var(--muted); margin-top:4px; }
+    .route-flow { margin:9px 0 4px; padding:10px 12px; border-radius:10px; background:rgba(93,150,122,.08); border:1px solid var(--border); }
+    .route-point { font-size:.88rem; font-weight:700; }
+    .route-arrow { text-align:center; color:var(--muted); line-height:1.1; font-size:1.05rem; }
+    .route-metrics { text-align:center; color:var(--muted); font-size:.75rem; margin-top:5px; }
+    .quick-action-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .quick-action-row .link-btn, .quick-action-row button { border:1px solid var(--border); border-radius:9px; padding:7px 9px; background:var(--card); text-decoration:none; }
+    .wallet-key { font-size:1.08rem; font-weight:800; color:var(--primary); letter-spacing:.02em; }
+    .budget-hero { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px; }
+    .budget-hero .stat { padding:12px 8px; }
+    @media (max-width:420px){ .budget-hero { grid-template-columns:1fr; } }
 
     /* Automatic dark mode follows the device system setting */
     @media (prefers-color-scheme: dark) {
@@ -530,6 +544,7 @@
     <!-- HOME -->
     <section id="page-home" class="page active">
       <div id="homeClocks" class="dual-clock" aria-label="Home and Italy clocks"></div>
+      <div id="homeNextUp"></div>
       <div class="stats" id="homeStats"></div>
       <div class="card">
         <div class="card-title"><span class="icon">⚡</span> Most Important Open Items</div>
@@ -575,7 +590,7 @@
       <div class="alert alert-info mt-12">
         <strong>Tip:</strong> Add this page to your Home Screen for full-screen app experience and offline access.
       </div>
-      <div style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;">App v10.4.0 DEV · Data v10.0.0</div>
+      <div style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;">App v10.4.0 DEV R3 · Data v10.0.0</div>
     </section>
 
     <!-- TODAY -->
@@ -1855,6 +1870,38 @@
       }
     }
 
+    function escapeHtml(v) { return String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
+    function timelineDateTime(t) {
+      if (!t || !t.date) return null;
+      const tm=(t.start||"00:00").match(/^(\d{1,2}):(\d{2})/);
+      const hh=tm?tm[1].padStart(2,"0"):"00", mm=tm?tm[2]:"00";
+      const d=new Date(`${t.date}T${hh}:${mm}:00`);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+    function nextTimelineItem() {
+      const done=getTimelineDone(), hidden=getTimelineHidden();
+      const active=liveTimeline().filter(t => (t._isCustom || !hidden[t.step]) && !done[t.step]).slice().sort((a,b)=>parseTimelineSortKey(a).localeCompare(parseTimelineSortKey(b)));
+      const now=new Date();
+      return active.find(t => { const d=timelineDateTime(t); return !d || d >= new Date(now.getTime()-60*60*1000); }) || active[0] || null;
+    }
+    function relativeDeparture(t) {
+      const d=timelineDateTime(t); if(!d) return "";
+      const mins=Math.round((d-new Date())/60000);
+      if(mins>1440) return `in ${Math.ceil(mins/1440)} days`;
+      if(mins>60) return `in ${Math.floor(mins/60)} hr ${mins%60} min`;
+      if(mins>0) return `in ${mins} min`;
+      if(mins>=-60) return "now / recently started";
+      return "";
+    }
+    function googleMapSearchUrl(place){ return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place||"")}`; }
+    function appleMapSearchUrl(place){ return `https://maps.apple.com/?q=${encodeURIComponent(place||"")}`; }
+    function copyTextValue(value,label="Copied") {
+      const text=String(value||"");
+      const done=()=>showToast(label);
+      if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done).catch(()=>{});
+      else { const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); done(); }
+    }
+
     // ===================== RENDERERS =====================
     function renderHome() {
       const dep = daysUntil(TRIP.start);
@@ -1897,7 +1944,14 @@
         <strong>PSA Rom/Flo:</strong> ${TRIP.confRomeFlo}<br>
         <strong>PSA Ven:</strong> ${TRIP.confVen}<br>
         <strong>Emergency:</strong> 112
-      `;      refreshFxRate(false);
+      `;
+      const next=nextTimelineItem();
+      document.getElementById("homeNextUp").innerHTML = next ? `<div class="card next-up-card" onclick="showPage('timeline')" style="cursor:pointer;">
+        <div class="next-up-label">Next Up</div>
+        <div class="next-up-title">${itemTypeIcon(next)} ${escapeHtml(next.title || `${next.from} → ${next.to}`)}</div>
+        <div class="next-up-meta">${fmtDate(next.date)}${next.start?` · ${next.start}`:""}${relativeDeparture(next)?` · ${relativeDeparture(next)}`:""}</div>
+      </div>` : `<div class="card next-up-card"><div class="next-up-label">Next Up</div><div class="next-up-title">All timeline items completed</div></div>`;
+      refreshFxRate(false);
     }
 
     function renderToday() {
@@ -2118,7 +2172,7 @@
       const res = liveReservations();
       document.getElementById("walletContent").innerHTML = `
         <div class="card">
-          <div class="card-title">✈️ Flights · Delta / SAS</div>
+          <div class="row space-between"><div class="card-title">✈️ Flights · Delta / SAS</div><button class="edit-btn" onclick="copyTextValue(TRIP.air,'Air confirmation copied')">Copy conf.</button></div><div class="wallet-key">${TRIP.air}</div>
           <div class="text-sm" style="line-height:1.85;">
             <strong>Record locators:</strong> ${TRIP.air}<br>
             <strong>Outbound:</strong> DL2706 TPA→BOS · SK928 BOS→CPH · SK681 CPH→FCO<br>
@@ -2128,7 +2182,7 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-title">🚂 Trains</div>
+          <div class="row space-between"><div class="card-title">🚂 Trains</div><button class="edit-btn" onclick="copyTextValue(TRIP.italo,'Train confirmation copied')">Copy conf.</button></div><div class="wallet-key">Italo ${TRIP.italo}</div>
           <div class="text-sm" style="line-height:1.85;">
             <strong>Leonardo Express:</strong> FCO → Roma Termini (buy on arrival via Trenitalia)<br>
             <strong>Rome → Florence:</strong> PSA group train — details pending<br>
@@ -2139,7 +2193,7 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-title">🏨 Hotels</div>
+          <div class="row space-between"><div class="card-title">🏨 Hotels</div><button class="edit-btn" onclick="copyTextValue(TRIP.hotels[3].conf,'Hotel confirmation copied')">Copy Antiche conf.</button></div>
           <div class="text-sm" style="line-height:1.85;">
             <strong>Rome Oct 5–8:</strong> Anantara Palazzo Naiadi<br>
             Piazza della Repubblica 48-49 · Event-provided<br><br>
@@ -2305,6 +2359,7 @@
               <button class="tl-toggle" onclick="toggleTimelineDetails(${t.step})" aria-expanded="${isExpanded}">${isExpanded ? "▼ Details" : "▶ Details"}</button>
             </div>
             ${isExpanded ? `<div class="tl-expanded">
+              ${(t.from || t.to) ? `<div class="route-flow"><div class="route-point">${escapeHtml(t.from || "Start")}</div><div class="route-arrow">↓</div><div class="route-point">${escapeHtml(t.to || "Destination")}</div>${t.time?`<div class="route-metrics">${escapeHtml(t.time)}</div>`:""}</div>` : ""}
               <div class="tl-detail">${t.instructions || "No additional instructions."}</div>
               ${(primary || backup) ? `<div class="row mt-8" style="gap:10px;flex-wrap:wrap;">${primary ? `<a class="link-btn" href="${primary}" target="_blank" rel="noopener">${linkLabel(route.link, false)} →</a>` : ""}${backup ? `<a class="link-btn" href="${backup}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(route.backupLink, true)} →</a>` : ""}</div>` : ""}
               ${t.notes ? `<div class="tl-detail" style="color:var(--primary);margin-top:6px;">${t.notes}</div>` : ""}
@@ -2375,8 +2430,7 @@
         return isHidden ? restoreTimelineStep(step) : hideTimelineStep(step);
       });
       // Relabel the danger button for base steps
-      if(emphasisSel){ const labels={auto:"Automatic — flight green, train blue, boat purple, bus orange, taxi black",green:"Green + bold",blue:"Blue + bold",purple:"Purple + bold",orange:"Orange + bold",black:"Black + bold",gold:"Gold + bold",burgundy:"Burgundy + bold",standard:"Standard card"}; Array.from(emphasisSel.options).forEach(o=>o.textContent=labels[o.value]||o.value); }
-      const delBtn = document.getElementById("efDelete");
+const delBtn = document.getElementById("efDelete");
       if (delBtn) delBtn.textContent = isHidden ? "Restore this step" : "Hide / cancel this step";
     }
 
@@ -2790,7 +2844,8 @@
       const sum=f=>all.filter(f).reduce((a,e)=>a+e._usd,0), personalSpent=sum(e=>!e.company),companyPaid=sum(e=>e.company),reimb=sum(e=>e.reimbursable),missing=all.filter(e=>!e.receipt).length;
       const planned=liveBudgetPlanned(); const plannedPersonal=planned.filter(b=>!b.company&&!/canceled|refunded/i.test(b.status||"")).reduce((a,b)=>a+(b.cur==="USD"?Number(b.amt):Number(b.amt)*rate),0),remaining=plannedPersonal-personalSpent;
       const stat=(usd,label,bad)=>`<div class="stat"><div class="val" ${bad?'style="color:var(--danger);"':''}>$${Math.round(usd).toLocaleString("en-US")}</div><div class="text-xs text-muted">€${Math.round(usd/rate).toLocaleString("en-US")}</div><div class="lbl">${label}</div></div>`;
-      document.getElementById("budgetSummary").innerHTML=`<div class="stats">${stat(personalSpent,"Personal actual")}${stat(companyPaid,"Company paid")}${stat(reimb,"Reimbursable")}${stat(remaining,"Personal remaining",remaining<0)}</div><div class="alert ${missing?'alert-warn':'alert-info'} text-sm"><strong>${missing}</strong> receipt${missing===1?'':'s'} missing. Every total is shown in USD and EUR. EUR purchases retain their locked transaction rate; USD-to-EUR reference values use the latest saved live rate of 1 EUR = $${rate.toFixed(4)}.</div>`;
+      const todayISO=new Date().toISOString().slice(0,10), todaySpent=all.filter(e=>e.date===todayISO&&!e.company).reduce((a,e)=>a+e._usd,0), tripSpent=all.reduce((a,e)=>a+e._usd,0);
+      document.getElementById("budgetSummary").innerHTML=`<div class="budget-hero">${stat(todaySpent,"Spent today")}${stat(tripSpent,"Trip total")}${stat(remaining,"Personal budget left",remaining<0)}</div><div class="stats">${stat(personalSpent,"Personal actual")}${stat(companyPaid,"Company paid")}${stat(reimb,"Reimbursable")}</div><div class="alert ${missing?'alert-warn':'alert-info'} text-sm"><strong>${missing}</strong> receipt${missing===1?'':'s'} missing. Every total is shown in USD and EUR. EUR purchases retain their locked transaction rate; USD-to-EUR reference values use the latest saved live rate of 1 EUR = $${rate.toFixed(4)}.</div>`;
       document.getElementById("expCount").textContent=`(${expenses.length} shown / ${all.length} total)`;
       document.getElementById("budgetExpenses").innerHTML=expenses.length?expenses.map(e=>`<div class="card" style="${!e.receipt?'border-left:4px solid var(--warning);':''}"><div class="row space-between"><div class="fw-600">${e.desc}</div><div class="fw-600" style="text-align:right;">${moneyPair(e._usd,e._eur,e.cur)}</div></div><div class="text-xs text-muted mt-8">${fmtDate(e.date)} · ${e.city} · ${e.cat} · Paid by ${e.traveler}</div><div class="text-sm mt-8"><strong>Original charge:</strong> ${e.cur==="EUR"?'€':'$'}${Number(e.amt).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} ${e.cur}${e.cur==="EUR"?` · locked FX ${Number(e.fx).toFixed(4)}`:''}${e.statementUsd?' · final card USD used':''}</div><div class="tags mt-8"><span class="tag">${e.payment}</span>${e.company?'<span class="tag top">Company paid</span>':'<span class="tag">Personal</span>'}${e.reimbursable?'<span class="tag price">Reimbursable</span>':''}<span class="tag ${e.receipt?'price':'top'}">${e.receipt?'Receipt saved':'Receipt missing'}</span></div>${e.notes?`<div class="text-sm text-muted mt-8">${e.notes}</div>`:''}<div class="btn-row"><button class="btn-outline" onclick="openExpenseSheet(${e.id})">Edit</button><button class="btn-danger" onclick="deleteExpense(${e.id})">Delete</button></div></div>`).join(""):'<div class="empty"><div class="icon">🧾</div>No expenses match these filters.</div>';
       const byCat={};all.filter(e=>!e.company).forEach(e=>byCat[e.cat]=(byCat[e.cat]||0)+e._usd);
@@ -3193,6 +3248,7 @@
           <div class="row space-between mt-8" style="align-items:center;flex-wrap:wrap;">
             <div class="row" style="gap:12px;flex-wrap:wrap;">
               ${r.link ? `<a class="link-btn" href="${normalizedLink(r.link)}" target="_blank" rel="noopener">${linkLabel(r.link, false)} →</a>` : ""}
+              ${r.to ? `<a class="link-btn" href="${googleMapSearchUrl(r.to)}" target="_blank" rel="noopener">Google Maps</a><a class="link-btn" href="${appleMapSearchUrl(r.to)}" target="_blank" rel="noopener">Apple Maps</a>` : ""}
               ${r.backupLink ? `<a class="link-btn" href="${normalizedLink(r.backupLink)}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(r.backupLink, true)} →</a>` : ""}
             </div>
             <div class="row" style="gap:8px;">
@@ -3223,7 +3279,7 @@
           ${h.address ? `<div class="text-sm mt-8"><strong>Address:</strong> ${h.address}</div>` : ""}
           ${h.access ? `<div class="text-sm mt-8"><strong>Access:</strong> ${h.access}</div>` : ""}
           ${h.note ? `<div class="text-sm text-muted mt-8"><strong>Note:</strong> ${h.note}</div>` : ""}
-          ${h.link ? `<a class="link-btn" href="${normalizedLink(h.link)}" target="_blank" rel="noopener">Open map →</a>` : ""}
+          <div class="quick-action-row">${h.link ? `<a class="link-btn" href="${normalizedLink(h.link)}" target="_blank" rel="noopener">Saved Map</a>` : ""}${h.address || h.name ? `<a class="link-btn" href="${googleMapSearchUrl(h.address || h.name)}" target="_blank" rel="noopener">Google Maps</a><a class="link-btn" href="${appleMapSearchUrl(h.address || h.name)}" target="_blank" rel="noopener">Apple Maps</a>` : ""}</div>
         </div>`).join("");
 
       document.getElementById("mapsOfficial").innerHTML = MAP_OFFICIAL_SITES.map(s => `
