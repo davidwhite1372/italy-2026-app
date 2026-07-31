@@ -616,7 +616,7 @@
         <strong>Tip:</strong> Add this page to your Home Screen for full-screen app experience and offline access.
       </div>
       <div id="homeQuickTip" class="alert alert-info mt-12"></div>
-      <div style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;">App v10.5.0 DEV Phase 4.5 · Data v10.5.0</div>
+      <div id="appVersionLabel" style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;"></div>
     </section>
 
     <!-- TODAY -->
@@ -798,6 +798,17 @@
         <div class="card-title"><span class="icon">🔗</span> Quick Links</div>
         <div id="quickLinks" class="text-sm" style="line-height:1.9;"></div>
       </div>
+      <div class="section-title">Data Integrity</div>
+      <div class="card">
+        <div class="row space-between" style="align-items:flex-start;gap:12px;">
+          <div>
+            <div class="fw-600">Single Source of Truth Check</div>
+            <div class="text-sm text-muted mt-8">Verifies master flights, hotels, travel items, Timeline links, and duplicate legacy overrides.</div>
+          </div>
+          <button class="btn-outline btn-sm" onclick="runDataIntegrityCheck(true)">Run Check</button>
+        </div>
+        <div id="dataIntegrityStatus" class="text-sm mt-8"></div>
+      </div>
       <div class="section-title">Live Data & Backup</div>
       <div class="card">
         <div class="text-sm mb-8">
@@ -925,8 +936,9 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.5.0-dev-phase3-hotels";
+    const APP_VERSION = "10.5.0-dev-phase5";
     const DATA_VERSION = "10.5.0";
+    const BUILD_LABEL = "App v10.5.0 DEV Phase 5 · Data v10.5.0";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -1674,20 +1686,7 @@
     function liveSharedTravelItems() {
       const live = getLive();
       const edits = live.sharedTravel || {};
-      const oldTimeline = live.timeline || {};
-      return SHARED_TRAVEL_ITEMS.map(base => {
-        // Preserve any older timeline edits during the migration, then let the new master record win.
-        const old = oldTimeline[base.timelineStep] || {};
-        const migrated = {
-          ...base,
-          date: old.date ?? base.date, start: old.start ?? base.start, end: old.end ?? base.end,
-          itemType: old.itemType ?? base.itemType, title: old.title ?? base.title,
-          from: old.from ?? base.from, to: old.to ?? base.to, mode: old.mode ?? base.mode,
-          duration: old.time ?? base.duration, status: old.status ?? base.status,
-          instructions: old.instructions ?? base.instructions, notes: old.notes ?? base.notes
-        };
-        return edits[base.id] ? { ...migrated, ...edits[base.id] } : migrated;
-      });
+      return SHARED_TRAVEL_ITEMS.map(base => edits[base.id] ? { ...base, ...edits[base.id], id:base.id, timelineStep:base.timelineStep } : { ...base });
     }
 
     function syncTimelineTravel(t) {
@@ -1810,6 +1809,140 @@
         }
         return merged;
       });
+    }
+
+    const DATA_MIGRATION_KEY = "italy2026_phase5_migrated";
+
+    function migrateLegacyDataToMasterRecords() {
+      if (localStorage.getItem(DATA_MIGRATION_KEY) === "1") return;
+      const live = getLive();
+      let changed = false;
+      if (!live.sharedTravel) live.sharedTravel = {};
+
+      // Move older Timeline content edits into the matching shared travel master record.
+      if (live.timeline && typeof live.timeline === "object") {
+        TIMELINE.forEach(base => {
+          if (!base.travelId) return;
+          const old = live.timeline[base.step];
+          if (!old || typeof old !== "object") return;
+          const mapped = {};
+          const fieldMap = {
+            date:"date", start:"start", end:"end", itemType:"itemType", title:"title",
+            from:"from", to:"to", mode:"mode", time:"duration", status:"status",
+            instructions:"instructions", notes:"notes"
+          };
+          Object.entries(fieldMap).forEach(([oldKey,newKey]) => {
+            if (old[oldKey] !== undefined && old[oldKey] !== "") mapped[newKey] = old[oldKey];
+          });
+          if (Object.keys(mapped).length) {
+            live.sharedTravel[base.travelId] = { ...mapped, ...(live.sharedTravel[base.travelId] || {}) };
+          }
+          delete live.timeline[base.step];
+          changed = true;
+        });
+        if (!Object.keys(live.timeline).length) delete live.timeline;
+      }
+
+      // Preserve legacy train edits by matching the former train list order.
+      if (live.trains && typeof live.trains === "object") {
+        const bases = SHARED_TRAVEL_ITEMS.filter(x => x.itemType === "Train");
+        Object.keys(live.trains).forEach(k => {
+          const old = live.trains[k];
+          const base = bases[Number(k)];
+          if (!old || !base) return;
+          live.sharedTravel[base.id] = {
+            ...(live.sharedTravel[base.id] || {}),
+            start: old.dep || (live.sharedTravel[base.id] || {}).start,
+            end: old.arr || (live.sharedTravel[base.id] || {}).end,
+            duration: old.dur || (live.sharedTravel[base.id] || {}).duration,
+            notes: [old.seats, old.conf, old.notes].filter(Boolean).join(" · ") || (live.sharedTravel[base.id] || {}).notes
+          };
+        });
+        delete live.trains;
+        changed = true;
+      }
+
+      // Preserve legacy transfer edits by matching the former transfer list order.
+      if (live.transfers && typeof live.transfers === "object") {
+        const types = new Set(["Boat / Ferry","Bus","Taxi","Car / Drive","Walk"]);
+        const bases = SHARED_TRAVEL_ITEMS.filter(x => types.has(x.itemType));
+        Object.keys(live.transfers).forEach(k => {
+          const old = live.transfers[k];
+          const base = bases[Number(k)];
+          if (!old || !base) return;
+          live.sharedTravel[base.id] = {
+            ...(live.sharedTravel[base.id] || {}),
+            mode: old.mode || (live.sharedTravel[base.id] || {}).mode,
+            duration: old.time || (live.sharedTravel[base.id] || {}).duration,
+            status: old.status || (live.sharedTravel[base.id] || {}).status,
+            instructions: old.steps || (live.sharedTravel[base.id] || {}).instructions,
+            notes: [old.backup, old.mistake].filter(Boolean).join(" · ") || (live.sharedTravel[base.id] || {}).notes
+          };
+        });
+        delete live.transfers;
+        changed = true;
+      }
+
+      // Remove overridden copies of master-owned reservation fields.
+      if (live.reservations && typeof live.reservations === "object") {
+        Object.keys(live.reservations).forEach(k => {
+          const i = Number(k);
+          const base = RESERVATIONS[i];
+          if (i === 0 || (base && base.hotelId)) {
+            delete live.reservations[k];
+            changed = true;
+          }
+        });
+        if (!Object.keys(live.reservations).length) delete live.reservations;
+      }
+
+      if (changed) setLive(live);
+      localStorage.setItem(DATA_MIGRATION_KEY, "1");
+    }
+
+    function collectDataIntegrityIssues() {
+      const issues = [];
+      const flightIds = new Set(FLIGHTS.map(x => x.id));
+      const hotelIds = new Set(HOTELS.map(x => x.id));
+      const travelIds = new Set(SHARED_TRAVEL_ITEMS.map(x => x.id));
+      const seenSteps = new Set();
+
+      TIMELINE.forEach(t => {
+        if (seenSteps.has(t.step)) issues.push(`Duplicate Timeline step ${t.step}`);
+        seenSteps.add(t.step);
+        if (t.flightId && !flightIds.has(t.flightId)) issues.push(`Timeline step ${t.step}: missing flight ${t.flightId}`);
+        if (t.hotelId && !hotelIds.has(t.hotelId)) issues.push(`Timeline step ${t.step}: missing hotel ${t.hotelId}`);
+        if (t.travelId && !travelIds.has(t.travelId)) issues.push(`Timeline step ${t.step}: missing travel item ${t.travelId}`);
+        if (t.travelId && (t.flightId || t.hotelId)) issues.push(`Timeline step ${t.step}: multiple master owners`);
+      });
+
+      RESERVATIONS.forEach((r,i) => {
+        if (r.hotelId && !hotelIds.has(r.hotelId)) issues.push(`Reservation ${i+1}: missing hotel ${r.hotelId}`);
+      });
+
+      const live = getLive();
+      if (live.trains) issues.push("Legacy live.trains overrides remain");
+      if (live.transfers) issues.push("Legacy live.transfers overrides remain");
+      if (live.timeline) {
+        const duplicateSteps = Object.keys(live.timeline).filter(step => {
+          const t = TIMELINE.find(x => String(x.step) === String(step));
+          return t && t.travelId;
+        });
+        if (duplicateSteps.length) issues.push(`Legacy Timeline content overrides remain for steps: ${duplicateSteps.join(", ")}`);
+      }
+      return issues;
+    }
+
+    function runDataIntegrityCheck(showResult) {
+      const issues = collectDataIntegrityIssues();
+      const el = document.getElementById("dataIntegrityStatus");
+      if (el) {
+        el.innerHTML = issues.length
+          ? `<span style="color:var(--danger);font-weight:700;">${issues.length} issue${issues.length===1?"":"s"} found.</span><div class="text-xs text-muted mt-8">${issues.map(x => `• ${x}`).join("<br>")}</div>`
+          : `<span style="color:var(--success);font-weight:700;">✓ Passed</span><div class="text-xs text-muted mt-8">${FLIGHTS.length} flights · ${HOTELS.length} hotels · ${SHARED_TRAVEL_ITEMS.length} shared travel/activity records · ${TIMELINE.length} timeline entries</div>`;
+      }
+      if (showResult) showToast(issues.length ? `Data check found ${issues.length} issue${issues.length===1?"":"s"}` : "Data integrity check passed");
+      return issues;
     }
 
     function openEditSheet(title, fields, onSave, onDelete) {
@@ -2700,58 +2833,6 @@
       return { page:"transport", label:"Review in Travel" };
     }
 
-    function editTimelineStep(step) {
-      const t = liveTimeline().find(x => x.step === step);
-      if (!t) return;
-      // Custom legs from Door-to-Door: edit the shared source
-      if (t._isCustom && t._customId) {
-        editCustomLeg(t._customId);
-        return;
-      }
-      if (t.flightId) {
-        editFlightById(t.flightId);
-        return;
-      }
-      const isHidden = !!getTimelineHidden()[step];
-      openEditSheet("Edit timeline step", [
-        { key: "title", label: "Title (optional — overrides From → To)", value: t.title || "" },
-        { key: "from", label: "From", value: t.from },
-        { key: "to", label: "To", value: t.to },
-        { key: "date", label: "Date (YYYY-MM-DD)", value: t.date },
-        { key: "start", label: "Start time (e.g. 09:39 or 07:00+1)", value: t.start },
-        { key: "end", label: "End time", value: t.end },
-        { key: "mode", label: "Mode (e.g. train name)", value: t.mode },
-        { key: "itemType", label: "Item Type", type: "select", value: timelineItemType(t), options: ITEM_TYPE_OPTIONS },
-        { key: "time", label: "Duration / est. time", value: t.time },
-        { key: "status", label: "Status", type: "select", value: t.status,
-          options: ["Confirmed","Pending","Verify Day-Of","Partial","Confirmed - Decision Needed","Decision Needed","Plan Confirmed / Timetable Pending","Done"] },
-        { key: "instructions", label: "Instructions", type: "textarea", value: t.instructions },
-        { key: "notes", label: "Notes", type: "textarea", value: t.notes }
-      ], (data) => {
-        const live = getLive();
-        if (!live.timeline) live.timeline = {};
-        live.timeline[step] = { ...(live.timeline[step] || {}), ...data };
-        setLive(live);
-        const route = routeForTimelineStep(step);
-        if (route && !route._isCustom) {
-          const edits = getRouteEdits();
-          edits[route._id] = {
-            ...(edits[route._id] || {}),
-            from: data.from, to: data.to, dateISO: data.date, start: data.start, end: data.end,
-            mode: data.mode, duration: data.time, status: data.status, note: data.instructions, secondaryNote: data.notes
-          };
-          setRouteEdits(edits);
-        }
-        renderTimeline();
-      }, () => {
-        // Hide or restore from the edit sheet
-        return isHidden ? restoreTimelineStep(step) : hideTimelineStep(step);
-      });
-      // Relabel the danger button for base steps
-const delBtn = document.getElementById("efDelete");
-      if (delBtn) delBtn.textContent = isHidden ? "Restore this step" : "Hide / cancel this step";
-    }
-
     function renderBookings() {
       document.getElementById("reservationsList").innerHTML = liveReservations().map((r, i) => `
         <div class="card">
@@ -3006,48 +3087,6 @@ const delBtn = document.getElementById("efDelete");
           ${c.docs ? `<div class="text-xs text-muted mt-8"><strong>Keep:</strong> ${c.docs}</div>` : ""}
         </div>
       `).join("");
-    }
-
-    function editTrain(i) {
-      const t = liveTrains()[i];
-      openEditSheet("Edit train", [
-        { key: "dep", label: "Depart", value: t.dep },
-        { key: "arr", label: "Arrive", value: t.arr },
-        { key: "dur", label: "Duration", value: t.dur },
-        { key: "seats", label: "Coach / Seats", value: t.seats },
-        { key: "conf", label: "Confirmation", value: t.conf },
-        { key: "notes", label: "Notes / Status", type: "textarea", value: t.notes }
-      ], (data) => {
-        const live = getLive();
-        if (!live.trains) live.trains = {};
-        live.trains[i] = data;
-        setLive(live);
-        renderTransport();
-      });
-    }
-
-    function editTransfer(i) {
-      const t = liveTransfers()[i];
-      if (!t) return;
-      if (t._isCustom && t._customId) {
-        editCustomLeg(t._customId);
-        return;
-      }
-      openEditSheet("Edit transfer / route", [
-        { key: "mode", label: "Mode", value: t.mode },
-        { key: "time", label: "Est. time", value: t.time },
-        { key: "status", label: "Status", type: "select", value: t.status,
-          options: ["Confirmed","Verify","Pending","Timetable Pending","Critical","Done"] },
-        { key: "steps", label: "Step-by-step instructions", type: "textarea", value: t.steps },
-        { key: "backup", label: "Backup plan", type: "textarea", value: t.backup || "" },
-        { key: "mistake", label: "Common mistake to avoid", type: "textarea", value: t.mistake || "" }
-      ], (data) => {
-        const live = getLive();
-        if (!live.transfers) live.transfers = {};
-        live.transfers[i] = data;
-        setLive(live);
-        renderTransport();
-      });
     }
 
     function packingOwner(traveler) {
@@ -3361,7 +3400,9 @@ const delBtn = document.getElementById("efDelete");
         if (linked) {
           merged = { ...merged, dateISO:linked.date, date:shortDateLabel(linked.date), start:linked.start, end:linked.end,
             from:linked.from, to:linked.to, mode:linked.mode, duration:linked.time,
-            note:linked.instructions, secondaryNote:linked.notes };
+            note:linked.instructions, secondaryNote:linked.notes,
+            _linkedMaster:true, _linkedPage:"transport",
+            _linkedLabel:linked.flightId ? "Edit Flight in Travel" : "Edit in Travel" };
         }
         return merged;
       });
@@ -3596,7 +3637,9 @@ const delBtn = document.getElementById("efDelete");
             <div class="row" style="gap:8px;">
               ${r._isCustom
                 ? `<button class="edit-btn" onclick="editCustomLeg('${r._id}')">Edit</button><button class="edit-btn" style="color:var(--danger);" onclick="deleteCustomLeg('${r._id}')">Delete</button>`
-                : `<button class="edit-btn" onclick="editBaseRoute('${r._id}')">Edit</button>${getRouteEdits()[r._id] ? `<button class="edit-btn" style="color:var(--accent);" onclick="restoreBaseRoute('${r._id}')">Restore</button>` : ""}`}
+                : r._linkedMaster
+                  ? `<button class="edit-btn" onclick="showPage('${r._linkedPage}')">${r._linkedLabel}</button>`
+                  : `<button class="edit-btn" onclick="editBaseRoute('${r._id}')">Edit Route Note</button>${getRouteEdits()[r._id] ? `<button class="edit-btn" style="color:var(--accent);" onclick="restoreBaseRoute('${r._id}')">Restore</button>` : ""}`}
             </div>
           </div>
         </div>`;
@@ -3798,7 +3841,10 @@ const delBtn = document.getElementById("efDelete");
 
     // ===================== INIT =====================
     document.addEventListener("DOMContentLoaded", () => {
+      migrateLegacyDataToMasterRecords();
       syncSystemThemeColor();
+      const versionEl = document.getElementById("appVersionLabel");
+      if (versionEl) versionEl.textContent = BUILD_LABEL;
       renderDualClocks();
       // iPhone/iPad cannot trigger Apple's native install sheet from JavaScript,
       // so show matching in-app directions automatically instead.
@@ -3936,8 +3982,9 @@ const delBtn = document.getElementById("efDelete");
       // Default journal date
       document.getElementById("jDate").value = new Date().toISOString().slice(0,10);
 
-      // Initial render
+      // Initial render and silent integrity verification.
       renderHome();
+      runDataIntegrityCheck(false);
 
       // Real service worker for installable offline use.
       if ("serviceWorker" in navigator) {

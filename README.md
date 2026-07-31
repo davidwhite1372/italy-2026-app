@@ -88,7 +88,7 @@ Each timeline item can still be manually changed using Timeline emphasis.
 Hotel data is now unified into master hotel records. Editing a hotel from Reservations or the Confirmation Wallet updates hotel references in Home, Today, Timeline, Reservations, Wallet, and city cards.
 
 
-## Version 10.5 DEV Phase 4.5
+## Version 10.5 DEV Phase 5
 
 - Added one master shared record for each train, boat, bus, taxi, car/drive, walk, event, tour, and information item.
 - Timeline, Travel, and linked Maps routes now read from the same shared travel records.
@@ -102,3 +102,13 @@ Hotel data is now unified into master hotel records. Editing a hotel from Reserv
 - Added linked Quick Tips on Home.
 - Made Timeline shared records mostly read-only; Timeline retains Complete, Hide Event, Item Type, and Details controls.
 - Timeline edit links now direct users to the page that owns the underlying record.
+
+
+## Phase 5 Final Data Cleanup
+
+- Migrates legacy Timeline, train, transfer, and master-owned reservation overrides into the current master records.
+- Removes duplicate legacy data sources after migration.
+- Removes unused legacy Timeline/train/transfer editor functions.
+- Linked Maps routes now direct edits to Travel instead of creating a second route copy.
+- Adds an on-device Single Source of Truth integrity check under More.
+- Centralizes the visible app/data build label.

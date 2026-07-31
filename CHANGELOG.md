@@ -1,5 +1,19 @@
 # Changelog
 
+## [10.5.0 DEV Phase 5] - 2026-07-31
+
+### Changed
+
+- Completed the single-source-of-truth cleanup for flights, hotels, shared travel, activities, Timeline links, and linked Maps routes.
+- Migrated and removed legacy duplicate Timeline, train, transfer, and master-owned reservation overrides.
+- Removed unused legacy duplicate editor functions.
+- Centralized the app/data version label.
+
+### Added
+
+- Data Integrity check under More to verify master references and legacy override cleanup.
+
+
 ## [10.5.0 DEV Phase 4.5] - 2026-07-31
 
 ### Added
