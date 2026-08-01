@@ -1,3 +1,11 @@
+## [10.6A1 DEV] - 2026-08-01
+
+### Fixed
+
+- Removed the obsolete Home Screen installation tip from the bottom of Home.
+- Removed the duplicate empty Quick Tip container/blue bar.
+- Preserved the working Quick Tip section at the top of Home.
+
 # Changelog
 
 ## [10.6A DEV] - 2026-08-01

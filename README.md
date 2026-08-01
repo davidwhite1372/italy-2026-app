@@ -4,7 +4,7 @@ GitHub Pages deployment package for David and Melody's Italy 2026 Travel Compani
 
 ## Current build
 
-**Version 10.6A DEV — Home experience**
+**Version 10.6A1 DEV — Home Quick Tip fix**
 
 The existing appearance, itinerary content, navigation, pinch-zoom behavior, backup/import tools, and installable PWA experience are preserved. Deployment-specific changes are limited to relative GitHub Pages paths, PWA scope/identity, cache isolation, and the `.nojekyll` marker.
 
@@ -136,3 +136,10 @@ Hotel data is now unified into master hotel records. Editing a hotel from Reserv
 - Kept the Next Up card directly below the clocks.
 - Activated linked Home Quick Tips for common editing and travel tasks.
 - Added small mobile spacing improvements without redesigning the Home page.
+
+
+## Version 10.6A1 DEV — Home Quick Tip Fix
+
+- Removed the obsolete static Add-to-Home-Screen tip from the Home page.
+- Removed the duplicate Quick Tip container that displayed as an empty blue bar.
+- Preserved the active Quick Tip card at the top of the Home page.
