@@ -267,6 +267,23 @@
     .tl-step.type-information { background:#fff; border-color:#cfd4da; box-shadow:0 2px 6px rgba(0,0,0,.06); }
     .tl-step.type-information .tl-dot { background:#87919b; box-shadow:0 0 0 2px #87919b; }
 
+    /* Version 10.5.1: timeline colors remain readable in light and night mode.
+       Colored cards use intentionally light fills with dark content; only time badges stay white. */
+    .tl-step.actual-travel:not(.type-information),
+    .tl-step.actual-travel:not(.type-information) .tl-title,
+    .tl-step.actual-travel:not(.type-information) .tl-detail,
+    .tl-step.actual-travel:not(.type-information) .tl-time,
+    .tl-step.actual-travel:not(.type-information) .tl-toggle,
+    .tl-step.actual-travel:not(.type-information) .edit-btn,
+    .tl-step.actual-travel:not(.type-information) .route-point,
+    .tl-step.actual-travel:not(.type-information) .route-arrow,
+    .tl-step.actual-travel:not(.type-information) .route-metrics,
+    .tl-step.actual-travel:not(.type-information) label { color:#172018; }
+    .tl-step.actual-travel:not(.type-information) .text-muted { color:#4e5551 !important; }
+    .tl-step.actual-travel:not(.type-information) .travel-time { color:#fff; }
+    .tl-step.actual-travel:not(.type-information) .tl-toggle,
+    .tl-step.actual-travel:not(.type-information) .edit-btn { border-color:rgba(23,32,24,.28); }
+
     .tide-card { overflow:hidden; }
     .tide-summary { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0; }
     .tide-pill { padding:5px 9px; border-radius:14px; background:#eef6fb; border:1px solid #c9e2f0; font-size:.75rem; font-weight:700; }
@@ -549,6 +566,14 @@
       .badge-medium { background:#3a2914; color:#ffb56b; }
       .badge-low { background:#292d31; color:#c5cbd0; }
       .search-box { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%23aeb5bb' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242.656a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E"); }
+      /* Keep neutral Information cards native to night mode. Colored cards above stay light for contrast. */
+      .tl-step.type-information { background:var(--card); color:var(--text); border-color:var(--border); }
+      .tl-step.type-information .tl-title,
+      .tl-step.type-information .tl-detail,
+      .tl-step.type-information .tl-time,
+      .tl-step.type-information .tl-toggle,
+      .tl-step.type-information .edit-btn { color:var(--text); }
+      .tl-step.type-information .text-muted { color:var(--muted) !important; }
     }
   </style>
 </head>
@@ -938,7 +963,7 @@
   <script>
     const APP_VERSION = "10.5.0-dev-phase5";
     const DATA_VERSION = "10.5.0";
-    const BUILD_LABEL = "App v10.5.0 DEV Phase 5 · Data v10.5.0";
+    const BUILD_LABEL = "App v10.5.1 DEV · iPhone Install + Night Mode Fix · Data v10.5.0";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -992,6 +1017,19 @@
       return /android/i.test(navigator.userAgent);
     }
 
+    function iOSBrowserName() {
+      const ua = navigator.userAgent || "";
+      if (/CriOS/i.test(ua)) return "Chrome";
+      if (/FxiOS/i.test(ua)) return "Firefox";
+      if (/EdgiOS/i.test(ua)) return "Edge";
+      if (/OPiOS/i.test(ua)) return "Opera";
+      return "Safari";
+    }
+
+    function isIOSSafari() {
+      return isIOSDevice() && iOSBrowserName() === "Safari";
+    }
+
     function installPromptRecentlyDismissed() {
       const raw = localStorage.getItem('italy2026_install_dismissed');
       if (!raw) return false;
@@ -1008,16 +1046,27 @@
       if (!overlay || !body || !action) return;
 
       if (kind === 'ios') {
-        subtitle.textContent = 'iPhone requires one quick manual step in Safari.';
-        body.innerHTML = `
-          <div class="alert alert-info text-sm">Apple does not allow websites to open the iPhone installation window automatically.</div>
+        const browser = iOSBrowserName();
+        const inSafari = isIOSSafari();
+        subtitle.textContent = inSafari
+          ? 'Install from Safari using Add to Home Screen.'
+          : `You are viewing this in ${browser}. Open it in Safari to install.`;
+        body.innerHTML = inSafari ? `
+          <div class="alert alert-info text-sm"><strong>iPhone installation is manual.</strong> Follow these Safari steps:</div>
           <ol class="install-steps">
-            <li>Open this page in <strong>Safari</strong>.</li>
-            <li>Tap the <span class="ios-share-icon">□↑</span> <strong>Share</strong> button.</li>
-            <li>Tap <strong>Add to Home Screen</strong>.</li>
-            <li>Keep <strong>Open as Web App</strong> turned on, then tap <strong>Add</strong>.</li>
+            <li>Tap the <span class="ios-share-icon">□↑</span> <strong>Share</strong> button in Safari.</li>
+            <li>Scroll down and tap <strong>Add to Home Screen</strong>.</li>
+            <li>Keep <strong>Open as Web App</strong> turned on.</li>
+            <li>Tap <strong>Add</strong>, then open Italy 2026 from the Home Screen.</li>
+          </ol>` : `
+          <div class="alert alert-warn text-sm"><strong>${browser} on iPhone cannot complete this installation.</strong></div>
+          <ol class="install-steps">
+            <li>Copy or remember this address: <strong>davidwhite1372.github.io/italy-2026-app/</strong></li>
+            <li>Open the <strong>Safari</strong> app.</li>
+            <li>Open the Italy 2026 address in Safari.</li>
+            <li>Tap <strong>Share → Add to Home Screen → Add</strong>.</li>
           </ol>`;
-        action.textContent = 'Got it';
+        action.textContent = inSafari ? 'Got it' : 'Open Safari';
       } else {
         subtitle.textContent = 'Add the trip to your Home Screen for full-screen and offline use.';
         body.innerHTML = `<div class="alert alert-info text-sm">Tap Install app below, then approve the browser installation window.</div>`;
@@ -1034,6 +1083,11 @@
 
     async function installAppNow() {
       if (isIOSDevice()) {
+        if (!isIOSSafari()) {
+          const url = window.location.href;
+          try { await navigator.clipboard.writeText(url); showToast('Address copied — open Safari and paste it'); }
+          catch (e) { showToast('Open this address in Safari to install'); }
+        }
         dismissInstallPrompt();
         return;
       }

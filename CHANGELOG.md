@@ -1,5 +1,15 @@
 # Changelog
 
+## [10.5.1 DEV] - 2026-07-31
+
+### Fixed
+
+- Added browser-aware iPhone installation guidance. Chrome, Edge, Firefox, and Opera on iPhone now clearly direct the user to Safari.
+- Safari now shows the exact Share → Add to Home Screen installation steps.
+- Improved Timeline night-mode contrast by keeping colored tiles light and forcing dark readable content text.
+- Kept neutral Information cards native to the dark theme.
+- Bumped the service-worker cache so installed devices receive the repair.
+
 ## [10.5.0 DEV Phase 5] - 2026-07-31
 
 ### Changed

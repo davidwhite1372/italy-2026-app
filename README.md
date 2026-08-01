@@ -4,7 +4,7 @@ GitHub Pages deployment package for David and Melody's Italy 2026 Travel Compani
 
 ## Current build
 
-**Version 10.3.0 — Timeline mode formatting**
+**Version 10.5.1 DEV — iPhone installation and night-mode readability repair**
 
 The existing appearance, itinerary content, navigation, pinch-zoom behavior, backup/import tools, and installable PWA experience are preserved. Deployment-specific changes are limited to relative GitHub Pages paths, PWA scope/identity, cache isolation, and the `.nojekyll` marker.
 
@@ -112,3 +112,11 @@ Hotel data is now unified into master hotel records. Editing a hotel from Reserv
 - Linked Maps routes now direct edits to Travel instead of creating a second route copy.
 - Adds an on-device Single Source of Truth integrity check under More.
 - Centralizes the visible app/data build label.
+
+
+## Version 10.5.1 DEV — Install and Contrast Repair
+
+- iPhone installation instructions now detect whether the site is open in Safari or another iOS browser.
+- Non-Safari iPhone browsers direct the user to Safari and attempt to copy the site address.
+- Timeline color-coded cards retain readable dark text in automatic night mode.
+- Neutral Information cards continue to follow the normal dark theme.
