@@ -154,9 +154,16 @@ Hotel data is now unified into master hotel records. Editing a hotel from Reserv
 - Kept NEXT auto-scroll, Details, Hide Event, Item Type, and owner-page edit links.
 
 
-## Version 10.6B1 DEV
+## Version 10.6C DEV
 
 - Moved trip-item creation from Timeline to Travel.
 - Renamed **Add a leg** to **Add Trip Item**.
 - Added support for travel, hotel, event, tour, and information items.
 - New items remain linked to Timeline and Maps where applicable.
+
+
+## Version 10.6C DEV
+
+- Polished Travel page cards for flights, trains, transfers, tours, and events.
+- Added prominent routes, times, confirmations, seat status, and map shortcuts.
+- Preserved Add Trip Item and single-source-of-truth editing.

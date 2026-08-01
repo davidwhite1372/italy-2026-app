@@ -189,3 +189,11 @@ All notable changes to the Italy 2026 Travel Companion will be documented here.
 
 ### Fixed
 - Removed obsolete Timeline Emphasis code remaining after Item Type migration.
+
+
+## [10.6.0 DEV C] - 2026-08-01
+
+### Changed
+- Redesigned Travel cards for faster scanning.
+- Added prominent departure/arrival layout, confirmation and seat information, and Google/Apple Maps actions.
+- Improved train, transfer, tour, event, and custom trip-item presentation.
