@@ -120,3 +120,10 @@ Hotel data is now unified into master hotel records. Editing a hotel from Reserv
 - Non-Safari iPhone browsers direct the user to Safari and attempt to copy the site address.
 - Timeline color-coded cards retain readable dark text in automatic night mode.
 - Neutral Information cards continue to follow the normal dark theme.
+
+
+## Version 10.5.2 DEV
+
+- Fixed Timeline Details button contrast in automatic dark mode.
+- Details button now uses a light background with dark text for reliable readability on all timeline card colors.
+- Bumped the PWA cache so installed devices receive the update.

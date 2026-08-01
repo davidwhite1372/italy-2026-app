@@ -1,5 +1,14 @@
 # Changelog
 
+## [10.5.2] - 2026-08-01
+
+### Fixed
+
+- Corrected unreadable Timeline `Details` button text in automatic dark mode.
+- Added high-contrast normal, active, and keyboard-focus states for the Details toggle.
+- Bumped the service-worker cache identity so installed apps receive the repair.
+
+
 ## [10.5.1 DEV] - 2026-07-31
 
 ### Fixed

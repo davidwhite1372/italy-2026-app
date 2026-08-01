@@ -574,6 +574,24 @@
       .tl-step.type-information .tl-toggle,
       .tl-step.type-information .edit-btn { color:var(--text); }
       .tl-step.type-information .text-muted { color:var(--muted) !important; }
+
+      /* Version 10.5.2: high-contrast Timeline Details controls in night mode. */
+      .tl-toggle,
+      .tl-step.actual-travel:not(.type-information) .tl-toggle,
+      .tl-step.type-information .tl-toggle {
+        background:#f3f4f5;
+        color:#172018 !important;
+        border-color:#8f989f;
+        box-shadow:0 1px 3px rgba(0,0,0,.28);
+      }
+      .tl-toggle:active,
+      .tl-toggle:focus-visible {
+        background:#ffffff;
+        color:#111 !important;
+        border-color:#ffffff;
+        outline:2px solid var(--accent);
+        outline-offset:2px;
+      }
     }
   </style>
 </head>
@@ -963,7 +981,7 @@
   <script>
     const APP_VERSION = "10.5.0-dev-phase5";
     const DATA_VERSION = "10.5.0";
-    const BUILD_LABEL = "App v10.5.1 DEV · iPhone Install + Night Mode Fix · Data v10.5.0";
+    const BUILD_LABEL = "App v10.5.2 DEV · Night Mode Details Button Fix · Data v10.5.0";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
