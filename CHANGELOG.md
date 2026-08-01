@@ -1,3 +1,15 @@
+# Changelog
+
+## [10.6.0-dev-b] - 2026-08-01
+
+### Changed
+
+- Added date dividers to separate each timeline day.
+- Added compact From → To summaries to travel cards without opening Details.
+- Improved timeline icons, spacing, time hierarchy, and mobile readability.
+- Refined completed-step fading and strike-through styling.
+- Preserved NEXT auto-scroll, full details, links, completion, hiding, and Item Type controls.
+
 ## [10.6A1 DEV] - 2026-08-01
 
 ### Fixed

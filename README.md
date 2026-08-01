@@ -143,3 +143,12 @@ Hotel data is now unified into master hotel records. Editing a hotel from Reserv
 - Removed the obsolete static Add-to-Home-Screen tip from the Home page.
 - Removed the duplicate Quick Tip container that displayed as an empty blue bar.
 - Preserved the active Quick Tip card at the top of the Home page.
+
+
+## Version 10.6B DEV — Timeline Experience
+
+- Added clear date dividers between timeline days.
+- Added compact From → To route summaries directly on travel cards.
+- Improved type icons, spacing, time hierarchy, and mobile scanability.
+- Refined completed-step fading and strike-through behavior.
+- Kept NEXT auto-scroll, Details, Hide Event, Item Type, and owner-page edit links.

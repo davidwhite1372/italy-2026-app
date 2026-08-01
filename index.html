@@ -526,6 +526,49 @@
     .route-point { font-size:.88rem; font-weight:700; }
     .route-arrow { text-align:center; color:var(--muted); line-height:1.1; font-size:1.05rem; }
     .route-metrics { text-align:center; color:var(--muted); font-size:.75rem; margin-top:5px; }
+
+    /* Version 10.6B: timeline scanability and day-by-day execution */
+    .tl-day-header {
+      display:flex; align-items:center; gap:10px; margin:22px 2px 10px;
+      color:var(--primary); font-weight:800; font-size:.88rem; letter-spacing:.02em;
+    }
+    .tl-day-header::after { content:""; height:1px; flex:1; background:var(--border); }
+    .tl-day-header:first-of-type { margin-top:8px; }
+    .tl-step { margin-bottom:14px; }
+    .tl-step.actual-travel { padding-top:12px; padding-bottom:12px; }
+    .tl-card-head { display:flex; align-items:flex-start; gap:10px; }
+    .tl-type-icon {
+      flex:0 0 auto; width:32px; height:32px; display:grid; place-items:center;
+      border-radius:10px; background:rgba(255,255,255,.68); border:1px solid rgba(23,32,24,.18);
+      font-size:1.05rem;
+    }
+    .tl-head-main { flex:1; min-width:0; }
+    .tl-title { font-size:.98rem; line-height:1.25; }
+    .tl-date-time { font-size:.76rem; color:var(--muted); font-weight:700; margin-top:2px; }
+    .tl-route-summary {
+      display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:center; gap:7px;
+      margin:9px 0 2px; padding:8px 10px; border-radius:10px;
+      background:rgba(255,255,255,.55); border:1px solid rgba(23,32,24,.16);
+    }
+    .tl-route-summary .from, .tl-route-summary .to { font-size:.78rem; font-weight:750; overflow-wrap:anywhere; }
+    .tl-route-summary .to { text-align:right; }
+    .tl-route-summary .arrow { color:var(--muted); font-weight:900; }
+    .tl-meta-line { font-size:.74rem; color:var(--muted); margin-top:5px; line-height:1.35; }
+    .tl-complete-row {
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
+      padding-top:9px; margin-top:8px; border-top:1px solid rgba(23,32,24,.16);
+    }
+    .tl-complete-row label { display:flex; align-items:center; gap:8px; font-size:.8rem; font-weight:750; cursor:pointer; }
+    .tl-complete-row input { width:19px; height:19px; accent-color:var(--success); }
+    .tl-step.done-step { opacity:.58; filter:saturate(.7); }
+    .tl-step.done-step .tl-title, .tl-step.done-step .tl-date-time,
+    .tl-step.done-step .tl-route-summary, .tl-step.done-step .tl-meta-line { text-decoration:line-through; }
+    .tl-step.done-step .tl-complete-row { text-decoration:none; }
+    @media (max-width:420px) {
+      .tl-route-summary { grid-template-columns:1fr auto 1fr; padding:8px; }
+      .tl-route-summary .from, .tl-route-summary .to { font-size:.72rem; }
+      .tl-toggle { padding:7px 8px; }
+    }
     .quick-action-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
     .quick-action-row .link-btn, .quick-action-row button { border:1px solid var(--border); border-radius:9px; padding:7px 9px; background:var(--card); text-decoration:none; }
     .wallet-key { font-size:1.08rem; font-weight:800; color:var(--primary); letter-spacing:.02em; }
@@ -581,6 +624,9 @@
       .tl-step.type-information .tl-toggle,
       .tl-step.type-information .edit-btn { color:var(--text); }
       .tl-step.type-information .text-muted { color:var(--muted) !important; }
+      .tl-step.type-information .tl-type-icon,
+      .tl-step.type-information .tl-route-summary { background:#24292d; border-color:var(--border); }
+      .tl-day-header::after { background:var(--border); }
 
       /* Version 10.5.2: high-contrast Timeline Details controls in night mode. */
       .tl-toggle,
@@ -983,9 +1029,9 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.6.0-dev-a1";
+    const APP_VERSION = "10.6.0-dev-b";
     const DATA_VERSION = "10.5.0";
-    const BUILD_LABEL = "App v10.6.0 DEV A1 · Home Quick Tip Fix · Data v10.5.0";
+    const BUILD_LABEL = "App v10.6.0 DEV B · Timeline Experience · Data v10.5.0";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -2818,7 +2864,11 @@
           <div class="progress-bar"><div class="fill" style="width:${total ? Math.round(doneCount/total*100) : 0}%"></div></div>
           <div class="text-xs text-muted mt-8">Completed steps stay in place but fade into the background. Timeline opens near the last completed step and the next item.</div>
         </div>
-      ` + (items.length ? items.map(t => {
+      ` + (items.length ? items.map((t, itemIndex) => {
+        const previous = itemIndex > 0 ? items[itemIndex - 1] : null;
+        const dateHeader = !previous || previous.date !== t.date
+          ? `<div class="tl-day-header"><span>${fmtDate(t.date)}</span></div>`
+          : "";
         let cls = "";
         const isDone = !!doneMap[t.step];
         const isHidden = !t._isCustom && !!hiddenMap[t.step];
@@ -2838,30 +2888,31 @@
         const route = t._isCustom && t._customId ? getAllDoorRoutes().find(r => r._isCustom && r._id === t._customId) : routeForTimelineStep(t.step);
         const primary = route ? normalizedLink(route.link) : "";
         const backup = route ? normalizedLink(route.backupLink) : "";
-        return `
+        const routeSummary = isActualTravelStep(t) && (t.from || t.to)
+          ? `<div class="tl-route-summary"><div class="from">${escapeHtml(t.from || "Start")}</div><div class="arrow">→</div><div class="to">${escapeHtml(t.to || "Destination")}</div></div>`
+          : "";
+        const metaBits = [timelineItemType(t), (t.mode && t.mode !== timelineItemType(t)) ? t.mode : "", t.time || ""].filter(Boolean);
+        return `${dateHeader}
           <div class="tl-step ${cls} ${timelineStyleClass(t)}" data-step="${t.step}" style="${isHidden ? 'opacity:0.75;' : ''}">
             <div class="tl-dot"></div>
             ${isNext ? `<div class="tl-current-marker">NEXT</div>` : ""}
-            ${isActualTravelStep(t) ? `<div class="travel-callout"><span class="travel-time">${t.start}</span><span class="travel-service">${itemTypeIcon(t)} ${actualTravelLabel(t)}</span><span class="travel-kind">${actualTravelKind(t)}</span></div>` : ""}
-            <div class="tl-time">${fmtDate(t.date)} ${t.start ? "· " + t.start + (t.end ? "–" + t.end : "") : ""}</div>
-            <div class="tl-compact-row">
-              <div class="tl-compact-main">
+            <div class="tl-card-head">
+              <div class="tl-type-icon" aria-hidden="true">${itemTypeIcon(t)}</div>
+              <div class="tl-head-main">
                 <div class="tl-title">${title}</div>
-                <div class="tl-detail">${itemTypeIcon(t)} ${timelineItemType(t)}${t.mode && t.mode !== timelineItemType(t) ? " · " + t.mode : ""} · ${t.time} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
+                <div class="tl-date-time">${t.start ? t.start + (t.end ? "–" + t.end : "") : "Time TBD"}</div>
               </div>
               <button class="tl-toggle" onclick="toggleTimelineDetails(${t.step})" aria-expanded="${isExpanded}">${isExpanded ? "▼ Details" : "▶ Details"}</button>
             </div>
+            ${routeSummary}
+            <div class="tl-meta-line">${metaBits.map(escapeHtml).join(" · ")} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
             ${isExpanded ? `<div class="tl-expanded">
-              ${(t.from || t.to) ? `<div class="route-flow"><div class="route-point">${escapeHtml(t.from || "Start")}</div><div class="route-arrow">↓</div><div class="route-point">${escapeHtml(t.to || "Destination")}</div>${t.time?`<div class="route-metrics">${escapeHtml(t.time)}</div>`:""}</div>` : ""}
               <div class="tl-detail">${t.instructions || "No additional instructions."}</div>
               ${(primary || backup) ? `<div class="row mt-8" style="gap:10px;flex-wrap:wrap;">${primary ? `<a class="link-btn" href="${primary}" target="_blank" rel="noopener">${linkLabel(route.link, false)} →</a>` : ""}${backup ? `<a class="link-btn" href="${backup}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(route.backupLink, true)} →</a>` : ""}</div>` : ""}
-              ${t.notes ? `<div class="tl-detail" style="color:var(--primary);margin-top:6px;">${t.notes}</div>` : ""}
+              ${t.notes ? `<div class="tl-detail" style="color:var(--primary);margin-top:7px;"><strong>Note:</strong> ${t.notes}</div>` : ""}
               <div class="tl-action-row">${actionBtns}</div>
             </div>` : ""}
-            ${isHidden ? "" : `<label class="check-row" style="padding:8px 0 0;border:none;margin-top:6px;">
-              <input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTimelineDone(${t.step}, this.checked)">
-              <span class="text-sm fw-600">${isDone ? "Completed" : "Mark completed"}</span>
-            </label>`}
+            ${isHidden ? "" : `<div class="tl-complete-row"><label><input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTimelineDone(${t.step}, this.checked)"><span>${isDone ? "Completed" : "Mark completed"}</span></label><span class="text-xs text-muted">Step ${t.step}</span></div>`}
           </div>`;
       }).join("") : `<div class="empty"><div class="icon">${tlFilter === "hidden" ? "🙈" : "📋"}</div>${tlFilter === "hidden" ? "No hidden steps." : "No steps match this filter."}</div>`);
 
