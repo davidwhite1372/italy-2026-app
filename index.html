@@ -261,6 +261,9 @@
     .tl-step.type-event { background:linear-gradient(135deg,#fff7b8 0%,#fffceb 100%); border-color:#d6ad00; }
     .tl-step.type-event .travel-time { background:#a77d00; }
     .tl-step.type-event .travel-callout { color:#6d5200; }
+    .tl-step.type-hotel { background:linear-gradient(135deg,#cfe8e5 0%,#edf8f6 100%); border-color:#00695c; }
+    .tl-step.type-hotel .travel-time { background:#00695c; }
+    .tl-step.type-hotel .travel-callout { color:#004d40; }
     .tl-step.type-tour { background:linear-gradient(135deg,#ffe7a6 0%,#fff6d9 100%); border-color:#c98200; }
     .tl-step.type-tour .travel-time { background:#a96400; }
     .tl-step.type-tour .travel-callout { color:#754500; }
@@ -527,7 +530,7 @@
     .route-arrow { text-align:center; color:var(--muted); line-height:1.1; font-size:1.05rem; }
     .route-metrics { text-align:center; color:var(--muted); font-size:.75rem; margin-top:5px; }
 
-    /* Version 10.6B: timeline scanability and day-by-day execution */
+    /* Version 10.6B1: move trip-item creation to Travel */
     .tl-day-header {
       display:flex; align-items:center; gap:10px; margin:22px 2px 10px;
       color:var(--primary); font-weight:800; font-size:.88rem; letter-spacing:.02em;
@@ -736,8 +739,7 @@
     <!-- TIMELINE -->
     <section id="page-timeline" class="page">
       <div class="section-title">Master Timeline</div>
-      <button style="width:100%;margin-bottom:12px;" onclick="addCustomLeg()">＋ Add a leg</button>
-      <div class="text-xs text-muted" style="margin:-4px 2px 10px;">Timeline is your trip guide. Use Complete, Hide Event, Item Type, and Details here; make travel-content changes on the Travel or Reservations pages.</div>
+      <div class="text-xs text-muted" style="margin:0 2px 10px;">Timeline is your trip guide. Use Complete, Hide Event, Item Type, and Details here. Add or change itinerary content on Travel or Reservations.</div>
       <input type="search" class="search-box" id="timelineSearch" placeholder="Search train, walk, airport, hotel, flight number..." />
       <div class="filter-bar" id="tlModeFilters">
         <div class="filter-chip active" data-mode="all">All modes</div>
@@ -806,6 +808,11 @@
     <!-- TRAVEL -->
     <section id="page-transport" class="page">
       <div class="owner-banner"><span class="owner-icon">✏️</span><div><strong>Make travel changes here.</strong> Flights, trains, transfers, tours, and events automatically update their linked Timeline, Maps, Reservations, Wallet, and Home views.</div></div>
+      <button style="width:100%;margin:0 0 14px;" onclick="addTripItem()">＋ Add Trip Item</button>
+      <div id="customTripItemsSection" class="hidden">
+        <div class="section-title">➕ Added Trip Items</div>
+        <div id="customTripItemsList"></div>
+      </div>
       <div class="section-title">✈️ Flights</div>
       <div id="flightsList"></div>
       <div class="section-title">🚆 Trains</div>
@@ -1029,9 +1036,9 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.6.0-dev-b";
+    const APP_VERSION = "10.6.0-dev-b1";
     const DATA_VERSION = "10.5.0";
-    const BUILD_LABEL = "App v10.6.0 DEV B · Timeline Experience · Data v10.5.0";
+    const BUILD_LABEL = "App v10.6.0 DEV B1 · Add Trip Item · Data v10.5.0";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -1259,6 +1266,7 @@
       "Bus": { css:"type-bus", icon:"🚌", label:"BUS" },
       "Taxi": { css:"type-taxi", icon:"🚕", label:"TAXI" },
       "Car / Drive": { css:"type-car", icon:"🚗", label:"CAR / DRIVE" },
+      "Hotel": { css:"type-hotel", icon:"🏨", label:"HOTEL" },
       "Event": { css:"type-event", icon:"✅", label:"EVENT" },
       "Tour": { css:"type-tour", icon:"🎟️", label:"TOUR" },
       "Information": { css:"type-information", icon:"ℹ️", label:"INFORMATION" }
@@ -1877,7 +1885,7 @@
         end: leg.end || "",
         from: leg.from,
         to: leg.to,
-        mode: leg.mode || "Custom leg",
+        mode: leg.mode || leg.itemType || "Information",
         itemType: leg.itemType || "Information",
         time: leg.duration || "",
         status: leg.status || "Confirmed",
@@ -3135,6 +3143,25 @@
     }
 
     function renderTransport() {
+      const customTripItems = getCustomLegs();
+      const customSection = document.getElementById("customTripItemsSection");
+      const customList = document.getElementById("customTripItemsList");
+      if (customSection && customList) {
+        customSection.classList.toggle("hidden", customTripItems.length === 0);
+        customList.innerHTML = customTripItems.map(t => `
+          <div class="card" style="border-color:#90caf9;">
+            <div class="row space-between" style="gap:10px;align-items:flex-start;">
+              <div class="fw-600">${itemTypeIcon(t)} ${t.title || [t.from,t.to].filter(Boolean).join(" → ") || "Trip Item"}</div>
+              <div class="row" style="gap:6px;align-items:center;">${statusBadge(t.status || "Confirmed")} <button class="edit-btn" onclick="editCustomLeg('${t.id}')">Edit</button></div>
+            </div>
+            <div class="text-xs text-muted mt-8">${fmtDate(t.date)}${t.start ? " · " + t.start : ""}${t.end ? "–" + t.end : ""} · ${t.itemType || "Information"}</div>
+            ${(t.from || t.to) ? `<div class="text-sm mt-8">${t.from || ""}${t.to ? " → " + t.to : ""}</div>` : ""}
+            ${t.duration ? `<div class="text-xs text-muted mt-8">${t.duration}</div>` : ""}
+            ${t.note ? `<div class="text-sm mt-8">${t.note}</div>` : ""}
+            <div class="text-xs text-muted mt-8">Added here · appears on Timeline${(t.from && t.to) ? " and Maps" : ""}</div>
+          </div>`).join("");
+      }
+
       document.getElementById("flightsList").innerHTML = liveFlights().map(f => `
         <div class="card">
           <div class="row space-between">
@@ -3540,7 +3567,7 @@
         date: leg.date ? shortDateLabel(leg.date) : "",
         from: leg.from,
         to: leg.to,
-        mode: leg.mode || "Custom leg",
+        mode: leg.mode || leg.itemType || "Information",
         duration: leg.duration || "",
         link: leg.link || mapsLinkFor(leg.from, leg.to),
         backupLink: leg.backupLink || "",
@@ -3623,69 +3650,81 @@
       showToast("Original route restored");
     }
 
-    function addCustomLeg() {
-      openEditSheet("Add door-to-door leg", [
-        { key: "title", label: "Title (optional)", value: "" },
-        { key: "from", label: "From", value: "" },
-        { key: "to", label: "To", value: "" },
+    function addTripItem() {
+      openEditSheet("Add Trip Item", [
+        { key: "itemType", label: "Item Type", type: "select", value: "Information", options: ITEM_TYPE_OPTIONS },
+        { key: "title", label: "Title", value: "" },
+        { key: "from", label: "From (optional for events, tours, hotels and information)", value: "" },
+        { key: "to", label: "To / Location (optional)", value: "" },
         { key: "date", label: "Date (YYYY-MM-DD)", value: "2026-10-05" },
         { key: "start", label: "Start time (e.g. 14:30)", value: "" },
         { key: "end", label: "End time", value: "" },
-        { key: "mode", label: "Mode (walk, taxi, train…)", value: "" },
-        { key: "itemType", label: "Item Type", type: "select", value: "Information", options: ITEM_TYPE_OPTIONS },
+        { key: "mode", label: "Service / mode / activity name", value: "" },
         { key: "duration", label: "Duration", value: "" },
         { key: "status", label: "Status", type: "select", value: "Confirmed",
           options: ["Confirmed","Pending","Verify Day-Of","Decision Needed","Done"] },
         { key: "note", label: "Primary notes / instructions", type: "textarea", value: "" },
         { key: "secondaryNote", label: "Secondary note / backup instructions", type: "textarea", value: "" },
-        { key: "link", label: "Primary map / route URL (optional)", value: "" },
+        { key: "link", label: "Primary map / ticket URL (optional)", value: "" },
         { key: "backupLink", label: "Backup link (optional)", value: "" }
       ], (data) => {
-        if (!(data.from || "").trim() || !(data.to || "").trim()) {
-          alert("From and To are required.");
+        const title = (data.title || "").trim();
+        const from = (data.from || "").trim();
+        const to = (data.to || "").trim();
+        const itemType = data.itemType || "Information";
+        const movementTypes = new Set(["Flight","Train","Boat / Ferry","Walk","Bus","Taxi","Car / Drive"]);
+        if (!title && !from && !to) {
+          alert("Enter a title or a From/To location.");
+          return;
+        }
+        if (movementTypes.has(itemType) && (!from || !to)) {
+          alert("From and To are required for travel items.");
           return;
         }
         if (!(data.date || "").trim()) {
           alert("Date is required (YYYY-MM-DD).");
           return;
         }
+        const displayTitle = title || [from, to].filter(Boolean).join(" → ");
         const leg = {
           id: "cl_" + Date.now(),
-          title: (data.title || "").trim(),
-          from: data.from.trim(),
-          to: data.to.trim(),
+          title: displayTitle,
+          from,
+          to,
           date: data.date.trim(),
           start: (data.start || "").trim(),
           end: (data.end || "").trim(),
-          mode: (data.mode || "").trim() || "Custom leg",
-          itemType: data.itemType || "Information",
+          mode: (data.mode || "").trim() || itemType,
+          itemType,
           duration: (data.duration || "").trim(),
           status: data.status || "Confirmed",
           note: (data.note || "").trim(),
           secondaryNote: (data.secondaryNote || "").trim(),
-          link: (data.link || "").trim() || mapsLinkFor(data.from, data.to),
+          link: (data.link || "").trim() || ((from && to) ? mapsLinkFor(from, to) : (to ? googleMapSearchUrl(to) : "")),
           backupLink: (data.backupLink || "").trim()
         };
         const arr = getCustomLegs();
         arr.push(leg);
         clearDeleted("customlegs",leg.id);
         setCustomLegs(arr);
-        // Refresh related tabs so the new leg is visible immediately
         try { renderMaps(); } catch (e) {}
         try { renderTimeline(); } catch (e) {}
         try { renderTransport(); } catch (e) {}
-        showToast("Leg added — also appears on Timeline & Transport");
+        showToast("Trip item added — Timeline and Travel updated");
       });
     }
+
+    // Backward-compatible alias for older saved links or buttons.
+    function addCustomLeg() { addTripItem(); }
 
     function editCustomLeg(id) {
       const arr = getCustomLegs();
       const leg = arr.find(x => x.id === id);
       if (!leg) return;
-      openEditSheet("Edit door-to-door leg", [
+      openEditSheet("Edit Trip Item", [
         { key: "title", label: "Title (optional)", value: leg.title || "" },
-        { key: "from", label: "From", value: leg.from },
-        { key: "to", label: "To", value: leg.to },
+        { key: "from", label: "From (optional)", value: leg.from },
+        { key: "to", label: "To / Location (optional)", value: leg.to },
         { key: "date", label: "Date (YYYY-MM-DD)", value: leg.date },
         { key: "start", label: "Start time", value: leg.start || "" },
         { key: "end", label: "End time", value: leg.end || "" },
@@ -3707,7 +3746,7 @@
           date: data.date.trim(),
           start: (data.start || "").trim(),
           end: (data.end || "").trim(),
-          mode: (data.mode || "").trim() || "Custom leg",
+          mode: (data.mode || "").trim() || (data.itemType || "Information"),
           itemType: data.itemType || "Information",
           duration: (data.duration || "").trim(),
           status: data.status || "Confirmed",
@@ -3729,7 +3768,7 @@
     }
 
     function deleteCustomLeg(id) {
-      if (!confirm("Delete this custom leg? It will be removed from Timeline, Transport, and Maps.")) return false;
+      if (!confirm("Delete this trip item? It will be removed from Timeline, Travel, and Maps.")) return false;
       markDeleted("customlegs",id); setCustomLegs(getCustomLegs().filter(x => x.id !== id));
       // Always refresh related views so lists stay in sync
       try { renderMaps(); } catch (e) {}

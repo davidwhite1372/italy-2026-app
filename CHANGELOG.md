@@ -115,6 +115,16 @@ All notable changes to the Italy 2026 Travel Companion will be documented here.
 
 ## [Unreleased]
 
+## [10.6B1 DEV] - 2026-08-01
+
+### Changed
+
+- Moved the add control from Timeline to Travel.
+- Renamed Add a leg to Add Trip Item.
+- Added a flexible Item Type-first form for travel, hotel, tour, event, and information entries.
+- Added an Added Trip Items section on Travel for editing newly created records.
+
+
 ### Added — Version 10.5 DEV Phase 3 Hotels
 
 - Added four master hotel records.

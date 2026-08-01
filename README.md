@@ -152,3 +152,11 @@ Hotel data is now unified into master hotel records. Editing a hotel from Reserv
 - Improved type icons, spacing, time hierarchy, and mobile scanability.
 - Refined completed-step fading and strike-through behavior.
 - Kept NEXT auto-scroll, Details, Hide Event, Item Type, and owner-page edit links.
+
+
+## Version 10.6B1 DEV
+
+- Moved trip-item creation from Timeline to Travel.
+- Renamed **Add a leg** to **Add Trip Item**.
+- Added support for travel, hotel, event, tour, and information items.
+- New items remain linked to Timeline and Maps where applicable.
