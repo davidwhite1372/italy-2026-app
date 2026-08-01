@@ -4,7 +4,7 @@ GitHub Pages deployment package for David and Melody's Italy 2026 Travel Compani
 
 ## Current build
 
-**Version 10.5.1 DEV — iPhone installation and night-mode readability repair**
+**Version 10.6A1 DEV — Home Quick Tip fix**
 
 The existing appearance, itinerary content, navigation, pinch-zoom behavior, backup/import tools, and installable PWA experience are preserved. Deployment-specific changes are limited to relative GitHub Pages paths, PWA scope/identity, cache isolation, and the `.nojekyll` marker.
 
@@ -127,3 +127,43 @@ Hotel data is now unified into master hotel records. Editing a hotel from Reserv
 - Fixed Timeline Details button contrast in automatic dark mode.
 - Details button now uses a light background with dark text for reliable readability on all timeline card colors.
 - Bumped the PWA cache so installed devices receive the update.
+
+
+## Version 10.6A DEV — Home Experience
+
+- Preserved the existing countdown / days-and-nights bar at the top of Home.
+- Kept the Home and Italy clocks directly below the countdown.
+- Kept the Next Up card directly below the clocks.
+- Activated linked Home Quick Tips for common editing and travel tasks.
+- Added small mobile spacing improvements without redesigning the Home page.
+
+
+## Version 10.6A1 DEV — Home Quick Tip Fix
+
+- Removed the obsolete static Add-to-Home-Screen tip from the Home page.
+- Removed the duplicate Quick Tip container that displayed as an empty blue bar.
+- Preserved the active Quick Tip card at the top of the Home page.
+
+
+## Version 10.6B DEV — Timeline Experience
+
+- Added clear date dividers between timeline days.
+- Added compact From → To route summaries directly on travel cards.
+- Improved type icons, spacing, time hierarchy, and mobile scanability.
+- Refined completed-step fading and strike-through behavior.
+- Kept NEXT auto-scroll, Details, Hide Event, Item Type, and owner-page edit links.
+
+
+## Version 10.6C DEV
+
+- Moved trip-item creation from Timeline to Travel.
+- Renamed **Add a leg** to **Add Trip Item**.
+- Added support for travel, hotel, event, tour, and information items.
+- New items remain linked to Timeline and Maps where applicable.
+
+
+## Version 10.6C DEV
+
+- Polished Travel page cards for flights, trains, transfers, tours, and events.
+- Added prominent routes, times, confirmations, seat status, and map shortcuts.
+- Preserved Add Trip Item and single-source-of-truth editing.

@@ -261,6 +261,9 @@
     .tl-step.type-event { background:linear-gradient(135deg,#fff7b8 0%,#fffceb 100%); border-color:#d6ad00; }
     .tl-step.type-event .travel-time { background:#a77d00; }
     .tl-step.type-event .travel-callout { color:#6d5200; }
+    .tl-step.type-hotel { background:linear-gradient(135deg,#cfe8e5 0%,#edf8f6 100%); border-color:#00695c; }
+    .tl-step.type-hotel .travel-time { background:#00695c; }
+    .tl-step.type-hotel .travel-callout { color:#004d40; }
     .tl-step.type-tour { background:linear-gradient(135deg,#ffe7a6 0%,#fff6d9 100%); border-color:#c98200; }
     .tl-step.type-tour .travel-time { background:#a96400; }
     .tl-step.type-tour .travel-callout { color:#754500; }
@@ -380,6 +383,13 @@
     }
     .quick-tip-card .quick-tip-copy { flex:1; }
     .quick-tip-link { white-space:nowrap; }
+    #homeQuickTip { margin-bottom:14px; }
+    #homeNextUp .next-up-card { margin-bottom:10px; }
+    #page-home .stats { margin-bottom:10px; }
+    @media (max-width:420px) {
+      .quick-tip-card { align-items:stretch; flex-direction:column; }
+      .quick-tip-link { width:100%; }
+    }
 
     /* Packing categories */
     .pack-cat { margin-bottom: 16px; }
@@ -519,6 +529,87 @@
     .route-point { font-size:.88rem; font-weight:700; }
     .route-arrow { text-align:center; color:var(--muted); line-height:1.1; font-size:1.05rem; }
     .route-metrics { text-align:center; color:var(--muted); font-size:.75rem; margin-top:5px; }
+
+    /* Version 10.6C: Travel page experience */
+    .travel-overview-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:0 0 14px; }
+    .travel-overview-stat { padding:10px 8px; text-align:center; border:1px solid var(--border); border-radius:12px; background:var(--card); }
+    .travel-overview-stat strong { display:block; font-size:1.15rem; color:var(--primary); }
+    .travel-overview-stat span { display:block; margin-top:2px; font-size:.72rem; color:var(--muted); }
+    .travel-card { overflow:hidden; padding:0; }
+    .travel-card-top { padding:12px 14px; border-bottom:1px solid var(--border); background:linear-gradient(135deg,rgba(21,101,192,.08),rgba(255,255,255,0)); }
+    .travel-card.flight-card .travel-card-top { background:linear-gradient(135deg,rgba(46,125,50,.14),rgba(255,255,255,0)); }
+    .travel-card.train-card .travel-card-top { background:linear-gradient(135deg,rgba(230,81,0,.14),rgba(255,255,255,0)); }
+    .travel-card.transfer-card .travel-card-top { background:linear-gradient(135deg,rgba(0,105,92,.12),rgba(255,255,255,0)); }
+    .travel-card.activity-card .travel-card-top { background:linear-gradient(135deg,rgba(167,125,0,.14),rgba(255,255,255,0)); }
+    .travel-card-main { padding:12px 14px; }
+    .travel-service-line { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .travel-service-name { font-weight:750; font-size:1rem; line-height:1.25; }
+    .travel-date-label { font-size:.75rem; color:var(--muted); white-space:nowrap; }
+    .travel-route-grid { display:grid; grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr); gap:5px; align-items:center; margin:11px 0 8px; }
+    .travel-route-point { min-width:0; }
+    .travel-route-point.to { text-align:right; }
+    .travel-route-place { font-weight:700; line-height:1.25; overflow-wrap:anywhere; }
+    .travel-route-time { margin-top:3px; font-size:1.05rem; font-weight:800; color:var(--primary); }
+    .travel-route-arrow { text-align:center; font-size:1.2rem; color:var(--muted); }
+    .travel-chip-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; }
+    .travel-chip { display:inline-flex; align-items:center; gap:4px; padding:4px 8px; border-radius:999px; background:var(--surface); border:1px solid var(--border); font-size:.74rem; line-height:1.1; }
+    .travel-detail-block { margin-top:9px; font-size:.84rem; line-height:1.45; }
+    .travel-detail-block.muted { color:var(--muted); }
+    .travel-actions { display:flex; flex-wrap:wrap; gap:7px; padding:10px 14px 13px; border-top:1px solid var(--border); }
+    .travel-actions button,.travel-actions a { flex:1 1 auto; min-width:92px; text-align:center; }
+    @media (max-width:430px) {
+      .travel-overview-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+      .travel-route-grid { grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr); }
+      .travel-service-line { align-items:center; }
+    }
+    body.dark .travel-card-top { background:linear-gradient(135deg,rgba(144,202,249,.12),rgba(0,0,0,0)); }
+    body.dark .travel-card.flight-card .travel-card-top { background:linear-gradient(135deg,rgba(129,199,132,.14),rgba(0,0,0,0)); }
+    body.dark .travel-card.train-card .travel-card-top { background:linear-gradient(135deg,rgba(255,183,77,.14),rgba(0,0,0,0)); }
+    body.dark .travel-card.transfer-card .travel-card-top { background:linear-gradient(135deg,rgba(77,182,172,.14),rgba(0,0,0,0)); }
+    body.dark .travel-card.activity-card .travel-card-top { background:linear-gradient(135deg,rgba(255,213,79,.14),rgba(0,0,0,0)); }
+
+    /* Version 10.6B1: move trip-item creation to Travel */
+    .tl-day-header {
+      display:flex; align-items:center; gap:10px; margin:22px 2px 10px;
+      color:var(--primary); font-weight:800; font-size:.88rem; letter-spacing:.02em;
+    }
+    .tl-day-header::after { content:""; height:1px; flex:1; background:var(--border); }
+    .tl-day-header:first-of-type { margin-top:8px; }
+    .tl-step { margin-bottom:14px; }
+    .tl-step.actual-travel { padding-top:12px; padding-bottom:12px; }
+    .tl-card-head { display:flex; align-items:flex-start; gap:10px; }
+    .tl-type-icon {
+      flex:0 0 auto; width:32px; height:32px; display:grid; place-items:center;
+      border-radius:10px; background:rgba(255,255,255,.68); border:1px solid rgba(23,32,24,.18);
+      font-size:1.05rem;
+    }
+    .tl-head-main { flex:1; min-width:0; }
+    .tl-title { font-size:.98rem; line-height:1.25; }
+    .tl-date-time { font-size:.76rem; color:var(--muted); font-weight:700; margin-top:2px; }
+    .tl-route-summary {
+      display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:center; gap:7px;
+      margin:9px 0 2px; padding:8px 10px; border-radius:10px;
+      background:rgba(255,255,255,.55); border:1px solid rgba(23,32,24,.16);
+    }
+    .tl-route-summary .from, .tl-route-summary .to { font-size:.78rem; font-weight:750; overflow-wrap:anywhere; }
+    .tl-route-summary .to { text-align:right; }
+    .tl-route-summary .arrow { color:var(--muted); font-weight:900; }
+    .tl-meta-line { font-size:.74rem; color:var(--muted); margin-top:5px; line-height:1.35; }
+    .tl-complete-row {
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
+      padding-top:9px; margin-top:8px; border-top:1px solid rgba(23,32,24,.16);
+    }
+    .tl-complete-row label { display:flex; align-items:center; gap:8px; font-size:.8rem; font-weight:750; cursor:pointer; }
+    .tl-complete-row input { width:19px; height:19px; accent-color:var(--success); }
+    .tl-step.done-step { opacity:.58; filter:saturate(.7); }
+    .tl-step.done-step .tl-title, .tl-step.done-step .tl-date-time,
+    .tl-step.done-step .tl-route-summary, .tl-step.done-step .tl-meta-line { text-decoration:line-through; }
+    .tl-step.done-step .tl-complete-row { text-decoration:none; }
+    @media (max-width:420px) {
+      .tl-route-summary { grid-template-columns:1fr auto 1fr; padding:8px; }
+      .tl-route-summary .from, .tl-route-summary .to { font-size:.72rem; }
+      .tl-toggle { padding:7px 8px; }
+    }
     .quick-action-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
     .quick-action-row .link-btn, .quick-action-row button { border:1px solid var(--border); border-radius:9px; padding:7px 9px; background:var(--card); text-decoration:none; }
     .wallet-key { font-size:1.08rem; font-weight:800; color:var(--primary); letter-spacing:.02em; }
@@ -574,6 +665,9 @@
       .tl-step.type-information .tl-toggle,
       .tl-step.type-information .edit-btn { color:var(--text); }
       .tl-step.type-information .text-muted { color:var(--muted) !important; }
+      .tl-step.type-information .tl-type-icon,
+      .tl-step.type-information .tl-route-summary { background:#24292d; border-color:var(--border); }
+      .tl-day-header::after { background:var(--border); }
 
       /* Version 10.5.2: high-contrast Timeline Details controls in night mode. */
       .tl-toggle,
@@ -614,6 +708,7 @@
       <div class="stats" id="homeStats"></div>
       <div id="homeClocks" class="dual-clock" aria-label="Home and Italy clocks"></div>
       <div id="homeNextUp"></div>
+      <div id="homeQuickTip" aria-live="polite"></div>
       <div class="card">
         <div class="card-title"><span class="icon">⚡</span> Most Important Open Items</div>
         <div id="homeOpenItems"></div>
@@ -655,10 +750,6 @@
           <div class="text-sm fw-600 mt-8">Budget</div>
         </div>
       </div>
-      <div class="alert alert-info mt-12">
-        <strong>Tip:</strong> Add this page to your Home Screen for full-screen app experience and offline access.
-      </div>
-      <div id="homeQuickTip" class="alert alert-info mt-12"></div>
       <div id="appVersionLabel" style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;"></div>
     </section>
 
@@ -686,8 +777,7 @@
     <!-- TIMELINE -->
     <section id="page-timeline" class="page">
       <div class="section-title">Master Timeline</div>
-      <button style="width:100%;margin-bottom:12px;" onclick="addCustomLeg()">＋ Add a leg</button>
-      <div class="text-xs text-muted" style="margin:-4px 2px 10px;">Timeline is your trip guide. Use Complete, Hide Event, Item Type, and Details here; make travel-content changes on the Travel or Reservations pages.</div>
+      <div class="text-xs text-muted" style="margin:0 2px 10px;">Timeline is your trip guide. Use Complete, Hide Event, Item Type, and Details here. Add or change itinerary content on Travel or Reservations.</div>
       <input type="search" class="search-box" id="timelineSearch" placeholder="Search train, walk, airport, hotel, flight number..." />
       <div class="filter-bar" id="tlModeFilters">
         <div class="filter-chip active" data-mode="all">All modes</div>
@@ -756,6 +846,12 @@
     <!-- TRAVEL -->
     <section id="page-transport" class="page">
       <div class="owner-banner"><span class="owner-icon">✏️</span><div><strong>Make travel changes here.</strong> Flights, trains, transfers, tours, and events automatically update their linked Timeline, Maps, Reservations, Wallet, and Home views.</div></div>
+      <button style="width:100%;margin:0 0 14px;" onclick="addTripItem()">＋ Add Trip Item</button>
+      <div id="travelOverview"></div>
+      <div id="customTripItemsSection" class="hidden">
+        <div class="section-title">➕ Added Trip Items</div>
+        <div id="customTripItemsList"></div>
+      </div>
       <div class="section-title">✈️ Flights</div>
       <div id="flightsList"></div>
       <div class="section-title">🚆 Trains</div>
@@ -979,9 +1075,9 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.5.0-dev-phase5";
+    const APP_VERSION = "10.6.0-dev-c";
     const DATA_VERSION = "10.5.0";
-    const BUILD_LABEL = "App v10.5.2 DEV · Night Mode Details Button Fix · Data v10.5.0";
+    const BUILD_LABEL = "App v10.6.0 DEV C · Travel Experience · Data v10.5.0";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -1209,6 +1305,7 @@
       "Bus": { css:"type-bus", icon:"🚌", label:"BUS" },
       "Taxi": { css:"type-taxi", icon:"🚕", label:"TAXI" },
       "Car / Drive": { css:"type-car", icon:"🚗", label:"CAR / DRIVE" },
+      "Hotel": { css:"type-hotel", icon:"🏨", label:"HOTEL" },
       "Event": { css:"type-event", icon:"✅", label:"EVENT" },
       "Tour": { css:"type-tour", icon:"🎟️", label:"TOUR" },
       "Information": { css:"type-information", icon:"ℹ️", label:"INFORMATION" }
@@ -1827,7 +1924,7 @@
         end: leg.end || "",
         from: leg.from,
         to: leg.to,
-        mode: leg.mode || "Custom leg",
+        mode: leg.mode || leg.itemType || "Information",
         itemType: leg.itemType || "Information",
         time: leg.duration || "",
         status: leg.status || "Confirmed",
@@ -2814,7 +2911,11 @@
           <div class="progress-bar"><div class="fill" style="width:${total ? Math.round(doneCount/total*100) : 0}%"></div></div>
           <div class="text-xs text-muted mt-8">Completed steps stay in place but fade into the background. Timeline opens near the last completed step and the next item.</div>
         </div>
-      ` + (items.length ? items.map(t => {
+      ` + (items.length ? items.map((t, itemIndex) => {
+        const previous = itemIndex > 0 ? items[itemIndex - 1] : null;
+        const dateHeader = !previous || previous.date !== t.date
+          ? `<div class="tl-day-header"><span>${fmtDate(t.date)}</span></div>`
+          : "";
         let cls = "";
         const isDone = !!doneMap[t.step];
         const isHidden = !t._isCustom && !!hiddenMap[t.step];
@@ -2834,30 +2935,31 @@
         const route = t._isCustom && t._customId ? getAllDoorRoutes().find(r => r._isCustom && r._id === t._customId) : routeForTimelineStep(t.step);
         const primary = route ? normalizedLink(route.link) : "";
         const backup = route ? normalizedLink(route.backupLink) : "";
-        return `
+        const routeSummary = isActualTravelStep(t) && (t.from || t.to)
+          ? `<div class="tl-route-summary"><div class="from">${escapeHtml(t.from || "Start")}</div><div class="arrow">→</div><div class="to">${escapeHtml(t.to || "Destination")}</div></div>`
+          : "";
+        const metaBits = [timelineItemType(t), (t.mode && t.mode !== timelineItemType(t)) ? t.mode : "", t.time || ""].filter(Boolean);
+        return `${dateHeader}
           <div class="tl-step ${cls} ${timelineStyleClass(t)}" data-step="${t.step}" style="${isHidden ? 'opacity:0.75;' : ''}">
             <div class="tl-dot"></div>
             ${isNext ? `<div class="tl-current-marker">NEXT</div>` : ""}
-            ${isActualTravelStep(t) ? `<div class="travel-callout"><span class="travel-time">${t.start}</span><span class="travel-service">${itemTypeIcon(t)} ${actualTravelLabel(t)}</span><span class="travel-kind">${actualTravelKind(t)}</span></div>` : ""}
-            <div class="tl-time">${fmtDate(t.date)} ${t.start ? "· " + t.start + (t.end ? "–" + t.end : "") : ""}</div>
-            <div class="tl-compact-row">
-              <div class="tl-compact-main">
+            <div class="tl-card-head">
+              <div class="tl-type-icon" aria-hidden="true">${itemTypeIcon(t)}</div>
+              <div class="tl-head-main">
                 <div class="tl-title">${title}</div>
-                <div class="tl-detail">${itemTypeIcon(t)} ${timelineItemType(t)}${t.mode && t.mode !== timelineItemType(t) ? " · " + t.mode : ""} · ${t.time} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
+                <div class="tl-date-time">${t.start ? t.start + (t.end ? "–" + t.end : "") : "Time TBD"}</div>
               </div>
               <button class="tl-toggle" onclick="toggleTimelineDetails(${t.step})" aria-expanded="${isExpanded}">${isExpanded ? "▼ Details" : "▶ Details"}</button>
             </div>
+            ${routeSummary}
+            <div class="tl-meta-line">${metaBits.map(escapeHtml).join(" · ")} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
             ${isExpanded ? `<div class="tl-expanded">
-              ${(t.from || t.to) ? `<div class="route-flow"><div class="route-point">${escapeHtml(t.from || "Start")}</div><div class="route-arrow">↓</div><div class="route-point">${escapeHtml(t.to || "Destination")}</div>${t.time?`<div class="route-metrics">${escapeHtml(t.time)}</div>`:""}</div>` : ""}
               <div class="tl-detail">${t.instructions || "No additional instructions."}</div>
               ${(primary || backup) ? `<div class="row mt-8" style="gap:10px;flex-wrap:wrap;">${primary ? `<a class="link-btn" href="${primary}" target="_blank" rel="noopener">${linkLabel(route.link, false)} →</a>` : ""}${backup ? `<a class="link-btn" href="${backup}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(route.backupLink, true)} →</a>` : ""}</div>` : ""}
-              ${t.notes ? `<div class="tl-detail" style="color:var(--primary);margin-top:6px;">${t.notes}</div>` : ""}
+              ${t.notes ? `<div class="tl-detail" style="color:var(--primary);margin-top:7px;"><strong>Note:</strong> ${t.notes}</div>` : ""}
               <div class="tl-action-row">${actionBtns}</div>
             </div>` : ""}
-            ${isHidden ? "" : `<label class="check-row" style="padding:8px 0 0;border:none;margin-top:6px;">
-              <input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTimelineDone(${t.step}, this.checked)">
-              <span class="text-sm fw-600">${isDone ? "Completed" : "Mark completed"}</span>
-            </label>`}
+            ${isHidden ? "" : `<div class="tl-complete-row"><label><input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTimelineDone(${t.step}, this.checked)"><span>${isDone ? "Completed" : "Mark completed"}</span></label><span class="text-xs text-muted">Step ${t.step}</span></div>`}
           </div>`;
       }).join("") : `<div class="empty"><div class="icon">${tlFilter === "hidden" ? "🙈" : "📋"}</div>${tlFilter === "hidden" ? "No hidden steps." : "No steps match this filter."}</div>`);
 
@@ -3079,86 +3181,110 @@
       }, 0);
     }
 
+    function travelMapActions(from, to) {
+      if (!from && !to) return "";
+      const g = (from && to) ? mapsLinkFor(from, to) : googleMapSearchUrl(from || to);
+      const a = (from && to)
+        ? `https://maps.apple.com/?saddr=${encodeURIComponent(from)}&daddr=${encodeURIComponent(to)}`
+        : appleMapSearchUrl(from || to);
+      return `<a class="link-btn" href="${g}" target="_blank" rel="noopener">Google Maps</a><a class="link-btn" href="${a}" target="_blank" rel="noopener">Apple Maps</a>`;
+    }
+
+    function travelRouteBlock(from, start, to, end) {
+      return `<div class="travel-route-grid">
+        <div class="travel-route-point"><div class="travel-route-place">${escapeHtml(from || "Start")}</div>${start ? `<div class="travel-route-time">${escapeHtml(start)}</div>` : ""}</div>
+        <div class="travel-route-arrow">→</div>
+        <div class="travel-route-point to"><div class="travel-route-place">${escapeHtml(to || "Destination")}</div>${end ? `<div class="travel-route-time">${escapeHtml(end)}</div>` : ""}</div>
+      </div>`;
+    }
+
     function renderTransport() {
-      document.getElementById("flightsList").innerHTML = liveFlights().map(f => `
-        <div class="card">
-          <div class="row space-between">
-            <div class="fw-600">✈️ ${f.flight} · ${f.op}</div>
-            <div><span class="text-xs text-muted">${fmtDate(f.date)}</span> <button class="edit-btn" onclick="editFlightById('${f.id}')">Edit</button></div>
-          </div>
-          <div class="text-sm mt-8">${f.from} ${f.dep} → ${f.to} ${f.arr}</div>
-          <div class="text-xs text-muted">${f.dur} · ${f.cabin} · ${f.status || "Confirmed"}</div>
-          <div class="text-sm mt-8">${f.notes || ""}</div>
-          <div class="text-xs text-muted mt-8">Master flight record · updates Timeline, Travel, Reservations, Wallet, Maps and Next Up</div>
-        </div>
-      `).join("");
+      const customTripItems = getCustomLegs();
+      const flights = liveFlights();
+      const trains = liveTrains();
+      const transfers = liveTransfers();
+      const activities = liveActivities();
+      const overview = document.getElementById("travelOverview");
+      if (overview) overview.innerHTML = `<div class="travel-overview-grid">
+        <div class="travel-overview-stat"><strong>${flights.length}</strong><span>Flights</span></div>
+        <div class="travel-overview-stat"><strong>${trains.length}</strong><span>Trains</span></div>
+        <div class="travel-overview-stat"><strong>${transfers.length + activities.length + customTripItems.length}</strong><span>Other items</span></div>
+      </div>`;
 
-      document.getElementById("trainsList").innerHTML = liveTrains().map(t => `
-        <div class="card">
-          <div class="row space-between">
-            <div class="fw-600">🚆 ${t.mode || t.title}</div>
-            <div>${statusBadge(t.status || "Confirmed")} <button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit</button></div>
-          </div>
-          <div class="text-sm mt-8">${t.from} → ${t.to}</div>
-          <div class="text-xs text-muted">${fmtDate(t.date)} · ${[t.start,t.end].filter(Boolean).join(" – ")}${t.duration ? " · " + t.duration : ""}</div>
-          ${t.instructions ? `<div class="text-sm mt-8">${t.instructions}</div>` : ""}
-          ${t.notes ? `<div class="text-sm text-muted mt-8">${t.notes}</div>` : ""}
-          <div class="text-xs text-muted mt-8">Master travel record · updates Timeline, Travel and Maps</div>
-        </div>
-      `).join("");
+      const customSection = document.getElementById("customTripItemsSection");
+      const customList = document.getElementById("customTripItemsList");
+      if (customSection && customList) {
+        customSection.classList.toggle("hidden", customTripItems.length === 0);
+        customList.innerHTML = customTripItems.map(t => `
+          <div class="card travel-card transfer-card">
+            <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t)} ${escapeHtml(t.title || [t.from,t.to].filter(Boolean).join(" → ") || "Trip Item")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
+            <div class="travel-card-main">
+              ${travelRouteBlock(t.from,t.start,t.to,t.end)}
+              <div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType || "Information")}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>
+              ${t.note ? `<div class="travel-detail-block">${escapeHtml(t.note)}</div>` : ""}
+              <div class="travel-detail-block muted">Added Trip Item · linked to Timeline${(t.from && t.to) ? " and Maps" : ""}</div>
+            </div>
+            <div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editCustomLeg('${t.id}')">Edit Trip Item</button></div>
+          </div>`).join("");
+      }
 
-      document.getElementById("transfersList").innerHTML = liveTransfers().map(t => `
-        <div class="card">
-          <div class="row space-between">
-            <div class="fw-600">${itemTypeIcon(t.itemType)} ${t.title || `${t.from} → ${t.to}`}</div>
-            <div>${statusBadge(t.status || "Confirmed")} <button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit</button></div>
+      document.getElementById("flightsList").innerHTML = flights.map(f => `
+        <div class="card travel-card flight-card">
+          <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">✈️ ${escapeHtml(f.flight)} · ${escapeHtml(f.op)}</div><div class="travel-date-label">${fmtDate(f.date)}</div></div></div>
+          <div class="travel-card-main">
+            ${travelRouteBlock(f.from,f.dep,f.to,f.arr)}
+            <div class="travel-chip-row"><span class="travel-chip">${escapeHtml(f.dur || "Duration TBD")}</span><span class="travel-chip">${escapeHtml(f.cabin || "Cabin TBD")}</span>${statusBadge(f.status || "Confirmed")}</div>
+            <div class="travel-detail-block"><strong>Booking:</strong> ${escapeHtml(airConfirmationText())}</div>
+            <div class="travel-detail-block"><strong>Seats:</strong> ${escapeHtml(f.seats || "Not assigned / verify in airline app")}</div>
+            ${f.notes ? `<div class="travel-detail-block muted">${escapeHtml(f.notes)}</div>` : ""}
           </div>
-          <div class="text-sm mt-8">${t.from} → ${t.to}</div>
-          <div class="text-xs text-muted">${fmtDate(t.date)} · ${t.mode || t.itemType}${t.duration ? " · " + t.duration : ""}</div>
-          ${t.instructions ? `<div class="text-sm mt-8"><strong>Steps:</strong> ${t.instructions}</div>` : ""}
-          ${t.notes ? `<div class="text-sm text-muted mt-8">${t.notes}</div>` : ""}
-          <div class="text-xs text-muted mt-8">Master travel record · updates Timeline, Travel and Maps</div>
-        </div>
-      `).join("");
+          <div class="travel-actions"><button class="edit-btn" onclick="copyText('${String(airConfirmationText()).replace(/'/g,"\\'")}','Air confirmation copied')">Copy Confirmation</button>${travelMapActions(f.from,f.to)}<button class="edit-btn" onclick="editFlightById('${f.id}')">Edit Flight</button></div>
+        </div>`).join("");
 
-      document.getElementById("activitiesList").innerHTML = liveActivities().map(t => `
-        <div class="card">
-          <div class="row space-between">
-            <div class="fw-600">${itemTypeIcon(t.itemType)} ${t.title}</div>
-            <div>${statusBadge(t.status || "Confirmed")} <button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit</button></div>
+      document.getElementById("trainsList").innerHTML = trains.map(t => `
+        <div class="card travel-card train-card">
+          <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🚆 ${escapeHtml(t.mode || t.title || "Train")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
+          <div class="travel-card-main">
+            ${travelRouteBlock(t.from,t.start,t.to,t.end)}
+            <div class="travel-chip-row">${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>
+            ${t.instructions ? `<div class="travel-detail-block"><strong>Trip details:</strong> ${escapeHtml(t.instructions)}</div>` : ""}
+            ${t.notes ? `<div class="travel-detail-block muted">${escapeHtml(t.notes)}</div>` : ""}
           </div>
-          <div class="text-xs text-muted mt-8">${fmtDate(t.date)}${t.start ? " · " + t.start : ""}${t.end ? "–" + t.end : ""} · ${t.itemType}</div>
-          ${(t.from || t.to) ? `<div class="text-sm mt-8">${t.from || ""}${t.to ? " → " + t.to : ""}</div>` : ""}
-          ${t.instructions ? `<div class="text-sm mt-8">${t.instructions}</div>` : ""}
-          ${t.notes ? `<div class="text-sm text-muted mt-8">${t.notes}</div>` : ""}
-          <div class="text-xs text-muted mt-8">Master activity record · updates Timeline and related views</div>
-        </div>
-      `).join("");
+          <div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Train</button></div>
+        </div>`).join("");
+
+      document.getElementById("transfersList").innerHTML = transfers.map(t => `
+        <div class="card travel-card transfer-card">
+          <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
+          <div class="travel-card-main">
+            ${travelRouteBlock(t.from,t.start,t.to,t.end)}
+            <div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.mode || t.itemType)}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>
+            ${t.instructions ? `<div class="travel-detail-block"><strong>Steps:</strong> ${escapeHtml(t.instructions)}</div>` : ""}
+            ${t.notes ? `<div class="travel-detail-block muted">${escapeHtml(t.notes)}</div>` : ""}
+          </div>
+          <div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button></div>
+        </div>`).join("");
+
+      document.getElementById("activitiesList").innerHTML = activities.map(t => `
+        <div class="card travel-card activity-card">
+          <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
+          <div class="travel-card-main">
+            ${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}
+            <div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span>${statusBadge(t.status || "Confirmed")}</div>
+            ${t.instructions ? `<div class="travel-detail-block">${escapeHtml(t.instructions)}</div>` : ""}
+            ${t.notes ? `<div class="travel-detail-block muted">${escapeHtml(t.notes)}</div>` : ""}
+          </div>
+          <div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button></div>
+        </div>`).join("");
 
       document.getElementById("groundList").innerHTML = GROUND.map(g => `
         <div class="card">
-          <div class="row space-between">
-            <div class="fw-600">${g.mode}</div>
-            <div class="text-xs text-muted">${g.city}</div>
-          </div>
-          <div class="text-sm mt-8"><strong>Best for:</strong> ${g.best}</div>
-          <div class="text-sm"><strong>Pay / buy:</strong> ${g.pay}</div>
-          <div class="text-sm text-muted mt-8">${g.notes}</div>
-        </div>
-      `).join("");
+          <div class="row space-between"><div class="fw-600">${g.mode}</div><div class="text-xs text-muted">${g.city}</div></div>
+          <div class="text-sm mt-8"><strong>Best for:</strong> ${g.best}</div><div class="text-sm"><strong>Pay / buy:</strong> ${g.pay}</div><div class="text-sm text-muted mt-8">${g.notes}</div>
+        </div>`).join("");
 
       document.getElementById("contingenciesList").innerHTML = CONTINGENCIES.map(c => `
-        <div class="card">
-          <div class="row space-between">
-            <div class="fw-600" style="color:var(--danger);">${c.scenario}</div>
-            ${c.priority ? urgencyBadge(c.priority) : ""}
-          </div>
-          <div class="text-sm mt-8"><strong>Do:</strong> ${c.action}</div>
-          <div class="text-sm"><strong>Contact:</strong> ${c.contact}</div>
-          <div class="text-sm text-muted"><strong>Avoid:</strong> ${c.avoid}</div>
-          ${c.docs ? `<div class="text-xs text-muted mt-8"><strong>Keep:</strong> ${c.docs}</div>` : ""}
-        </div>
-      `).join("");
+        <div class="card"><div class="row space-between"><div class="fw-600" style="color:var(--danger);">${c.scenario}</div>${c.priority ? urgencyBadge(c.priority) : ""}</div><div class="text-sm mt-8"><strong>Do:</strong> ${c.action}</div><div class="text-sm"><strong>Contact:</strong> ${c.contact}</div><div class="text-sm text-muted"><strong>Avoid:</strong> ${c.avoid}</div>${c.docs ? `<div class="text-xs text-muted mt-8"><strong>Keep:</strong> ${c.docs}</div>` : ""}</div>`).join("");
     }
 
     function packingOwner(traveler) {
@@ -3485,7 +3611,7 @@
         date: leg.date ? shortDateLabel(leg.date) : "",
         from: leg.from,
         to: leg.to,
-        mode: leg.mode || "Custom leg",
+        mode: leg.mode || leg.itemType || "Information",
         duration: leg.duration || "",
         link: leg.link || mapsLinkFor(leg.from, leg.to),
         backupLink: leg.backupLink || "",
@@ -3568,69 +3694,81 @@
       showToast("Original route restored");
     }
 
-    function addCustomLeg() {
-      openEditSheet("Add door-to-door leg", [
-        { key: "title", label: "Title (optional)", value: "" },
-        { key: "from", label: "From", value: "" },
-        { key: "to", label: "To", value: "" },
+    function addTripItem() {
+      openEditSheet("Add Trip Item", [
+        { key: "itemType", label: "Item Type", type: "select", value: "Information", options: ITEM_TYPE_OPTIONS },
+        { key: "title", label: "Title", value: "" },
+        { key: "from", label: "From (optional for events, tours, hotels and information)", value: "" },
+        { key: "to", label: "To / Location (optional)", value: "" },
         { key: "date", label: "Date (YYYY-MM-DD)", value: "2026-10-05" },
         { key: "start", label: "Start time (e.g. 14:30)", value: "" },
         { key: "end", label: "End time", value: "" },
-        { key: "mode", label: "Mode (walk, taxi, train…)", value: "" },
-        { key: "itemType", label: "Item Type", type: "select", value: "Information", options: ITEM_TYPE_OPTIONS },
+        { key: "mode", label: "Service / mode / activity name", value: "" },
         { key: "duration", label: "Duration", value: "" },
         { key: "status", label: "Status", type: "select", value: "Confirmed",
           options: ["Confirmed","Pending","Verify Day-Of","Decision Needed","Done"] },
         { key: "note", label: "Primary notes / instructions", type: "textarea", value: "" },
         { key: "secondaryNote", label: "Secondary note / backup instructions", type: "textarea", value: "" },
-        { key: "link", label: "Primary map / route URL (optional)", value: "" },
+        { key: "link", label: "Primary map / ticket URL (optional)", value: "" },
         { key: "backupLink", label: "Backup link (optional)", value: "" }
       ], (data) => {
-        if (!(data.from || "").trim() || !(data.to || "").trim()) {
-          alert("From and To are required.");
+        const title = (data.title || "").trim();
+        const from = (data.from || "").trim();
+        const to = (data.to || "").trim();
+        const itemType = data.itemType || "Information";
+        const movementTypes = new Set(["Flight","Train","Boat / Ferry","Walk","Bus","Taxi","Car / Drive"]);
+        if (!title && !from && !to) {
+          alert("Enter a title or a From/To location.");
+          return;
+        }
+        if (movementTypes.has(itemType) && (!from || !to)) {
+          alert("From and To are required for travel items.");
           return;
         }
         if (!(data.date || "").trim()) {
           alert("Date is required (YYYY-MM-DD).");
           return;
         }
+        const displayTitle = title || [from, to].filter(Boolean).join(" → ");
         const leg = {
           id: "cl_" + Date.now(),
-          title: (data.title || "").trim(),
-          from: data.from.trim(),
-          to: data.to.trim(),
+          title: displayTitle,
+          from,
+          to,
           date: data.date.trim(),
           start: (data.start || "").trim(),
           end: (data.end || "").trim(),
-          mode: (data.mode || "").trim() || "Custom leg",
-          itemType: data.itemType || "Information",
+          mode: (data.mode || "").trim() || itemType,
+          itemType,
           duration: (data.duration || "").trim(),
           status: data.status || "Confirmed",
           note: (data.note || "").trim(),
           secondaryNote: (data.secondaryNote || "").trim(),
-          link: (data.link || "").trim() || mapsLinkFor(data.from, data.to),
+          link: (data.link || "").trim() || ((from && to) ? mapsLinkFor(from, to) : (to ? googleMapSearchUrl(to) : "")),
           backupLink: (data.backupLink || "").trim()
         };
         const arr = getCustomLegs();
         arr.push(leg);
         clearDeleted("customlegs",leg.id);
         setCustomLegs(arr);
-        // Refresh related tabs so the new leg is visible immediately
         try { renderMaps(); } catch (e) {}
         try { renderTimeline(); } catch (e) {}
         try { renderTransport(); } catch (e) {}
-        showToast("Leg added — also appears on Timeline & Transport");
+        showToast("Trip item added — Timeline and Travel updated");
       });
     }
+
+    // Backward-compatible alias for older saved links or buttons.
+    function addCustomLeg() { addTripItem(); }
 
     function editCustomLeg(id) {
       const arr = getCustomLegs();
       const leg = arr.find(x => x.id === id);
       if (!leg) return;
-      openEditSheet("Edit door-to-door leg", [
+      openEditSheet("Edit Trip Item", [
         { key: "title", label: "Title (optional)", value: leg.title || "" },
-        { key: "from", label: "From", value: leg.from },
-        { key: "to", label: "To", value: leg.to },
+        { key: "from", label: "From (optional)", value: leg.from },
+        { key: "to", label: "To / Location (optional)", value: leg.to },
         { key: "date", label: "Date (YYYY-MM-DD)", value: leg.date },
         { key: "start", label: "Start time", value: leg.start || "" },
         { key: "end", label: "End time", value: leg.end || "" },
@@ -3652,7 +3790,7 @@
           date: data.date.trim(),
           start: (data.start || "").trim(),
           end: (data.end || "").trim(),
-          mode: (data.mode || "").trim() || "Custom leg",
+          mode: (data.mode || "").trim() || (data.itemType || "Information"),
           itemType: data.itemType || "Information",
           duration: (data.duration || "").trim(),
           status: data.status || "Confirmed",
@@ -3674,7 +3812,7 @@
     }
 
     function deleteCustomLeg(id) {
-      if (!confirm("Delete this custom leg? It will be removed from Timeline, Transport, and Maps.")) return false;
+      if (!confirm("Delete this trip item? It will be removed from Timeline, Travel, and Maps.")) return false;
       markDeleted("customlegs",id); setCustomLegs(getCustomLegs().filter(x => x.id !== id));
       // Always refresh related views so lists stay in sync
       try { renderMaps(); } catch (e) {}

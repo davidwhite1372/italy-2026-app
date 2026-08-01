@@ -1,5 +1,39 @@
 # Changelog
 
+## [10.6.0-dev-b] - 2026-08-01
+
+### Changed
+
+- Added date dividers to separate each timeline day.
+- Added compact From → To summaries to travel cards without opening Details.
+- Improved timeline icons, spacing, time hierarchy, and mobile readability.
+- Refined completed-step fading and strike-through styling.
+- Preserved NEXT auto-scroll, full details, links, completion, hiding, and Item Type controls.
+
+## [10.6A1 DEV] - 2026-08-01
+
+### Fixed
+
+- Removed the obsolete Home Screen installation tip from the bottom of Home.
+- Removed the duplicate empty Quick Tip container/blue bar.
+- Preserved the working Quick Tip section at the top of Home.
+
+# Changelog
+
+## [10.6A DEV] - 2026-08-01
+
+### Added
+
+- Activated the Home Quick Tip card with direct links to the correct app sections.
+- Added mobile-friendly Quick Tip button layout.
+
+### Preserved
+
+- Existing countdown / days-and-nights bar at the top of Home.
+- Home and Italy clocks directly below the countdown.
+- Next Up directly below the clocks.
+- All Version 10.5.2 dark-mode and iPhone-install repairs.
+
 ## [10.5.2] - 2026-08-01
 
 ### Fixed
@@ -81,6 +115,16 @@ All notable changes to the Italy 2026 Travel Companion will be documented here.
 
 ## [Unreleased]
 
+## [10.6B1 DEV] - 2026-08-01
+
+### Changed
+
+- Moved the add control from Timeline to Travel.
+- Renamed Add a leg to Add Trip Item.
+- Added a flexible Item Type-first form for travel, hotel, tour, event, and information entries.
+- Added an Added Trip Items section on Travel for editing newly created records.
+
+
 ### Added — Version 10.5 DEV Phase 3 Hotels
 
 - Added four master hotel records.
@@ -145,3 +189,11 @@ All notable changes to the Italy 2026 Travel Companion will be documented here.
 
 ### Fixed
 - Removed obsolete Timeline Emphasis code remaining after Item Type migration.
+
+
+## [10.6.0 DEV C] - 2026-08-01
+
+### Changed
+- Redesigned Travel cards for faster scanning.
+- Added prominent departure/arrival layout, confirmation and seat information, and Google/Apple Maps actions.
+- Improved train, transfer, tour, event, and custom trip-item presentation.
