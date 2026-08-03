@@ -1,3 +1,23 @@
+## [10.6.0-dev-c] - 2026-08-03
+
+### Travel page polish
+- Rebuilt Travel cards around clearer routes, times, status, confirmations, instructions, and notes.
+- Added fast section navigation for flights, trains, transfers, tours, and local transportation.
+- Added a Travel readiness summary showing items ready versus items needing verification.
+- Added dedicated confirmation blocks and copy-friendly booking information.
+- Improved Google Maps and Apple Maps route buttons with clearer labels.
+- Preserved Add Trip Item and all single-source-of-truth editing behavior.
+
+## [10.6.0-dev-b2] - 2026-08-03
+
+### Timeline polish
+- Improved spacing and hierarchy throughout Timeline cards.
+- Reformatted travel legs with labeled From/To points and endpoint times.
+- Added sticky day headers with per-day completion counts and progress bars.
+- Improved overall progress summary and highlighted the true NEXT step.
+- Reorganized Details into clear What to do, Notes, and Maps & links sections.
+- Improved mobile readability without changing Timeline data or architecture.
+
 # Changelog
 
 ## [10.6.0-dev-b] - 2026-08-01
