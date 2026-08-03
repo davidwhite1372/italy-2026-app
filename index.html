@@ -610,6 +610,54 @@
       .tl-route-summary .from, .tl-route-summary .to { font-size:.72rem; }
       .tl-toggle { padding:7px 8px; }
     }
+    /* Version 10.6B2: Timeline polish and day-by-day progress */
+    .tl-progress-card { padding:13px 14px; margin-bottom:14px; }
+    .tl-progress-top { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; }
+    .tl-progress-title { font-size:.72rem; color:var(--muted); font-weight:800; text-transform:uppercase; letter-spacing:.07em; }
+    .tl-progress-count { font-size:1.05rem; font-weight:850; color:var(--primary); }
+    .tl-progress-note { margin-top:7px; font-size:.72rem; color:var(--muted); line-height:1.35; }
+    .tl-day-header { position:sticky; top:64px; z-index:8; padding:8px 3px 7px; background:var(--bg); }
+    .tl-day-header-main { display:flex; align-items:center; gap:8px; min-width:0; }
+    .tl-day-header-date { white-space:nowrap; }
+    .tl-day-header-count { white-space:nowrap; font-size:.7rem; color:var(--muted); font-weight:750; }
+    .tl-day-progress { width:52px; height:5px; overflow:hidden; border-radius:999px; background:var(--border); }
+    .tl-day-progress > span { display:block; height:100%; border-radius:999px; background:var(--accent); }
+    .tl-step { scroll-margin-top:125px; }
+    .tl-step.is-next { outline:3px solid rgba(93,150,122,.34); outline-offset:2px; }
+    .tl-current-marker { display:inline-flex; align-items:center; gap:5px; padding:3px 8px; border-radius:999px; background:var(--accent); color:#fff; margin:0 0 8px; }
+    .tl-card-head { align-items:center; }
+    .tl-title { font-weight:820; letter-spacing:-.01em; }
+    .tl-date-time { display:flex; align-items:center; gap:5px; line-height:1.25; }
+    .tl-route-summary { grid-template-columns:minmax(0,1fr) 32px minmax(0,1fr); padding:10px 11px; margin-top:10px; }
+    .tl-route-place { font-size:.82rem; font-weight:800; line-height:1.22; overflow-wrap:anywhere; }
+    .tl-route-label { display:block; margin-bottom:2px; font-size:.61rem; color:var(--muted); font-weight:850; text-transform:uppercase; letter-spacing:.08em; }
+    .tl-route-clock { margin-top:3px; font-size:.78rem; font-weight:850; color:inherit; }
+    .tl-route-summary .arrow { width:32px; height:32px; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.62); border:1px solid rgba(23,32,24,.15); }
+    .tl-meta-line { display:flex; flex-wrap:wrap; align-items:center; gap:5px; margin-top:7px; }
+    .tl-meta-chip { display:inline-flex; align-items:center; padding:3px 7px; border-radius:999px; background:rgba(255,255,255,.54); border:1px solid rgba(23,32,24,.14); font-size:.69rem; font-weight:730; }
+    .tl-expanded { margin-top:11px; padding-top:11px; }
+    .tl-detail-grid { display:grid; gap:8px; }
+    .tl-detail-section { padding:10px 11px; border-radius:10px; background:rgba(255,255,255,.5); border:1px solid rgba(23,32,24,.14); }
+    .tl-detail-label { margin-bottom:4px; font-size:.65rem; color:var(--muted); font-weight:850; text-transform:uppercase; letter-spacing:.08em; }
+    .tl-detail-text { font-size:.84rem; line-height:1.48; overflow-wrap:anywhere; }
+    .tl-map-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(125px,1fr)); gap:7px; }
+    .tl-map-row .link-btn { display:block; text-align:center; }
+    .tl-action-row { padding-top:2px; }
+    .tl-action-row .edit-btn { flex:1 1 120px; min-height:36px; border:1px solid rgba(23,32,24,.22); border-radius:9px; background:rgba(255,255,255,.58); }
+    .tl-complete-row { padding-top:10px; }
+    .tl-step-number { font-size:.66rem; color:var(--muted); }
+    @media (max-width:420px) {
+      .tl-day-header { top:59px; }
+      .tl-step.actual-travel { padding-left:38px; padding-right:10px; }
+      .tl-card-head { gap:8px; }
+      .tl-type-icon { width:30px; height:30px; }
+      .tl-title { font-size:.94rem; }
+      .tl-route-summary { grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr); gap:5px; }
+      .tl-route-summary .arrow { width:28px; height:28px; }
+      .tl-route-place { font-size:.76rem; }
+      .tl-toggle { font-size:.69rem; }
+    }
+
     .quick-action-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
     .quick-action-row .link-btn, .quick-action-row button { border:1px solid var(--border); border-radius:9px; padding:7px 9px; background:var(--card); text-decoration:none; }
     .wallet-key { font-size:1.08rem; font-weight:800; color:var(--primary); letter-spacing:.02em; }
@@ -1075,9 +1123,9 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.6.0-dev-c";
+    const APP_VERSION = "10.6.0-dev-b2";
     const DATA_VERSION = "10.5.0";
-    const BUILD_LABEL = "App v10.6.0 DEV C · Travel Experience · Data v10.5.0";
+    const BUILD_LABEL = "App v10.6.0 DEV B2 · Timeline Polish · Data v10.5.0";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -2900,21 +2948,31 @@
       const total = allActive.length;
       const doneCount = allActive.filter(t => doneMap[t.step]).length;
       const hiddenCount = Object.keys(hiddenMap).length;
-      const firstOpenStep = (allActive.find(t => !doneMap[t.step]) || {}).step;
+      const firstOpen = allActive.find(t => !doneMap[t.step]) || null;
+      const firstOpenStep = firstOpen ? firstOpen.step : null;
+      const overallPct = total ? Math.round(doneCount / total * 100) : 0;
+      const dayStats = allActive.reduce((acc,t) => {
+        if (!acc[t.date]) acc[t.date] = { total:0, done:0 };
+        acc[t.date].total++;
+        if (doneMap[t.step]) acc[t.date].done++;
+        return acc;
+      }, {});
 
       document.getElementById("timelineList").innerHTML = `
-        <div class="card" style="padding:10px 14px;margin-bottom:12px;">
-          <div class="row space-between">
-            <div class="text-sm fw-600">Progress</div>
-            <div class="text-sm">${doneCount} / ${total} completed${hiddenCount ? " · " + hiddenCount + " hidden" : ""}</div>
+        <div class="card tl-progress-card">
+          <div class="tl-progress-top">
+            <div><div class="tl-progress-title">Trip progress</div><div class="tl-progress-count">${doneCount} of ${total} complete</div></div>
+            <div class="text-sm fw-600">${overallPct}%</div>
           </div>
-          <div class="progress-bar"><div class="fill" style="width:${total ? Math.round(doneCount/total*100) : 0}%"></div></div>
-          <div class="text-xs text-muted mt-8">Completed steps stay in place but fade into the background. Timeline opens near the last completed step and the next item.</div>
+          <div class="progress-bar"><div class="fill" style="width:${overallPct}%"></div></div>
+          <div class="tl-progress-note">${firstOpen ? `Next: ${fmtDate(firstOpen.date)} · ${escapeHtml(firstOpen.start || "Time TBD")} · ${escapeHtml((firstOpen.title || `${firstOpen.from || ""} → ${firstOpen.to || ""}`).trim())}` : "All visible Timeline steps are complete."}${hiddenCount ? ` · ${hiddenCount} hidden` : ""}</div>
         </div>
       ` + (items.length ? items.map((t, itemIndex) => {
         const previous = itemIndex > 0 ? items[itemIndex - 1] : null;
+        const stat = dayStats[t.date] || {total:0,done:0};
+        const dayPct = stat.total ? Math.round(stat.done / stat.total * 100) : 0;
         const dateHeader = !previous || previous.date !== t.date
-          ? `<div class="tl-day-header"><span>${fmtDate(t.date)}</span></div>`
+          ? `<div class="tl-day-header"><div class="tl-day-header-main"><span class="tl-day-header-date">${fmtDate(t.date)}</span><span class="tl-day-header-count">${stat.done}/${stat.total}</span><span class="tl-day-progress" aria-label="${dayPct}% complete"><span style="width:${dayPct}%"></span></span></div></div>`
           : "";
         let cls = "";
         const isDone = !!doneMap[t.step];
@@ -2936,30 +2994,37 @@
         const primary = route ? normalizedLink(route.link) : "";
         const backup = route ? normalizedLink(route.backupLink) : "";
         const routeSummary = isActualTravelStep(t) && (t.from || t.to)
-          ? `<div class="tl-route-summary"><div class="from">${escapeHtml(t.from || "Start")}</div><div class="arrow">→</div><div class="to">${escapeHtml(t.to || "Destination")}</div></div>`
+          ? `<div class="tl-route-summary">
+              <div class="from"><span class="tl-route-label">From</span><div class="tl-route-place">${escapeHtml(t.from || "Start")}</div>${t.start ? `<div class="tl-route-clock">${escapeHtml(t.start)}</div>` : ""}</div>
+              <div class="arrow" aria-hidden="true">→</div>
+              <div class="to"><span class="tl-route-label">To</span><div class="tl-route-place">${escapeHtml(t.to || "Destination")}</div>${t.end ? `<div class="tl-route-clock">${escapeHtml(t.end)}</div>` : ""}</div>
+            </div>`
           : "";
         const metaBits = [timelineItemType(t), (t.mode && t.mode !== timelineItemType(t)) ? t.mode : "", t.time || ""].filter(Boolean);
+        const timeLabel = t.start ? `${escapeHtml(t.start)}${t.end ? "–" + escapeHtml(t.end) : ""}` : "Time TBD";
         return `${dateHeader}
-          <div class="tl-step ${cls} ${timelineStyleClass(t)}" data-step="${t.step}" style="${isHidden ? 'opacity:0.75;' : ''}">
+          <div class="tl-step ${cls} ${timelineStyleClass(t)} ${isNext ? "is-next" : ""}" data-step="${t.step}" style="${isHidden ? 'opacity:0.75;' : ''}">
             <div class="tl-dot"></div>
-            ${isNext ? `<div class="tl-current-marker">NEXT</div>` : ""}
+            ${isNext ? `<div class="tl-current-marker">▶ NEXT</div>` : ""}
             <div class="tl-card-head">
               <div class="tl-type-icon" aria-hidden="true">${itemTypeIcon(t)}</div>
               <div class="tl-head-main">
-                <div class="tl-title">${title}</div>
-                <div class="tl-date-time">${t.start ? t.start + (t.end ? "–" + t.end : "") : "Time TBD"}</div>
+                <div class="tl-title">${escapeHtml(title)}</div>
+                <div class="tl-date-time"><span>🕒</span><span>${timeLabel}</span></div>
               </div>
-              <button class="tl-toggle" onclick="toggleTimelineDetails(${t.step})" aria-expanded="${isExpanded}">${isExpanded ? "▼ Details" : "▶ Details"}</button>
+              <button class="tl-toggle" onclick="toggleTimelineDetails(${t.step})" aria-expanded="${isExpanded}">${isExpanded ? "Hide" : "Details"}</button>
             </div>
             ${routeSummary}
-            <div class="tl-meta-line">${metaBits.map(escapeHtml).join(" · ")} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
+            <div class="tl-meta-line">${metaBits.map(x => `<span class="tl-meta-chip">${escapeHtml(x)}</span>`).join("")} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
             ${isExpanded ? `<div class="tl-expanded">
-              <div class="tl-detail">${t.instructions || "No additional instructions."}</div>
-              ${(primary || backup) ? `<div class="row mt-8" style="gap:10px;flex-wrap:wrap;">${primary ? `<a class="link-btn" href="${primary}" target="_blank" rel="noopener">${linkLabel(route.link, false)} →</a>` : ""}${backup ? `<a class="link-btn" href="${backup}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(route.backupLink, true)} →</a>` : ""}</div>` : ""}
-              ${t.notes ? `<div class="tl-detail" style="color:var(--primary);margin-top:7px;"><strong>Note:</strong> ${t.notes}</div>` : ""}
+              <div class="tl-detail-grid">
+                <div class="tl-detail-section"><div class="tl-detail-label">What to do</div><div class="tl-detail-text">${escapeHtml(t.instructions || "No additional instructions.")}</div></div>
+                ${t.notes ? `<div class="tl-detail-section"><div class="tl-detail-label">Notes</div><div class="tl-detail-text">${escapeHtml(t.notes)}</div></div>` : ""}
+                ${(primary || backup) ? `<div class="tl-detail-section"><div class="tl-detail-label">Maps & links</div><div class="tl-map-row">${primary ? `<a class="link-btn" href="${primary}" target="_blank" rel="noopener">${linkLabel(route.link, false)} →</a>` : ""}${backup ? `<a class="link-btn" href="${backup}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(route.backupLink, true)} →</a>` : ""}</div></div>` : ""}
+              </div>
               <div class="tl-action-row">${actionBtns}</div>
             </div>` : ""}
-            ${isHidden ? "" : `<div class="tl-complete-row"><label><input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTimelineDone(${t.step}, this.checked)"><span>${isDone ? "Completed" : "Mark completed"}</span></label><span class="text-xs text-muted">Step ${t.step}</span></div>`}
+            ${isHidden ? "" : `<div class="tl-complete-row"><label><input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTimelineDone(${t.step}, this.checked)"><span>${isDone ? "Completed" : "Mark completed"}</span></label><span class="tl-step-number">Step ${t.step}</span></div>`}
           </div>`;
       }).join("") : `<div class="empty"><div class="icon">${tlFilter === "hidden" ? "🙈" : "📋"}</div>${tlFilter === "hidden" ? "No hidden steps." : "No steps match this filter."}</div>`);
 
@@ -2969,7 +3034,7 @@
           const nodes = Array.from(document.querySelectorAll("#timelineList .tl-step[data-step]"));
           const nextItem = nodes.find(n => Number(n.dataset.step) === Number(firstOpenStep));
           if (nextItem) {
-            const desiredTop = Math.max(90, Math.round(window.innerHeight * 0.33));
+            const desiredTop = Math.max(105, Math.round(window.innerHeight * 0.3));
             const absoluteTop = nextItem.getBoundingClientRect().top + window.scrollY;
             window.scrollTo({ top: Math.max(0, absoluteTop - desiredTop), behavior:"smooth" });
           }

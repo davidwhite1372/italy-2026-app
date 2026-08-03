@@ -1,3 +1,13 @@
+## [10.6.0-dev-b2] - 2026-08-03
+
+### Timeline polish
+- Improved spacing and hierarchy throughout Timeline cards.
+- Reformatted travel legs with labeled From/To points and endpoint times.
+- Added sticky day headers with per-day completion counts and progress bars.
+- Improved overall progress summary and highlighted the true NEXT step.
+- Reorganized Details into clear What to do, Notes, and Maps & links sections.
+- Improved mobile readability without changing Timeline data or architecture.
+
 # Changelog
 
 ## [10.6.0-dev-b] - 2026-08-01
