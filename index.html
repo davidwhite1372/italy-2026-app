@@ -748,6 +748,13 @@
         outline-offset:2px;
       }
     }
+  
+    .today-day-nav{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;margin:2px 0 8px;}
+    .today-day-label{text-align:center;font-weight:800;color:var(--primary);font-size:.95rem;line-height:1.25;}
+    .today-day-nav button:disabled{opacity:.35;cursor:default;}
+    #todayContent{touch-action:pan-y;}
+    .custom-restaurant-badge{display:inline-block;background:#e8f5e9;color:#2e7d32;border-radius:999px;padding:2px 7px;font-size:.68rem;font-weight:700;vertical-align:middle;}
+    .gps-status{min-height:1.2em;margin-top:6px;}
   </style>
 </head>
 <body>
@@ -816,7 +823,13 @@
 
     <!-- TODAY -->
     <section id="page-today" class="page">
+      <div class="today-day-nav">
+        <button class="btn-outline btn-sm" id="todayPrevBtn" onclick="navigateToday(-1)" aria-label="Previous day">← Previous</button>
+        <div class="today-day-label" id="todayDayLabel"></div>
+        <button class="btn-outline btn-sm" id="todayNextBtn" onclick="navigateToday(1)" aria-label="Next day">Next →</button>
+      </div>
       <div class="date-scroll" id="dateChips"></div>
+      <div class="text-xs text-muted" style="text-align:center;margin:-2px 0 8px;">Swipe left or right anywhere on the day plan</div>
       <div id="todayContent"></div>
     </section>
 
@@ -882,6 +895,7 @@
     <!-- FOOD -->
     <section id="page-food" class="page">
       <div class="owner-banner"><span class="owner-icon">✏️</span><div><strong>Edit restaurants here.</strong> Favorites, ratings, visits, and restaurant notes belong on this page.</div></div>
+      <button style="width:100%;margin:0 0 12px;" onclick="addRestaurant()">＋ Add Restaurant</button>
       <input type="search" class="search-box" id="restSearch" placeholder="Search name, neighborhood, food, dish, price..." />
       <div class="text-xs text-muted" style="margin:-4px 2px 10px;">Use this when you pass a restaurant—search any part of its name, neighborhood, cuisine, recommended dish, priority, or price.</div>
       <div class="filter-bar" id="restQuickFilters">
@@ -1144,7 +1158,7 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.6.0-dev-d3";
+    const APP_VERSION = "10.7.0-dev";
     const DATA_VERSION = "10.5.0";
     const BUILD_LABEL = "App v10.6.0 DEV D2 · Flight Duration Correction · Data v10.5.0";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
@@ -1604,6 +1618,69 @@
       showToast("Step restored to timeline");
       return true;
     }
+    function getCustomRestaurants() {
+      try { return JSON.parse(localStorage.getItem("italy2026_customrestaurants") || "[]"); } catch(e) { return []; }
+    }
+    function setCustomRestaurants(arr) {
+      localStorage.setItem("italy2026_customrestaurants", JSON.stringify(arr || []));
+    }
+    function allRestaurants() {
+      return [...RESTAURANTS, ...getCustomRestaurants().map(r => ({...r, _custom:true}))];
+    }
+    function nearestTripCity(lat, lng) {
+      const cities = [
+        {name:"Rome",lat:41.9028,lng:12.4964},
+        {name:"Florence",lat:43.7696,lng:11.2558},
+        {name:"Venice",lat:45.4408,lng:12.3155}
+      ];
+      return cities.sort((a,b)=>Math.hypot(lat-a.lat,lng-a.lng)-Math.hypot(lat-b.lat,lng-b.lng))[0].name;
+    }
+    function addRestaurant() {
+      document.getElementById("sheetContent").innerHTML = `
+        <h2>Add Restaurant</h2>
+        <div class="form-group"><label>Name</label><input id="newRestName" autocomplete="off"></div>
+        <div class="form-group"><label>City</label><select id="newRestCity"><option>Rome</option><option>Florence</option><option>Venice</option><option>Other</option></select></div>
+        <div class="form-group"><label>Neighborhood / location</label><input id="newRestNeigh" placeholder="Optional"></div>
+        <div class="form-group"><label>Food / style</label><input id="newRestStyle" placeholder="Cafe, pizza, seafood…"></div>
+        <div class="form-group"><label>Price</label><select id="newRestPrice"><option>€</option><option selected>€€</option><option>€€€</option><option>€€€€</option></select></div>
+        <div class="form-group"><label>What to order</label><input id="newRestOrder" placeholder="Optional"></div>
+        <div class="form-group"><label>Notes</label><textarea id="newRestNotes" rows="3" placeholder="Why it caught your eye, hours, recommendation…"></textarea></div>
+        <div class="form-group"><label>Google Maps link</label><input id="newRestMaps" type="url" placeholder="Optional"></div>
+        <button type="button" class="btn-outline" style="width:100%;" onclick="captureRestaurantLocation()">📍 Use Current Location</button>
+        <div id="newRestGpsStatus" class="text-xs text-muted gps-status"></div>
+        <div class="btn-row mt-12"><button type="button" class="btn-outline" onclick="closeSheet()">Cancel</button><button type="button" onclick="saveNewRestaurant()">Save Restaurant</button></div>`;
+      document.getElementById("overlay").classList.add("open");
+      setTimeout(()=>document.getElementById("newRestName")?.focus(),100);
+    }
+    function captureRestaurantLocation() {
+      const status=document.getElementById("newRestGpsStatus");
+      if (!navigator.geolocation) { status.textContent="Location is not supported on this device."; return; }
+      status.textContent="Finding your location…";
+      navigator.geolocation.getCurrentPosition(pos=>{
+        const lat=pos.coords.latitude.toFixed(6), lng=pos.coords.longitude.toFixed(6);
+        document.getElementById("newRestMaps").value=`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+        document.getElementById("newRestCity").value=nearestTripCity(+lat,+lng);
+        if (!document.getElementById("newRestNeigh").value) document.getElementById("newRestNeigh").value=`Saved location: ${lat}, ${lng}`;
+        status.textContent="✓ Current location saved. You can still edit the city or location.";
+      },err=>{ status.textContent=err.code===1 ? "Location permission was declined. You can paste a Maps link instead." : "Could not get the current location. Try again outside or paste a Maps link."; },{enableHighAccuracy:true,timeout:12000,maximumAge:60000});
+    }
+    function saveNewRestaurant() {
+      const name=document.getElementById("newRestName").value.trim();
+      if (!name) { showToast("Enter a restaurant name"); return; }
+      const city=document.getElementById("newRestCity").value;
+      const arr=getCustomRestaurants();
+      const id="restaurant_"+Date.now();
+      const r={id,name,city,neigh:document.getElementById("newRestNeigh").value.trim()||"Saved on the go",style:document.getElementById("newRestStyle").value.trim()||"Restaurant",price:document.getElementById("newRestPrice").value,order:document.getElementById("newRestOrder").value.trim()||"Decide there",why:document.getElementById("newRestNotes").value.trim()||"Added during the trip",best:"On-the-go find",res:"Unknown",access:"",priority:"Added",maps:document.getElementById("newRestMaps").value.trim()||`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name+" "+city)}`,createdAt:new Date().toISOString()};
+      arr.push(r); setCustomRestaurants(arr);
+      const log=getRestLog(); log[restKey(r)]={favorite:true,notes:document.getElementById("newRestNotes").value.trim()}; setRestLog(log);
+      closeSheet(); restCityFilter="all"; restQuickFilter="all"; renderFood(); showToast("Restaurant added and saved");
+    }
+    function deleteCustomRestaurant(id, key) {
+      if (!confirm("Delete this added restaurant?")) return false;
+      setCustomRestaurants(getCustomRestaurants().filter(r=>r.id!==id));
+      const log=getRestLog(); delete log[key]; setRestLog(log); renderFood(); showToast("Restaurant deleted"); return true;
+    }
+
     function getRestLog() {
       try { return JSON.parse(localStorage.getItem("italy2026_restlog") || "{}"); } catch(e) { return {}; }
     }
@@ -2332,7 +2409,7 @@
       return out;
     }
     function applyDeleted(arr, type, idFn, deleted) { const d=(deleted&&deleted[type])||{}; return (arr||[]).filter(x=>!(String(idFn(x)) in d)); }
-    const SAVED_DATA_KEYS = ["italy2026_live","italy2026_expenses","italy2026_pack","italy2026_open","italy2026_journal","italy2026_tldone","italy2026_tlhidden","italy2026_restlog","italy2026_attrlog","italy2026_pretrip","italy2026_customlegs","italy2026_routeedits","italy2026_plannededits","italy2026_deleted","italy2026_packcatalog"];
+    const SAVED_DATA_KEYS = ["italy2026_customrestaurants","italy2026_live","italy2026_expenses","italy2026_pack","italy2026_open","italy2026_journal","italy2026_tldone","italy2026_tlhidden","italy2026_restlog","italy2026_attrlog","italy2026_pretrip","italy2026_customlegs","italy2026_routeedits","italy2026_plannededits","italy2026_deleted","italy2026_packcatalog"];
     function clearAllSupportedSavedData() { SAVED_DATA_KEYS.forEach(k=>localStorage.removeItem(k)); }
 
     function getBackupMeta() {
@@ -2353,7 +2430,7 @@
         expenses: Array.isArray(src.expenses) ? src.expenses.length : 0,
         customlegs: Array.isArray(src.customlegs) ? src.customlegs.length : 0,
         timeline: countKeys(src.tldone),
-        restaurants: countKeys(src.restlog),
+        restaurants: countKeys(src.restlog) + (Array.isArray(src.customrestaurants) ? src.customrestaurants.length : 0),
         attractions: countKeys(src.attrlog),
         packing: countKeys(src.pack)
       };
@@ -2362,7 +2439,7 @@
       const el = document.getElementById("backupStatus");
       if (!el) return;
       const meta = getBackupMeta();
-      const current = backupCounts({journal:getJournal(),expenses:getExpenses(),customlegs:getCustomLegs(),tldone:getTimelineDone(),restlog:getRestLog(),attrlog:getAttrLog(),pack:getPackState()});
+      const current = backupCounts({journal:getJournal(),expenses:getExpenses(),customlegs:getCustomLegs(),customrestaurants:getCustomRestaurants(),tldone:getTimelineDone(),restlog:getRestLog(),attrlog:getAttrLog(),pack:getPackState()});
       const fmt = iso => iso ? new Date(iso).toLocaleString("en-US", {dateStyle:"medium",timeStyle:"short"}) : "Never";
       el.innerHTML = `<div style="line-height:1.8;"><strong>Device:</strong> ${getBackupOwner()}<br><strong>Last export:</strong> ${fmt(meta.lastExport)}<br><strong>Last import:</strong> ${fmt(meta.lastImport)}${meta.lastImportFrom ? ` · from ${meta.lastImportFrom}` : ""}<br><strong>Current saved data:</strong> ${current.journal} journal · ${current.expenses} expenses · ${current.customlegs} custom legs · ${current.restaurants} restaurant records · ${current.packing} packing records</div>`;
     }
@@ -2397,7 +2474,7 @@
         exportedBy: getBackupOwner(),
         live: getLive(), expenses: getExpenses(), pack: getPackState(), open: getOpenState(), journal: getJournal(),
         tldone: getTimelineDone(), tlhidden: getTimelineHidden(), restlog: getRestLog(), attrlog: getAttrLog(),
-        pretrip: getPretripState(), customlegs: getCustomLegs(), routeedits: getRouteEdits(), plannededits: getPlannedEdits(), deleted: getDeletedRecords(), packcatalog: getPackCatalogData()
+        pretrip: getPretripState(), customlegs: getCustomLegs(), customrestaurants: getCustomRestaurants(), routeedits: getRouteEdits(), plannededits: getPlannedEdits(), deleted: getDeletedRecords(), packcatalog: getPackCatalogData()
       };
       const meta=getBackupMeta(); meta.lastExport=now; setBackupMeta(meta); renderBackupStatus();
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
@@ -2426,7 +2503,7 @@
         setLive(data.live||{}); setExpenses(data.expenses||[]); setPackState(data.pack||{}); setOpenState(data.open||{});
         setJournal(data.journal||[]); setTimelineDone(data.tldone||{}); setTimelineHidden(data.tlhidden||{});
         setRestLog(data.restlog||{}); setAttrLog(data.attrlog||{}); setPretripState(data.pretrip||{});
-        setCustomLegs(data.customlegs||[]); setRouteEdits(data.routeedits||{}); setPlannedEdits(data.plannededits||{});
+        setCustomLegs(data.customlegs||[]); setCustomRestaurants(data.customrestaurants||[]); setRouteEdits(data.routeedits||{}); setPlannedEdits(data.plannededits||{});
         setDeletedRecords(data.deleted||{}); setPackCatalogData(data.packcatalog||{edits:{},custom:{},deleted:{}});
       } else {
         const deleted=mergeDeleted(getDeletedRecords(),data.deleted||{}); setDeletedRecords(deleted);
@@ -2436,6 +2513,8 @@
         let r=mergeArrayById(applyDeleted(getExpenses(),"expenses",expenseId,deleted),applyDeleted(data.expenses||[],"expenses",expenseId,deleted),expenseId); totals.deleted += getExpenses().length-r.value.length; setExpenses(tally(r));
         r=mergeArrayById(applyDeleted(getJournal(),"journal",journalId,deleted),applyDeleted(data.journal||[],"journal",journalId,deleted),journalId); totals.deleted += getJournal().length-r.value.length; setJournal(tally(r));
         r=mergeArrayById(applyDeleted(getCustomLegs(),"customlegs",legId,deleted),applyDeleted(data.customlegs||[],"customlegs",legId,deleted),legId); totals.deleted += getCustomLegs().length-r.value.length; setCustomLegs(tally(r));
+        const restaurantId=x=>x.id||`${x.city}|${x.name}`;
+        r=mergeArrayById(getCustomRestaurants(),data.customrestaurants||[],restaurantId); setCustomRestaurants(tally(r));
         if (data.live) setLive(tally(mergeObject(getLive(),data.live)));
         if (data.pack) setPackState(tally(mergePackingState(getPackState(),data.pack)));
         if (data.packcatalog) setPackCatalogData(tally(mergePackCatalog(getPackCatalogData(),data.packcatalog)));
@@ -2637,6 +2716,18 @@
       refreshFxRate(false);
     }
 
+    function navigateToday(delta) {
+      const idx=DAYS.findIndex(d=>d.date===selectedDate);
+      const next=Math.max(0,Math.min(DAYS.length-1,idx+delta));
+      if (next===idx) return;
+      selectedDate=DAYS[next].date; renderToday();
+    }
+    function setupTodaySwipe() {
+      const el=document.getElementById("todayContent"); if(!el) return;
+      let startX=0,startY=0;
+      el.ontouchstart=e=>{const t=e.changedTouches[0];startX=t.clientX;startY=t.clientY;};
+      el.ontouchend=e=>{const t=e.changedTouches[0],dx=t.clientX-startX,dy=t.clientY-startY;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.3) navigateToday(dx<0?1:-1);};
+    }
     function renderToday() {
       const chips = document.getElementById("dateChips");
       chips.innerHTML = DAYS.map(d => `
@@ -2649,6 +2740,9 @@
       });
 
       const day = DAYS.find(d => d.date === selectedDate) || DAYS[0];
+      const dayIndex=DAYS.findIndex(d=>d.date===day.date);
+      const label=document.getElementById("todayDayLabel"); if(label) label.textContent=`${fmtDate(day.date)} · ${day.city}`;
+      const prev=document.getElementById("todayPrevBtn"), next=document.getElementById("todayNextBtn"); if(prev)prev.disabled=dayIndex<=0; if(next)next.disabled=dayIndex>=DAYS.length-1;
       const dayHotel = hotelForDate(day.date);
       document.getElementById("todayContent").innerHTML = `
         <div class="card" style="padding:10px 14px;">
@@ -2683,6 +2777,7 @@
           ${day.checklist.map(c => `<div class="check-row"><input type="checkbox"> <span>${c}</span></div>`).join("")}
         </div>
       `;
+      setupTodaySwipe();
       if (isVeniceDay(day.date)) loadVeniceTides(day.date);
     }
 
@@ -3184,7 +3279,7 @@
 
     function renderFood() {
       const log = getRestLog();
-      let list = RESTAURANTS.map((r, i) => ({ ...r, _i: i, _key: restKey(r) }));
+      let list = allRestaurants().map((r, i) => ({ ...r, _i: i, _key: restKey(r) }));
       if (restCityFilter !== "all") list = list.filter(r => r.city === restCityFilter);
       if (restAteFilter === "ate") list = list.filter(r => log[r._key] && log[r._key].ate);
       if (restAteFilter === "not") list = list.filter(r => !(log[r._key] && log[r._key].ate));
@@ -3208,7 +3303,7 @@
         <div class="card rest-card" style="${ate ? 'border-color:#a5d6a7;' : ''}">
           <div class="row space-between">
             <div style="flex:1;min-width:0;">
-              <div class="name">${r.name} ${ate ? '<span class="badge badge-confirmed">Ate here</span>' : ''} ${favorite ? '<span title="Favorite">❤️</span>' : ''}</div>
+              <div class="name">${r.name} ${r._custom ? '<span class="custom-restaurant-badge">Added</span>' : ''} ${ate ? '<span class="badge badge-confirmed">Ate here</span>' : ''} ${favorite ? '<span title="Favorite">❤️</span>' : ''}</div>
               <div class="neigh">${r.city} · ${r.neigh} · ${r.style}</div>
             </div>
             <div class="tag price">${r.price}</div>
@@ -3230,7 +3325,7 @@
             <div class="row" style="gap:8px;align-items:center;">
               <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="toggleRestFavorite(decodeURIComponent(this.dataset.rk))" aria-label="Toggle favorite">${favorite ? "❤️ Saved" : "♡ Favorite"}</button>
               <a class="link-btn" href="${r.maps}" target="_blank" rel="noopener">Maps</a>
-              <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="editRestaurant(decodeURIComponent(this.dataset.rk))">${hasVisit ? "Edit visit" : "Log visit"}</button>
+              <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="editRestaurant(decodeURIComponent(this.dataset.rk))">${hasVisit ? "Edit visit" : "Log visit"}</button>${r._custom ? `<button class="edit-btn" onclick="deleteCustomRestaurant('${r.id}', decodeURIComponent('${encodeURIComponent(r._key)}'))">Delete</button>` : ""}
             </div>
           </div>
         </div>
@@ -3239,7 +3334,7 @@
     }
 
     function editRestaurant(key) {
-      const r = RESTAURANTS.find(x => restKey(x) === key);
+      const r = allRestaurants().find(x => restKey(x) === key);
       if (!r) return;
       const entry = getRestLog()[key] || {};
       openEditSheet(r.name, [

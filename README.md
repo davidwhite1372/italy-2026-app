@@ -4,7 +4,7 @@ GitHub Pages deployment package for David and Melody's Italy 2026 Travel Compani
 
 ## Current build
 
-**Version 10.6D4 DEV — Emergency Contacts Updated**
+**Version 10.7 DEV — Swipeable Day Planner & On-the-Go Restaurants**
 
 The existing appearance, itinerary content, navigation, pinch-zoom behavior, backup/import tools, and installable PWA experience are preserved. Deployment-specific changes are limited to relative GitHub Pages paths, PWA scope/identity, cache isolation, and the `.nojekyll` marker.
 

@@ -1,3 +1,14 @@
+## [10.7.0 DEV] - 2026-08-03
+
+### Added
+- Swipe left/right and Previous/Next controls on Today to move through trip days.
+- Manual restaurant creation for discoveries made during the trip.
+- GPS-assisted restaurant capture that saves coordinates, a Google Maps link, and the nearest trip city.
+- Delete controls for manually added restaurants.
+
+### Preserved
+- Existing restaurant favorites, visited status, ratings, notes, filters, and backup/import behavior.
+
 ## [10.6D4] - 2026-08-03
 
 ### Added
