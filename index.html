@@ -780,6 +780,31 @@
     #todayContent{touch-action:pan-y;}
     .custom-restaurant-badge{display:inline-block;background:#e8f5e9;color:#2e7d32;border-radius:999px;padding:2px 7px;font-size:.68rem;font-weight:700;vertical-align:middle;}
     .gps-status{min-height:1.2em;margin-top:6px;}
+
+    .header-actions{display:flex;align-items:center;gap:8px;}
+    .global-search-btn{width:38px;height:38px;padding:0;border-radius:50%;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);font-size:1.15rem;display:grid;place-items:center;}
+    .global-search-btn:active{background:rgba(255,255,255,.28);}
+    .global-search-overlay{position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.52);display:none;align-items:flex-start;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 18px) 12px 90px;overflow:auto;}
+    .global-search-overlay.open{display:flex;}
+    .global-search-panel{width:min(680px,100%);background:var(--bg);border-radius:18px;padding:14px;box-shadow:0 18px 50px rgba(0,0,0,.3);}
+    .global-search-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
+    .global-search-head strong{font-size:1.05rem;color:var(--primary);}
+    .global-search-close{background:transparent;color:var(--text);border:1px solid var(--border);padding:6px 10px;}
+    .global-search-results{display:grid;gap:8px;max-height:68vh;overflow:auto;padding-bottom:4px;}
+    .global-result{width:100%;text-align:left;background:var(--card);color:var(--text);border:1px solid var(--border);padding:11px 12px;border-radius:12px;box-shadow:none;}
+    .global-result:active{background:var(--accent-light);}
+    .global-result-title{font-weight:750;font-size:.92rem;}
+    .global-result-meta{font-size:.75rem;color:var(--muted);margin-top:3px;line-height:1.35;}
+    .global-search-empty{text-align:center;padding:28px 12px;color:var(--muted);}
+    .search-highlight{outline:3px solid var(--gold)!important;outline-offset:2px;animation:searchPulse 1.6s ease;}
+    @keyframes searchPulse{0%,100%{box-shadow:var(--shadow)}50%{box-shadow:0 0 0 6px rgba(201,162,39,.22)}}
+    .weather-stat{position:relative;min-height:76px;display:flex;flex-direction:column;justify-content:center;}
+    .weather-main{display:flex;align-items:center;justify-content:center;gap:6px;font-weight:800;line-height:1;}
+    .weather-icon{font-size:1.35rem;}
+    .weather-temp{font-size:1.45rem;}
+    .weather-details{font-size:.66rem;color:var(--muted);margin-top:6px;line-height:1.35;white-space:normal;}
+    .weather-updated{font-size:.58rem;color:var(--muted);margin-top:3px;white-space:normal;}
+    .weather-refresh{position:absolute;right:4px;top:3px;background:transparent;color:var(--muted);padding:2px 4px;font-size:.72rem;border:0;}
   </style>
 </head>
 <body>
@@ -790,7 +815,10 @@
         <h1>🇮🇹 Italy 2026</h1>
         <div class="sub">David & Melody · Oct 4–15 · Rome · Florence · Venice</div>
       </div>
-      <div id="daysBadge" style="text-align:right;font-size:0.75rem;opacity:0.9;"></div>
+      <div class="header-actions">
+        <button class="global-search-btn" type="button" onclick="openGlobalSearch()" aria-label="Search the entire trip">🔍</button>
+        <div id="daysBadge" style="text-align:right;font-size:0.75rem;opacity:0.9;"></div>
+      </div>
     </div>
   </header>
 
@@ -1200,6 +1228,16 @@
     </button>
   </nav>
 
+  <!-- GLOBAL SEARCH -->
+  <div class="global-search-overlay" id="globalSearchOverlay" onclick="if(event.target===this)closeGlobalSearch()">
+    <div class="global-search-panel" role="dialog" aria-modal="true" aria-labelledby="globalSearchTitle">
+      <div class="global-search-head"><strong id="globalSearchTitle">🔍 Search the entire trip</strong><button class="global-search-close" onclick="closeGlobalSearch()">Close</button></div>
+      <input class="search-box" id="globalSearchInput" type="search" placeholder="Flight, hotel, confirmation, restaurant, note…" oninput="renderGlobalSearchResults(this.value)" autocomplete="off" />
+      <div class="text-xs text-muted" style="margin:-5px 2px 10px;">Searches Timeline, Travel, reservations, wallet, hotels, restaurants, notes, packing, Safety, maps, links, and travel guides—even offline.</div>
+      <div class="global-search-results" id="globalSearchResults"></div>
+    </div>
+  </div>
+
   <!-- DETAIL OVERLAY -->
   <div class="overlay" id="overlay" onclick="if(event.target===this)closeSheet()">
     <div class="sheet" id="sheet">
@@ -1241,7 +1279,7 @@
       <div style="margin-top:18px;display:grid;gap:10px;font-size:.88rem;">
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">App version</span><strong id="aboutAppVersion"></strong></div>
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Data version</span><strong id="aboutDataVersion"></strong></div>
-        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.7.9</strong></div>
+        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.8.0</strong></div>
       </div>
       <div style="margin-top:16px;padding:12px;border-radius:12px;background:var(--soft);font-size:.78rem;color:var(--muted);line-height:1.5;">Technical details are kept here for troubleshooting without cluttering the Home page.</div>
     </div>
@@ -1249,9 +1287,9 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.7.9";
+    const APP_VERSION = "10.8.0";
     const DATA_VERSION = "10.5.0";
-    const BUILD_LABEL = "Italy App v10.7.9 ⓘ";
+    const BUILD_LABEL = "Italy App v10.8.0 ⓘ";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -2803,8 +2841,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
 
       document.getElementById("homeStats").innerHTML = `
         <div class="stat"><div class="val">${dep > 0 ? dep : "—"}</div><div class="lbl">Days to departure</div></div>
-        <div class="stat"><div class="val">12</div><div class="lbl">Days / 11 nights</div></div>
+        <div class="stat weather-stat" id="homeWeatherTile"><div class="weather-main"><span class="weather-icon">🌤️</span><span class="weather-temp">—°</span></div><div class="weather-details">Loading weather…</div></div>
       `;
+      renderHomeWeather();
       const openState = getOpenState();
       const highItems = OPEN_ITEMS.filter(o => o.urgency === "High" && o.status !== "Done" && !openState[o.pri]);
       document.getElementById("homeOpenItems").innerHTML = highItems.slice(0,5).map(o => `
@@ -4418,6 +4457,101 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       markDeleted("notes",id); setNotes(getNotes().filter(x=>x.id!==id)); closeSheet(); renderNotes(); showToast("Note deleted");
     }
 
+
+    // ===================== GLOBAL SEARCH =====================
+    function searchableText(value) {
+      if (value == null) return "";
+      if (typeof value === "string" || typeof value === "number") return String(value);
+      if (Array.isArray(value)) return value.map(searchableText).join(" ");
+      if (typeof value === "object") return Object.values(value).map(searchableText).join(" ");
+      return "";
+    }
+
+    function globalSearchEntries() {
+      const entries = [];
+      const add = (section, title, detail, page, query, value, options={}) => {
+        if (!title) return;
+        entries.push({section,title:String(title),detail:String(detail||""),page,query:String(query||title),text:(String(title)+" "+String(detail||"")+" "+searchableText(value)).toLowerCase(),...options});
+      };
+      liveTimeline().forEach(x=>add("Timeline",x.title||`${x.from||""} → ${x.to||""}`,[x.date,x.start,x.mode,x.status].filter(Boolean).join(" · "),"timeline",x.title||x.from||x.to,x));
+      liveFlights().forEach(x=>add("Travel · Flight",`${x.flight} · ${x.from} → ${x.to}`,[x.date,x.dep,x.arr,x.status].filter(Boolean).join(" · "),"transport",x.flight,x,{travel:true}));
+      liveHotels().forEach(x=>add("Hotel",x.name,[x.city,x.dates,x.conf].filter(Boolean).join(" · "),"transport",x.name,x,{travel:true}));
+      liveSharedTravelItems().forEach(x=>add(`Travel · ${x.itemType||"Item"}`,x.title||`${x.from||""} → ${x.to||""}`,[x.date,x.start,x.status].filter(Boolean).join(" · "),"transport",x.title||x.from||x.to,x,{travel:true}));
+      getCustomLegs().forEach(x=>add("Travel · Added item",x.title||`${x.from||""} → ${x.to||""}`,[x.date,x.start,x.status].filter(Boolean).join(" · "),"transport",x.title||x.from||x.to,x,{travel:true}));
+      liveReservations().forEach(x=>add("Reservation",x.item||x.provider,[x.provider,x.conf,x.dates,x.status].filter(Boolean).join(" · "),"bookings",x.conf||x.provider||x.item,x));
+      const walletIds=["1383385020","9941234776","EBB772160933",airConfirmationText(),TRIP.italo,TRIP.confRomeFlo,TRIP.confVen].filter(Boolean);
+      walletIds.forEach(v=>add("Confirmation Wallet",v,"Traveler ID, rewards, or confirmation number","wallet",v,v));
+      [...RESTAURANTS,...getCustomRestaurants()].forEach(x=>add("Restaurant",x.name,[x.city,x.neigh,x.style,x.price].filter(Boolean).join(" · "),"food",x.name,x,{restaurant:true}));
+      getNotes().forEach(x=>add("Note",x.title,[x.category,x.body].filter(Boolean).join(" · "),"journal",x.title,x,{note:true}));
+      getPackingItems().forEach(x=>add("Packing",x.item,[x.traveler,x.cat,x.bag].filter(Boolean).join(" · "),"prep",x.item,x));
+      Object.entries(SAFETY||{}).forEach(([k,v])=>add("Safety",k.replace(/([A-Z])/g," $1"),searchableText(v).slice(0,160),"prep",k,{[k]:v},{safety:true}));
+      getAllDoorRoutes().forEach(x=>add("Maps · Route",x.title||`${x.from||""} → ${x.to||""}`,[x.date,x.mode,x.note].filter(Boolean).join(" · "),"maps",x.title||x.from||x.to,x,{mapsFilter:"routes"}));
+      (MAP_AIRPORTS||[]).forEach(x=>add("Maps · Airport",`${x.name} (${x.code})`,x.tripUse,"maps",x.name,x,{mapsFilter:"airports"}));
+      (MAP_HOTELS_VENUES||[]).forEach(x=>add("Maps · Hotel/Venue",x.name,[x.city,x.purpose,x.address].filter(Boolean).join(" · "),"maps",x.name,x,{mapsFilter:"hotels"}));
+      (MAP_OFFICIAL_SITES||[]).forEach(x=>add("Official Link",x.name,[x.area,x.use].filter(Boolean).join(" · "),"maps",x.name,x,{mapsFilter:"official"}));
+      (GROUND||[]).forEach(x=>add("Local Travel Guide",`${x.city} · ${x.mode}`,x.best,"maps",x.mode,x,{mapsFilter:"local"}));
+      (CONTINGENCIES||[]).forEach(x=>add("Travel Help",x.scenario||x.title||"What If?",x.action||x.plan||searchableText(x).slice(0,160),"maps",x.scenario||x.title||searchableText(x).slice(0,40),x,{mapsFilter:"help"}));
+      (MAP_SAVED_PENDING||[]).forEach(x=>add("Saved Link",x.name||x.title||x.item,searchableText(x).slice(0,160),"maps",x.name||x.title||x.item,x,{mapsFilter:"saved"}));
+      return entries;
+    }
+
+    function openGlobalSearch() {
+      const overlay=document.getElementById("globalSearchOverlay");
+      const input=document.getElementById("globalSearchInput");
+      if (!overlay||!input) return;
+      overlay.classList.add("open");
+      input.value="";
+      renderGlobalSearchResults("");
+      setTimeout(()=>input.focus(),80);
+    }
+    function closeGlobalSearch(){const el=document.getElementById("globalSearchOverlay");if(el)el.classList.remove("open");}
+    function renderGlobalSearchResults(raw) {
+      const target=document.getElementById("globalSearchResults"); if(!target)return;
+      const q=String(raw||"").trim().toLowerCase();
+      if(q.length<2){target.innerHTML='<div class="global-search-empty">Type at least 2 characters to search the trip.</div>';return;}
+      const words=q.split(/\s+/).filter(Boolean);
+      const results=globalSearchEntries().filter(x=>words.every(w=>x.text.includes(w))).slice(0,60);
+      target.innerHTML=results.length?results.map((x,i)=>`<button class="global-result" onclick="openGlobalSearchResult(${i})"><div class="global-result-title">${escapeHtml(x.title)}</div><div class="global-result-meta">${escapeHtml(x.section)}${x.detail?' · '+escapeHtml(x.detail):''}</div></button>`).join(""):'<div class="global-search-empty">No matches. Try a shorter word or confirmation number.</div>';
+      window._globalSearchResults=results;
+    }
+    function openGlobalSearchResult(index) {
+      const x=(window._globalSearchResults||[])[index]; if(!x)return;
+      closeGlobalSearch();
+      if(x.travel){travelTypeFilter="all";travelSearch=x.query;const input=document.getElementById("travelSearchInput");if(input)input.value=x.query;}
+      if(x.restaurant){restQuickFilter="all";restCityFilter="all";restAteFilter="all";restSearch=x.query;const input=document.getElementById("restSearch");if(input)input.value=x.query;}
+      if(x.note){journalNotesTab="notes";const input=document.getElementById("notesSearch");if(input)input.value=x.query;}
+      if(x.mapsFilter)setMapsGuideFilter(x.mapsFilter);
+      if(x.page==="timeline"){tlFilter="all";tlModeFilter="all";tlSearch=x.query;const input=document.getElementById("timelineSearch");if(input)input.value=x.query;}
+      showPage(x.page);
+      setTimeout(()=>highlightFirstTextMatch(x.query),180);
+    }
+    function highlightFirstTextMatch(query) {
+      const page=document.querySelector(".page.active"); if(!page)return;
+      const q=String(query||"").trim().toLowerCase();
+      const candidates=[...page.querySelectorAll(".card,.tl-step,.list-item,.pack-cat,.travel-guide-card,.note-card")];
+      const hit=candidates.find(el=>el.textContent.toLowerCase().includes(q));
+      if(!hit)return;
+      hit.classList.add("search-highlight");
+      hit.scrollIntoView({behavior:"smooth",block:"center"});
+      setTimeout(()=>hit.classList.remove("search-highlight"),2200);
+    }
+
+    // ===================== HOME WEATHER =====================
+    const WEATHER_CACHE_KEY="italy2026_weather_cache_v1";
+    const WEATHER_LOCATIONS={
+      Rome:{lat:41.9028,lon:12.4964},
+      Florence:{lat:43.7696,lon:11.2558},
+      Venice:{lat:45.4408,lon:12.3155},
+      Tampa:{lat:27.9506,lon:-82.4572}
+    };
+    function italyDateISO(){return new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Rome",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());}
+    function weatherCityForToday(){const d=italyDateISO();if(d>="2026-10-05"&&d<"2026-10-08")return"Rome";if(d>="2026-10-08"&&d<"2026-10-10")return"Florence";if(d>="2026-10-10"&&d<="2026-10-15")return"Venice";if(d>"2026-10-15")return"Tampa";return"Rome";}
+    function weatherIcon(code){code=Number(code);if(code===0)return"☀️";if([1,2].includes(code))return"🌤️";if(code===3)return"☁️";if([45,48].includes(code))return"🌫️";if([51,53,55,56,57].includes(code))return"🌦️";if([61,63,65,66,67,80,81,82].includes(code))return"🌧️";if([71,73,75,77,85,86].includes(code))return"🌨️";if([95,96,99].includes(code))return"⛈️";return"🌤️";}
+    function getWeatherCache(){try{return JSON.parse(localStorage.getItem(WEATHER_CACHE_KEY)||"{}")}catch(e){return{}}}
+    function weatherAgeLabel(iso){if(!iso)return"";const ms=Date.now()-new Date(iso).getTime();if(ms<60000)return"just now";if(ms<3600000)return`${Math.floor(ms/60000)}m ago`;if(ms<86400000)return`${Math.floor(ms/3600000)}h ago`;return new Date(iso).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});}
+    function paintWeatherTile(city,data,isCached){const el=document.getElementById("homeWeatherTile");if(!el)return;if(!data){el.innerHTML=`<div class="weather-main"><span class="weather-icon">🌤️</span><span class="weather-temp">—°</span></div><div class="weather-details">${city} · Weather unavailable</div>`;return;}el.innerHTML=`<button class="weather-refresh" onclick="event.stopPropagation();renderHomeWeather(true)" aria-label="Refresh weather">↻</button><div class="weather-main"><span class="weather-icon">${weatherIcon(data.code)}</span><span class="weather-temp">${Math.round(data.temp)}°</span></div><div class="weather-details">${escapeHtml(city)} · H ${Math.round(data.high)}° / L ${Math.round(data.low)}°<br>💧 ${Math.round(data.rain||0)}% · 💨 ${Math.round(data.wind||0)} mph</div><div class="weather-updated">${isCached?"Offline cache · ":"Updated "}${weatherAgeLabel(data.updatedAt)} · Open-Meteo</div>`;}
+    async function renderHomeWeather(force=false){const city=weatherCityForToday(),loc=WEATHER_LOCATIONS[city],cache=getWeatherCache(),cached=cache[city];if(cached)paintWeatherTile(city,cached,true);if(!navigator.onLine){if(!cached)paintWeatherTile(city,null,true);return;}if(!force&&cached&&Date.now()-new Date(cached.updatedAt).getTime()<30*60*1000){paintWeatherTile(city,cached,false);return;}try{const url=`https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&current=temperature_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=1`;const res=await fetch(url,{cache:"no-store"});if(!res.ok)throw new Error("weather unavailable");const j=await res.json();const data={temp:j.current.temperature_2m,code:j.current.weather_code,wind:j.current.wind_speed_10m,high:j.daily.temperature_2m_max[0],low:j.daily.temperature_2m_min[0],rain:j.daily.precipitation_probability_max[0]||0,updatedAt:new Date().toISOString()};cache[city]=data;localStorage.setItem(WEATHER_CACHE_KEY,JSON.stringify(cache));paintWeatherTile(city,data,false);}catch(e){if(cached)paintWeatherTile(city,cached,true);else paintWeatherTile(city,null,true);}}
+
     // ===================== NAVIGATION =====================
     let currentPage = "home";
     let lastBackPress = 0;
@@ -4571,6 +4705,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
           a.setAttribute("rel", "noopener noreferrer");
         }
       }, true);
+
+      document.addEventListener("keydown", e => { if (e.key === "Escape") closeGlobalSearch(); });
+      window.addEventListener("online", () => { if (currentPage === "home") renderHomeWeather(true); });
 
       // Timeline filters
       document.getElementById("tlFilters").addEventListener("click", e => {

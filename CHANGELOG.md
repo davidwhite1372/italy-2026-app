@@ -1,3 +1,10 @@
+# Version 10.8.0
+
+- Added global search from the app header with direct navigation to matching trip content.
+- Added search coverage for Timeline, Travel, reservations, Confirmation Wallet, hotels, restaurants, notes, packing, Safety, maps, links, and travel guides.
+- Replaced the Home Days/Nights stat with a compact weather tile showing current temperature, high/low, rain chance, wind, city, and update age.
+- Added per-city weather caching and offline last-known fallback.
+
 ## Version 10.7.5
 - Added separate Tours and To-Dos filters on Travel.
 - Reclassified operational itinerary tasks as To-Dos while keeping excursions and experiences under Tours.

@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-7-9-notes-filter-fix';
+const CACHE = 'italy-2026-github-v10-8-0-search-weather';
 const APP_SHELL = [
   './',
   './index.html',
@@ -26,6 +26,12 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
+
+  // Weather must always try the network; the app maintains its own last-known offline cache.
+  if (new URL(event.request.url).hostname === 'api.open-meteo.com') {
+    event.respondWith(fetch(event.request));
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request).then(cached => {
