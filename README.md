@@ -171,3 +171,6 @@ Hotel data is now unified into master hotel records. Editing a hotel from Reserv
 
 ### Version display
 The Home page uses a compact bottom-right About tab. Tap it to view app, data, and build versions without showing development notes in the main interface.
+
+### Version 10.7.2
+Travel now uses a sticky filter and search bar instead of section jump links. Results can be filtered by type, searched by key trip details, and remain ordered by date and time.

@@ -267,3 +267,10 @@ All notable changes to the Italy 2026 Travel Companion will be documented here.
 - Redesigned Travel cards for faster scanning.
 - Added prominent departure/arrival layout, confirmation and seat information, and Google/Apple Maps actions.
 - Improved train, transfer, tour, event, and custom trip-item presentation.
+
+## 10.7.2 — Travel filtering and search
+- Replaced Travel section jump buttons with sticky type filters.
+- Added filters for All, Flights, Trains, Transfers, Hotels, Tours, and Other.
+- Added Travel search across airline, train, city, hotel, confirmation, route, and notes.
+- Added hotels to the Travel view.
+- Kept filtered results in date-and-time order and added a live result count.

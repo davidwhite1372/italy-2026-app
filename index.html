@@ -557,10 +557,16 @@
     .travel-detail-block.muted { color:var(--muted); }
     .travel-actions { display:flex; flex-wrap:wrap; gap:7px; padding:10px 14px 13px; border-top:1px solid var(--border); }
     .travel-actions button,.travel-actions a { flex:1 1 auto; min-width:92px; text-align:center; }
-    .travel-jump-nav { display:flex; gap:7px; overflow-x:auto; padding:1px 1px 11px; margin-bottom:3px; scrollbar-width:none; }
-    .travel-jump-nav::-webkit-scrollbar { display:none; }
-    .travel-jump-nav button { flex:0 0 auto; border:1px solid var(--border); background:var(--card); color:var(--primary); border-radius:999px; padding:7px 10px; font-size:.74rem; font-weight:750; }
-    .travel-section-anchor { scroll-margin-top:82px; }
+    .travel-filter-panel { position:sticky; top:58px; z-index:12; margin:0 0 12px; padding:9px; border:1px solid var(--border); border-radius:13px; background:var(--bg); backdrop-filter:blur(10px); box-shadow:0 5px 16px rgba(0,0,0,.06); }
+    .travel-filter-nav { display:flex; gap:7px; overflow-x:auto; padding:0 0 8px; scrollbar-width:none; }
+    .travel-filter-nav::-webkit-scrollbar { display:none; }
+    .travel-filter-nav button { flex:0 0 auto; border:1px solid var(--border); background:var(--card); color:var(--primary); border-radius:999px; padding:7px 10px; font-size:.74rem; font-weight:750; }
+    .travel-filter-nav button.active { background:var(--primary); color:white; border-color:var(--primary); }
+    .travel-search-row { display:flex; align-items:center; gap:8px; }
+    .travel-search-row input { flex:1; min-width:0; margin:0; }
+    .travel-result-count { flex:0 0 auto; font-size:.72rem; color:var(--muted); font-weight:750; white-space:nowrap; }
+    .travel-empty { padding:22px 14px; text-align:center; color:var(--muted); border:1px dashed var(--border); border-radius:12px; }
+    .travel-section-label { margin:18px 2px 8px; font-size:.78rem; font-weight:850; color:var(--primary); text-transform:uppercase; letter-spacing:.06em; }
     .travel-confirmation { margin-top:10px; padding:10px 11px; border:1px solid rgba(46,125,50,.28); border-radius:11px; background:rgba(46,125,50,.07); }
     .travel-confirmation.pending { border-color:rgba(239,108,0,.34); background:rgba(239,108,0,.08); }
     .travel-confirmation-label { font-size:.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; font-weight:800; }
@@ -925,30 +931,23 @@
       <div class="owner-banner"><span class="owner-icon">✏️</span><div><strong>Make travel changes here.</strong> Flights, trains, transfers, tours, and events automatically update their linked Timeline, Maps, Reservations, Wallet, and Home views.</div></div>
       <button style="width:100%;margin:0 0 14px;" onclick="addTripItem()">＋ Add Trip Item</button>
       <div id="travelOverview"></div>
-      <div class="travel-jump-nav" aria-label="Travel sections">
-        <button onclick="jumpToTravelSection('travelFlights')">✈️ Flights</button>
-        <button onclick="jumpToTravelSection('travelTrains')">🚆 Trains</button>
-        <button onclick="jumpToTravelSection('travelTransfers')">🧭 Transfers</button>
-        <button onclick="jumpToTravelSection('travelActivities')">🎟️ Tours & Events</button>
-        <button onclick="jumpToTravelSection('travelGround')">🚖 Local Travel</button>
+      <div class="travel-filter-panel" aria-label="Travel filters">
+        <div class="travel-filter-nav" id="travelTypeFilters">
+          <button class="active" data-travel-filter="all" onclick="setTravelTypeFilter('all')">All</button>
+          <button data-travel-filter="flight" onclick="setTravelTypeFilter('flight')">✈️ Flights</button>
+          <button data-travel-filter="train" onclick="setTravelTypeFilter('train')">🚆 Trains</button>
+          <button data-travel-filter="transfer" onclick="setTravelTypeFilter('transfer')">🧭 Transfers</button>
+          <button data-travel-filter="hotel" onclick="setTravelTypeFilter('hotel')">🏨 Hotels</button>
+          <button data-travel-filter="activity" onclick="setTravelTypeFilter('activity')">🎟️ Tours</button>
+          <button data-travel-filter="other" onclick="setTravelTypeFilter('other')">••• Other</button>
+        </div>
+        <div class="travel-search-row">
+          <input id="travelSearchInput" type="search" placeholder="Search airline, train, city, hotel, confirmation…" aria-label="Search travel" oninput="setTravelSearch(this.value)">
+          <span class="travel-result-count" id="travelResultCount"></span>
+        </div>
       </div>
       <div id="travelAttention"></div>
-      <div id="customTripItemsSection" class="hidden">
-        <div class="section-title travel-section-anchor" id="travelAdded">➕ Added Trip Items</div>
-        <div id="customTripItemsList"></div>
-      </div>
-      <div class="section-title travel-section-anchor" id="travelFlights">✈️ Flights</div>
-      <div id="flightsList"></div>
-      <div class="section-title travel-section-anchor" id="travelTrains">🚆 Trains</div>
-      <div id="trainsList"></div>
-      <div class="section-title travel-section-anchor" id="travelTransfers">🧭 Door-to-Door Transfers</div>
-      <div id="transfersList"></div>
-      <div class="section-title travel-section-anchor" id="travelActivities">🎟️ Tours, Events & Information</div>
-      <div id="activitiesList"></div>
-      <div class="section-title travel-section-anchor" id="travelGround">🚖 Ground & Water Transportation</div>
-      <div id="groundList"></div>
-      <div class="section-title">🚨 Backup & Contingency Plans</div>
-      <div id="contingenciesList"></div>
+      <div id="travelResults"></div>
     </section>
 
     <!-- PREP -->
@@ -1170,7 +1169,7 @@
       <div style="margin-top:18px;display:grid;gap:10px;font-size:.88rem;">
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">App version</span><strong id="aboutAppVersion"></strong></div>
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Data version</span><strong id="aboutDataVersion"></strong></div>
-        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.7.1</strong></div>
+        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.7.2</strong></div>
       </div>
       <div style="margin-top:16px;padding:12px;border-radius:12px;background:var(--soft);font-size:.78rem;color:var(--muted);line-height:1.5;">Technical details are kept here for troubleshooting without cluttering the Home page.</div>
     </div>
@@ -1178,7 +1177,7 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.7.1";
+    const APP_VERSION = "10.7.2";
     const DATA_VERSION = "10.5.0";
     const BUILD_LABEL = "Italy App v10.7 ⓘ";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
@@ -1336,6 +1335,8 @@
 
     // ===================== STATE & HELPERS =====================
     let currentCity = "rome";
+    let travelTypeFilter = "all";
+    let travelSearch = "";
     let restCityFilter = "all";
     let restAteFilter = "all";
     let restQuickFilter = "all";
@@ -3382,9 +3383,19 @@
       }, 0);
     }
 
-    function jumpToTravelSection(id) {
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+    function setTravelTypeFilter(filter) {
+      travelTypeFilter = filter || "all";
+      document.querySelectorAll("#travelTypeFilters [data-travel-filter]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.travelFilter === travelTypeFilter);
+      });
+      renderTransport();
+    }
+
+    function setTravelSearch(value) {
+      travelSearch = (value || "").trim().toLowerCase();
+      renderTransport();
+      const input = document.getElementById("travelSearchInput");
+      if (input && document.activeElement !== input) input.value = value || "";
     }
 
     function travelMapActions(from, to) {
@@ -3424,104 +3435,84 @@
       return "";
     }
 
+    function travelDateTimeKey(date, time) {
+      const d = date || "9999-12-31";
+      const raw = String(time || "").trim();
+      let minutes = 1439;
+      const m12 = raw.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+      const m24 = raw.match(/^(\d{1,2}):(\d{2})$/);
+      if (m12) {
+        let h = Number(m12[1]) % 12;
+        if (m12[3].toUpperCase() === "PM") h += 12;
+        minutes = h * 60 + Number(m12[2]);
+      } else if (m24) minutes = Number(m24[1]) * 60 + Number(m24[2]);
+      else if (/morning/i.test(raw)) minutes = 8 * 60;
+      else if (/afternoon/i.test(raw)) minutes = 14 * 60;
+      else if (/evening/i.test(raw)) minutes = 19 * 60;
+      return `${d}|${String(minutes).padStart(4,"0")}`;
+    }
+
     function renderTransport() {
       const customTripItems = getCustomLegs();
       const flights = liveFlights();
       const trains = liveTrains();
       const transfers = liveTransfers();
       const activities = liveActivities();
-      const overview = document.getElementById("travelOverview");
+      const hotels = liveHotels();
       const allTravelItems = [...flights, ...trains, ...transfers, ...activities, ...customTripItems];
       const needsAttention = allTravelItems.filter(x => /pending|verify|decision|timetable/i.test(x.status || ""));
       const confirmedCount = allTravelItems.length - needsAttention.length;
+      const overview = document.getElementById("travelOverview");
       if (overview) overview.innerHTML = `<div class="travel-overview-grid">
-        <div class="travel-overview-stat"><strong>${allTravelItems.length}</strong><span>Total items</span></div>
+        <div class="travel-overview-stat"><strong>${allTravelItems.length}</strong><span>Travel items</span></div>
         <div class="travel-overview-stat"><strong>${confirmedCount}</strong><span>Ready</span></div>
         <div class="travel-overview-stat"><strong>${needsAttention.length}</strong><span>Need checking</span></div>
       </div>`;
       const attention = document.getElementById("travelAttention");
       if (attention) attention.innerHTML = needsAttention.length
-        ? `<div class="travel-attention"><strong>${needsAttention.length} travel item${needsAttention.length === 1 ? "" : "s"} still need attention.</strong> Look for orange or pending confirmation blocks below.</div>`
+        ? `<div class="travel-attention"><strong>${needsAttention.length} travel item${needsAttention.length === 1 ? "" : "s"} still need attention.</strong> Search or filter to find pending confirmation blocks.</div>`
         : "";
 
-      const customSection = document.getElementById("customTripItemsSection");
-      const customList = document.getElementById("customTripItemsList");
-      if (customSection && customList) {
-        customSection.classList.toggle("hidden", customTripItems.length === 0);
-        customList.innerHTML = customTripItems.map(t => `
-          <div class="card travel-card transfer-card">
-            <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t)} ${escapeHtml(t.title || [t.from,t.to].filter(Boolean).join(" → ") || "Trip Item")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
-            <div class="travel-card-main">
-              ${travelRouteBlock(t.from,t.start,t.to,t.end)}
-              <div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType || "Information")}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>
-              ${travelConfirmationBlock(t.confirmation || "", t.status || "Confirmed")}
-              ${travelDetailPanel("Travel details", t.note)}
-              ${travelDetailPanel("Connected views", `Added Trip Item · linked to Timeline${(t.from && t.to) ? " and Maps" : ""}`)}
-            </div>
-            <div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editCustomLeg('${t.id}')">Edit Trip Item</button></div>
-          </div>`).join("");
-      }
+      const records = [];
+      const addRecord = (category, date, time, searchText, html, sortExtra="") => records.push({category,date,time,searchText:String(searchText||"").toLowerCase(),html,sortKey:travelDateTimeKey(date,time)+"|"+sortExtra});
 
-      document.getElementById("flightsList").innerHTML = flights.map(f => `
-        <div class="card travel-card flight-card">
-          <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">✈️ ${escapeHtml(f.flight)} · ${escapeHtml(f.op)}</div><div class="travel-date-label">${fmtDate(f.date)}</div></div></div>
-          <div class="travel-card-main">
-            ${travelRouteBlock(f.from,f.dep,f.to,f.arr)}
-            <div class="travel-chip-row"><span class="travel-chip">${escapeHtml(f.dur || "Duration TBD")}</span><span class="travel-chip">${escapeHtml(f.cabin || "Cabin TBD")}</span>${statusBadge(f.status || "Confirmed")}</div>
-            ${travelConfirmationBlock(airConfirmationText(), f.status || "Confirmed")}
-            ${travelDetailPanel("Seats", f.seats || "Not assigned — verify in airline app")}
-            ${travelDetailPanel("Travel note", f.notes)}
-          </div>
-          <div class="travel-actions"><button class="edit-btn" onclick="copyText('${String(airConfirmationText()).replace(/'/g,"\\'")}','Air confirmation copied')">Copy Confirmation</button>${travelMapActions(f.from,f.to)}<button class="edit-btn" onclick="editFlightById('${f.id}')">Edit Flight</button></div>
-        </div>`).join("");
-
-      document.getElementById("trainsList").innerHTML = trains.map(t => `
-        <div class="card travel-card train-card">
-          <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🚆 ${escapeHtml(t.mode || t.title || "Train")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
-          <div class="travel-card-main">
-            ${travelRouteBlock(t.from,t.start,t.to,t.end)}
-            <div class="travel-chip-row">${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>
-            ${travelConfirmationBlock(trainConfirmation(t), t.status || "Confirmed")}
-            ${travelDetailPanel("Trip details", t.instructions)}
-            ${travelDetailPanel("Travel note", t.notes)}
-          </div>
-          <div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Train</button></div>
-        </div>`).join("");
-
-      document.getElementById("transfersList").innerHTML = transfers.map(t => `
+      customTripItems.forEach(t => addRecord("other", t.date, t.start, [t.title,t.from,t.to,t.itemType,t.duration,t.status,t.confirmation,t.note].join(" "), `
         <div class="card travel-card transfer-card">
-          <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
-          <div class="travel-card-main">
-            ${travelRouteBlock(t.from,t.start,t.to,t.end)}
-            <div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.mode || t.itemType)}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>
-            ${travelConfirmationBlock("", t.status || "Confirmed")}
-            ${travelDetailPanel("Steps", t.instructions)}
-            ${travelDetailPanel("Travel note", t.notes)}
-          </div>
-          <div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button></div>
-        </div>`).join("");
+          <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t)} ${escapeHtml(t.title || [t.from,t.to].filter(Boolean).join(" → ") || "Trip Item")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
+          <div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType || "Information")}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelConfirmationBlock(t.confirmation || "", t.status || "Confirmed")}${travelDetailPanel("Travel details", t.note)}${travelDetailPanel("Connected views", `Added Trip Item · linked to Timeline${(t.from && t.to) ? " and Maps" : ""}`)}</div>
+          <div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editCustomLeg('${t.id}')">Edit Trip Item</button></div>
+        </div>`, t.title || ""));
 
-      document.getElementById("activitiesList").innerHTML = activities.map(t => `
-        <div class="card travel-card activity-card">
-          <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
-          <div class="travel-card-main">
-            ${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}
-            <div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span>${statusBadge(t.status || "Confirmed")}</div>
-            ${travelConfirmationBlock("", t.status || "Confirmed")}
-            ${travelDetailPanel("Details", t.instructions)}
-            ${travelDetailPanel("Travel note", t.notes)}
-          </div>
-          <div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button></div>
-        </div>`).join("");
+      flights.forEach(f => addRecord("flight", f.date, f.dep, [f.flight,f.op,f.from,f.to,f.dep,f.arr,f.dur,f.cabin,f.status,f.seats,f.notes,airConfirmationText()].join(" "), `
+        <div class="card travel-card flight-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">✈️ ${escapeHtml(f.flight)} · ${escapeHtml(f.op)}</div><div class="travel-date-label">${fmtDate(f.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(f.from,f.dep,f.to,f.arr)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(f.dur || "Duration TBD")}</span><span class="travel-chip">${escapeHtml(f.cabin || "Cabin TBD")}</span>${statusBadge(f.status || "Confirmed")}</div>${travelConfirmationBlock(airConfirmationText(), f.status || "Confirmed")}${travelDetailPanel("Seats", f.seats || "Not assigned — verify in airline app")}${travelDetailPanel("Travel note", f.notes)}</div><div class="travel-actions"><button class="edit-btn" onclick="copyText('${String(airConfirmationText()).replace(/'/g,"\\'")}','Air confirmation copied')">Copy Confirmation</button>${travelMapActions(f.from,f.to)}<button class="edit-btn" onclick="editFlightById('${f.id}')">Edit Flight</button></div></div>`, f.flight));
 
-      document.getElementById("groundList").innerHTML = GROUND.map(g => `
-        <div class="card">
-          <div class="row space-between"><div class="fw-600">${g.mode}</div><div class="text-xs text-muted">${g.city}</div></div>
-          <div class="text-sm mt-8"><strong>Best for:</strong> ${g.best}</div><div class="text-sm"><strong>Pay / buy:</strong> ${g.pay}</div><div class="text-sm text-muted mt-8">${g.notes}</div>
-        </div>`).join("");
+      trains.forEach(t => addRecord("train", t.date, t.start, [t.mode,t.title,t.from,t.to,t.start,t.end,t.duration,t.status,t.instructions,t.notes,trainConfirmation(t)].join(" "), `
+        <div class="card travel-card train-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🚆 ${escapeHtml(t.mode || t.title || "Train")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row">${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelConfirmationBlock(trainConfirmation(t), t.status || "Confirmed")}${travelDetailPanel("Trip details", t.instructions)}${travelDetailPanel("Travel note", t.notes)}</div><div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Train</button></div></div>`, t.mode || t.title));
 
-      document.getElementById("contingenciesList").innerHTML = CONTINGENCIES.map(c => `
-        <div class="card"><div class="row space-between"><div class="fw-600" style="color:var(--danger);">${c.scenario}</div>${c.priority ? urgencyBadge(c.priority) : ""}</div><div class="text-sm mt-8"><strong>Do:</strong> ${c.action}</div><div class="text-sm"><strong>Contact:</strong> ${c.contact}</div><div class="text-sm text-muted"><strong>Avoid:</strong> ${c.avoid}</div>${c.docs ? `<div class="text-xs text-muted mt-8"><strong>Keep:</strong> ${c.docs}</div>` : ""}</div>`).join("");
+      transfers.forEach(t => addRecord("transfer", t.date, t.start, [t.title,t.from,t.to,t.mode,t.itemType,t.duration,t.status,t.instructions,t.notes].join(" "), `
+        <div class="card travel-card transfer-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.mode || t.itemType)}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Steps", t.instructions)}${travelDetailPanel("Travel note", t.notes)}</div><div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button></div></div>`, t.title || t.from));
+
+      hotels.forEach(h => addRecord("hotel", h.checkIn, "15:00", [h.name,h.city,h.address,h.dates,h.conf,h.status,h.room,h.payment,h.tax,h.breakfast,h.notes].join(" "), `
+        <div class="card travel-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🏨 ${escapeHtml(h.name)}</div><div class="travel-date-label">${escapeHtml(h.dates || fmtDate(h.checkIn))}</div></div></div><div class="travel-card-main"><div class="travel-chip-row"><span class="travel-chip">${escapeHtml(h.city)}</span><span class="travel-chip">Check-in ${fmtDate(h.checkIn)}</span><span class="travel-chip">Check-out ${fmtDate(h.checkOut)}</span>${statusBadge(h.status || "Confirmed")}</div>${travelConfirmationBlock(h.conf, h.status || "Confirmed")}${travelDetailPanel("Address", h.address)}${travelDetailPanel("Room", h.room)}${travelDetailPanel("Payment", [h.payment,h.tax].filter(Boolean).join(" · "))}${travelDetailPanel("Hotel note", [h.breakfast,h.notes].filter(Boolean).join(" · "))}</div><div class="travel-actions">${travelMapActions(h.address || h.name,"")}<button class="edit-btn" onclick="editHotelById('${h.id}')">Edit Hotel</button></div></div>`, h.name));
+
+      activities.forEach(t => addRecord("activity", t.date, t.start, [t.title,t.itemType,t.from,t.to,t.start,t.end,t.status,t.instructions,t.notes].join(" "), `
+        <div class="card travel-card activity-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span>${statusBadge(t.status || "Confirmed")}</div>${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Details", t.instructions)}${travelDetailPanel("Travel note", t.notes)}</div><div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button></div></div>`, t.title || t.itemType));
+
+      GROUND.forEach((g,i) => addRecord("other", "9999-12-30", "", [g.mode,g.city,g.best,g.pay,g.notes].join(" "), `<div class="card"><div class="row space-between"><div class="fw-600">${escapeHtml(g.mode)}</div><div class="text-xs text-muted">${escapeHtml(g.city)}</div></div><div class="text-sm mt-8"><strong>Best for:</strong> ${escapeHtml(g.best)}</div><div class="text-sm"><strong>Pay / buy:</strong> ${escapeHtml(g.pay)}</div><div class="text-sm text-muted mt-8">${escapeHtml(g.notes)}</div></div>`, `ground-${i}`));
+      CONTINGENCIES.forEach((c,i) => addRecord("other", "9999-12-31", "", [c.scenario,c.action,c.contact,c.avoid,c.docs,c.priority].join(" "), `<div class="card"><div class="row space-between"><div class="fw-600" style="color:var(--danger);">${escapeHtml(c.scenario)}</div>${c.priority ? urgencyBadge(c.priority) : ""}</div><div class="text-sm mt-8"><strong>Do:</strong> ${escapeHtml(c.action)}</div><div class="text-sm"><strong>Contact:</strong> ${escapeHtml(c.contact)}</div><div class="text-sm text-muted"><strong>Avoid:</strong> ${escapeHtml(c.avoid)}</div>${c.docs ? `<div class="text-xs text-muted mt-8"><strong>Keep:</strong> ${escapeHtml(c.docs)}</div>` : ""}</div>`, `contingency-${i}`));
+
+      let filtered = records.filter(r => travelTypeFilter === "all" || r.category === travelTypeFilter);
+      if (travelSearch) filtered = filtered.filter(r => r.searchText.includes(travelSearch));
+      filtered.sort((a,b) => a.sortKey.localeCompare(b.sortKey));
+
+      const resultCount = document.getElementById("travelResultCount");
+      if (resultCount) resultCount.textContent = `${filtered.length} result${filtered.length === 1 ? "" : "s"}`;
+      const input = document.getElementById("travelSearchInput");
+      if (input && document.activeElement !== input) input.value = travelSearch;
+      document.querySelectorAll("#travelTypeFilters [data-travel-filter]").forEach(btn => btn.classList.toggle("active", btn.dataset.travelFilter === travelTypeFilter));
+
+      const results = document.getElementById("travelResults");
+      if (results) results.innerHTML = filtered.length ? filtered.map(r => r.html).join("") : `<div class="travel-empty"><div style="font-size:1.5rem;margin-bottom:6px;">🔎</div><strong>No travel items found</strong><div class="text-sm" style="margin-top:5px;">Try another filter or search term.</div></div>`;
     }
 
     function packingOwner(traveler) {
