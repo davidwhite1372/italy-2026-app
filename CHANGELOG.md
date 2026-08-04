@@ -274,3 +274,10 @@ All notable changes to the Italy 2026 Travel Companion will be documented here.
 - Added Travel search across airline, train, city, hotel, confirmation, route, and notes.
 - Added hotels to the Travel view.
 - Kept filtered results in date-and-time order and added a live result count.
+
+
+## 10.7.3 — Wallet traveler identifiers
+- Updated the Home About tab to display Italy App v10.7.3.
+- Added David's TSA Known Traveler Number, Delta SkyMiles number, and SAS EuroBonus number to the Confirmation Wallet.
+- Added Pending placeholders for Melody's corresponding numbers.
+- Excluded passport numbers from permanent app data.

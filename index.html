@@ -1169,7 +1169,7 @@
       <div style="margin-top:18px;display:grid;gap:10px;font-size:.88rem;">
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">App version</span><strong id="aboutAppVersion"></strong></div>
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Data version</span><strong id="aboutDataVersion"></strong></div>
-        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.7.2</strong></div>
+        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.7.3</strong></div>
       </div>
       <div style="margin-top:16px;padding:12px;border-radius:12px;background:var(--soft);font-size:.78rem;color:var(--muted);line-height:1.5;">Technical details are kept here for troubleshooting without cluttering the Home page.</div>
     </div>
@@ -1177,9 +1177,9 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.7.2";
+    const APP_VERSION = "10.7.3";
     const DATA_VERSION = "10.5.0";
-    const BUILD_LABEL = "Italy App v10.7 ⓘ";
+    const BUILD_LABEL = "Italy App v10.7.3 ⓘ";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -2987,6 +2987,20 @@
           <div class="mt-8">${flights.map(f=>`<div class="text-sm" style="padding:7px 0;border-top:1px solid var(--border);"><strong>${f.flight}</strong> · ${fmtDate(f.date)} · ${f.dep}–${f.arr}<br><span class="text-muted">${f.from} → ${f.to}</span> <button class="edit-btn" onclick="editFlightById('${f.id}')">Edit</button></div>`).join("")}</div>
         </div>
         <div class="card">
+          <div class="card-title">🪪 Traveler IDs & airline rewards</div>
+          <div class="text-sm" style="line-height:1.9;">
+            <strong>TSA Known Traveler Numbers</strong><br>
+            David: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">1383385020</span><br>
+            Melody: <span class="text-muted">Pending</span><br><br>
+            <strong>Delta SkyMiles</strong><br>
+            David: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">9941234776</span><br>
+            Melody: <span class="text-muted">Pending</span><br><br>
+            <strong>SAS EuroBonus</strong><br>
+            David: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">EBB772160933</span><br>
+            Melody: <span class="text-muted">Pending</span>
+          </div>
+        </div>
+        <div class="card">
           <div class="row space-between"><div class="card-title">🚂 Trains</div><button class="edit-btn" onclick="copyTextValue(TRIP.italo,'Train confirmation copied')">Copy conf.</button></div><div class="wallet-key">Italo ${TRIP.italo}</div>
           <div class="text-sm" style="line-height:1.85;">
             <strong>Leonardo Express:</strong> FCO → Roma Termini (buy on arrival via Trenitalia)<br>
@@ -3016,6 +3030,10 @@
         "ITALY 2026 — CONFIRMATION WALLET",
         `Air: ${airConfirmationText()}`,
         ...flights.map(f => `${f.flight}: ${f.from} ${f.dep} → ${f.to} ${f.arr}`),
+        "",
+        "TSA KTN — David: 1383385020 · Melody: Pending",
+        "Delta SkyMiles — David: 9941234776 · Melody: Pending",
+        "SAS EuroBonus — David: EBB772160933 · Melody: Pending",
         "",
         `Italo 8904: ${TRIP.italo} Coach 1 seats 13 & 16 (9:39–11:55)`,
         ...liveHotels().map(h => `${h.name}: ${h.conf} · ${h.dates} · ${h.address}`),

@@ -174,3 +174,9 @@ The Home page uses a compact bottom-right About tab. Tap it to view app, data, a
 
 ### Version 10.7.2
 Travel now uses a sticky filter and search bar instead of section jump links. Results can be filtered by type, searched by key trip details, and remain ordered by date and time.
+
+
+### Version 10.7.3
+- Home About tab now displays the full three-part version number.
+- Added TSA Known Traveler and Delta/SAS rewards numbers to the Confirmation Wallet.
+- Passport information remains excluded from the app.

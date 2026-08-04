@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-7-2-travel-filter';
+const CACHE = 'italy-2026-github-v10-7-3-wallet-identifiers';
 const APP_SHELL = [
   './',
   './index.html',
