@@ -543,8 +543,9 @@
 
     const SAFETY = {
       emergency: [
-        {cat:"Emergency",contact:"112",note:"Police / Fire / Medical – EU number"},
-        {cat:"U.S. Embassy Rome",contact:"+39 06 4674 1",note:"Via Vittorio Veneto 121 – passport / consular"},
+        {cat:"Italy Emergency",contact:"112",tel:"112",note:"Police / Fire / Medical – official EU emergency number"},
+        {cat:"U.S. Embassy Rome",contact:"+39 06 46741",tel:"+390646741",note:"Via Vittorio Veneto 121 – passport / consular"},
+        {cat:"U.S. State Department 24/7",contact:"+1 202-501-4444",tel:"+12025014444",note:"Overseas emergency assistance; works directly from a U.S. phone"},
         {cat:"U.S. Consulate Florence",contact:"Limited consular services",note:"Use for regional support; confirm current hours"},
         {cat:"U.S. Consulate Milan",contact:"Regional services",note:"Northern Italy regional support"},
         {cat:"Delta",contact:"delta.com / app",note:"Flight changes"},
@@ -567,7 +568,7 @@
         "Don't display phones while navigating in crowds."
       ],
       lost: [
-        {item:"Passport",action:"Contact local police and U.S. Embassy Rome (+39 06 4674 1)."},
+        {item:"Passport",action:"Contact local police and U.S. Embassy Rome (+39 06 46741)."},
         {item:"Credit card",action:"Call the issuer immediately; use backup card kept separately."},
         {item:"Phone",action:"Use Find My / Android Find; contact carrier if needed."}
       ],

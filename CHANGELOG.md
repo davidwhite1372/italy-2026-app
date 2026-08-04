@@ -1,3 +1,12 @@
+## [10.6D4] - 2026-08-03
+
+### Added
+- U.S. State Department 24/7 overseas emergency number.
+- Tap-to-call buttons for Italy 112, the U.S. Embassy Rome, and the State Department.
+
+### Changed
+- Standardized the U.S. Embassy Rome phone number formatting.
+
 ## [10.6.0-dev-d3] - 2026-08-03
 
 ### Timeline step-label cleanup

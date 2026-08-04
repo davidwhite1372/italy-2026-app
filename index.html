@@ -3508,6 +3508,7 @@
               <div class="title">${e.cat}</div>
               <div class="meta" style="font-size:1rem;font-weight:700;color:var(--primary);">${e.contact}</div>
               <div class="meta">${e.note}</div>
+              ${e.tel ? `<a class="btn btn-sm" href="tel:${e.tel}" style="margin-top:8px;display:inline-flex;">📞 Call ${e.cat}</a>` : ""}
             </div>
           </div>`;
         });

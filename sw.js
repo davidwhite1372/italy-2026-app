@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-6-d3-hide-step-labels';
+const CACHE = 'italy-2026-github-v10-6-d4-safety-contacts';
 const APP_SHELL = [
   './',
   './index.html',
