@@ -304,3 +304,11 @@ All notable changes to the Italy 2026 Travel Companion will be documented here.
 - Kept the item title, route, times, mode, duration, and status visible at all times.
 - Moved confirmations, instructions, notes, maps, and edit controls under Show details.
 - Preserved all shared travel data and links to Timeline, Today, and Confirmation Wallet.
+
+## Version 10.7.8 — Journal & Notes
+
+- Renamed Journal & Memories to Journal & Notes.
+- Added a separate offline Notes notebook with individual editable entries.
+- Added note search, category filters, pin/unpin, edit, and delete controls.
+- Added the permanent “What to drink in Italy if you usually drink sweet tea” reference note.
+- Included notes in backup export, import, merge, replace, and saved-data counts.

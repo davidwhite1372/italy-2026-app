@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-7-7-collapsible-travel-cards';
+const CACHE = 'italy-2026-github-v10-7-8-journal-notes';
 const APP_SHELL = [
   './',
   './index.html',

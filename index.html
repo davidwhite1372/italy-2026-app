@@ -1034,8 +1034,8 @@
         <div class="text-sm text-muted">Routes, official links, local transportation guidance and travel help</div>
       </div>
       <div class="card" onclick="showPage('journal')" style="cursor:pointer;">
-        <div class="card-title"><span class="icon">📔</span> Journal & Memories</div>
-        <div class="text-sm text-muted">Photos, meals, souvenirs, highlights</div>
+        <div class="card-title"><span class="icon">📔</span> Journal & Notes</div>
+        <div class="text-sm text-muted">Daily memories and offline reference notes</div>
       </div>
       <div class="card">
         <div class="card-title"><span class="icon">🔗</span> Quick Links</div>
@@ -1132,22 +1132,43 @@
       </div>
     </section>
 
-    <!-- JOURNAL (sub) -->
+    <!-- JOURNAL & NOTES (sub) -->
     <section id="page-journal" class="page">
       <button class="btn-outline btn-sm mb-8" onclick="showPage('more')">← Back</button>
-      <div class="section-title">Daily Journal</div>
-      <div id="journalForm" class="card">
-        <label class="text-sm fw-600">Date</label>
-        <input type="date" id="jDate" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;" />
-        <label class="text-sm fw-600">Highlight</label>
-        <input type="text" id="jHighlight" placeholder="Best moment of the day" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;" />
-        <label class="text-sm fw-600">Best Meal</label>
-        <input type="text" id="jMeal" placeholder="Restaurant + dish" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;" />
-        <label class="text-sm fw-600">Notes</label>
-        <textarea id="jNotes" rows="3" placeholder="Anything else..." style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;resize:vertical;"></textarea>
-        <button onclick="saveJournalEntry()">Save Entry</button>
+      <div class="section-title">Journal &amp; Notes</div>
+      <div class="filter-chips" style="margin-bottom:12px;">
+        <button class="filter-chip active" id="journalTabBtn" onclick="setJournalNotesTab('journal')">📔 Journal</button>
+        <button class="filter-chip" id="notesTabBtn" onclick="setJournalNotesTab('notes')">📝 Notes</button>
       </div>
-      <div id="journalEntries"></div>
+
+      <div id="journalPanel">
+        <div class="section-title">Daily Journal</div>
+        <div id="journalForm" class="card">
+          <label class="text-sm fw-600">Date</label>
+          <input type="date" id="jDate" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;" />
+          <label class="text-sm fw-600">Highlight</label>
+          <input type="text" id="jHighlight" placeholder="Best moment of the day" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;" />
+          <label class="text-sm fw-600">Best Meal</label>
+          <input type="text" id="jMeal" placeholder="Restaurant + dish" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;" />
+          <label class="text-sm fw-600">Notes</label>
+          <textarea id="jNotes" rows="3" placeholder="Anything else..." style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;resize:vertical;"></textarea>
+          <button onclick="saveJournalEntry()">Save Entry</button>
+        </div>
+        <div id="journalEntries"></div>
+      </div>
+
+      <div id="notesPanel" style="display:none;">
+        <div class="row space-between" style="align-items:center;margin-bottom:10px;">
+          <div>
+            <div class="section-title" style="margin:0;">Reference Notes</div>
+            <div class="text-xs text-muted">Separate editable notes that work fully offline.</div>
+          </div>
+          <button class="btn-sm" onclick="addReferenceNote()">+ Add Note</button>
+        </div>
+        <input id="notesSearch" type="search" placeholder="Search notes..." oninput="renderNotes()" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:10px;font-size:.95rem;" />
+        <div class="filter-chips" id="notesCategoryFilters" style="margin-bottom:10px;"></div>
+        <div id="notesEntries"></div>
+      </div>
     </section>
   </main>
 
@@ -1220,7 +1241,7 @@
       <div style="margin-top:18px;display:grid;gap:10px;font-size:.88rem;">
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">App version</span><strong id="aboutAppVersion"></strong></div>
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Data version</span><strong id="aboutDataVersion"></strong></div>
-        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.7.5</strong></div>
+        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.7.8</strong></div>
       </div>
       <div style="margin-top:16px;padding:12px;border-radius:12px;background:var(--soft);font-size:.78rem;color:var(--muted);line-height:1.5;">Technical details are kept here for troubleshooting without cluttering the Home page.</div>
     </div>
@@ -1228,9 +1249,9 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.7.7";
+    const APP_VERSION = "10.7.8";
     const DATA_VERSION = "10.5.0";
-    const BUILD_LABEL = "Italy App v10.7.5 ⓘ";
+    const BUILD_LABEL = "Italy App v10.7.8 ⓘ";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -1631,6 +1652,38 @@
     function setJournal(arr) {
       localStorage.setItem("italy2026_journal", JSON.stringify(arr));
     }
+    const DEFAULT_REFERENCE_NOTES = [{
+      id: "note_sweet_drinks_italy",
+      title: "What to drink in Italy if you usually drink sweet tea",
+      category: "Food & Drink",
+      pinned: true,
+      createdAt: "2026-08-03T00:00:00.000Z",
+      updatedAt: "2026-08-03T00:00:00.000Z",
+      body: `Italy does not have southern-style sweet tea, but you can find great sweet alternatives like Estathé, Caffè Ginseng, and Chinotto.
+
+ICED TEA AND SWEET SODAS
+
+Estathé: This is the most famous bottled iced tea in Italy. It comes in lemon (limone) or peach (pesca) and is quite sweet. You can buy it at any grocery store or café.
+
+Chinotto: A dark, sparkling Italian soda made from citrus. It looks like cola but has a sweet and slightly bitter taste.
+
+Limonata or Aranciata: Sweet, fizzy lemon or orange sodas made by brands like San Pellegrino. They are much sweeter than plain water or wine.
+
+SWEET COFFEE DRINKS
+
+Caffè Ginseng: A popular hot coffee drink at Italian bars that is creamy, smooth, and naturally sweet.
+
+Caffè Freddo: A sweet, refrigerated cold coffee drink served in many cafés.
+
+Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and foamy.`
+    }];
+    function getNotes() {
+      try {
+        const raw = localStorage.getItem("italy2026_notes");
+        return raw === null ? DEFAULT_REFERENCE_NOTES.map(n => ({...n})) : JSON.parse(raw || "[]");
+      } catch(e) { return DEFAULT_REFERENCE_NOTES.map(n => ({...n})); }
+    }
+    function setNotes(arr) { localStorage.setItem("italy2026_notes", JSON.stringify(arr)); }
 
     // ---- Live overrides (timeline notes, train times, transfer notes, reservation notes) ----
     function getLive() {
@@ -2481,7 +2534,7 @@
       return out;
     }
     function applyDeleted(arr, type, idFn, deleted) { const d=(deleted&&deleted[type])||{}; return (arr||[]).filter(x=>!(String(idFn(x)) in d)); }
-    const SAVED_DATA_KEYS = ["italy2026_customrestaurants","italy2026_live","italy2026_expenses","italy2026_pack","italy2026_open","italy2026_journal","italy2026_tldone","italy2026_tlhidden","italy2026_restlog","italy2026_attrlog","italy2026_pretrip","italy2026_customlegs","italy2026_routeedits","italy2026_plannededits","italy2026_deleted","italy2026_packcatalog"];
+    const SAVED_DATA_KEYS = ["italy2026_customrestaurants","italy2026_live","italy2026_expenses","italy2026_pack","italy2026_open","italy2026_journal","italy2026_notes","italy2026_tldone","italy2026_tlhidden","italy2026_restlog","italy2026_attrlog","italy2026_pretrip","italy2026_customlegs","italy2026_routeedits","italy2026_plannededits","italy2026_deleted","italy2026_packcatalog"];
     function clearAllSupportedSavedData() { SAVED_DATA_KEYS.forEach(k=>localStorage.removeItem(k)); }
 
     function getBackupMeta() {
@@ -2499,6 +2552,7 @@
     function backupCounts(src) {
       return {
         journal: Array.isArray(src.journal) ? src.journal.length : 0,
+        notes: Array.isArray(src.notes) ? src.notes.length : 0,
         expenses: Array.isArray(src.expenses) ? src.expenses.length : 0,
         customlegs: Array.isArray(src.customlegs) ? src.customlegs.length : 0,
         timeline: countKeys(src.tldone),
@@ -2511,9 +2565,9 @@
       const el = document.getElementById("backupStatus");
       if (!el) return;
       const meta = getBackupMeta();
-      const current = backupCounts({journal:getJournal(),expenses:getExpenses(),customlegs:getCustomLegs(),customrestaurants:getCustomRestaurants(),tldone:getTimelineDone(),restlog:getRestLog(),attrlog:getAttrLog(),pack:getPackState()});
+      const current = backupCounts({journal:getJournal(),notes:getNotes(),expenses:getExpenses(),customlegs:getCustomLegs(),customrestaurants:getCustomRestaurants(),tldone:getTimelineDone(),restlog:getRestLog(),attrlog:getAttrLog(),pack:getPackState()});
       const fmt = iso => iso ? new Date(iso).toLocaleString("en-US", {dateStyle:"medium",timeStyle:"short"}) : "Never";
-      el.innerHTML = `<div style="line-height:1.8;"><strong>Device:</strong> ${getBackupOwner()}<br><strong>Last export:</strong> ${fmt(meta.lastExport)}<br><strong>Last import:</strong> ${fmt(meta.lastImport)}${meta.lastImportFrom ? ` · from ${meta.lastImportFrom}` : ""}<br><strong>Current saved data:</strong> ${current.journal} journal · ${current.expenses} expenses · ${current.customlegs} custom legs · ${current.restaurants} restaurant records · ${current.packing} packing records</div>`;
+      el.innerHTML = `<div style="line-height:1.8;"><strong>Device:</strong> ${getBackupOwner()}<br><strong>Last export:</strong> ${fmt(meta.lastExport)}<br><strong>Last import:</strong> ${fmt(meta.lastImport)}${meta.lastImportFrom ? ` · from ${meta.lastImportFrom}` : ""}<br><strong>Current saved data:</strong> ${current.journal} journal · ${current.notes} notes · ${current.expenses} expenses · ${current.customlegs} custom legs · ${current.restaurants} restaurant records · ${current.packing} packing records</div>`;
     }
     function mergeArrayById(local, incoming, idFn) {
       const map = new Map();
@@ -2544,7 +2598,7 @@
       const payload = {
         version: 4, appVersion: APP_VERSION, dataVersion: DATA_VERSION, exported: now,
         exportedBy: getBackupOwner(),
-        live: getLive(), expenses: getExpenses(), pack: getPackState(), open: getOpenState(), journal: getJournal(),
+        live: getLive(), expenses: getExpenses(), pack: getPackState(), open: getOpenState(), journal: getJournal(), notes: getNotes(),
         tldone: getTimelineDone(), tlhidden: getTimelineHidden(), restlog: getRestLog(), attrlog: getAttrLog(),
         pretrip: getPretripState(), customlegs: getCustomLegs(), customrestaurants: getCustomRestaurants(), routeedits: getRouteEdits(), plannededits: getPlannedEdits(), deleted: getDeletedRecords(), packcatalog: getPackCatalogData()
       };
@@ -2560,7 +2614,7 @@
       const counts=backupCounts(data);
       document.getElementById("sheetContent").innerHTML = `<h2>Import Backup</h2>
         <div class="alert alert-info"><strong>File:</strong> ${fileName}<br><strong>From:</strong> ${owner}<br><strong>Created:</strong> ${data.exported ? new Date(data.exported).toLocaleString("en-US") : "Unknown"}</div>
-        <div class="text-sm" style="line-height:1.8;"><strong>Contains:</strong><br>${counts.journal} journal entries · ${counts.expenses} expenses<br>${counts.customlegs} custom legs · ${counts.restaurants} restaurant records<br>${counts.attractions} attraction records · ${counts.timeline} completed timeline steps<br>${counts.packing} packing records</div>
+        <div class="text-sm" style="line-height:1.8;"><strong>Contains:</strong><br>${counts.journal} journal entries · ${counts.notes} notes · ${counts.expenses} expenses<br>${counts.customlegs} custom legs · ${counts.restaurants} restaurant records<br>${counts.attractions} attraction records · ${counts.timeline} completed timeline steps<br>${counts.packing} packing records</div>
         <div class="alert alert-warn mt-12"><strong>Merge</strong> keeps this phone's data and adds/updates records from the file.<br><strong>Replace</strong> erases this phone's saved app data and uses the file instead.</div>
         <div class="btn-row"><button class="btn-outline" onclick="closeSheet()">Cancel</button><button class="btn-accent" id="mergeImportBtn">Merge</button><button class="btn-danger" id="replaceImportBtn">Replace</button></div>`;
       document.getElementById("overlay").classList.add("open");
@@ -2573,7 +2627,7 @@
       if (mode === "replace") {
         clearAllSupportedSavedData();
         setLive(data.live||{}); setExpenses(data.expenses||[]); setPackState(data.pack||{}); setOpenState(data.open||{});
-        setJournal(data.journal||[]); setTimelineDone(data.tldone||{}); setTimelineHidden(data.tlhidden||{});
+        setJournal(data.journal||[]); setNotes(Array.isArray(data.notes) ? data.notes : DEFAULT_REFERENCE_NOTES.map(n=>({...n}))); setTimelineDone(data.tldone||{}); setTimelineHidden(data.tlhidden||{});
         setRestLog(data.restlog||{}); setAttrLog(data.attrlog||{}); setPretripState(data.pretrip||{});
         setCustomLegs(data.customlegs||[]); setCustomRestaurants(data.customrestaurants||[]); setRouteEdits(data.routeedits||{}); setPlannedEdits(data.plannededits||{});
         setDeletedRecords(data.deleted||{}); setPackCatalogData(data.packcatalog||{edits:{},custom:{},deleted:{}});
@@ -2581,9 +2635,11 @@
         const deleted=mergeDeleted(getDeletedRecords(),data.deleted||{}); setDeletedRecords(deleted);
         const expenseId=x=>x.id||`${x.date}|${x.desc}|${x.amt}`;
         const journalId=x=>x.ts||`${x.date}|${x.highlight}|${x.meal}`;
+        const noteId=x=>x.id||`${x.title}|${x.createdAt}`;
         const legId=x=>x.id||`${x.date}|${x.from}|${x.to}|${x.start}`;
         let r=mergeArrayById(applyDeleted(getExpenses(),"expenses",expenseId,deleted),applyDeleted(data.expenses||[],"expenses",expenseId,deleted),expenseId); totals.deleted += getExpenses().length-r.value.length; setExpenses(tally(r));
         r=mergeArrayById(applyDeleted(getJournal(),"journal",journalId,deleted),applyDeleted(data.journal||[],"journal",journalId,deleted),journalId); totals.deleted += getJournal().length-r.value.length; setJournal(tally(r));
+        r=mergeArrayById(applyDeleted(getNotes(),"notes",noteId,deleted),applyDeleted(data.notes||[],"notes",noteId,deleted),noteId); totals.deleted += getNotes().length-r.value.length; setNotes(tally(r));
         r=mergeArrayById(applyDeleted(getCustomLegs(),"customlegs",legId,deleted),applyDeleted(data.customlegs||[],"customlegs",legId,deleted),legId); totals.deleted += getCustomLegs().length-r.value.length; setCustomLegs(tally(r));
         const restaurantId=x=>x.id||`${x.city}|${x.name}`;
         r=mergeArrayById(getCustomRestaurants(),data.customrestaurants||[],restaurantId); setCustomRestaurants(tally(r));
@@ -4243,6 +4299,16 @@
       setMapsGuideFilter(mapsGuideFilter);
     }
 
+    let journalNotesTab = "journal";
+    let notesCategoryFilter = "All";
+    function setJournalNotesTab(tab) {
+      journalNotesTab = tab === "notes" ? "notes" : "journal";
+      document.getElementById("journalPanel").style.display = journalNotesTab === "journal" ? "block" : "none";
+      document.getElementById("notesPanel").style.display = journalNotesTab === "notes" ? "block" : "none";
+      document.getElementById("journalTabBtn").classList.toggle("active", journalNotesTab === "journal");
+      document.getElementById("notesTabBtn").classList.toggle("active", journalNotesTab === "notes");
+      if (journalNotesTab === "notes") renderNotes(); else renderJournal();
+    }
     function renderJournal() {
       const entries = getJournal().sort((a,b) => b.date.localeCompare(a.date));
       let html = `
@@ -4292,6 +4358,66 @@
       arr.splice(idx, 1); setJournal(arr); renderJournal();
     }
 
+
+    function noteCategories(notes) {
+      return ["All", ...Array.from(new Set(notes.map(n => n.category || "General"))).sort((a,b)=>a.localeCompare(b))];
+    }
+    function setNotesCategory(category) { notesCategoryFilter = category; renderNotes(); }
+    function renderNotes() {
+      const holder=document.getElementById("notesEntries");
+      if(!holder) return;
+      const notes=getNotes();
+      const categories=noteCategories(notes);
+      if(!categories.includes(notesCategoryFilter)) notesCategoryFilter="All";
+      const chipHolder=document.getElementById("notesCategoryFilters");
+      chipHolder.innerHTML=categories.map(c=>`<button class="filter-chip ${c===notesCategoryFilter?"active":""}" onclick='setNotesCategory(${JSON.stringify(c)})'>${escapeHtml(c)}</button>`).join("");
+      const q=(document.getElementById("notesSearch")?.value||"").trim().toLowerCase();
+      const filtered=notes.filter(n=>(notesCategoryFilter==="All" || (n.category||"General")===notesCategoryFilter) && (!q || [n.title,n.category,n.body].join(" ").toLowerCase().includes(q)))
+        .sort((a,b)=>(Number(!!b.pinned)-Number(!!a.pinned)) || ((Date.parse(b.updatedAt)||0)-(Date.parse(a.updatedAt)||0)));
+      holder.innerHTML=filtered.length ? filtered.map(n=>`
+        <div class="card">
+          <div class="row space-between" style="align-items:flex-start;gap:10px;">
+            <div style="min-width:0;">
+              <div class="fw-600">${n.pinned?"📌 ":""}${escapeHtml(n.title||"Untitled Note")}</div>
+              <div class="text-xs text-muted">${escapeHtml(n.category||"General")} · Updated ${new Date(n.updatedAt||n.createdAt||Date.now()).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</div>
+            </div>
+            <div class="row" style="gap:6px;flex-shrink:0;">
+              <button class="btn-sm btn-outline" onclick='toggleNotePin(${JSON.stringify(n.id)})' aria-label="${n.pinned?"Unpin":"Pin"} note">${n.pinned?"Unpin":"Pin"}</button>
+              <button class="btn-sm btn-outline" onclick='editReferenceNote(${JSON.stringify(n.id)})'>Edit</button>
+            </div>
+          </div>
+          <div class="text-sm mt-8" style="white-space:pre-wrap;line-height:1.55;">${escapeHtml(n.body||"")}</div>
+        </div>`).join("") : '<div class="empty"><div class="icon">📝</div>No notes match this search.</div>';
+    }
+    function noteEditor(note) {
+      const categories=["General","Food & Drink","Travel Tips","Shopping","Packing","Ideas","Emergency","Miscellaneous"];
+      openEditSheet(note?"Edit Note":"Add Note",[
+        {key:"title",label:"Title",value:note?.title||""},
+        {key:"category",label:"Category",type:"select",value:note?.category||"General",options:categories},
+        {key:"body",label:"Note",type:"textarea",value:note?.body||""}
+      ],data=>{
+        const title=(data.title||"").trim(), body=(data.body||"").trim();
+        if(!title || !body){ alert("Please enter both a title and note text."); return; }
+        const arr=getNotes(), now=new Date().toISOString();
+        if(note){ const i=arr.findIndex(x=>x.id===note.id); if(i>=0) arr[i]={...arr[i],title,category:data.category||"General",body,updatedAt:now}; }
+        else { const entry={id:"note_"+Date.now(),title,category:data.category||"General",body,pinned:false,createdAt:now,updatedAt:now}; arr.push(entry); clearDeleted("notes",entry.id); }
+        setNotes(arr); closeSheet(); renderNotes(); showToast(note?"Note updated":"Note added");
+      });
+      if(note){
+        const actions=document.createElement("div"); actions.className="mt-12";
+        actions.innerHTML=`<button class="btn-danger" style="width:100%;" onclick='deleteReferenceNote(${JSON.stringify(note.id)})'>Delete Note</button>`;
+        document.getElementById("sheetContent").appendChild(actions);
+      }
+    }
+    function addReferenceNote(){ noteEditor(null); }
+    function editReferenceNote(id){ noteEditor(getNotes().find(n=>n.id===id)); }
+    function toggleNotePin(id){ const arr=getNotes(), n=arr.find(x=>x.id===id); if(!n)return; n.pinned=!n.pinned; n.updatedAt=new Date().toISOString(); setNotes(arr); renderNotes(); }
+    function deleteReferenceNote(id){
+      const n=getNotes().find(x=>x.id===id); if(!n)return;
+      if(!confirm(`Delete note “${n.title}”?`))return;
+      markDeleted("notes",id); setNotes(getNotes().filter(x=>x.id!==id)); closeSheet(); renderNotes(); showToast("Note deleted");
+    }
+
     // ===================== NAVIGATION =====================
     let currentPage = "home";
     let lastBackPress = 0;
@@ -4336,7 +4462,7 @@
       if (id === "more") renderMore();
       if (id === "attractions") renderAttractions();
       if (id === "maps") renderMaps();
-      if (id === "journal") renderJournal();
+      if (id === "journal") setJournalNotesTab(journalNotesTab);
       if (id === "pretrip") renderPretrip();
       if (id === "wallet") renderWallet();
 

@@ -4,7 +4,7 @@ GitHub Pages deployment package for David and Melody's Italy 2026 Travel Compani
 
 ## Current build
 
-**Version 10.7.1 DEV — Swipeable Day Planner & On-the-Go Restaurants**
+**Version 10.7.8 DEV — Journal & Notes**
 
 The existing appearance, itinerary content, navigation, pinch-zoom behavior, backup/import tools, and installable PWA experience are preserved. Deployment-specific changes are limited to relative GitHub Pages paths, PWA scope/identity, cache isolation, and the `.nojekyll` marker.
 
@@ -20,6 +20,14 @@ The published address will normally be:
 
 User-entered app data is stored locally in each browser/device. Before removing an older Netlify installation, export a backup from that installation and import it into the newly installed GitHub Pages app.
 
+
+## Version 10.7.8 — Journal & Notes
+
+- Journal and reference notes now share one page with separate tabs.
+- Notes are stored as separate editable entries and work fully offline.
+- Notes support search, categories, pinning, editing, and deletion.
+- The first permanent note covers sweet drink alternatives in Italy.
+- Notes are included in backup export/import and cross-device merge.
 
 ## Version 10.3.0
 
