@@ -298,3 +298,9 @@ All notable changes to the Italy 2026 Travel Companion will be documented here.
 - Corrected the Trip Tools label to **Maps, Links & Travel Guide**.
 - Replaced page-jump buttons with filters for routes, airports, hotels, official links, local transportation, travel help, and saved items.
 - Corrected Trip at a Glance to show the full outbound route: TPA → BOS → CPH → FCO (Rome).
+
+## Version 10.7.7
+- Made Travel cards compact and collapsible by default.
+- Kept the item title, route, times, mode, duration, and status visible at all times.
+- Moved confirmations, instructions, notes, maps, and edit controls under Show details.
+- Preserved all shared travel data and links to Timeline, Today, and Confirmation Wallet.

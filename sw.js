@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-7-6-maps-filter-fixes';
+const CACHE = 'italy-2026-github-v10-7-7-collapsible-travel-cards';
 const APP_SHELL = [
   './',
   './index.html',

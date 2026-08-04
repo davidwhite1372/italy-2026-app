@@ -196,3 +196,6 @@ Travel now uses a sticky filter and search bar instead of section jump links. Re
 
 ### Version 10.7.6
 Maps, Links & Travel Guide now uses section filters instead of page jumps, the Trip Tools label matches the page name, and the Home outbound route includes FCO (Rome).
+
+### Version 10.7.7
+Travel cards are collapsed by default. Their essential route and status information remains visible, while confirmations, notes, maps, and edit controls expand directly below the status row.
