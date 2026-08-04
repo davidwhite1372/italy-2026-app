@@ -1023,8 +1023,8 @@
         <div class="text-sm text-muted">Hours, tickets, visit times from each hotel</div>
       </div>
       <div class="card" onclick="showPage('maps')" style="cursor:pointer;">
-        <div class="card-title"><span class="icon">🗺️</span> Maps & Official Links</div>
-        <div class="text-sm text-muted">Door-to-door routes and transport sites · editable notes</div>
+        <div class="card-title"><span class="icon">🗺️</span> Maps, Links &amp; Travel Guide</div>
+        <div class="text-sm text-muted">Routes, official links, local transportation guidance and travel help</div>
       </div>
       <div class="card" onclick="showPage('journal')" style="cursor:pointer;">
         <div class="card-title"><span class="icon">📔</span> Journal & Memories</div>
@@ -1083,29 +1083,46 @@
     <section id="page-maps" class="page">
       <button class="btn-outline btn-sm mb-8" onclick="showPage('more')">← Back</button>
       <div class="section-title" style="font-size:1.15rem;">Maps, Links &amp; Travel Guide</div>
-      <div class="card" style="padding:12px;">
-        <div class="quick-action-row" style="margin-top:0;">
-          <button class="btn-outline btn-sm" onclick="document.getElementById('mapsRoutesTitle').scrollIntoView({behavior:'smooth'})">🗺️ Routes &amp; Maps</button>
-          <button class="btn-outline btn-sm" onclick="document.getElementById('localTravelGuideTitle').scrollIntoView({behavior:'smooth'})">🚕 Local Travel Guide</button>
-          <button class="btn-outline btn-sm" onclick="document.getElementById('travelHelpTitle').scrollIntoView({behavior:'smooth'})">🆘 Travel Help</button>
-        </div>
+      <div class="filter-bar" id="mapsGuideFilters" aria-label="Maps, links and travel guide filters">
+        <div class="filter-chip active" data-maps-filter="all" onclick="setMapsGuideFilter('all')">All</div>
+        <div class="filter-chip" data-maps-filter="routes" onclick="setMapsGuideFilter('routes')">🗺️ Routes</div>
+        <div class="filter-chip" data-maps-filter="airports" onclick="setMapsGuideFilter('airports')">✈️ Airports</div>
+        <div class="filter-chip" data-maps-filter="hotels" onclick="setMapsGuideFilter('hotels')">🏨 Hotels</div>
+        <div class="filter-chip" data-maps-filter="official" onclick="setMapsGuideFilter('official')">🔗 Official Links</div>
+        <div class="filter-chip" data-maps-filter="local" onclick="setMapsGuideFilter('local')">🚕 Local Guide</div>
+        <div class="filter-chip" data-maps-filter="help" onclick="setMapsGuideFilter('help')">🆘 Travel Help</div>
+        <div class="filter-chip" data-maps-filter="saved" onclick="setMapsGuideFilter('saved')">📌 Saved</div>
       </div>
-      <div class="section-title" id="mapsRoutesTitle">Door-to-Door Routes</div>
-      <div id="mapsRoutes"></div>
-      <div class="section-title">Airports &amp; Terminals</div>
-      <div id="mapsAirports"></div>
-      <div class="section-title">Hotels &amp; Venues</div>
-      <div id="mapsHotels"></div>
-      <div class="section-title">Official Transport Sites</div>
-      <div id="mapsOfficial"></div>
-      <div class="section-title" id="localTravelGuideTitle">Local Transportation Guide</div>
-      <div class="text-sm text-muted mb-8">General city transportation advice—not scheduled trip items.</div>
-      <div id="mapsLocalGuide"></div>
-      <div class="section-title" id="travelHelpTitle">Travel Help / What If?</div>
-      <div class="text-sm text-muted mb-8">Prepared backup instructions for delays, missed connections, baggage problems, and disruptions.</div>
-      <div id="mapsTravelHelp"></div>
-      <div class="section-title">Saved Links &amp; Pending</div>
-      <div id="mapsPending"></div>
+      <div class="maps-guide-group" data-maps-group="routes">
+        <div class="section-title">Door-to-Door Routes</div>
+        <div id="mapsRoutes"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="airports">
+        <div class="section-title">Airports &amp; Terminals</div>
+        <div id="mapsAirports"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="hotels">
+        <div class="section-title">Hotels &amp; Venues</div>
+        <div id="mapsHotels"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="official">
+        <div class="section-title">Official Transport Sites</div>
+        <div id="mapsOfficial"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="local">
+        <div class="section-title">Local Transportation Guide</div>
+        <div class="text-sm text-muted mb-8">General city transportation advice—not scheduled trip items.</div>
+        <div id="mapsLocalGuide"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="help">
+        <div class="section-title">Travel Help / What If?</div>
+        <div class="text-sm text-muted mb-8">Prepared backup instructions for delays, missed connections, baggage problems, and disruptions.</div>
+        <div id="mapsTravelHelp"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="saved">
+        <div class="section-title">Saved Links &amp; Pending</div>
+        <div id="mapsPending"></div>
+      </div>
     </section>
 
     <!-- JOURNAL (sub) -->
@@ -1204,7 +1221,7 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.7.5";
+    const APP_VERSION = "10.7.6";
     const DATA_VERSION = "10.5.0";
     const BUILD_LABEL = "Italy App v10.7.5 ⓘ";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
@@ -2740,7 +2757,7 @@
       const hotels = liveHotels();
       document.getElementById("homeGlance").innerHTML = `
         <div class="text-sm" style="line-height:1.8;">
-          <strong>Depart</strong> Sun Oct 4 · TPA → BOS → CPH<br>
+          <strong>Depart</strong> Sun Oct 4 · TPA → BOS → CPH → FCO (Rome)<br>
           ${hotels.map(h => `<strong>${escapeHtml(h.city)}</strong> ${escapeHtml(h.dates)} · ${escapeHtml(h.name)}<br>`).join("")}
           <strong>Return</strong> Thu Oct 15 · VCE → CPH → JFK → TPA
         </div>
@@ -4107,6 +4124,19 @@
       return true;
     }
 
+    let mapsGuideFilter = "all";
+
+    function setMapsGuideFilter(filter) {
+      mapsGuideFilter = filter || "all";
+      document.querySelectorAll("#mapsGuideFilters [data-maps-filter]").forEach(chip => {
+        chip.classList.toggle("active", chip.dataset.mapsFilter === mapsGuideFilter);
+      });
+      document.querySelectorAll("#page-maps .maps-guide-group").forEach(group => {
+        group.style.display = mapsGuideFilter === "all" || group.dataset.mapsGroup === mapsGuideFilter ? "block" : "none";
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
     function renderMaps() {
       const routes = getAllDoorRoutes();
 
@@ -4200,6 +4230,7 @@
           <div class="text-sm text-muted"><strong>Note:</strong> ${p.note}</div>
           ${p.link ? `<a class="link-btn" href="${normalizedLink(p.link)}" target="_blank" rel="noopener">Open saved link →</a>` : ""}
         </div>`).join("");
+      setMapsGuideFilter(mapsGuideFilter);
     }
 
     function renderJournal() {

@@ -293,3 +293,8 @@ All notable changes to the Italy 2026 Travel Companion will be documented here.
 - Added Local Transportation Guide and Travel Help / What If? reference panels.
 - Preserved actual custom and miscellaneous trip items under Other items.
 - Updated the Home About tab to Italy App v10.7.4.
+
+## Version 10.7.6
+- Corrected the Trip Tools label to **Maps, Links & Travel Guide**.
+- Replaced page-jump buttons with filters for routes, airports, hotels, official links, local transportation, travel help, and saved items.
+- Corrected Trip at a Glance to show the full outbound route: TPA → BOS → CPH → FCO (Rome).

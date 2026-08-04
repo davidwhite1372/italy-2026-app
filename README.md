@@ -193,3 +193,6 @@ Travel now uses a sticky filter and search bar instead of section jump links. Re
 - Classified operational tasks such as bag drop, security, and hotel check-in as To-Dos.
 - Moved Local Transportation Guide and Travel Help / What If? from Travel to Maps, Links & Travel Guide.
 - Kept Travel focused on actual itinerary items.
+
+### Version 10.7.6
+Maps, Links & Travel Guide now uses section filters instead of page jumps, the Trip Tools label matches the page name, and the Home outbound route includes FCO (Rome).
