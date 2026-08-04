@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-7-day-planner-restaurants';
+const CACHE = 'italy-2026-github-v10-7-1-about-tab';
 const APP_SHELL = [
   './',
   './index.html',

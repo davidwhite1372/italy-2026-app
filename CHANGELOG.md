@@ -1,3 +1,10 @@
+## [10.7.1] - 2026-08-03
+
+### Changed
+- Replaced the development build label on Home with a compact `Italy App v10.7` About tab.
+- Kept the tab in the existing bottom-right Home location.
+- Moved app version, data version, and build details into a tap-to-open About panel.
+
 ## [10.7.0 DEV] - 2026-08-03
 
 ### Added

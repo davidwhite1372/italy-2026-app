@@ -4,7 +4,7 @@ GitHub Pages deployment package for David and Melody's Italy 2026 Travel Compani
 
 ## Current build
 
-**Version 10.7 DEV — Swipeable Day Planner & On-the-Go Restaurants**
+**Version 10.7.1 DEV — Swipeable Day Planner & On-the-Go Restaurants**
 
 The existing appearance, itinerary content, navigation, pinch-zoom behavior, backup/import tools, and installable PWA experience are preserved. Deployment-specific changes are limited to relative GitHub Pages paths, PWA scope/identity, cache isolation, and the `.nojekyll` marker.
 
@@ -167,3 +167,7 @@ Hotel data is now unified into master hotel records. Editing a hotel from Reserv
 - Polished Travel page cards for flights, trains, transfers, tours, and events.
 - Added prominent routes, times, confirmations, seat status, and map shortcuts.
 - Preserved Add Trip Item and single-source-of-truth editing.
+
+
+### Version display
+The Home page uses a compact bottom-right About tab. Tap it to view app, data, and build versions without showing development notes in the main interface.
