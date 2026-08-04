@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-7-8-journal-notes';
+const CACHE = 'italy-2026-github-v10-7-9-notes-filter-fix';
 const APP_SHELL = [
   './',
   './index.html',

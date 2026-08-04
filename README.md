@@ -4,7 +4,7 @@ GitHub Pages deployment package for David and Melody's Italy 2026 Travel Compani
 
 ## Current build
 
-**Version 10.7.8 DEV — Journal & Notes**
+**Version 10.7.9 DEV — Notes filter visibility fix**
 
 The existing appearance, itinerary content, navigation, pinch-zoom behavior, backup/import tools, and installable PWA experience are preserved. Deployment-specific changes are limited to relative GitHub Pages paths, PWA scope/identity, cache isolation, and the `.nojekyll` marker.
 
@@ -20,6 +20,12 @@ The published address will normally be:
 
 User-entered app data is stored locally in each browser/device. Before removing an older Netlify installation, export a backup from that installation and import it into the newly installed GitHub Pages app.
 
+
+
+## Version 10.7.9 — Notes filter visibility fix
+
+- Corrected inactive Journal/Notes tabs and note-category pills so their labels and icons remain visible.
+- Preserved the selected green state and dark-mode styling.
 
 ## Version 10.7.8 — Journal & Notes
 

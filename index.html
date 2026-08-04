@@ -156,7 +156,7 @@
     .filter-bar::-webkit-scrollbar { display: none; }
     .filter-chip {
       flex-shrink: 0; padding: 7px 14px; border-radius: 20px; background: #fff;
-      border: 1.5px solid var(--border); font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      border: 1.5px solid var(--border); font-size: 0.8rem; font-weight: 600; color: var(--text); cursor: pointer;
     }
     .filter-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
@@ -1241,7 +1241,7 @@
       <div style="margin-top:18px;display:grid;gap:10px;font-size:.88rem;">
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">App version</span><strong id="aboutAppVersion"></strong></div>
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Data version</span><strong id="aboutDataVersion"></strong></div>
-        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.7.8</strong></div>
+        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.7.9</strong></div>
       </div>
       <div style="margin-top:16px;padding:12px;border-radius:12px;background:var(--soft);font-size:.78rem;color:var(--muted);line-height:1.5;">Technical details are kept here for troubleshooting without cluttering the Home page.</div>
     </div>
@@ -1249,9 +1249,9 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.7.8";
+    const APP_VERSION = "10.7.9";
     const DATA_VERSION = "10.5.0";
-    const BUILD_LABEL = "Italy App v10.7.8 ⓘ";
+    const BUILD_LABEL = "Italy App v10.7.9 ⓘ";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();

@@ -312,3 +312,10 @@ All notable changes to the Italy 2026 Travel Companion will be documented here.
 - Added note search, category filters, pin/unpin, edit, and delete controls.
 - Added the permanent “What to drink in Italy if you usually drink sweet tea” reference note.
 - Included notes in backup export, import, merge, replace, and saved-data counts.
+
+
+## Version 10.7.9 — Notes filter visibility fix
+
+- Fixed white-on-white text and icons on inactive Journal/Notes tabs.
+- Fixed white-on-white labels on inactive Notes category filters.
+- Kept selected filters green and preserved dark-mode behavior.
