@@ -186,3 +186,10 @@ Travel now uses a sticky filter and search bar instead of section jump links. Re
 - Moved general ground transportation advice into a dedicated Local Transportation Guide.
 - Moved contingency planning into Travel Help / What If?
 - Preserved all existing reference content without mixing it into searchable travel items.
+
+
+### Version 10.7.5
+- Split Travel activities into separate Tours and To-Dos filters.
+- Classified operational tasks such as bag drop, security, and hotel check-in as To-Dos.
+- Moved Local Transportation Guide and Travel Help / What If? from Travel to Maps, Links & Travel Guide.
+- Kept Travel focused on actual itinerary items.

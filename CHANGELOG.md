@@ -1,3 +1,9 @@
+## Version 10.7.5
+- Added separate Tours and To-Dos filters on Travel.
+- Reclassified operational itinerary tasks as To-Dos while keeping excursions and experiences under Tours.
+- Renamed Maps & Links to Maps, Links & Travel Guide.
+- Moved Local Transportation Guide and Travel Help / What If? into the renamed guide page.
+
 ## [10.7.1] - 2026-08-03
 
 ### Changed

@@ -950,19 +950,15 @@
           <button data-travel-filter="train" onclick="setTravelTypeFilter('train')">🚆 Trains</button>
           <button data-travel-filter="transfer" onclick="setTravelTypeFilter('transfer')">🧭 Transfers</button>
           <button data-travel-filter="hotel" onclick="setTravelTypeFilter('hotel')">🏨 Hotels</button>
-          <button data-travel-filter="activity" onclick="setTravelTypeFilter('activity')">🎟️ Tours</button>
+          <button data-travel-filter="tour" onclick="setTravelTypeFilter('tour')">🎟️ Tours</button>
+          <button data-travel-filter="todo" onclick="setTravelTypeFilter('todo')">✅ To-Dos</button>
           <button data-travel-filter="other" onclick="setTravelTypeFilter('other')">••• Other items</button>
         </div>
         <div class="travel-search-row">
           <input id="travelSearchInput" type="search" placeholder="Search airline, train, city, hotel, confirmation…" aria-label="Search travel" oninput="setTravelSearch(this.value)">
           <span class="travel-result-count" id="travelResultCount"></span>
         </div>
-        <div class="travel-reference-actions">
-          <button id="travelLocalGuideBtn" onclick="toggleTravelReference('local')">🚕 Local Transport Guide</button>
-          <button id="travelHelpBtn" onclick="toggleTravelReference('help')">🆘 Travel Help / What If?</button>
-        </div>
       </div>
-      <div id="travelReference"></div>
       <div id="travelAttention"></div>
       <div id="travelResults"></div>
     </section>
@@ -1083,10 +1079,18 @@
       <div id="attractionsList"></div>
     </section>
 
-    <!-- MAPS (sub) -->
+    <!-- MAPS, LINKS & TRAVEL GUIDE (sub) -->
     <section id="page-maps" class="page">
       <button class="btn-outline btn-sm mb-8" onclick="showPage('more')">← Back</button>
-      <div class="section-title">Door-to-Door Routes</div>
+      <div class="section-title" style="font-size:1.15rem;">Maps, Links &amp; Travel Guide</div>
+      <div class="card" style="padding:12px;">
+        <div class="quick-action-row" style="margin-top:0;">
+          <button class="btn-outline btn-sm" onclick="document.getElementById('mapsRoutesTitle').scrollIntoView({behavior:'smooth'})">🗺️ Routes &amp; Maps</button>
+          <button class="btn-outline btn-sm" onclick="document.getElementById('localTravelGuideTitle').scrollIntoView({behavior:'smooth'})">🚕 Local Travel Guide</button>
+          <button class="btn-outline btn-sm" onclick="document.getElementById('travelHelpTitle').scrollIntoView({behavior:'smooth'})">🆘 Travel Help</button>
+        </div>
+      </div>
+      <div class="section-title" id="mapsRoutesTitle">Door-to-Door Routes</div>
       <div id="mapsRoutes"></div>
       <div class="section-title">Airports &amp; Terminals</div>
       <div id="mapsAirports"></div>
@@ -1094,6 +1098,12 @@
       <div id="mapsHotels"></div>
       <div class="section-title">Official Transport Sites</div>
       <div id="mapsOfficial"></div>
+      <div class="section-title" id="localTravelGuideTitle">Local Transportation Guide</div>
+      <div class="text-sm text-muted mb-8">General city transportation advice—not scheduled trip items.</div>
+      <div id="mapsLocalGuide"></div>
+      <div class="section-title" id="travelHelpTitle">Travel Help / What If?</div>
+      <div class="text-sm text-muted mb-8">Prepared backup instructions for delays, missed connections, baggage problems, and disruptions.</div>
+      <div id="mapsTravelHelp"></div>
       <div class="section-title">Saved Links &amp; Pending</div>
       <div id="mapsPending"></div>
     </section>
@@ -1186,7 +1196,7 @@
       <div style="margin-top:18px;display:grid;gap:10px;font-size:.88rem;">
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">App version</span><strong id="aboutAppVersion"></strong></div>
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Data version</span><strong id="aboutDataVersion"></strong></div>
-        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.7.4</strong></div>
+        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.7.5</strong></div>
       </div>
       <div style="margin-top:16px;padding:12px;border-radius:12px;background:var(--soft);font-size:.78rem;color:var(--muted);line-height:1.5;">Technical details are kept here for troubleshooting without cluttering the Home page.</div>
     </div>
@@ -1194,9 +1204,9 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.7.4";
+    const APP_VERSION = "10.7.5";
     const DATA_VERSION = "10.5.0";
-    const BUILD_LABEL = "Italy App v10.7.4 ⓘ";
+    const BUILD_LABEL = "Italy App v10.7.5 ⓘ";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -2690,7 +2700,7 @@
       { icon:"✈️", text:"Need to change a flight, train, transfer, tour, or event? Make the update in Travel.", page:"transport", label:"Open Travel" },
       { icon:"🏨", text:"Need to update a hotel? Make the change in Reservations.", page:"bookings", label:"Open Reservations" },
       { icon:"🍽️", text:"Restaurant favorites, ratings, and visit notes are edited in Food.", page:"food", label:"Open Food" },
-      { icon:"🗺️", text:"Need directions or a saved route? Open Maps & Links.", page:"maps", label:"Open Maps" },
+      { icon:"🗺️", text:"Need directions or a saved route? Open Maps, Links & Travel Guide.", page:"maps", label:"Open Maps" },
       { icon:"🎒", text:"Packing changes and new gear belong in Packing.", page:"prep", label:"Open Packing" },
       { icon:"💰", text:"Add expenses and adjust planned costs in Budget.", page:"money", label:"Open Budget" },
       { icon:"💾", text:"Export a fresh backup before departure and after major planning updates.", page:"more", label:"Open Trip Tools" }
@@ -3418,36 +3428,17 @@
       }, 0);
     }
 
-    let travelReferenceView = "";
-
-    function toggleTravelReference(view) {
-      travelReferenceView = travelReferenceView === view ? "" : view;
-      renderTravelReference();
-    }
-
-    function renderTravelReference() {
-      const host = document.getElementById("travelReference");
-      const localBtn = document.getElementById("travelLocalGuideBtn");
-      const helpBtn = document.getElementById("travelHelpBtn");
-      if (localBtn) localBtn.classList.toggle("active", travelReferenceView === "local");
-      if (helpBtn) helpBtn.classList.toggle("active", travelReferenceView === "help");
-      if (!host) return;
-      if (!travelReferenceView) { host.innerHTML = ""; return; }
-
-      if (travelReferenceView === "local") {
-        const cities = [...new Set(GROUND.map(g => g.city))];
-        const body = cities.map(city => {
-          const cards = GROUND.filter(g => g.city === city).map(g => `<div class="travel-guide-card"><div class="fw-700">${escapeHtml(g.mode)}</div><div class="text-sm mt-8"><strong>Best for:</strong> ${escapeHtml(g.best)}</div><div class="text-sm"><strong>Pay / buy:</strong> ${escapeHtml(g.pay)}</div>${g.notes ? `<div class="text-sm text-muted mt-8">${escapeHtml(g.notes)}</div>` : ""}</div>`).join("");
-          return `<div class="travel-reference-city">${escapeHtml(city)}</div>${cards}`;
-        }).join("");
-        host.innerHTML = `<div class="travel-reference-panel"><div class="travel-reference-header"><div><div class="travel-reference-title">🚕 Local Transportation Guide</div><div class="travel-reference-subtitle">General city transportation advice—not scheduled trip items.</div></div><button class="edit-btn travel-reference-close" onclick="toggleTravelReference('local')">Close</button></div>${body}</div>`;
-        host.scrollIntoView({behavior:"smooth", block:"start"});
-        return;
-      }
-
-      const cards = CONTINGENCIES.map(c => `<div class="travel-guide-card travel-help-card"><div class="row space-between"><div class="fw-700" style="color:var(--danger);">${escapeHtml(c.scenario)}</div>${c.priority ? urgencyBadge(c.priority) : ""}</div><div class="text-sm mt-8"><strong>Do:</strong> ${escapeHtml(c.action)}</div><div class="text-sm"><strong>Contact:</strong> ${escapeHtml(c.contact)}</div><div class="text-sm text-muted"><strong>Avoid:</strong> ${escapeHtml(c.avoid)}</div>${c.docs ? `<div class="text-xs text-muted mt-8"><strong>Keep:</strong> ${escapeHtml(c.docs)}</div>` : ""}</div>`).join("");
-      host.innerHTML = `<div class="travel-reference-panel"><div class="travel-reference-header"><div><div class="travel-reference-title">🆘 Travel Help / What If?</div><div class="travel-reference-subtitle">Prepared backup instructions for delays, missed connections, baggage problems, and disruptions.</div></div><button class="edit-btn travel-reference-close" onclick="toggleTravelReference('help')">Close</button></div>${cards}</div>`;
-      host.scrollIntoView({behavior:"smooth", block:"start"});
+    function activityTravelCategory(item) {
+      const text = [item.title, item.itemType, item.mode, item.instructions, item.notes, item.from, item.to].filter(Boolean).join(" " ).toLowerCase();
+      const todoTerms = [
+        "bag drop", "check-in", "check in", "check-out", "check out", "checkout",
+        "security", "ticket pickup", "pick up ticket", "pickup ticket", "luggage storage",
+        "drop luggage", "drop bags", "meet the group", "meet psa", "registration",
+        "departure gate", "airport check", "excursion preparation", "prepare for"
+      ];
+      if (todoTerms.some(term => text.includes(term))) return "todo";
+      if (/tour|excursion|gondola|reception|experience|museum|winery|islands|murano|burano/.test(text) || /^(tour|event)$/i.test(item.itemType || "")) return "tour";
+      return "other";
     }
 
     function setTravelTypeFilter(filter) {
@@ -3543,7 +3534,7 @@
       const records = [];
       const addRecord = (category, date, time, searchText, html, sortExtra="") => records.push({category,date,time,searchText:String(searchText||"").toLowerCase(),html,sortKey:travelDateTimeKey(date,time)+"|"+sortExtra});
 
-      customTripItems.forEach(t => addRecord("other", t.date, t.start, [t.title,t.from,t.to,t.itemType,t.duration,t.status,t.confirmation,t.note].join(" "), `
+      customTripItems.forEach(t => addRecord(activityTravelCategory(t), t.date, t.start, [t.title,t.from,t.to,t.itemType,t.duration,t.status,t.confirmation,t.note].join(" "), `
         <div class="card travel-card transfer-card">
           <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t)} ${escapeHtml(t.title || [t.from,t.to].filter(Boolean).join(" → ") || "Trip Item")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
           <div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType || "Information")}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelConfirmationBlock(t.confirmation || "", t.status || "Confirmed")}${travelDetailPanel("Travel details", t.note)}${travelDetailPanel("Connected views", `Added Trip Item · linked to Timeline${(t.from && t.to) ? " and Maps" : ""}`)}</div>
@@ -3562,7 +3553,7 @@
       hotels.forEach(h => addRecord("hotel", h.checkIn, "15:00", [h.name,h.city,h.address,h.dates,h.conf,h.status,h.room,h.payment,h.tax,h.breakfast,h.notes].join(" "), `
         <div class="card travel-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🏨 ${escapeHtml(h.name)}</div><div class="travel-date-label">${escapeHtml(h.dates || fmtDate(h.checkIn))}</div></div></div><div class="travel-card-main"><div class="travel-chip-row"><span class="travel-chip">${escapeHtml(h.city)}</span><span class="travel-chip">Check-in ${fmtDate(h.checkIn)}</span><span class="travel-chip">Check-out ${fmtDate(h.checkOut)}</span>${statusBadge(h.status || "Confirmed")}</div>${travelConfirmationBlock(h.conf, h.status || "Confirmed")}${travelDetailPanel("Address", h.address)}${travelDetailPanel("Room", h.room)}${travelDetailPanel("Payment", [h.payment,h.tax].filter(Boolean).join(" · "))}${travelDetailPanel("Hotel note", [h.breakfast,h.notes].filter(Boolean).join(" · "))}</div><div class="travel-actions">${travelMapActions(h.address || h.name,"")}<button class="edit-btn" onclick="editHotelById('${h.id}')">Edit Hotel</button></div></div>`, h.name));
 
-      activities.forEach(t => addRecord("activity", t.date, t.start, [t.title,t.itemType,t.from,t.to,t.start,t.end,t.status,t.instructions,t.notes].join(" "), `
+      activities.forEach(t => addRecord(activityTravelCategory(t), t.date, t.start, [t.title,t.itemType,t.from,t.to,t.start,t.end,t.status,t.instructions,t.notes].join(" "), `
         <div class="card travel-card activity-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span>${statusBadge(t.status || "Confirmed")}</div>${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Details", t.instructions)}${travelDetailPanel("Travel note", t.notes)}</div><div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button></div></div>`, t.title || t.itemType));
 
 
@@ -4178,6 +4169,27 @@
           <div class="text-sm mt-8"><strong>Use:</strong> ${s.use}</div>
           <div class="text-sm text-muted"><strong>Note:</strong> ${s.note}</div>
           <a class="link-btn" href="${normalizedLink(s.link)}" target="_blank" rel="noopener">Open official site →</a>
+        </div>`).join("");
+
+      const guideCities = [...new Set(GROUND.map(g => g.city))];
+      document.getElementById("mapsLocalGuide").innerHTML = guideCities.map(city => {
+        const cards = GROUND.filter(g => g.city === city).map(g => `
+          <div class="travel-guide-card">
+            <div class="fw-700">${escapeHtml(g.mode)}</div>
+            <div class="text-sm mt-8"><strong>Best for:</strong> ${escapeHtml(g.best)}</div>
+            <div class="text-sm"><strong>Pay / buy:</strong> ${escapeHtml(g.pay)}</div>
+            ${g.notes ? `<div class="text-sm text-muted mt-8">${escapeHtml(g.notes)}</div>` : ""}
+          </div>`).join("");
+        return `<div class="travel-reference-city">${escapeHtml(city)}</div>${cards}`;
+      }).join("");
+
+      document.getElementById("mapsTravelHelp").innerHTML = CONTINGENCIES.map(c => `
+        <div class="travel-guide-card travel-help-card">
+          <div class="row space-between"><div class="fw-700" style="color:var(--danger);">${escapeHtml(c.scenario)}</div>${c.priority ? urgencyBadge(c.priority) : ""}</div>
+          <div class="text-sm mt-8"><strong>Do:</strong> ${escapeHtml(c.action)}</div>
+          <div class="text-sm"><strong>Contact:</strong> ${escapeHtml(c.contact)}</div>
+          <div class="text-sm text-muted"><strong>Avoid:</strong> ${escapeHtml(c.avoid)}</div>
+          ${c.docs ? `<div class="text-xs text-muted mt-8"><strong>Keep:</strong> ${escapeHtml(c.docs)}</div>` : ""}
         </div>`).join("");
 
       document.getElementById("mapsPending").innerHTML = MAP_SAVED_PENDING.map(p => `
