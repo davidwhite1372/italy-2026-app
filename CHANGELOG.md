@@ -1,3 +1,12 @@
+## [10.6.0-dev-d1] - 2026-08-03
+
+### Permanent trip-data updates
+- Saved the TPA Economy Parking to Main Terminal SkyConnect leg as confirmed default trip data.
+- Saved the current Rome to Florence PSA group-train plan and outstanding confirmation needs.
+- Saved the confirmed Italo 8904 Club Executive details, coach, and seats for Florence to Venice.
+- Made the exported Timeline item-type corrections permanent for travel items 3, 4, 8, and 10.
+- Added David’s cell phone stand permanently to the checked-bag packing list.
+
 ## [10.6.0-dev-c] - 2026-08-03
 
 ### Travel page polish
