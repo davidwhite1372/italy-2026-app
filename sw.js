@@ -1,11 +1,14 @@
-const CACHE = 'italy-2026-github-v10-6-c-travel';
+const CACHE = 'italy-2026-github-v10-8-1-comfort-essentials';
 const APP_SHELL = [
   './',
   './index.html',
   './data.js',
   './manifest.json',
   './icon-192.png',
-  './icon-512.png'
+  './icon-512.png',
+  './assets/comfort/rome-restrooms.jpg',
+  './assets/comfort/florence-restrooms.jpg',
+  './assets/comfort/venice-restrooms.jpg'
 ];
 
 self.addEventListener('install', event => {
@@ -26,6 +29,12 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
+
+  // Weather must always try the network; the app maintains its own last-known offline cache.
+  if (new URL(event.request.url).hostname === 'api.open-meteo.com') {
+    event.respondWith(fetch(event.request));
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request).then(cached => {

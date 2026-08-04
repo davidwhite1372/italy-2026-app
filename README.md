@@ -4,7 +4,7 @@ GitHub Pages deployment package for David and Melody's Italy 2026 Travel Compani
 
 ## Current build
 
-**Version 10.6A1 DEV — Home Quick Tip fix**
+**Version 10.8.1 DEV — Comfort & Essentials**
 
 The existing appearance, itinerary content, navigation, pinch-zoom behavior, backup/import tools, and installable PWA experience are preserved. Deployment-specific changes are limited to relative GitHub Pages paths, PWA scope/identity, cache isolation, and the `.nojekyll` marker.
 
@@ -20,6 +20,20 @@ The published address will normally be:
 
 User-entered app data is stored locally in each browser/device. Before removing an older Netlify installation, export a backup from that installation and import it into the newly installed GitHub Pages app.
 
+
+
+## Version 10.8.1 — Comfort & Essentials
+
+- Corrected inactive Journal/Notes tabs and note-category pills so their labels and icons remain visible.
+- Preserved the selected green state and dark-mode styling.
+
+## Version 10.7.8 — Journal & Notes
+
+- Journal and reference notes now share one page with separate tabs.
+- Notes are stored as separate editable entries and work fully offline.
+- Notes support search, categories, pinning, editing, and deletion.
+- The first permanent note covers sweet drink alternatives in Italy.
+- Notes are included in backup export/import and cross-device merge.
 
 ## Version 10.3.0
 
@@ -167,3 +181,44 @@ Hotel data is now unified into master hotel records. Editing a hotel from Reserv
 - Polished Travel page cards for flights, trains, transfers, tours, and events.
 - Added prominent routes, times, confirmations, seat status, and map shortcuts.
 - Preserved Add Trip Item and single-source-of-truth editing.
+
+
+### Version display
+The Home page uses a compact bottom-right About tab. Tap it to view app, data, and build versions without showing development notes in the main interface.
+
+### Version 10.7.2
+Travel now uses a sticky filter and search bar instead of section jump links. Results can be filtered by type, searched by key trip details, and remain ordered by date and time.
+
+
+### Version 10.7.3
+- Home About tab now displays the full three-part version number.
+- Added TSA Known Traveler and Delta/SAS rewards numbers to the Confirmation Wallet.
+- Passport information remains excluded from the app.
+
+### Version 10.7.4
+- Travel filters now contain only actual trip records.
+- Moved general ground transportation advice into a dedicated Local Transportation Guide.
+- Moved contingency planning into Travel Help / What If?
+- Preserved all existing reference content without mixing it into searchable travel items.
+
+
+### Version 10.7.5
+- Split Travel activities into separate Tours and To-Dos filters.
+- Classified operational tasks such as bag drop, security, and hotel check-in as To-Dos.
+- Moved Local Transportation Guide and Travel Help / What If? from Travel to Maps, Links & Travel Guide.
+- Kept Travel focused on actual itinerary items.
+
+### Version 10.7.6
+Maps, Links & Travel Guide now uses section filters instead of page jumps, the Trip Tools label matches the page name, and the Home outbound route includes FCO (Rome).
+
+### Version 10.7.7
+Travel cards are collapsed by default. Their essential route and status information remains visible, while confirmations, notes, maps, and edit controls expand directly below the status row.
+
+
+- Added a filterable **Comfort & Essentials** section under Maps, Links & Travel Guide.
+- Added offline restroom reference maps for Rome, Florence, and Venice.
+- Added concise reliable-option lists, practical tips, nearby Google Maps searches, and global-search indexing.
+
+## Version 10.8.0
+- Added offline-capable global trip search across itinerary, confirmations, restaurants, notes, packing, safety, maps, links, and travel guides.
+- Replaced the Home Days/Nights tile with compact current-city weather using cached last-known data when offline.

@@ -1,3 +1,95 @@
+# Version 10.8.1
+
+## Comfort & Essentials
+- Added a new filter inside Maps, Links & Travel Guide.
+- Added Rome, Florence, and Venice restroom reference maps supplied by the user.
+- Added concise lists of reliable options, practical reminders, and Google Maps nearby searches.
+- Added restroom-related terms to Global Search.
+- Cached the three map images for offline use.
+
+# Version 10.8.0
+
+- Added global search from the app header with direct navigation to matching trip content.
+- Added search coverage for Timeline, Travel, reservations, Confirmation Wallet, hotels, restaurants, notes, packing, Safety, maps, links, and travel guides.
+- Replaced the Home Days/Nights stat with a compact weather tile showing current temperature, high/low, rain chance, wind, city, and update age.
+- Added per-city weather caching and offline last-known fallback.
+
+## Version 10.7.5
+- Added separate Tours and To-Dos filters on Travel.
+- Reclassified operational itinerary tasks as To-Dos while keeping excursions and experiences under Tours.
+- Renamed Maps & Links to Maps, Links & Travel Guide.
+- Moved Local Transportation Guide and Travel Help / What If? into the renamed guide page.
+
+## [10.7.1] - 2026-08-03
+
+### Changed
+- Replaced the development build label on Home with a compact `Italy App v10.7` About tab.
+- Kept the tab in the existing bottom-right Home location.
+- Moved app version, data version, and build details into a tap-to-open About panel.
+
+## [10.7.0 DEV] - 2026-08-03
+
+### Added
+- Swipe left/right and Previous/Next controls on Today to move through trip days.
+- Manual restaurant creation for discoveries made during the trip.
+- GPS-assisted restaurant capture that saves coordinates, a Google Maps link, and the nearest trip city.
+- Delete controls for manually added restaurants.
+
+### Preserved
+- Existing restaurant favorites, visited status, ratings, notes, filters, and backup/import behavior.
+
+## [10.6D4] - 2026-08-03
+
+### Added
+- U.S. State Department 24/7 overseas emergency number.
+- Tap-to-call buttons for Italy 112, the U.S. Embassy Rome, and the State Department.
+
+### Changed
+- Standardized the U.S. Embassy Rome phone number formatting.
+
+## [10.6.0-dev-d3] - 2026-08-03
+
+### Timeline step-label cleanup
+- Removed visible Timeline step numbers from the interface.
+- Preserved the underlying `step` field for completion tracking, hidden-item state, deep links, validation, and stable chronological tie-breaking.
+- Deferred removal of the underlying field until the Version 11 cleanup and dependency review.
+
+## [10.6.0-dev-d2] - 2026-08-03
+
+### Flight duration correction
+- Corrected SK3438 JFK to TPA duration from 3h 11m to 3h 23m.
+- Kept the confirmed 7:50 PM departure and 11:13 PM arrival times unchanged.
+- Updated Timeline, flight details, Travel, and Confirmation Wallet source data consistently.
+
+## [10.6.0-dev-d1] - 2026-08-03
+
+### Permanent trip-data updates
+- Saved the TPA Economy Parking to Main Terminal SkyConnect leg as confirmed default trip data.
+- Saved the current Rome to Florence PSA group-train plan and outstanding confirmation needs.
+- Saved the confirmed Italo 8904 Club Executive details, coach, and seats for Florence to Venice.
+- Made the exported Timeline item-type corrections permanent for travel items 3, 4, 8, and 10.
+- Added David’s cell phone stand permanently to the checked-bag packing list.
+
+## [10.6.0-dev-c] - 2026-08-03
+
+### Travel page polish
+- Rebuilt Travel cards around clearer routes, times, status, confirmations, instructions, and notes.
+- Added fast section navigation for flights, trains, transfers, tours, and local transportation.
+- Added a Travel readiness summary showing items ready versus items needing verification.
+- Added dedicated confirmation blocks and copy-friendly booking information.
+- Improved Google Maps and Apple Maps route buttons with clearer labels.
+- Preserved Add Trip Item and all single-source-of-truth editing behavior.
+
+## [10.6.0-dev-b2] - 2026-08-03
+
+### Timeline polish
+- Improved spacing and hierarchy throughout Timeline cards.
+- Reformatted travel legs with labeled From/To points and endpoint times.
+- Added sticky day headers with per-day completion counts and progress bars.
+- Improved overall progress summary and highlighted the true NEXT step.
+- Reorganized Details into clear What to do, Notes, and Maps & links sections.
+- Improved mobile readability without changing Timeline data or architecture.
+
 # Changelog
 
 ## [10.6.0-dev-b] - 2026-08-01
@@ -197,3 +289,49 @@ All notable changes to the Italy 2026 Travel Companion will be documented here.
 - Redesigned Travel cards for faster scanning.
 - Added prominent departure/arrival layout, confirmation and seat information, and Google/Apple Maps actions.
 - Improved train, transfer, tour, event, and custom trip-item presentation.
+
+## 10.7.2 — Travel filtering and search
+- Replaced Travel section jump buttons with sticky type filters.
+- Added filters for All, Flights, Trains, Transfers, Hotels, Tours, and Other.
+- Added Travel search across airline, train, city, hotel, confirmation, route, and notes.
+- Added hotels to the Travel view.
+- Kept filtered results in date-and-time order and added a live result count.
+
+
+## 10.7.3 — Wallet traveler identifiers
+- Updated the Home About tab to display Italy App v10.7.3.
+- Added David's TSA Known Traveler Number, Delta SkyMiles number, and SAS EuroBonus number to the Confirmation Wallet.
+- Added Pending placeholders for Melody's corresponding numbers.
+- Excluded passport numbers from permanent app data.
+
+## 10.7.4 — Separate travel items from guidance
+- Removed static Ground Transport and Contingency records from Travel filter results.
+- Added Local Transportation Guide and Travel Help / What If? reference panels.
+- Preserved actual custom and miscellaneous trip items under Other items.
+- Updated the Home About tab to Italy App v10.7.4.
+
+## Version 10.7.6
+- Corrected the Trip Tools label to **Maps, Links & Travel Guide**.
+- Replaced page-jump buttons with filters for routes, airports, hotels, official links, local transportation, travel help, and saved items.
+- Corrected Trip at a Glance to show the full outbound route: TPA → BOS → CPH → FCO (Rome).
+
+## Version 10.7.7
+- Made Travel cards compact and collapsible by default.
+- Kept the item title, route, times, mode, duration, and status visible at all times.
+- Moved confirmations, instructions, notes, maps, and edit controls under Show details.
+- Preserved all shared travel data and links to Timeline, Today, and Confirmation Wallet.
+
+## Version 10.7.8 — Journal & Notes
+
+- Renamed Journal & Memories to Journal & Notes.
+- Added a separate offline Notes notebook with individual editable entries.
+- Added note search, category filters, pin/unpin, edit, and delete controls.
+- Added the permanent “What to drink in Italy if you usually drink sweet tea” reference note.
+- Included notes in backup export, import, merge, replace, and saved-data counts.
+
+
+## Version 10.7.9 — Notes filter visibility fix
+
+- Fixed white-on-white text and icons on inactive Journal/Notes tabs.
+- Fixed white-on-white labels on inactive Notes category filters.
+- Kept selected filters green and preserved dark-mode behavior.

@@ -156,7 +156,7 @@
     .filter-bar::-webkit-scrollbar { display: none; }
     .filter-chip {
       flex-shrink: 0; padding: 7px 14px; border-radius: 20px; background: #fff;
-      border: 1.5px solid var(--border); font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      border: 1.5px solid var(--border); font-size: 0.8rem; font-weight: 600; color: var(--text); cursor: pointer;
     }
     .filter-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
@@ -556,7 +556,51 @@
     .travel-detail-block { margin-top:9px; font-size:.84rem; line-height:1.45; }
     .travel-detail-block.muted { color:var(--muted); }
     .travel-actions { display:flex; flex-wrap:wrap; gap:7px; padding:10px 14px 13px; border-top:1px solid var(--border); }
+    .travel-card-details { margin-top:10px; border-top:1px dashed var(--border); }
+    .travel-card-details summary { cursor:pointer; list-style:none; padding:9px 0 0; color:var(--primary); font-size:.78rem; font-weight:800; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .travel-card-details summary::-webkit-details-marker { display:none; }
+    .travel-card-details summary::after { content:"Show details ▾"; }
+    .travel-card-details[open] summary::after { content:"Hide details ▴"; }
+    .travel-card-details-body { padding-top:2px; }
+    .travel-card-details .travel-actions { margin:10px -14px -12px; }
     .travel-actions button,.travel-actions a { flex:1 1 auto; min-width:92px; text-align:center; }
+    .travel-filter-panel { position:sticky; top:58px; z-index:12; margin:0 0 12px; padding:9px; border:1px solid var(--border); border-radius:13px; background:var(--bg); backdrop-filter:blur(10px); box-shadow:0 5px 16px rgba(0,0,0,.06); }
+    .travel-filter-nav { display:flex; gap:7px; overflow-x:auto; padding:0 0 8px; scrollbar-width:none; }
+    .travel-filter-nav::-webkit-scrollbar { display:none; }
+    .travel-filter-nav button { flex:0 0 auto; border:1px solid var(--border); background:var(--card); color:var(--primary); border-radius:999px; padding:7px 10px; font-size:.74rem; font-weight:750; }
+    .travel-filter-nav button.active { background:var(--primary); color:white; border-color:var(--primary); }
+    .travel-search-row { display:flex; align-items:center; gap:8px; }
+    .travel-search-row input { flex:1; min-width:0; margin:0; }
+    .travel-result-count { flex:0 0 auto; font-size:.72rem; color:var(--muted); font-weight:750; white-space:nowrap; }
+    .travel-reference-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
+    .travel-reference-actions button { width:100%; border:1px solid var(--border); background:var(--card); color:var(--primary); border-radius:10px; padding:9px 8px; font-size:.76rem; font-weight:800; }
+    .travel-reference-actions button.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+    .travel-reference-panel { margin:0 0 12px; padding:12px; border:1px solid var(--border); border-radius:13px; background:var(--card); }
+    .travel-reference-header { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px; }
+    .travel-reference-title { font-size:1rem; font-weight:850; color:var(--primary); }
+    .travel-reference-subtitle { margin-top:2px; font-size:.76rem; color:var(--muted); line-height:1.35; }
+    .travel-reference-close { flex:0 0 auto; min-width:auto; padding:6px 9px; }
+    .travel-reference-city { margin:14px 1px 7px; font-size:.75rem; font-weight:850; text-transform:uppercase; letter-spacing:.06em; color:var(--primary); }
+    .travel-guide-card { padding:11px 12px; border:1px solid var(--border); border-radius:11px; background:var(--surface); margin-bottom:8px; }
+    .travel-guide-card:last-child { margin-bottom:0; }
+    .comfort-city-card{margin-bottom:14px;overflow:hidden;}
+    .comfort-map{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin:10px 0;}
+    .comfort-list{margin:8px 0 0;padding-left:18px;}
+    .comfort-list li{margin:5px 0;line-height:1.4;}
+    .comfort-tip{padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:.82rem;line-height:1.45;margin-top:10px;}
+    .travel-help-card { border-left:4px solid var(--warning); }
+    .travel-empty { padding:22px 14px; text-align:center; color:var(--muted); border:1px dashed var(--border); border-radius:12px; }
+    .travel-section-label { margin:18px 2px 8px; font-size:.78rem; font-weight:850; color:var(--primary); text-transform:uppercase; letter-spacing:.06em; }
+    .travel-confirmation { margin-top:10px; padding:10px 11px; border:1px solid rgba(46,125,50,.28); border-radius:11px; background:rgba(46,125,50,.07); }
+    .travel-confirmation.pending { border-color:rgba(239,108,0,.34); background:rgba(239,108,0,.08); }
+    .travel-confirmation-label { font-size:.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; font-weight:800; }
+    .travel-confirmation-value { margin-top:3px; font-size:.92rem; font-weight:850; overflow-wrap:anywhere; }
+    .travel-detail-panel { margin-top:9px; padding:10px 11px; border-radius:10px; background:var(--surface); border:1px solid var(--border); }
+    .travel-detail-label { font-size:.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; font-weight:800; margin-bottom:4px; }
+    .travel-detail-text { font-size:.84rem; line-height:1.48; overflow-wrap:anywhere; }
+    .travel-route-label { display:block; margin-bottom:3px; font-size:.63rem; color:var(--muted); font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
+    .travel-map-btn { display:inline-flex; justify-content:center; align-items:center; gap:5px; }
+    .travel-attention { margin:0 0 12px; padding:10px 12px; border-left:4px solid var(--warning); background:rgba(239,108,0,.08); border-radius:8px; font-size:.8rem; line-height:1.4; }
     @media (max-width:430px) {
       .travel-overview-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
       .travel-route-grid { grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr); }
@@ -610,6 +654,53 @@
       .tl-route-summary .from, .tl-route-summary .to { font-size:.72rem; }
       .tl-toggle { padding:7px 8px; }
     }
+    /* Version 10.6B2: Timeline polish and day-by-day progress */
+    .tl-progress-card { padding:13px 14px; margin-bottom:14px; }
+    .tl-progress-top { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; }
+    .tl-progress-title { font-size:.72rem; color:var(--muted); font-weight:800; text-transform:uppercase; letter-spacing:.07em; }
+    .tl-progress-count { font-size:1.05rem; font-weight:850; color:var(--primary); }
+    .tl-progress-note { margin-top:7px; font-size:.72rem; color:var(--muted); line-height:1.35; }
+    .tl-day-header { position:sticky; top:64px; z-index:8; padding:8px 3px 7px; background:var(--bg); }
+    .tl-day-header-main { display:flex; align-items:center; gap:8px; min-width:0; }
+    .tl-day-header-date { white-space:nowrap; }
+    .tl-day-header-count { white-space:nowrap; font-size:.7rem; color:var(--muted); font-weight:750; }
+    .tl-day-progress { width:52px; height:5px; overflow:hidden; border-radius:999px; background:var(--border); }
+    .tl-day-progress > span { display:block; height:100%; border-radius:999px; background:var(--accent); }
+    .tl-step { scroll-margin-top:125px; }
+    .tl-step.is-next { outline:3px solid rgba(93,150,122,.34); outline-offset:2px; }
+    .tl-current-marker { display:inline-flex; align-items:center; gap:5px; padding:3px 8px; border-radius:999px; background:var(--accent); color:#fff; margin:0 0 8px; }
+    .tl-card-head { align-items:center; }
+    .tl-title { font-weight:820; letter-spacing:-.01em; }
+    .tl-date-time { display:flex; align-items:center; gap:5px; line-height:1.25; }
+    .tl-route-summary { grid-template-columns:minmax(0,1fr) 32px minmax(0,1fr); padding:10px 11px; margin-top:10px; }
+    .tl-route-place { font-size:.82rem; font-weight:800; line-height:1.22; overflow-wrap:anywhere; }
+    .tl-route-label { display:block; margin-bottom:2px; font-size:.61rem; color:var(--muted); font-weight:850; text-transform:uppercase; letter-spacing:.08em; }
+    .tl-route-clock { margin-top:3px; font-size:.78rem; font-weight:850; color:inherit; }
+    .tl-route-summary .arrow { width:32px; height:32px; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.62); border:1px solid rgba(23,32,24,.15); }
+    .tl-meta-line { display:flex; flex-wrap:wrap; align-items:center; gap:5px; margin-top:7px; }
+    .tl-meta-chip { display:inline-flex; align-items:center; padding:3px 7px; border-radius:999px; background:rgba(255,255,255,.54); border:1px solid rgba(23,32,24,.14); font-size:.69rem; font-weight:730; }
+    .tl-expanded { margin-top:11px; padding-top:11px; }
+    .tl-detail-grid { display:grid; gap:8px; }
+    .tl-detail-section { padding:10px 11px; border-radius:10px; background:rgba(255,255,255,.5); border:1px solid rgba(23,32,24,.14); }
+    .tl-detail-label { margin-bottom:4px; font-size:.65rem; color:var(--muted); font-weight:850; text-transform:uppercase; letter-spacing:.08em; }
+    .tl-detail-text { font-size:.84rem; line-height:1.48; overflow-wrap:anywhere; }
+    .tl-map-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(125px,1fr)); gap:7px; }
+    .tl-map-row .link-btn { display:block; text-align:center; }
+    .tl-action-row { padding-top:2px; }
+    .tl-action-row .edit-btn { flex:1 1 120px; min-height:36px; border:1px solid rgba(23,32,24,.22); border-radius:9px; background:rgba(255,255,255,.58); }
+    .tl-complete-row { padding-top:10px; }
+    @media (max-width:420px) {
+      .tl-day-header { top:59px; }
+      .tl-step.actual-travel { padding-left:38px; padding-right:10px; }
+      .tl-card-head { gap:8px; }
+      .tl-type-icon { width:30px; height:30px; }
+      .tl-title { font-size:.94rem; }
+      .tl-route-summary { grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr); gap:5px; }
+      .tl-route-summary .arrow { width:28px; height:28px; }
+      .tl-route-place { font-size:.76rem; }
+      .tl-toggle { font-size:.69rem; }
+    }
+
     .quick-action-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
     .quick-action-row .link-btn, .quick-action-row button { border:1px solid var(--border); border-radius:9px; padding:7px 9px; background:var(--card); text-decoration:none; }
     .wallet-key { font-size:1.08rem; font-weight:800; color:var(--primary); letter-spacing:.02em; }
@@ -687,6 +778,38 @@
         outline-offset:2px;
       }
     }
+
+    .today-day-nav{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;margin:2px 0 8px;}
+    .today-day-label{text-align:center;font-weight:800;color:var(--primary);font-size:.95rem;line-height:1.25;}
+    .today-day-nav button:disabled{opacity:.35;cursor:default;}
+    #todayContent{touch-action:pan-y;}
+    .custom-restaurant-badge{display:inline-block;background:#e8f5e9;color:#2e7d32;border-radius:999px;padding:2px 7px;font-size:.68rem;font-weight:700;vertical-align:middle;}
+    .gps-status{min-height:1.2em;margin-top:6px;}
+
+    .header-actions{display:flex;align-items:center;gap:8px;}
+    .global-search-btn{width:38px;height:38px;padding:0;border-radius:50%;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);font-size:1.15rem;display:grid;place-items:center;}
+    .global-search-btn:active{background:rgba(255,255,255,.28);}
+    .global-search-overlay{position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.52);display:none;align-items:flex-start;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 18px) 12px 90px;overflow:auto;}
+    .global-search-overlay.open{display:flex;}
+    .global-search-panel{width:min(680px,100%);background:var(--bg);border-radius:18px;padding:14px;box-shadow:0 18px 50px rgba(0,0,0,.3);}
+    .global-search-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
+    .global-search-head strong{font-size:1.05rem;color:var(--primary);}
+    .global-search-close{background:transparent;color:var(--text);border:1px solid var(--border);padding:6px 10px;}
+    .global-search-results{display:grid;gap:8px;max-height:68vh;overflow:auto;padding-bottom:4px;}
+    .global-result{width:100%;text-align:left;background:var(--card);color:var(--text);border:1px solid var(--border);padding:11px 12px;border-radius:12px;box-shadow:none;}
+    .global-result:active{background:var(--accent-light);}
+    .global-result-title{font-weight:750;font-size:.92rem;}
+    .global-result-meta{font-size:.75rem;color:var(--muted);margin-top:3px;line-height:1.35;}
+    .global-search-empty{text-align:center;padding:28px 12px;color:var(--muted);}
+    .search-highlight{outline:3px solid var(--gold)!important;outline-offset:2px;animation:searchPulse 1.6s ease;}
+    @keyframes searchPulse{0%,100%{box-shadow:var(--shadow)}50%{box-shadow:0 0 0 6px rgba(201,162,39,.22)}}
+    .weather-stat{position:relative;min-height:76px;display:flex;flex-direction:column;justify-content:center;}
+    .weather-main{display:flex;align-items:center;justify-content:center;gap:6px;font-weight:800;line-height:1;}
+    .weather-icon{font-size:1.35rem;}
+    .weather-temp{font-size:1.45rem;}
+    .weather-details{font-size:.66rem;color:var(--muted);margin-top:6px;line-height:1.35;white-space:normal;}
+    .weather-updated{font-size:.58rem;color:var(--muted);margin-top:3px;white-space:normal;}
+    .weather-refresh{position:absolute;right:4px;top:3px;background:transparent;color:var(--muted);padding:2px 4px;font-size:.72rem;border:0;}
   </style>
 </head>
 <body>
@@ -697,7 +820,10 @@
         <h1>🇮🇹 Italy 2026</h1>
         <div class="sub">David & Melody · Oct 4–15 · Rome · Florence · Venice</div>
       </div>
-      <div id="daysBadge" style="text-align:right;font-size:0.75rem;opacity:0.9;"></div>
+      <div class="header-actions">
+        <button class="global-search-btn" type="button" onclick="openGlobalSearch()" aria-label="Search the entire trip">🔍</button>
+        <div id="daysBadge" style="text-align:right;font-size:0.75rem;opacity:0.9;"></div>
+      </div>
     </div>
   </header>
 
@@ -750,12 +876,20 @@
           <div class="text-sm fw-600 mt-8">Budget</div>
         </div>
       </div>
-      <div id="appVersionLabel" style="text-align:right;font-size:0.62rem;color:var(--muted);opacity:0.72;padding:8px 3px 24px;margin-bottom:8px;"></div>
+      <div style="text-align:right;padding:8px 3px 24px;margin-bottom:8px;">
+        <button id="appVersionLabel" type="button" onclick="openAppAbout()" aria-label="About this app" style="border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:6px 10px;font-size:0.68rem;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.06);"></button>
+      </div>
     </section>
 
     <!-- TODAY -->
     <section id="page-today" class="page">
+      <div class="today-day-nav">
+        <button class="btn-outline btn-sm" id="todayPrevBtn" onclick="navigateToday(-1)" aria-label="Previous day">← Previous</button>
+        <div class="today-day-label" id="todayDayLabel"></div>
+        <button class="btn-outline btn-sm" id="todayNextBtn" onclick="navigateToday(1)" aria-label="Next day">Next →</button>
+      </div>
       <div class="date-scroll" id="dateChips"></div>
+      <div class="text-xs text-muted" style="text-align:center;margin:-2px 0 8px;">Swipe left or right anywhere on the day plan</div>
       <div id="todayContent"></div>
     </section>
 
@@ -821,6 +955,7 @@
     <!-- FOOD -->
     <section id="page-food" class="page">
       <div class="owner-banner"><span class="owner-icon">✏️</span><div><strong>Edit restaurants here.</strong> Favorites, ratings, visits, and restaurant notes belong on this page.</div></div>
+      <button style="width:100%;margin:0 0 12px;" onclick="addRestaurant()">＋ Add Restaurant</button>
       <input type="search" class="search-box" id="restSearch" placeholder="Search name, neighborhood, food, dish, price..." />
       <div class="text-xs text-muted" style="margin:-4px 2px 10px;">Use this when you pass a restaurant—search any part of its name, neighborhood, cuisine, recommended dish, priority, or price.</div>
       <div class="filter-bar" id="restQuickFilters">
@@ -848,22 +983,24 @@
       <div class="owner-banner"><span class="owner-icon">✏️</span><div><strong>Make travel changes here.</strong> Flights, trains, transfers, tours, and events automatically update their linked Timeline, Maps, Reservations, Wallet, and Home views.</div></div>
       <button style="width:100%;margin:0 0 14px;" onclick="addTripItem()">＋ Add Trip Item</button>
       <div id="travelOverview"></div>
-      <div id="customTripItemsSection" class="hidden">
-        <div class="section-title">➕ Added Trip Items</div>
-        <div id="customTripItemsList"></div>
+      <div class="travel-filter-panel" aria-label="Travel filters">
+        <div class="travel-filter-nav" id="travelTypeFilters">
+          <button class="active" data-travel-filter="all" onclick="setTravelTypeFilter('all')">All</button>
+          <button data-travel-filter="flight" onclick="setTravelTypeFilter('flight')">✈️ Flights</button>
+          <button data-travel-filter="train" onclick="setTravelTypeFilter('train')">🚆 Trains</button>
+          <button data-travel-filter="transfer" onclick="setTravelTypeFilter('transfer')">🧭 Transfers</button>
+          <button data-travel-filter="hotel" onclick="setTravelTypeFilter('hotel')">🏨 Hotels</button>
+          <button data-travel-filter="tour" onclick="setTravelTypeFilter('tour')">🎟️ Tours</button>
+          <button data-travel-filter="todo" onclick="setTravelTypeFilter('todo')">✅ To-Dos</button>
+          <button data-travel-filter="other" onclick="setTravelTypeFilter('other')">••• Other items</button>
+        </div>
+        <div class="travel-search-row">
+          <input id="travelSearchInput" type="search" placeholder="Search airline, train, city, hotel, confirmation…" aria-label="Search travel" oninput="setTravelSearch(this.value)">
+          <span class="travel-result-count" id="travelResultCount"></span>
+        </div>
       </div>
-      <div class="section-title">✈️ Flights</div>
-      <div id="flightsList"></div>
-      <div class="section-title">🚆 Trains</div>
-      <div id="trainsList"></div>
-      <div class="section-title">🧭 Door-to-Door Transfers</div>
-      <div id="transfersList"></div>
-      <div class="section-title">🎟️ Tours, Events & Information</div>
-      <div id="activitiesList"></div>
-      <div class="section-title">🚖 Ground & Water Transportation</div>
-      <div id="groundList"></div>
-      <div class="section-title">🚨 Backup & Contingency Plans</div>
-      <div id="contingenciesList"></div>
+      <div id="travelAttention"></div>
+      <div id="travelResults"></div>
     </section>
 
     <!-- PREP -->
@@ -926,12 +1063,12 @@
         <div class="text-sm text-muted">Hours, tickets, visit times from each hotel</div>
       </div>
       <div class="card" onclick="showPage('maps')" style="cursor:pointer;">
-        <div class="card-title"><span class="icon">🗺️</span> Maps & Official Links</div>
-        <div class="text-sm text-muted">Door-to-door routes and transport sites · editable notes</div>
+        <div class="card-title"><span class="icon">🗺️</span> Maps, Links &amp; Travel Guide</div>
+        <div class="text-sm text-muted">Routes, official links, local transportation guidance and travel help</div>
       </div>
       <div class="card" onclick="showPage('journal')" style="cursor:pointer;">
-        <div class="card-title"><span class="icon">📔</span> Journal & Memories</div>
-        <div class="text-sm text-muted">Photos, meals, souvenirs, highlights</div>
+        <div class="card-title"><span class="icon">📔</span> Journal & Notes</div>
+        <div class="text-sm text-muted">Daily memories and offline reference notes</div>
       </div>
       <div class="card">
         <div class="card-title"><span class="icon">🔗</span> Quick Links</div>
@@ -982,37 +1119,95 @@
       <div id="attractionsList"></div>
     </section>
 
-    <!-- MAPS (sub) -->
+    <!-- MAPS, LINKS & TRAVEL GUIDE (sub) -->
     <section id="page-maps" class="page">
       <button class="btn-outline btn-sm mb-8" onclick="showPage('more')">← Back</button>
-      <div class="section-title">Door-to-Door Routes</div>
-      <div id="mapsRoutes"></div>
-      <div class="section-title">Airports &amp; Terminals</div>
-      <div id="mapsAirports"></div>
-      <div class="section-title">Hotels &amp; Venues</div>
-      <div id="mapsHotels"></div>
-      <div class="section-title">Official Transport Sites</div>
-      <div id="mapsOfficial"></div>
-      <div class="section-title">Saved Links &amp; Pending</div>
-      <div id="mapsPending"></div>
+      <div class="section-title" style="font-size:1.15rem;">Maps, Links &amp; Travel Guide</div>
+      <div class="filter-bar" id="mapsGuideFilters" aria-label="Maps, links and travel guide filters">
+        <div class="filter-chip active" data-maps-filter="all" onclick="setMapsGuideFilter('all')">All</div>
+        <div class="filter-chip" data-maps-filter="routes" onclick="setMapsGuideFilter('routes')">🗺️ Routes</div>
+        <div class="filter-chip" data-maps-filter="airports" onclick="setMapsGuideFilter('airports')">✈️ Airports</div>
+        <div class="filter-chip" data-maps-filter="hotels" onclick="setMapsGuideFilter('hotels')">🏨 Hotels</div>
+        <div class="filter-chip" data-maps-filter="official" onclick="setMapsGuideFilter('official')">🔗 Official Links</div>
+        <div class="filter-chip" data-maps-filter="local" onclick="setMapsGuideFilter('local')">🚕 Local Guide</div>
+<div class="filter-chip" data-maps-filter="comfort" onclick="setMapsGuideFilter('comfort')">🚻 Comfort &amp; Essentials</div>
+        <div class="filter-chip" data-maps-filter="help" onclick="setMapsGuideFilter('help')">🆘 Travel Help</div>
+        <div class="filter-chip" data-maps-filter="saved" onclick="setMapsGuideFilter('saved')">📌 Saved</div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="routes">
+        <div class="section-title">Door-to-Door Routes</div>
+        <div id="mapsRoutes"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="airports">
+        <div class="section-title">Airports &amp; Terminals</div>
+        <div id="mapsAirports"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="hotels">
+        <div class="section-title">Hotels &amp; Venues</div>
+        <div id="mapsHotels"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="official">
+        <div class="section-title">Official Transport Sites</div>
+        <div id="mapsOfficial"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="local">
+        <div class="section-title">Local Transportation Guide</div>
+        <div class="text-sm text-muted mb-8">General city transportation advice—not scheduled trip items.</div>
+        <div id="mapsLocalGuide"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="comfort">
+        <div class="section-title">Comfort &amp; Essentials</div>
+        <div class="text-sm text-muted mb-8">Quick restroom reference for Rome, Florence, and Venice. Verify current hours and access on arrival.</div>
+        <div id="mapsComfortEssentials"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="help">
+        <div class="section-title">Travel Help / What If?</div>
+        <div class="text-sm text-muted mb-8">Prepared backup instructions for delays, missed connections, baggage problems, and disruptions.</div>
+        <div id="mapsTravelHelp"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="saved">
+        <div class="section-title">Saved Links &amp; Pending</div>
+        <div id="mapsPending"></div>
+      </div>
     </section>
 
-    <!-- JOURNAL (sub) -->
+    <!-- JOURNAL & NOTES (sub) -->
     <section id="page-journal" class="page">
       <button class="btn-outline btn-sm mb-8" onclick="showPage('more')">← Back</button>
-      <div class="section-title">Daily Journal</div>
-      <div id="journalForm" class="card">
-        <label class="text-sm fw-600">Date</label>
-        <input type="date" id="jDate" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;" />
-        <label class="text-sm fw-600">Highlight</label>
-        <input type="text" id="jHighlight" placeholder="Best moment of the day" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;" />
-        <label class="text-sm fw-600">Best Meal</label>
-        <input type="text" id="jMeal" placeholder="Restaurant + dish" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;" />
-        <label class="text-sm fw-600">Notes</label>
-        <textarea id="jNotes" rows="3" placeholder="Anything else..." style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;resize:vertical;"></textarea>
-        <button onclick="saveJournalEntry()">Save Entry</button>
+      <div class="section-title">Journal &amp; Notes</div>
+      <div class="filter-chips" style="margin-bottom:12px;">
+        <button class="filter-chip active" id="journalTabBtn" onclick="setJournalNotesTab('journal')">📔 Journal</button>
+        <button class="filter-chip" id="notesTabBtn" onclick="setJournalNotesTab('notes')">📝 Notes</button>
       </div>
-      <div id="journalEntries"></div>
+
+      <div id="journalPanel">
+        <div class="section-title">Daily Journal</div>
+        <div id="journalForm" class="card">
+          <label class="text-sm fw-600">Date</label>
+          <input type="date" id="jDate" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;" />
+          <label class="text-sm fw-600">Highlight</label>
+          <input type="text" id="jHighlight" placeholder="Best moment of the day" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;" />
+          <label class="text-sm fw-600">Best Meal</label>
+          <input type="text" id="jMeal" placeholder="Restaurant + dish" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;" />
+          <label class="text-sm fw-600">Notes</label>
+          <textarea id="jNotes" rows="3" placeholder="Anything else..." style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;margin:4px 0 10px;font-size:0.95rem;resize:vertical;"></textarea>
+          <button onclick="saveJournalEntry()">Save Entry</button>
+        </div>
+        <div id="journalEntries"></div>
+      </div>
+
+      <div id="notesPanel" style="display:none;">
+        <div class="row space-between" style="align-items:center;margin-bottom:10px;">
+          <div>
+            <div class="section-title" style="margin:0;">Reference Notes</div>
+            <div class="text-xs text-muted">Separate editable notes that work fully offline.</div>
+          </div>
+          <button class="btn-sm" onclick="addReferenceNote()">+ Add Note</button>
+        </div>
+        <input id="notesSearch" type="search" placeholder="Search notes..." oninput="renderNotes()" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:10px;font-size:.95rem;" />
+        <div class="filter-chips" id="notesCategoryFilters" style="margin-bottom:10px;"></div>
+        <div id="notesEntries"></div>
+      </div>
     </section>
   </main>
 
@@ -1044,6 +1239,16 @@
     </button>
   </nav>
 
+  <!-- GLOBAL SEARCH -->
+  <div class="global-search-overlay" id="globalSearchOverlay" onclick="if(event.target===this)closeGlobalSearch()">
+    <div class="global-search-panel" role="dialog" aria-modal="true" aria-labelledby="globalSearchTitle">
+      <div class="global-search-head"><strong id="globalSearchTitle">🔍 Search the entire trip</strong><button class="global-search-close" onclick="closeGlobalSearch()">Close</button></div>
+      <input class="search-box" id="globalSearchInput" type="search" placeholder="Flight, hotel, confirmation, restaurant, note…" oninput="renderGlobalSearchResults(this.value)" autocomplete="off" />
+      <div class="text-xs text-muted" style="margin:-5px 2px 10px;">Searches Timeline, Travel, reservations, wallet, hotels, restaurants, notes, packing, Safety, maps, links, and travel guides—even offline.</div>
+      <div class="global-search-results" id="globalSearchResults"></div>
+    </div>
+  </div>
+
   <!-- DETAIL OVERLAY -->
   <div class="overlay" id="overlay" onclick="if(event.target===this)closeSheet()">
     <div class="sheet" id="sheet">
@@ -1073,11 +1278,29 @@
     </div>
   </div>
 
+  <div id="appAboutOverlay" onclick="if(event.target===this) closeAppAbout()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:10000;padding:20px;align-items:center;justify-content:center;">
+    <div role="dialog" aria-modal="true" aria-labelledby="appAboutTitle" style="width:min(420px,100%);background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.28);">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+        <div>
+          <div id="appAboutTitle" style="font-size:1.15rem;font-weight:800;">🇮🇹 Italy 2026</div>
+          <div style="font-size:.82rem;color:var(--muted);margin-top:3px;">Travel Companion for David & Melody</div>
+        </div>
+        <button type="button" class="btn-outline btn-sm" onclick="closeAppAbout()" aria-label="Close">✕</button>
+      </div>
+      <div style="margin-top:18px;display:grid;gap:10px;font-size:.88rem;">
+        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">App version</span><strong id="aboutAppVersion"></strong></div>
+        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Data version</span><strong id="aboutDataVersion"></strong></div>
+        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.8.0</strong></div>
+      </div>
+      <div style="margin-top:16px;padding:12px;border-radius:12px;background:var(--soft);font-size:.78rem;color:var(--muted);line-height:1.5;">Technical details are kept here for troubleshooting without cluttering the Home page.</div>
+    </div>
+  </div>
+
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.6.0-dev-c";
+    const APP_VERSION = "10.8.0";
     const DATA_VERSION = "10.5.0";
-    const BUILD_LABEL = "App v10.6.0 DEV C · Travel Experience · Data v10.5.0";
+    const BUILD_LABEL = "Italy App v10.8.1 ⓘ";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -1233,6 +1456,8 @@
 
     // ===================== STATE & HELPERS =====================
     let currentCity = "rome";
+    let travelTypeFilter = "all";
+    let travelSearch = "";
     let restCityFilter = "all";
     let restAteFilter = "all";
     let restQuickFilter = "all";
@@ -1476,6 +1701,38 @@
     function setJournal(arr) {
       localStorage.setItem("italy2026_journal", JSON.stringify(arr));
     }
+    const DEFAULT_REFERENCE_NOTES = [{
+      id: "note_sweet_drinks_italy",
+      title: "What to drink in Italy if you usually drink sweet tea",
+      category: "Food & Drink",
+      pinned: true,
+      createdAt: "2026-08-03T00:00:00.000Z",
+      updatedAt: "2026-08-03T00:00:00.000Z",
+      body: `Italy does not have southern-style sweet tea, but you can find great sweet alternatives like Estathé, Caffè Ginseng, and Chinotto.
+
+ICED TEA AND SWEET SODAS
+
+Estathé: This is the most famous bottled iced tea in Italy. It comes in lemon (limone) or peach (pesca) and is quite sweet. You can buy it at any grocery store or café.
+
+Chinotto: A dark, sparkling Italian soda made from citrus. It looks like cola but has a sweet and slightly bitter taste.
+
+Limonata or Aranciata: Sweet, fizzy lemon or orange sodas made by brands like San Pellegrino. They are much sweeter than plain water or wine.
+
+SWEET COFFEE DRINKS
+
+Caffè Ginseng: A popular hot coffee drink at Italian bars that is creamy, smooth, and naturally sweet.
+
+Caffè Freddo: A sweet, refrigerated cold coffee drink served in many cafés.
+
+Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and foamy.`
+    }];
+    function getNotes() {
+      try {
+        const raw = localStorage.getItem("italy2026_notes");
+        return raw === null ? DEFAULT_REFERENCE_NOTES.map(n => ({...n})) : JSON.parse(raw || "[]");
+      } catch(e) { return DEFAULT_REFERENCE_NOTES.map(n => ({...n})); }
+    }
+    function setNotes(arr) { localStorage.setItem("italy2026_notes", JSON.stringify(arr)); }
 
     // ---- Live overrides (timeline notes, train times, transfer notes, reservation notes) ----
     function getLive() {
@@ -1535,6 +1792,69 @@
       showToast("Step restored to timeline");
       return true;
     }
+    function getCustomRestaurants() {
+      try { return JSON.parse(localStorage.getItem("italy2026_customrestaurants") || "[]"); } catch(e) { return []; }
+    }
+    function setCustomRestaurants(arr) {
+      localStorage.setItem("italy2026_customrestaurants", JSON.stringify(arr || []));
+    }
+    function allRestaurants() {
+      return [...RESTAURANTS, ...getCustomRestaurants().map(r => ({...r, _custom:true}))];
+    }
+    function nearestTripCity(lat, lng) {
+      const cities = [
+        {name:"Rome",lat:41.9028,lng:12.4964},
+        {name:"Florence",lat:43.7696,lng:11.2558},
+        {name:"Venice",lat:45.4408,lng:12.3155}
+      ];
+      return cities.sort((a,b)=>Math.hypot(lat-a.lat,lng-a.lng)-Math.hypot(lat-b.lat,lng-b.lng))[0].name;
+    }
+    function addRestaurant() {
+      document.getElementById("sheetContent").innerHTML = `
+        <h2>Add Restaurant</h2>
+        <div class="form-group"><label>Name</label><input id="newRestName" autocomplete="off"></div>
+        <div class="form-group"><label>City</label><select id="newRestCity"><option>Rome</option><option>Florence</option><option>Venice</option><option>Other</option></select></div>
+        <div class="form-group"><label>Neighborhood / location</label><input id="newRestNeigh" placeholder="Optional"></div>
+        <div class="form-group"><label>Food / style</label><input id="newRestStyle" placeholder="Cafe, pizza, seafood…"></div>
+        <div class="form-group"><label>Price</label><select id="newRestPrice"><option>€</option><option selected>€€</option><option>€€€</option><option>€€€€</option></select></div>
+        <div class="form-group"><label>What to order</label><input id="newRestOrder" placeholder="Optional"></div>
+        <div class="form-group"><label>Notes</label><textarea id="newRestNotes" rows="3" placeholder="Why it caught your eye, hours, recommendation…"></textarea></div>
+        <div class="form-group"><label>Google Maps link</label><input id="newRestMaps" type="url" placeholder="Optional"></div>
+        <button type="button" class="btn-outline" style="width:100%;" onclick="captureRestaurantLocation()">📍 Use Current Location</button>
+        <div id="newRestGpsStatus" class="text-xs text-muted gps-status"></div>
+        <div class="btn-row mt-12"><button type="button" class="btn-outline" onclick="closeSheet()">Cancel</button><button type="button" onclick="saveNewRestaurant()">Save Restaurant</button></div>`;
+      document.getElementById("overlay").classList.add("open");
+      setTimeout(()=>document.getElementById("newRestName")?.focus(),100);
+    }
+    function captureRestaurantLocation() {
+      const status=document.getElementById("newRestGpsStatus");
+      if (!navigator.geolocation) { status.textContent="Location is not supported on this device."; return; }
+      status.textContent="Finding your location…";
+      navigator.geolocation.getCurrentPosition(pos=>{
+        const lat=pos.coords.latitude.toFixed(6), lng=pos.coords.longitude.toFixed(6);
+        document.getElementById("newRestMaps").value=`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+        document.getElementById("newRestCity").value=nearestTripCity(+lat,+lng);
+        if (!document.getElementById("newRestNeigh").value) document.getElementById("newRestNeigh").value=`Saved location: ${lat}, ${lng}`;
+        status.textContent="✓ Current location saved. You can still edit the city or location.";
+      },err=>{ status.textContent=err.code===1 ? "Location permission was declined. You can paste a Maps link instead." : "Could not get the current location. Try again outside or paste a Maps link."; },{enableHighAccuracy:true,timeout:12000,maximumAge:60000});
+    }
+    function saveNewRestaurant() {
+      const name=document.getElementById("newRestName").value.trim();
+      if (!name) { showToast("Enter a restaurant name"); return; }
+      const city=document.getElementById("newRestCity").value;
+      const arr=getCustomRestaurants();
+      const id="restaurant_"+Date.now();
+      const r={id,name,city,neigh:document.getElementById("newRestNeigh").value.trim()||"Saved on the go",style:document.getElementById("newRestStyle").value.trim()||"Restaurant",price:document.getElementById("newRestPrice").value,order:document.getElementById("newRestOrder").value.trim()||"Decide there",why:document.getElementById("newRestNotes").value.trim()||"Added during the trip",best:"On-the-go find",res:"Unknown",access:"",priority:"Added",maps:document.getElementById("newRestMaps").value.trim()||`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name+" "+city)}`,createdAt:new Date().toISOString()};
+      arr.push(r); setCustomRestaurants(arr);
+      const log=getRestLog(); log[restKey(r)]={favorite:true,notes:document.getElementById("newRestNotes").value.trim()}; setRestLog(log);
+      closeSheet(); restCityFilter="all"; restQuickFilter="all"; renderFood(); showToast("Restaurant added and saved");
+    }
+    function deleteCustomRestaurant(id, key) {
+      if (!confirm("Delete this added restaurant?")) return false;
+      setCustomRestaurants(getCustomRestaurants().filter(r=>r.id!==id));
+      const log=getRestLog(); delete log[key]; setRestLog(log); renderFood(); showToast("Restaurant deleted"); return true;
+    }
+
     function getRestLog() {
       try { return JSON.parse(localStorage.getItem("italy2026_restlog") || "{}"); } catch(e) { return {}; }
     }
@@ -2263,7 +2583,7 @@
       return out;
     }
     function applyDeleted(arr, type, idFn, deleted) { const d=(deleted&&deleted[type])||{}; return (arr||[]).filter(x=>!(String(idFn(x)) in d)); }
-    const SAVED_DATA_KEYS = ["italy2026_live","italy2026_expenses","italy2026_pack","italy2026_open","italy2026_journal","italy2026_tldone","italy2026_tlhidden","italy2026_restlog","italy2026_attrlog","italy2026_pretrip","italy2026_customlegs","italy2026_routeedits","italy2026_plannededits","italy2026_deleted","italy2026_packcatalog"];
+    const SAVED_DATA_KEYS = ["italy2026_customrestaurants","italy2026_live","italy2026_expenses","italy2026_pack","italy2026_open","italy2026_journal","italy2026_notes","italy2026_tldone","italy2026_tlhidden","italy2026_restlog","italy2026_attrlog","italy2026_pretrip","italy2026_customlegs","italy2026_routeedits","italy2026_plannededits","italy2026_deleted","italy2026_packcatalog"];
     function clearAllSupportedSavedData() { SAVED_DATA_KEYS.forEach(k=>localStorage.removeItem(k)); }
 
     function getBackupMeta() {
@@ -2281,10 +2601,11 @@
     function backupCounts(src) {
       return {
         journal: Array.isArray(src.journal) ? src.journal.length : 0,
+        notes: Array.isArray(src.notes) ? src.notes.length : 0,
         expenses: Array.isArray(src.expenses) ? src.expenses.length : 0,
         customlegs: Array.isArray(src.customlegs) ? src.customlegs.length : 0,
         timeline: countKeys(src.tldone),
-        restaurants: countKeys(src.restlog),
+        restaurants: countKeys(src.restlog) + (Array.isArray(src.customrestaurants) ? src.customrestaurants.length : 0),
         attractions: countKeys(src.attrlog),
         packing: countKeys(src.pack)
       };
@@ -2293,9 +2614,9 @@
       const el = document.getElementById("backupStatus");
       if (!el) return;
       const meta = getBackupMeta();
-      const current = backupCounts({journal:getJournal(),expenses:getExpenses(),customlegs:getCustomLegs(),tldone:getTimelineDone(),restlog:getRestLog(),attrlog:getAttrLog(),pack:getPackState()});
+      const current = backupCounts({journal:getJournal(),notes:getNotes(),expenses:getExpenses(),customlegs:getCustomLegs(),customrestaurants:getCustomRestaurants(),tldone:getTimelineDone(),restlog:getRestLog(),attrlog:getAttrLog(),pack:getPackState()});
       const fmt = iso => iso ? new Date(iso).toLocaleString("en-US", {dateStyle:"medium",timeStyle:"short"}) : "Never";
-      el.innerHTML = `<div style="line-height:1.8;"><strong>Device:</strong> ${getBackupOwner()}<br><strong>Last export:</strong> ${fmt(meta.lastExport)}<br><strong>Last import:</strong> ${fmt(meta.lastImport)}${meta.lastImportFrom ? ` · from ${meta.lastImportFrom}` : ""}<br><strong>Current saved data:</strong> ${current.journal} journal · ${current.expenses} expenses · ${current.customlegs} custom legs · ${current.restaurants} restaurant records · ${current.packing} packing records</div>`;
+      el.innerHTML = `<div style="line-height:1.8;"><strong>Device:</strong> ${getBackupOwner()}<br><strong>Last export:</strong> ${fmt(meta.lastExport)}<br><strong>Last import:</strong> ${fmt(meta.lastImport)}${meta.lastImportFrom ? ` · from ${meta.lastImportFrom}` : ""}<br><strong>Current saved data:</strong> ${current.journal} journal · ${current.notes} notes · ${current.expenses} expenses · ${current.customlegs} custom legs · ${current.restaurants} restaurant records · ${current.packing} packing records</div>`;
     }
     function mergeArrayById(local, incoming, idFn) {
       const map = new Map();
@@ -2326,9 +2647,9 @@
       const payload = {
         version: 4, appVersion: APP_VERSION, dataVersion: DATA_VERSION, exported: now,
         exportedBy: getBackupOwner(),
-        live: getLive(), expenses: getExpenses(), pack: getPackState(), open: getOpenState(), journal: getJournal(),
+        live: getLive(), expenses: getExpenses(), pack: getPackState(), open: getOpenState(), journal: getJournal(), notes: getNotes(),
         tldone: getTimelineDone(), tlhidden: getTimelineHidden(), restlog: getRestLog(), attrlog: getAttrLog(),
-        pretrip: getPretripState(), customlegs: getCustomLegs(), routeedits: getRouteEdits(), plannededits: getPlannedEdits(), deleted: getDeletedRecords(), packcatalog: getPackCatalogData()
+        pretrip: getPretripState(), customlegs: getCustomLegs(), customrestaurants: getCustomRestaurants(), routeedits: getRouteEdits(), plannededits: getPlannedEdits(), deleted: getDeletedRecords(), packcatalog: getPackCatalogData()
       };
       const meta=getBackupMeta(); meta.lastExport=now; setBackupMeta(meta); renderBackupStatus();
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
@@ -2342,7 +2663,7 @@
       const counts=backupCounts(data);
       document.getElementById("sheetContent").innerHTML = `<h2>Import Backup</h2>
         <div class="alert alert-info"><strong>File:</strong> ${fileName}<br><strong>From:</strong> ${owner}<br><strong>Created:</strong> ${data.exported ? new Date(data.exported).toLocaleString("en-US") : "Unknown"}</div>
-        <div class="text-sm" style="line-height:1.8;"><strong>Contains:</strong><br>${counts.journal} journal entries · ${counts.expenses} expenses<br>${counts.customlegs} custom legs · ${counts.restaurants} restaurant records<br>${counts.attractions} attraction records · ${counts.timeline} completed timeline steps<br>${counts.packing} packing records</div>
+        <div class="text-sm" style="line-height:1.8;"><strong>Contains:</strong><br>${counts.journal} journal entries · ${counts.notes} notes · ${counts.expenses} expenses<br>${counts.customlegs} custom legs · ${counts.restaurants} restaurant records<br>${counts.attractions} attraction records · ${counts.timeline} completed timeline steps<br>${counts.packing} packing records</div>
         <div class="alert alert-warn mt-12"><strong>Merge</strong> keeps this phone's data and adds/updates records from the file.<br><strong>Replace</strong> erases this phone's saved app data and uses the file instead.</div>
         <div class="btn-row"><button class="btn-outline" onclick="closeSheet()">Cancel</button><button class="btn-accent" id="mergeImportBtn">Merge</button><button class="btn-danger" id="replaceImportBtn">Replace</button></div>`;
       document.getElementById("overlay").classList.add("open");
@@ -2355,18 +2676,22 @@
       if (mode === "replace") {
         clearAllSupportedSavedData();
         setLive(data.live||{}); setExpenses(data.expenses||[]); setPackState(data.pack||{}); setOpenState(data.open||{});
-        setJournal(data.journal||[]); setTimelineDone(data.tldone||{}); setTimelineHidden(data.tlhidden||{});
+        setJournal(data.journal||[]); setNotes(Array.isArray(data.notes) ? data.notes : DEFAULT_REFERENCE_NOTES.map(n=>({...n}))); setTimelineDone(data.tldone||{}); setTimelineHidden(data.tlhidden||{});
         setRestLog(data.restlog||{}); setAttrLog(data.attrlog||{}); setPretripState(data.pretrip||{});
-        setCustomLegs(data.customlegs||[]); setRouteEdits(data.routeedits||{}); setPlannedEdits(data.plannededits||{});
+        setCustomLegs(data.customlegs||[]); setCustomRestaurants(data.customrestaurants||[]); setRouteEdits(data.routeedits||{}); setPlannedEdits(data.plannededits||{});
         setDeletedRecords(data.deleted||{}); setPackCatalogData(data.packcatalog||{edits:{},custom:{},deleted:{}});
       } else {
         const deleted=mergeDeleted(getDeletedRecords(),data.deleted||{}); setDeletedRecords(deleted);
         const expenseId=x=>x.id||`${x.date}|${x.desc}|${x.amt}`;
         const journalId=x=>x.ts||`${x.date}|${x.highlight}|${x.meal}`;
+        const noteId=x=>x.id||`${x.title}|${x.createdAt}`;
         const legId=x=>x.id||`${x.date}|${x.from}|${x.to}|${x.start}`;
         let r=mergeArrayById(applyDeleted(getExpenses(),"expenses",expenseId,deleted),applyDeleted(data.expenses||[],"expenses",expenseId,deleted),expenseId); totals.deleted += getExpenses().length-r.value.length; setExpenses(tally(r));
         r=mergeArrayById(applyDeleted(getJournal(),"journal",journalId,deleted),applyDeleted(data.journal||[],"journal",journalId,deleted),journalId); totals.deleted += getJournal().length-r.value.length; setJournal(tally(r));
+        r=mergeArrayById(applyDeleted(getNotes(),"notes",noteId,deleted),applyDeleted(data.notes||[],"notes",noteId,deleted),noteId); totals.deleted += getNotes().length-r.value.length; setNotes(tally(r));
         r=mergeArrayById(applyDeleted(getCustomLegs(),"customlegs",legId,deleted),applyDeleted(data.customlegs||[],"customlegs",legId,deleted),legId); totals.deleted += getCustomLegs().length-r.value.length; setCustomLegs(tally(r));
+        const restaurantId=x=>x.id||`${x.city}|${x.name}`;
+        r=mergeArrayById(getCustomRestaurants(),data.customrestaurants||[],restaurantId); setCustomRestaurants(tally(r));
         if (data.live) setLive(tally(mergeObject(getLive(),data.live)));
         if (data.pack) setPackState(tally(mergePackingState(getPackState(),data.pack)));
         if (data.packcatalog) setPackCatalogData(tally(mergePackCatalog(getPackCatalogData(),data.packcatalog)));
@@ -2504,7 +2829,7 @@
       { icon:"✈️", text:"Need to change a flight, train, transfer, tour, or event? Make the update in Travel.", page:"transport", label:"Open Travel" },
       { icon:"🏨", text:"Need to update a hotel? Make the change in Reservations.", page:"bookings", label:"Open Reservations" },
       { icon:"🍽️", text:"Restaurant favorites, ratings, and visit notes are edited in Food.", page:"food", label:"Open Food" },
-      { icon:"🗺️", text:"Need directions or a saved route? Open Maps & Links.", page:"maps", label:"Open Maps" },
+      { icon:"🗺️", text:"Need directions or a saved route? Open Maps, Links & Travel Guide.", page:"maps", label:"Open Maps" },
       { icon:"🎒", text:"Packing changes and new gear belong in Packing.", page:"prep", label:"Open Packing" },
       { icon:"💰", text:"Add expenses and adjust planned costs in Budget.", page:"money", label:"Open Budget" },
       { icon:"💾", text:"Export a fresh backup before departure and after major planning updates.", page:"more", label:"Open Trip Tools" }
@@ -2527,8 +2852,9 @@
 
       document.getElementById("homeStats").innerHTML = `
         <div class="stat"><div class="val">${dep > 0 ? dep : "—"}</div><div class="lbl">Days to departure</div></div>
-        <div class="stat"><div class="val">12</div><div class="lbl">Days / 11 nights</div></div>
+        <div class="stat weather-stat" id="homeWeatherTile"><div class="weather-main"><span class="weather-icon">🌤️</span><span class="weather-temp">—°</span></div><div class="weather-details">Loading weather…</div></div>
       `;
+      renderHomeWeather();
       const openState = getOpenState();
       const highItems = OPEN_ITEMS.filter(o => o.urgency === "High" && o.status !== "Done" && !openState[o.pri]);
       document.getElementById("homeOpenItems").innerHTML = highItems.slice(0,5).map(o => `
@@ -2544,7 +2870,7 @@
       const hotels = liveHotels();
       document.getElementById("homeGlance").innerHTML = `
         <div class="text-sm" style="line-height:1.8;">
-          <strong>Depart</strong> Sun Oct 4 · TPA → BOS → CPH<br>
+          <strong>Depart</strong> Sun Oct 4 · TPA → BOS → CPH → FCO (Rome)<br>
           ${hotels.map(h => `<strong>${escapeHtml(h.city)}</strong> ${escapeHtml(h.dates)} · ${escapeHtml(h.name)}<br>`).join("")}
           <strong>Return</strong> Thu Oct 15 · VCE → CPH → JFK → TPA
         </div>
@@ -2568,6 +2894,18 @@
       refreshFxRate(false);
     }
 
+    function navigateToday(delta) {
+      const idx=DAYS.findIndex(d=>d.date===selectedDate);
+      const next=Math.max(0,Math.min(DAYS.length-1,idx+delta));
+      if (next===idx) return;
+      selectedDate=DAYS[next].date; renderToday();
+    }
+    function setupTodaySwipe() {
+      const el=document.getElementById("todayContent"); if(!el) return;
+      let startX=0,startY=0;
+      el.ontouchstart=e=>{const t=e.changedTouches[0];startX=t.clientX;startY=t.clientY;};
+      el.ontouchend=e=>{const t=e.changedTouches[0],dx=t.clientX-startX,dy=t.clientY-startY;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.3) navigateToday(dx<0?1:-1);};
+    }
     function renderToday() {
       const chips = document.getElementById("dateChips");
       chips.innerHTML = DAYS.map(d => `
@@ -2580,6 +2918,9 @@
       });
 
       const day = DAYS.find(d => d.date === selectedDate) || DAYS[0];
+      const dayIndex=DAYS.findIndex(d=>d.date===day.date);
+      const label=document.getElementById("todayDayLabel"); if(label) label.textContent=`${fmtDate(day.date)} · ${day.city}`;
+      const prev=document.getElementById("todayPrevBtn"), next=document.getElementById("todayNextBtn"); if(prev)prev.disabled=dayIndex<=0; if(next)next.disabled=dayIndex>=DAYS.length-1;
       const dayHotel = hotelForDate(day.date);
       document.getElementById("todayContent").innerHTML = `
         <div class="card" style="padding:10px 14px;">
@@ -2614,6 +2955,7 @@
           ${day.checklist.map(c => `<div class="check-row"><input type="checkbox"> <span>${c}</span></div>`).join("")}
         </div>
       `;
+      setupTodaySwipe();
       if (isVeniceDay(day.date)) loadVeniceTides(day.date);
     }
 
@@ -2802,6 +3144,20 @@
           <div class="mt-8">${flights.map(f=>`<div class="text-sm" style="padding:7px 0;border-top:1px solid var(--border);"><strong>${f.flight}</strong> · ${fmtDate(f.date)} · ${f.dep}–${f.arr}<br><span class="text-muted">${f.from} → ${f.to}</span> <button class="edit-btn" onclick="editFlightById('${f.id}')">Edit</button></div>`).join("")}</div>
         </div>
         <div class="card">
+          <div class="card-title">🪪 Traveler IDs & airline rewards</div>
+          <div class="text-sm" style="line-height:1.9;">
+            <strong>TSA Known Traveler Numbers</strong><br>
+            David: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">1383385020</span><br>
+            Melody: <span class="text-muted">Pending</span><br><br>
+            <strong>Delta SkyMiles</strong><br>
+            David: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">9941234776</span><br>
+            Melody: <span class="text-muted">Pending</span><br><br>
+            <strong>SAS EuroBonus</strong><br>
+            David: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">EBB772160933</span><br>
+            Melody: <span class="text-muted">Pending</span>
+          </div>
+        </div>
+        <div class="card">
           <div class="row space-between"><div class="card-title">🚂 Trains</div><button class="edit-btn" onclick="copyTextValue(TRIP.italo,'Train confirmation copied')">Copy conf.</button></div><div class="wallet-key">Italo ${TRIP.italo}</div>
           <div class="text-sm" style="line-height:1.85;">
             <strong>Leonardo Express:</strong> FCO → Roma Termini (buy on arrival via Trenitalia)<br>
@@ -2831,6 +3187,10 @@
         "ITALY 2026 — CONFIRMATION WALLET",
         `Air: ${airConfirmationText()}`,
         ...flights.map(f => `${f.flight}: ${f.from} ${f.dep} → ${f.to} ${f.arr}`),
+        "",
+        "TSA KTN — David: 1383385020 · Melody: Pending",
+        "Delta SkyMiles — David: 9941234776 · Melody: Pending",
+        "SAS EuroBonus — David: EBB772160933 · Melody: Pending",
         "",
         `Italo 8904: ${TRIP.italo} Coach 1 seats 13 & 16 (9:39–11:55)`,
         ...liveHotels().map(h => `${h.name}: ${h.conf} · ${h.dates} · ${h.address}`),
@@ -2900,21 +3260,31 @@
       const total = allActive.length;
       const doneCount = allActive.filter(t => doneMap[t.step]).length;
       const hiddenCount = Object.keys(hiddenMap).length;
-      const firstOpenStep = (allActive.find(t => !doneMap[t.step]) || {}).step;
+      const firstOpen = allActive.find(t => !doneMap[t.step]) || null;
+      const firstOpenStep = firstOpen ? firstOpen.step : null;
+      const overallPct = total ? Math.round(doneCount / total * 100) : 0;
+      const dayStats = allActive.reduce((acc,t) => {
+        if (!acc[t.date]) acc[t.date] = { total:0, done:0 };
+        acc[t.date].total++;
+        if (doneMap[t.step]) acc[t.date].done++;
+        return acc;
+      }, {});
 
       document.getElementById("timelineList").innerHTML = `
-        <div class="card" style="padding:10px 14px;margin-bottom:12px;">
-          <div class="row space-between">
-            <div class="text-sm fw-600">Progress</div>
-            <div class="text-sm">${doneCount} / ${total} completed${hiddenCount ? " · " + hiddenCount + " hidden" : ""}</div>
+        <div class="card tl-progress-card">
+          <div class="tl-progress-top">
+            <div><div class="tl-progress-title">Trip progress</div><div class="tl-progress-count">${doneCount} of ${total} complete</div></div>
+            <div class="text-sm fw-600">${overallPct}%</div>
           </div>
-          <div class="progress-bar"><div class="fill" style="width:${total ? Math.round(doneCount/total*100) : 0}%"></div></div>
-          <div class="text-xs text-muted mt-8">Completed steps stay in place but fade into the background. Timeline opens near the last completed step and the next item.</div>
+          <div class="progress-bar"><div class="fill" style="width:${overallPct}%"></div></div>
+          <div class="tl-progress-note">${firstOpen ? `Next: ${fmtDate(firstOpen.date)} · ${escapeHtml(firstOpen.start || "Time TBD")} · ${escapeHtml((firstOpen.title || `${firstOpen.from || ""} → ${firstOpen.to || ""}`).trim())}` : "All visible Timeline steps are complete."}${hiddenCount ? ` · ${hiddenCount} hidden` : ""}</div>
         </div>
       ` + (items.length ? items.map((t, itemIndex) => {
         const previous = itemIndex > 0 ? items[itemIndex - 1] : null;
+        const stat = dayStats[t.date] || {total:0,done:0};
+        const dayPct = stat.total ? Math.round(stat.done / stat.total * 100) : 0;
         const dateHeader = !previous || previous.date !== t.date
-          ? `<div class="tl-day-header"><span>${fmtDate(t.date)}</span></div>`
+          ? `<div class="tl-day-header"><div class="tl-day-header-main"><span class="tl-day-header-date">${fmtDate(t.date)}</span><span class="tl-day-header-count">${stat.done}/${stat.total}</span><span class="tl-day-progress" aria-label="${dayPct}% complete"><span style="width:${dayPct}%"></span></span></div></div>`
           : "";
         let cls = "";
         const isDone = !!doneMap[t.step];
@@ -2936,30 +3306,37 @@
         const primary = route ? normalizedLink(route.link) : "";
         const backup = route ? normalizedLink(route.backupLink) : "";
         const routeSummary = isActualTravelStep(t) && (t.from || t.to)
-          ? `<div class="tl-route-summary"><div class="from">${escapeHtml(t.from || "Start")}</div><div class="arrow">→</div><div class="to">${escapeHtml(t.to || "Destination")}</div></div>`
+          ? `<div class="tl-route-summary">
+              <div class="from"><span class="tl-route-label">From</span><div class="tl-route-place">${escapeHtml(t.from || "Start")}</div>${t.start ? `<div class="tl-route-clock">${escapeHtml(t.start)}</div>` : ""}</div>
+              <div class="arrow" aria-hidden="true">→</div>
+              <div class="to"><span class="tl-route-label">To</span><div class="tl-route-place">${escapeHtml(t.to || "Destination")}</div>${t.end ? `<div class="tl-route-clock">${escapeHtml(t.end)}</div>` : ""}</div>
+            </div>`
           : "";
         const metaBits = [timelineItemType(t), (t.mode && t.mode !== timelineItemType(t)) ? t.mode : "", t.time || ""].filter(Boolean);
+        const timeLabel = t.start ? `${escapeHtml(t.start)}${t.end ? "–" + escapeHtml(t.end) : ""}` : "Time TBD";
         return `${dateHeader}
-          <div class="tl-step ${cls} ${timelineStyleClass(t)}" data-step="${t.step}" style="${isHidden ? 'opacity:0.75;' : ''}">
+          <div class="tl-step ${cls} ${timelineStyleClass(t)} ${isNext ? "is-next" : ""}" data-step="${t.step}" style="${isHidden ? 'opacity:0.75;' : ''}">
             <div class="tl-dot"></div>
-            ${isNext ? `<div class="tl-current-marker">NEXT</div>` : ""}
+            ${isNext ? `<div class="tl-current-marker">▶ NEXT</div>` : ""}
             <div class="tl-card-head">
               <div class="tl-type-icon" aria-hidden="true">${itemTypeIcon(t)}</div>
               <div class="tl-head-main">
-                <div class="tl-title">${title}</div>
-                <div class="tl-date-time">${t.start ? t.start + (t.end ? "–" + t.end : "") : "Time TBD"}</div>
+                <div class="tl-title">${escapeHtml(title)}</div>
+                <div class="tl-date-time"><span>🕒</span><span>${timeLabel}</span></div>
               </div>
-              <button class="tl-toggle" onclick="toggleTimelineDetails(${t.step})" aria-expanded="${isExpanded}">${isExpanded ? "▼ Details" : "▶ Details"}</button>
+              <button class="tl-toggle" onclick="toggleTimelineDetails(${t.step})" aria-expanded="${isExpanded}">${isExpanded ? "Hide" : "Details"}</button>
             </div>
             ${routeSummary}
-            <div class="tl-meta-line">${metaBits.map(escapeHtml).join(" · ")} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
+            <div class="tl-meta-line">${metaBits.map(x => `<span class="tl-meta-chip">${escapeHtml(x)}</span>`).join("")} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
             ${isExpanded ? `<div class="tl-expanded">
-              <div class="tl-detail">${t.instructions || "No additional instructions."}</div>
-              ${(primary || backup) ? `<div class="row mt-8" style="gap:10px;flex-wrap:wrap;">${primary ? `<a class="link-btn" href="${primary}" target="_blank" rel="noopener">${linkLabel(route.link, false)} →</a>` : ""}${backup ? `<a class="link-btn" href="${backup}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(route.backupLink, true)} →</a>` : ""}</div>` : ""}
-              ${t.notes ? `<div class="tl-detail" style="color:var(--primary);margin-top:7px;"><strong>Note:</strong> ${t.notes}</div>` : ""}
+              <div class="tl-detail-grid">
+                <div class="tl-detail-section"><div class="tl-detail-label">What to do</div><div class="tl-detail-text">${escapeHtml(t.instructions || "No additional instructions.")}</div></div>
+                ${t.notes ? `<div class="tl-detail-section"><div class="tl-detail-label">Notes</div><div class="tl-detail-text">${escapeHtml(t.notes)}</div></div>` : ""}
+                ${(primary || backup) ? `<div class="tl-detail-section"><div class="tl-detail-label">Maps & links</div><div class="tl-map-row">${primary ? `<a class="link-btn" href="${primary}" target="_blank" rel="noopener">${linkLabel(route.link, false)} →</a>` : ""}${backup ? `<a class="link-btn" href="${backup}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(route.backupLink, true)} →</a>` : ""}</div></div>` : ""}
+              </div>
               <div class="tl-action-row">${actionBtns}</div>
             </div>` : ""}
-            ${isHidden ? "" : `<div class="tl-complete-row"><label><input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTimelineDone(${t.step}, this.checked)"><span>${isDone ? "Completed" : "Mark completed"}</span></label><span class="text-xs text-muted">Step ${t.step}</span></div>`}
+            ${isHidden ? "" : `<div class="tl-complete-row"><label><input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTimelineDone(${t.step}, this.checked)"><span>${isDone ? "Completed" : "Mark completed"}</span></label></div>`}
           </div>`;
       }).join("") : `<div class="empty"><div class="icon">${tlFilter === "hidden" ? "🙈" : "📋"}</div>${tlFilter === "hidden" ? "No hidden steps." : "No steps match this filter."}</div>`);
 
@@ -2969,7 +3346,7 @@
           const nodes = Array.from(document.querySelectorAll("#timelineList .tl-step[data-step]"));
           const nextItem = nodes.find(n => Number(n.dataset.step) === Number(firstOpenStep));
           if (nextItem) {
-            const desiredTop = Math.max(90, Math.round(window.innerHeight * 0.33));
+            const desiredTop = Math.max(105, Math.round(window.innerHeight * 0.3));
             const absoluteTop = nextItem.getBoundingClientRect().top + window.scrollY;
             window.scrollTo({ top: Math.max(0, absoluteTop - desiredTop), behavior:"smooth" });
           }
@@ -3098,7 +3475,7 @@
 
     function renderFood() {
       const log = getRestLog();
-      let list = RESTAURANTS.map((r, i) => ({ ...r, _i: i, _key: restKey(r) }));
+      let list = allRestaurants().map((r, i) => ({ ...r, _i: i, _key: restKey(r) }));
       if (restCityFilter !== "all") list = list.filter(r => r.city === restCityFilter);
       if (restAteFilter === "ate") list = list.filter(r => log[r._key] && log[r._key].ate);
       if (restAteFilter === "not") list = list.filter(r => !(log[r._key] && log[r._key].ate));
@@ -3122,7 +3499,7 @@
         <div class="card rest-card" style="${ate ? 'border-color:#a5d6a7;' : ''}">
           <div class="row space-between">
             <div style="flex:1;min-width:0;">
-              <div class="name">${r.name} ${ate ? '<span class="badge badge-confirmed">Ate here</span>' : ''} ${favorite ? '<span title="Favorite">❤️</span>' : ''}</div>
+              <div class="name">${r.name} ${r._custom ? '<span class="custom-restaurant-badge">Added</span>' : ''} ${ate ? '<span class="badge badge-confirmed">Ate here</span>' : ''} ${favorite ? '<span title="Favorite">❤️</span>' : ''}</div>
               <div class="neigh">${r.city} · ${r.neigh} · ${r.style}</div>
             </div>
             <div class="tag price">${r.price}</div>
@@ -3144,7 +3521,7 @@
             <div class="row" style="gap:8px;align-items:center;">
               <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="toggleRestFavorite(decodeURIComponent(this.dataset.rk))" aria-label="Toggle favorite">${favorite ? "❤️ Saved" : "♡ Favorite"}</button>
               <a class="link-btn" href="${r.maps}" target="_blank" rel="noopener">Maps</a>
-              <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="editRestaurant(decodeURIComponent(this.dataset.rk))">${hasVisit ? "Edit visit" : "Log visit"}</button>
+              <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="editRestaurant(decodeURIComponent(this.dataset.rk))">${hasVisit ? "Edit visit" : "Log visit"}</button>${r._custom ? `<button class="edit-btn" onclick="deleteCustomRestaurant('${r.id}', decodeURIComponent('${encodeURIComponent(r._key)}'))">Delete</button>` : ""}
             </div>
           </div>
         </div>
@@ -3153,7 +3530,7 @@
     }
 
     function editRestaurant(key) {
-      const r = RESTAURANTS.find(x => restKey(x) === key);
+      const r = allRestaurants().find(x => restKey(x) === key);
       if (!r) return;
       const entry = getRestLog()[key] || {};
       openEditSheet(r.name, [
@@ -3181,21 +3558,90 @@
       }, 0);
     }
 
+    function activityTravelCategory(item) {
+      const text = [item.title, item.itemType, item.mode, item.instructions, item.notes, item.from, item.to].filter(Boolean).join(" " ).toLowerCase();
+      const todoTerms = [
+        "bag drop", "check-in", "check in", "check-out", "check out", "checkout",
+        "security", "ticket pickup", "pick up ticket", "pickup ticket", "luggage storage",
+        "drop luggage", "drop bags", "meet the group", "meet psa", "registration",
+        "departure gate", "airport check", "excursion preparation", "prepare for"
+      ];
+      if (todoTerms.some(term => text.includes(term))) return "todo";
+      if (/tour|excursion|gondola|reception|experience|museum|winery|islands|murano|burano/.test(text) || /^(tour|event)$/i.test(item.itemType || "")) return "tour";
+      return "other";
+    }
+
+    function setTravelTypeFilter(filter) {
+      travelTypeFilter = filter || "all";
+      document.querySelectorAll("#travelTypeFilters [data-travel-filter]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.travelFilter === travelTypeFilter);
+      });
+      renderTransport();
+    }
+
+    function setTravelSearch(value) {
+      travelSearch = (value || "").trim().toLowerCase();
+      renderTransport();
+      const input = document.getElementById("travelSearchInput");
+      if (input && document.activeElement !== input) input.value = value || "";
+    }
+
     function travelMapActions(from, to) {
       if (!from && !to) return "";
       const g = (from && to) ? mapsLinkFor(from, to) : googleMapSearchUrl(from || to);
       const a = (from && to)
         ? `https://maps.apple.com/?saddr=${encodeURIComponent(from)}&daddr=${encodeURIComponent(to)}`
         : appleMapSearchUrl(from || to);
-      return `<a class="link-btn" href="${g}" target="_blank" rel="noopener">Google Maps</a><a class="link-btn" href="${a}" target="_blank" rel="noopener">Apple Maps</a>`;
+      const routeWord = (from && to) ? "Route" : "Open";
+      return `<a class="link-btn travel-map-btn" href="${g}" target="_blank" rel="noopener">🗺️ ${routeWord} in Google</a><a class="link-btn travel-map-btn" href="${a}" target="_blank" rel="noopener">📍 ${routeWord} in Apple</a>`;
     }
 
     function travelRouteBlock(from, start, to, end) {
       return `<div class="travel-route-grid">
-        <div class="travel-route-point"><div class="travel-route-place">${escapeHtml(from || "Start")}</div>${start ? `<div class="travel-route-time">${escapeHtml(start)}</div>` : ""}</div>
+        <div class="travel-route-point"><span class="travel-route-label">From</span><div class="travel-route-place">${escapeHtml(from || "Start")}</div>${start ? `<div class="travel-route-time">${escapeHtml(start)}</div>` : ""}</div>
         <div class="travel-route-arrow">→</div>
-        <div class="travel-route-point to"><div class="travel-route-place">${escapeHtml(to || "Destination")}</div>${end ? `<div class="travel-route-time">${escapeHtml(end)}</div>` : ""}</div>
+        <div class="travel-route-point to"><span class="travel-route-label">To</span><div class="travel-route-place">${escapeHtml(to || "Destination")}</div>${end ? `<div class="travel-route-time">${escapeHtml(end)}</div>` : ""}</div>
       </div>`;
+    }
+
+    function travelDetailPanel(label, text) {
+      if (!text) return "";
+      return `<div class="travel-detail-panel"><div class="travel-detail-label">${escapeHtml(label)}</div><div class="travel-detail-text">${escapeHtml(text)}</div></div>`;
+    }
+
+    function travelConfirmationBlock(value, status) {
+      const confirmed = /confirmed|done/i.test(status || "") && !/pending|verify|timetable/i.test(status || "");
+      const display = value || (confirmed ? "Confirmed — reference not entered" : "Not finalized");
+      return `<div class="travel-confirmation ${confirmed ? "" : "pending"}"><div class="travel-confirmation-label">${confirmed ? "Confirmation" : "Confirmation status"}</div><div class="travel-confirmation-value">${escapeHtml(display)}</div></div>`;
+    }
+
+    function travelCollapsedDetails(detailsHtml, actionsHtml) {
+      return `<details class="travel-card-details"><summary><span>More information</span></summary><div class="travel-card-details-body">${detailsHtml || ""}${actionsHtml ? `<div class="travel-actions">${actionsHtml}</div>` : ""}</div></details>`;
+    }
+
+    function trainConfirmation(t) {
+      const mode = `${t.mode || ""} ${t.title || ""}`;
+      if (/Italo\s*8904/i.test(mode)) return TRIP.italo;
+      if (/PSA Group Train/i.test(mode)) return "PSA / Joe Lynch group — final details pending";
+      if (/Leonardo Express/i.test(mode)) return "Buy official Trenitalia ticket before boarding";
+      return "";
+    }
+
+    function travelDateTimeKey(date, time) {
+      const d = date || "9999-12-31";
+      const raw = String(time || "").trim();
+      let minutes = 1439;
+      const m12 = raw.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+      const m24 = raw.match(/^(\d{1,2}):(\d{2})$/);
+      if (m12) {
+        let h = Number(m12[1]) % 12;
+        if (m12[3].toUpperCase() === "PM") h += 12;
+        minutes = h * 60 + Number(m12[2]);
+      } else if (m24) minutes = Number(m24[1]) * 60 + Number(m24[2]);
+      else if (/morning/i.test(raw)) minutes = 8 * 60;
+      else if (/afternoon/i.test(raw)) minutes = 14 * 60;
+      else if (/evening/i.test(raw)) minutes = 19 * 60;
+      return `${d}|${String(minutes).padStart(4,"0")}`;
     }
 
     function renderTransport() {
@@ -3204,87 +3650,58 @@
       const trains = liveTrains();
       const transfers = liveTransfers();
       const activities = liveActivities();
+      const hotels = liveHotels();
+      const allTravelItems = [...flights, ...trains, ...transfers, ...activities, ...customTripItems];
+      const needsAttention = allTravelItems.filter(x => /pending|verify|decision|timetable/i.test(x.status || ""));
+      const confirmedCount = allTravelItems.length - needsAttention.length;
       const overview = document.getElementById("travelOverview");
       if (overview) overview.innerHTML = `<div class="travel-overview-grid">
-        <div class="travel-overview-stat"><strong>${flights.length}</strong><span>Flights</span></div>
-        <div class="travel-overview-stat"><strong>${trains.length}</strong><span>Trains</span></div>
-        <div class="travel-overview-stat"><strong>${transfers.length + activities.length + customTripItems.length}</strong><span>Other items</span></div>
+        <div class="travel-overview-stat"><strong>${allTravelItems.length}</strong><span>Travel items</span></div>
+        <div class="travel-overview-stat"><strong>${confirmedCount}</strong><span>Ready</span></div>
+        <div class="travel-overview-stat"><strong>${needsAttention.length}</strong><span>Need checking</span></div>
       </div>`;
+      const attention = document.getElementById("travelAttention");
+      if (attention) attention.innerHTML = needsAttention.length
+        ? `<div class="travel-attention"><strong>${needsAttention.length} travel item${needsAttention.length === 1 ? "" : "s"} still need attention.</strong> Search or filter to find pending confirmation blocks.</div>`
+        : "";
 
-      const customSection = document.getElementById("customTripItemsSection");
-      const customList = document.getElementById("customTripItemsList");
-      if (customSection && customList) {
-        customSection.classList.toggle("hidden", customTripItems.length === 0);
-        customList.innerHTML = customTripItems.map(t => `
-          <div class="card travel-card transfer-card">
-            <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t)} ${escapeHtml(t.title || [t.from,t.to].filter(Boolean).join(" → ") || "Trip Item")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
-            <div class="travel-card-main">
-              ${travelRouteBlock(t.from,t.start,t.to,t.end)}
-              <div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType || "Information")}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>
-              ${t.note ? `<div class="travel-detail-block">${escapeHtml(t.note)}</div>` : ""}
-              <div class="travel-detail-block muted">Added Trip Item · linked to Timeline${(t.from && t.to) ? " and Maps" : ""}</div>
-            </div>
-            <div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editCustomLeg('${t.id}')">Edit Trip Item</button></div>
-          </div>`).join("");
-      }
+      const records = [];
+      const addRecord = (category, date, time, searchText, html, sortExtra="") => records.push({category,date,time,searchText:String(searchText||"").toLowerCase(),html,sortKey:travelDateTimeKey(date,time)+"|"+sortExtra});
 
-      document.getElementById("flightsList").innerHTML = flights.map(f => `
-        <div class="card travel-card flight-card">
-          <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">✈️ ${escapeHtml(f.flight)} · ${escapeHtml(f.op)}</div><div class="travel-date-label">${fmtDate(f.date)}</div></div></div>
-          <div class="travel-card-main">
-            ${travelRouteBlock(f.from,f.dep,f.to,f.arr)}
-            <div class="travel-chip-row"><span class="travel-chip">${escapeHtml(f.dur || "Duration TBD")}</span><span class="travel-chip">${escapeHtml(f.cabin || "Cabin TBD")}</span>${statusBadge(f.status || "Confirmed")}</div>
-            <div class="travel-detail-block"><strong>Booking:</strong> ${escapeHtml(airConfirmationText())}</div>
-            <div class="travel-detail-block"><strong>Seats:</strong> ${escapeHtml(f.seats || "Not assigned / verify in airline app")}</div>
-            ${f.notes ? `<div class="travel-detail-block muted">${escapeHtml(f.notes)}</div>` : ""}
-          </div>
-          <div class="travel-actions"><button class="edit-btn" onclick="copyText('${String(airConfirmationText()).replace(/'/g,"\\'")}','Air confirmation copied')">Copy Confirmation</button>${travelMapActions(f.from,f.to)}<button class="edit-btn" onclick="editFlightById('${f.id}')">Edit Flight</button></div>
-        </div>`).join("");
-
-      document.getElementById("trainsList").innerHTML = trains.map(t => `
-        <div class="card travel-card train-card">
-          <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🚆 ${escapeHtml(t.mode || t.title || "Train")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
-          <div class="travel-card-main">
-            ${travelRouteBlock(t.from,t.start,t.to,t.end)}
-            <div class="travel-chip-row">${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>
-            ${t.instructions ? `<div class="travel-detail-block"><strong>Trip details:</strong> ${escapeHtml(t.instructions)}</div>` : ""}
-            ${t.notes ? `<div class="travel-detail-block muted">${escapeHtml(t.notes)}</div>` : ""}
-          </div>
-          <div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Train</button></div>
-        </div>`).join("");
-
-      document.getElementById("transfersList").innerHTML = transfers.map(t => `
+      customTripItems.forEach(t => addRecord(activityTravelCategory(t), t.date, t.start, [t.title,t.from,t.to,t.itemType,t.duration,t.status,t.confirmation,t.note].join(" "), `
         <div class="card travel-card transfer-card">
-          <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
-          <div class="travel-card-main">
-            ${travelRouteBlock(t.from,t.start,t.to,t.end)}
-            <div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.mode || t.itemType)}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>
-            ${t.instructions ? `<div class="travel-detail-block"><strong>Steps:</strong> ${escapeHtml(t.instructions)}</div>` : ""}
-            ${t.notes ? `<div class="travel-detail-block muted">${escapeHtml(t.notes)}</div>` : ""}
-          </div>
-          <div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button></div>
-        </div>`).join("");
+          <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t)} ${escapeHtml(t.title || [t.from,t.to].filter(Boolean).join(" → ") || "Trip Item")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
+          <div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType || "Information")}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(t.confirmation || "", t.status || "Confirmed")}${travelDetailPanel("Travel details", t.note)}${travelDetailPanel("Connected views", `Added Trip Item · linked to Timeline${(t.from && t.to) ? " and Maps" : ""}`)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editCustomLeg('${t.id}')">Edit Trip Item</button>`)}</div>
+        </div>`, t.title || ""));
 
-      document.getElementById("activitiesList").innerHTML = activities.map(t => `
-        <div class="card travel-card activity-card">
-          <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
-          <div class="travel-card-main">
-            ${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}
-            <div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span>${statusBadge(t.status || "Confirmed")}</div>
-            ${t.instructions ? `<div class="travel-detail-block">${escapeHtml(t.instructions)}</div>` : ""}
-            ${t.notes ? `<div class="travel-detail-block muted">${escapeHtml(t.notes)}</div>` : ""}
-          </div>
-          <div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button></div>
-        </div>`).join("");
+      flights.forEach(f => addRecord("flight", f.date, f.dep, [f.flight,f.op,f.from,f.to,f.dep,f.arr,f.dur,f.cabin,f.status,f.seats,f.notes,airConfirmationText()].join(" "), `
+        <div class="card travel-card flight-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">✈️ ${escapeHtml(f.flight)} · ${escapeHtml(f.op)}</div><div class="travel-date-label">${fmtDate(f.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(f.from,f.dep,f.to,f.arr)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(f.dur || "Duration TBD")}</span><span class="travel-chip">${escapeHtml(f.cabin || "Cabin TBD")}</span>${statusBadge(f.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(airConfirmationText(), f.status || "Confirmed")}${travelDetailPanel("Seats", f.seats || "Not assigned — verify in airline app")}${travelDetailPanel("Travel note", f.notes)}`, `<button class="edit-btn" onclick="copyText('${String(airConfirmationText()).replace(/'/g,"\\'")}','Air confirmation copied')">Copy Confirmation</button>${travelMapActions(f.from,f.to)}<button class="edit-btn" onclick="editFlightById('${f.id}')">Edit Flight</button>`)}</div></div>`, f.flight));
 
-      document.getElementById("groundList").innerHTML = GROUND.map(g => `
-        <div class="card">
-          <div class="row space-between"><div class="fw-600">${g.mode}</div><div class="text-xs text-muted">${g.city}</div></div>
-          <div class="text-sm mt-8"><strong>Best for:</strong> ${g.best}</div><div class="text-sm"><strong>Pay / buy:</strong> ${g.pay}</div><div class="text-sm text-muted mt-8">${g.notes}</div>
-        </div>`).join("");
+      trains.forEach(t => addRecord("train", t.date, t.start, [t.mode,t.title,t.from,t.to,t.start,t.end,t.duration,t.status,t.instructions,t.notes,trainConfirmation(t)].join(" "), `
+        <div class="card travel-card train-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🚆 ${escapeHtml(t.mode || t.title || "Train")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row">${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(trainConfirmation(t), t.status || "Confirmed")}${travelDetailPanel("Trip details", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Train</button>`)}</div></div>`, t.mode || t.title));
 
-      document.getElementById("contingenciesList").innerHTML = CONTINGENCIES.map(c => `
-        <div class="card"><div class="row space-between"><div class="fw-600" style="color:var(--danger);">${c.scenario}</div>${c.priority ? urgencyBadge(c.priority) : ""}</div><div class="text-sm mt-8"><strong>Do:</strong> ${c.action}</div><div class="text-sm"><strong>Contact:</strong> ${c.contact}</div><div class="text-sm text-muted"><strong>Avoid:</strong> ${c.avoid}</div>${c.docs ? `<div class="text-xs text-muted mt-8"><strong>Keep:</strong> ${c.docs}</div>` : ""}</div>`).join("");
+      transfers.forEach(t => addRecord("transfer", t.date, t.start, [t.title,t.from,t.to,t.mode,t.itemType,t.duration,t.status,t.instructions,t.notes].join(" "), `
+        <div class="card travel-card transfer-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.mode || t.itemType)}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Steps", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button>`)}</div></div>`, t.title || t.from));
+
+      hotels.forEach(h => addRecord("hotel", h.checkIn, "15:00", [h.name,h.city,h.address,h.dates,h.conf,h.status,h.room,h.payment,h.tax,h.breakfast,h.notes].join(" "), `
+        <div class="card travel-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🏨 ${escapeHtml(h.name)}</div><div class="travel-date-label">${escapeHtml(h.dates || fmtDate(h.checkIn))}</div></div></div><div class="travel-card-main"><div class="travel-chip-row"><span class="travel-chip">${escapeHtml(h.city)}</span><span class="travel-chip">Check-in ${fmtDate(h.checkIn)}</span><span class="travel-chip">Check-out ${fmtDate(h.checkOut)}</span>${statusBadge(h.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(h.conf, h.status || "Confirmed")}${travelDetailPanel("Address", h.address)}${travelDetailPanel("Room", h.room)}${travelDetailPanel("Payment", [h.payment,h.tax].filter(Boolean).join(" · "))}${travelDetailPanel("Hotel note", [h.breakfast,h.notes].filter(Boolean).join(" · "))}`, `${travelMapActions(h.address || h.name,"")}<button class="edit-btn" onclick="editHotelById('${h.id}')">Edit Hotel</button>`)}</div></div>`, h.name));
+
+      activities.forEach(t => addRecord(activityTravelCategory(t), t.date, t.start, [t.title,t.itemType,t.from,t.to,t.start,t.end,t.status,t.instructions,t.notes].join(" "), `
+        <div class="card travel-card activity-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span>${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Details", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button>`)}</div></div>`, t.title || t.itemType));
+
+
+      let filtered = records.filter(r => travelTypeFilter === "all" || r.category === travelTypeFilter);
+      if (travelSearch) filtered = filtered.filter(r => r.searchText.includes(travelSearch));
+      filtered.sort((a,b) => a.sortKey.localeCompare(b.sortKey));
+
+      const resultCount = document.getElementById("travelResultCount");
+      if (resultCount) resultCount.textContent = `${filtered.length} result${filtered.length === 1 ? "" : "s"}`;
+      const input = document.getElementById("travelSearchInput");
+      if (input && document.activeElement !== input) input.value = travelSearch;
+      document.querySelectorAll("#travelTypeFilters [data-travel-filter]").forEach(btn => btn.classList.toggle("active", btn.dataset.travelFilter === travelTypeFilter));
+
+      const results = document.getElementById("travelResults");
+      if (results) results.innerHTML = filtered.length ? filtered.map(r => r.html).join("") : `<div class="travel-empty"><div style="font-size:1.5rem;margin-bottom:6px;">🔎</div><strong>No travel items found</strong><div class="text-sm" style="margin-top:5px;">Try another filter or search term.</div></div>`;
     }
 
     function packingOwner(traveler) {
@@ -3386,6 +3803,7 @@
               <div class="title">${e.cat}</div>
               <div class="meta" style="font-size:1rem;font-weight:700;color:var(--primary);">${e.contact}</div>
               <div class="meta">${e.note}</div>
+              ${e.tel ? `<a class="btn btn-sm" href="tel:${e.tel}" style="margin-top:8px;display:inline-flex;">📞 Call ${e.cat}</a>` : ""}
             </div>
           </div>`;
         });
@@ -3822,6 +4240,19 @@
       return true;
     }
 
+    let mapsGuideFilter = "all";
+
+    function setMapsGuideFilter(filter) {
+      mapsGuideFilter = filter || "all";
+      document.querySelectorAll("#mapsGuideFilters [data-maps-filter]").forEach(chip => {
+        chip.classList.toggle("active", chip.dataset.mapsFilter === mapsGuideFilter);
+      });
+      document.querySelectorAll("#page-maps .maps-guide-group").forEach(group => {
+        group.style.display = mapsGuideFilter === "all" || group.dataset.mapsGroup === mapsGuideFilter ? "block" : "none";
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
     function renderMaps() {
       const routes = getAllDoorRoutes();
 
@@ -3886,6 +4317,56 @@
           <a class="link-btn" href="${normalizedLink(s.link)}" target="_blank" rel="noopener">Open official site →</a>
         </div>`).join("");
 
+      const guideCities = [...new Set(GROUND.map(g => g.city))];
+      document.getElementById("mapsLocalGuide").innerHTML = guideCities.map(city => {
+        const cards = GROUND.filter(g => g.city === city).map(g => `
+          <div class="travel-guide-card">
+            <div class="fw-700">${escapeHtml(g.mode)}</div>
+            <div class="text-sm mt-8"><strong>Best for:</strong> ${escapeHtml(g.best)}</div>
+            <div class="text-sm"><strong>Pay / buy:</strong> ${escapeHtml(g.pay)}</div>
+            ${g.notes ? `<div class="text-sm text-muted mt-8">${escapeHtml(g.notes)}</div>` : ""}
+          </div>`).join("");
+        return `<div class="travel-reference-city">${escapeHtml(city)}</div>${cards}`;
+      }).join("");
+
+      const comfortCities = [
+        {
+          city:"Rome", image:"assets/comfort/rome-restrooms.jpg",
+          picks:["P.Stop Piazza di Spagna","P.Stop Piazza Sidney Sonnino (Trastevere)","P.Stop Piazza della Città Leonina (Vatican area)","La Rinascente Via del Tritone","Termini Station paid toilets"],
+          note:"Best bets are staffed/paid facilities, major museums, and department stores. Carry small change, tissues, and sanitizer."
+        },
+        {
+          city:"Florence", image:"assets/comfort/florence-restrooms.jpg",
+          picks:["Coin on Via dei Calzaiuoli","Rinascente at Piazza della Repubblica","Piazza San Giovanni / Baptistry area","Uffizi or Accademia with admission","Santa Maria Novella station paid toilets"],
+          note:"Department stores and museums are usually the most dependable central options. Public facilities may have limited daytime hours."
+        },
+        {
+          city:"Venice", image:"assets/comfort/venice-restrooms.jpg",
+          picks:["Diurno San Marco","Giardini Reali San Marco","Accademia","Rialto Novo","Piazzale Roma","Santa Lucia station toilets"],
+          note:"Veritas municipal toilets are generally paid and staffed. Cafés and museums are useful backups when public facilities are closed."
+        }
+      ];
+      document.getElementById("mapsComfortEssentials").innerHTML = comfortCities.map(c => `
+        <div class="card comfort-city-card">
+          <div class="row space-between" style="align-items:center;">
+            <div class="fw-700">🚻 ${escapeHtml(c.city)}</div>
+            <a class="link-btn" href="${googleMapSearchUrl('public toilets '+c.city+' Italy')}" target="_blank" rel="noopener">Search nearby</a>
+          </div>
+          <img class="comfort-map" src="${c.image}" alt="${escapeHtml(c.city)} public restroom reference map" loading="lazy">
+          <div class="fw-600">Reliable options</div>
+          <ul class="comfort-list text-sm">${c.picks.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>
+          <div class="comfort-tip"><strong>Practical tip:</strong> ${escapeHtml(c.note)}</div>
+        </div>`).join("");
+
+      document.getElementById("mapsTravelHelp").innerHTML = CONTINGENCIES.map(c => `
+        <div class="travel-guide-card travel-help-card">
+          <div class="row space-between"><div class="fw-700" style="color:var(--danger);">${escapeHtml(c.scenario)}</div>${c.priority ? urgencyBadge(c.priority) : ""}</div>
+          <div class="text-sm mt-8"><strong>Do:</strong> ${escapeHtml(c.action)}</div>
+          <div class="text-sm"><strong>Contact:</strong> ${escapeHtml(c.contact)}</div>
+          <div class="text-sm text-muted"><strong>Avoid:</strong> ${escapeHtml(c.avoid)}</div>
+          ${c.docs ? `<div class="text-xs text-muted mt-8"><strong>Keep:</strong> ${escapeHtml(c.docs)}</div>` : ""}
+        </div>`).join("");
+
       document.getElementById("mapsPending").innerHTML = MAP_SAVED_PENDING.map(p => `
         <div class="card">
           <div class="row space-between"><div class="fw-600">${p.item}</div>${statusBadge(p.status)}</div>
@@ -3894,8 +4375,19 @@
           <div class="text-sm text-muted"><strong>Note:</strong> ${p.note}</div>
           ${p.link ? `<a class="link-btn" href="${normalizedLink(p.link)}" target="_blank" rel="noopener">Open saved link →</a>` : ""}
         </div>`).join("");
+      setMapsGuideFilter(mapsGuideFilter);
     }
 
+    let journalNotesTab = "journal";
+    let notesCategoryFilter = "All";
+    function setJournalNotesTab(tab) {
+      journalNotesTab = tab === "notes" ? "notes" : "journal";
+      document.getElementById("journalPanel").style.display = journalNotesTab === "journal" ? "block" : "none";
+      document.getElementById("notesPanel").style.display = journalNotesTab === "notes" ? "block" : "none";
+      document.getElementById("journalTabBtn").classList.toggle("active", journalNotesTab === "journal");
+      document.getElementById("notesTabBtn").classList.toggle("active", journalNotesTab === "notes");
+      if (journalNotesTab === "notes") renderNotes(); else renderJournal();
+    }
     function renderJournal() {
       const entries = getJournal().sort((a,b) => b.date.localeCompare(a.date));
       let html = `
@@ -3945,6 +4437,166 @@
       arr.splice(idx, 1); setJournal(arr); renderJournal();
     }
 
+
+    function noteCategories(notes) {
+      return ["All", ...Array.from(new Set(notes.map(n => n.category || "General"))).sort((a,b)=>a.localeCompare(b))];
+    }
+    function setNotesCategory(category) { notesCategoryFilter = category; renderNotes(); }
+    function renderNotes() {
+      const holder=document.getElementById("notesEntries");
+      if(!holder) return;
+      const notes=getNotes();
+      const categories=noteCategories(notes);
+      if(!categories.includes(notesCategoryFilter)) notesCategoryFilter="All";
+      const chipHolder=document.getElementById("notesCategoryFilters");
+      chipHolder.innerHTML=categories.map(c=>`<button class="filter-chip ${c===notesCategoryFilter?"active":""}" onclick='setNotesCategory(${JSON.stringify(c)})'>${escapeHtml(c)}</button>`).join("");
+      const q=(document.getElementById("notesSearch")?.value||"").trim().toLowerCase();
+      const filtered=notes.filter(n=>(notesCategoryFilter==="All" || (n.category||"General")===notesCategoryFilter) && (!q || [n.title,n.category,n.body].join(" ").toLowerCase().includes(q)))
+        .sort((a,b)=>(Number(!!b.pinned)-Number(!!a.pinned)) || ((Date.parse(b.updatedAt)||0)-(Date.parse(a.updatedAt)||0)));
+      holder.innerHTML=filtered.length ? filtered.map(n=>`
+        <div class="card">
+          <div class="row space-between" style="align-items:flex-start;gap:10px;">
+            <div style="min-width:0;">
+              <div class="fw-600">${n.pinned?"📌 ":""}${escapeHtml(n.title||"Untitled Note")}</div>
+              <div class="text-xs text-muted">${escapeHtml(n.category||"General")} · Updated ${new Date(n.updatedAt||n.createdAt||Date.now()).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</div>
+            </div>
+            <div class="row" style="gap:6px;flex-shrink:0;">
+              <button class="btn-sm btn-outline" onclick='toggleNotePin(${JSON.stringify(n.id)})' aria-label="${n.pinned?"Unpin":"Pin"} note">${n.pinned?"Unpin":"Pin"}</button>
+              <button class="btn-sm btn-outline" onclick='editReferenceNote(${JSON.stringify(n.id)})'>Edit</button>
+            </div>
+          </div>
+          <div class="text-sm mt-8" style="white-space:pre-wrap;line-height:1.55;">${escapeHtml(n.body||"")}</div>
+        </div>`).join("") : '<div class="empty"><div class="icon">📝</div>No notes match this search.</div>';
+    }
+    function noteEditor(note) {
+      const categories=["General","Food & Drink","Travel Tips","Shopping","Packing","Ideas","Emergency","Miscellaneous"];
+      openEditSheet(note?"Edit Note":"Add Note",[
+        {key:"title",label:"Title",value:note?.title||""},
+        {key:"category",label:"Category",type:"select",value:note?.category||"General",options:categories},
+        {key:"body",label:"Note",type:"textarea",value:note?.body||""}
+      ],data=>{
+        const title=(data.title||"").trim(), body=(data.body||"").trim();
+        if(!title || !body){ alert("Please enter both a title and note text."); return; }
+        const arr=getNotes(), now=new Date().toISOString();
+        if(note){ const i=arr.findIndex(x=>x.id===note.id); if(i>=0) arr[i]={...arr[i],title,category:data.category||"General",body,updatedAt:now}; }
+        else { const entry={id:"note_"+Date.now(),title,category:data.category||"General",body,pinned:false,createdAt:now,updatedAt:now}; arr.push(entry); clearDeleted("notes",entry.id); }
+        setNotes(arr); closeSheet(); renderNotes(); showToast(note?"Note updated":"Note added");
+      });
+      if(note){
+        const actions=document.createElement("div"); actions.className="mt-12";
+        actions.innerHTML=`<button class="btn-danger" style="width:100%;" onclick='deleteReferenceNote(${JSON.stringify(note.id)})'>Delete Note</button>`;
+        document.getElementById("sheetContent").appendChild(actions);
+      }
+    }
+    function addReferenceNote(){ noteEditor(null); }
+    function editReferenceNote(id){ noteEditor(getNotes().find(n=>n.id===id)); }
+    function toggleNotePin(id){ const arr=getNotes(), n=arr.find(x=>x.id===id); if(!n)return; n.pinned=!n.pinned; n.updatedAt=new Date().toISOString(); setNotes(arr); renderNotes(); }
+    function deleteReferenceNote(id){
+      const n=getNotes().find(x=>x.id===id); if(!n)return;
+      if(!confirm(`Delete note “${n.title}”?`))return;
+      markDeleted("notes",id); setNotes(getNotes().filter(x=>x.id!==id)); closeSheet(); renderNotes(); showToast("Note deleted");
+    }
+
+
+    // ===================== GLOBAL SEARCH =====================
+    function searchableText(value) {
+      if (value == null) return "";
+      if (typeof value === "string" || typeof value === "number") return String(value);
+      if (Array.isArray(value)) return value.map(searchableText).join(" ");
+      if (typeof value === "object") return Object.values(value).map(searchableText).join(" ");
+      return "";
+    }
+
+    function globalSearchEntries() {
+      const entries = [];
+      const add = (section, title, detail, page, query, value, options={}) => {
+        if (!title) return;
+        entries.push({section,title:String(title),detail:String(detail||""),page,query:String(query||title),text:(String(title)+" "+String(detail||"")+" "+searchableText(value)).toLowerCase(),...options});
+      };
+      liveTimeline().forEach(x=>add("Timeline",x.title||`${x.from||""} → ${x.to||""}`,[x.date,x.start,x.mode,x.status].filter(Boolean).join(" · "),"timeline",x.title||x.from||x.to,x));
+      liveFlights().forEach(x=>add("Travel · Flight",`${x.flight} · ${x.from} → ${x.to}`,[x.date,x.dep,x.arr,x.status].filter(Boolean).join(" · "),"transport",x.flight,x,{travel:true}));
+      liveHotels().forEach(x=>add("Hotel",x.name,[x.city,x.dates,x.conf].filter(Boolean).join(" · "),"transport",x.name,x,{travel:true}));
+      liveSharedTravelItems().forEach(x=>add(`Travel · ${x.itemType||"Item"}`,x.title||`${x.from||""} → ${x.to||""}`,[x.date,x.start,x.status].filter(Boolean).join(" · "),"transport",x.title||x.from||x.to,x,{travel:true}));
+      getCustomLegs().forEach(x=>add("Travel · Added item",x.title||`${x.from||""} → ${x.to||""}`,[x.date,x.start,x.status].filter(Boolean).join(" · "),"transport",x.title||x.from||x.to,x,{travel:true}));
+      liveReservations().forEach(x=>add("Reservation",x.item||x.provider,[x.provider,x.conf,x.dates,x.status].filter(Boolean).join(" · "),"bookings",x.conf||x.provider||x.item,x));
+      const walletIds=["1383385020","9941234776","EBB772160933",airConfirmationText(),TRIP.italo,TRIP.confRomeFlo,TRIP.confVen].filter(Boolean);
+      walletIds.forEach(v=>add("Confirmation Wallet",v,"Traveler ID, rewards, or confirmation number","wallet",v,v));
+      [...RESTAURANTS,...getCustomRestaurants()].forEach(x=>add("Restaurant",x.name,[x.city,x.neigh,x.style,x.price].filter(Boolean).join(" · "),"food",x.name,x,{restaurant:true}));
+      getNotes().forEach(x=>add("Note",x.title,[x.category,x.body].filter(Boolean).join(" · "),"journal",x.title,x,{note:true}));
+      getPackingItems().forEach(x=>add("Packing",x.item,[x.traveler,x.cat,x.bag].filter(Boolean).join(" · "),"prep",x.item,x));
+      Object.entries(SAFETY||{}).forEach(([k,v])=>add("Safety",k.replace(/([A-Z])/g," $1"),searchableText(v).slice(0,160),"prep",k,{[k]:v},{safety:true}));
+      getAllDoorRoutes().forEach(x=>add("Maps · Route",x.title||`${x.from||""} → ${x.to||""}`,[x.date,x.mode,x.note].filter(Boolean).join(" · "),"maps",x.title||x.from||x.to,x,{mapsFilter:"routes"}));
+      (MAP_AIRPORTS||[]).forEach(x=>add("Maps · Airport",`${x.name} (${x.code})`,x.tripUse,"maps",x.name,x,{mapsFilter:"airports"}));
+      (MAP_HOTELS_VENUES||[]).forEach(x=>add("Maps · Hotel/Venue",x.name,[x.city,x.purpose,x.address].filter(Boolean).join(" · "),"maps",x.name,x,{mapsFilter:"hotels"}));
+      (MAP_OFFICIAL_SITES||[]).forEach(x=>add("Official Link",x.name,[x.area,x.use].filter(Boolean).join(" · "),"maps",x.name,x,{mapsFilter:"official"}));
+      (GROUND||[]).forEach(x=>add("Local Travel Guide",`${x.city} · ${x.mode}`,x.best,"maps",x.mode,x,{mapsFilter:"local"}));
+      [
+        {city:"Rome", terms:"bathroom restroom toilet P.Stop Piazza di Spagna Trastevere Vatican Rinascente Termini"},
+        {city:"Florence", terms:"bathroom restroom toilet Coin Rinascente Baptistry Uffizi Accademia Santa Maria Novella"},
+        {city:"Venice", terms:"bathroom restroom toilet Diurno San Marco Giardini Reali Accademia Rialto Piazzale Roma Santa Lucia Veritas"}
+      ].forEach(x=>add("Comfort & Essentials",`${x.city} restrooms`,"Public toilets and reliable comfort stops","maps",x.city,x,{mapsFilter:"comfort"}));
+      (CONTINGENCIES||[]).forEach(x=>add("Travel Help",x.scenario||x.title||"What If?",x.action||x.plan||searchableText(x).slice(0,160),"maps",x.scenario||x.title||searchableText(x).slice(0,40),x,{mapsFilter:"help"}));
+      (MAP_SAVED_PENDING||[]).forEach(x=>add("Saved Link",x.name||x.title||x.item,searchableText(x).slice(0,160),"maps",x.name||x.title||x.item,x,{mapsFilter:"saved"}));
+      return entries;
+    }
+
+    function openGlobalSearch() {
+      const overlay=document.getElementById("globalSearchOverlay");
+      const input=document.getElementById("globalSearchInput");
+      if (!overlay||!input) return;
+      overlay.classList.add("open");
+      input.value="";
+      renderGlobalSearchResults("");
+      setTimeout(()=>input.focus(),80);
+    }
+    function closeGlobalSearch(){const el=document.getElementById("globalSearchOverlay");if(el)el.classList.remove("open");}
+    function renderGlobalSearchResults(raw) {
+      const target=document.getElementById("globalSearchResults"); if(!target)return;
+      const q=String(raw||"").trim().toLowerCase();
+      if(q.length<2){target.innerHTML='<div class="global-search-empty">Type at least 2 characters to search the trip.</div>';return;}
+      const words=q.split(/\s+/).filter(Boolean);
+      const results=globalSearchEntries().filter(x=>words.every(w=>x.text.includes(w))).slice(0,60);
+      target.innerHTML=results.length?results.map((x,i)=>`<button class="global-result" onclick="openGlobalSearchResult(${i})"><div class="global-result-title">${escapeHtml(x.title)}</div><div class="global-result-meta">${escapeHtml(x.section)}${x.detail?' · '+escapeHtml(x.detail):''}</div></button>`).join(""):'<div class="global-search-empty">No matches. Try a shorter word or confirmation number.</div>';
+      window._globalSearchResults=results;
+    }
+    function openGlobalSearchResult(index) {
+      const x=(window._globalSearchResults||[])[index]; if(!x)return;
+      closeGlobalSearch();
+      if(x.travel){travelTypeFilter="all";travelSearch=x.query;const input=document.getElementById("travelSearchInput");if(input)input.value=x.query;}
+      if(x.restaurant){restQuickFilter="all";restCityFilter="all";restAteFilter="all";restSearch=x.query;const input=document.getElementById("restSearch");if(input)input.value=x.query;}
+      if(x.note){journalNotesTab="notes";const input=document.getElementById("notesSearch");if(input)input.value=x.query;}
+      if(x.mapsFilter)setMapsGuideFilter(x.mapsFilter);
+      if(x.page==="timeline"){tlFilter="all";tlModeFilter="all";tlSearch=x.query;const input=document.getElementById("timelineSearch");if(input)input.value=x.query;}
+      showPage(x.page);
+      setTimeout(()=>highlightFirstTextMatch(x.query),180);
+    }
+    function highlightFirstTextMatch(query) {
+      const page=document.querySelector(".page.active"); if(!page)return;
+      const q=String(query||"").trim().toLowerCase();
+      const candidates=[...page.querySelectorAll(".card,.tl-step,.list-item,.pack-cat,.travel-guide-card,.note-card")];
+      const hit=candidates.find(el=>el.textContent.toLowerCase().includes(q));
+      if(!hit)return;
+      hit.classList.add("search-highlight");
+      hit.scrollIntoView({behavior:"smooth",block:"center"});
+      setTimeout(()=>hit.classList.remove("search-highlight"),2200);
+    }
+
+    // ===================== HOME WEATHER =====================
+    const WEATHER_CACHE_KEY="italy2026_weather_cache_v1";
+    const WEATHER_LOCATIONS={
+      Rome:{lat:41.9028,lon:12.4964},
+      Florence:{lat:43.7696,lon:11.2558},
+      Venice:{lat:45.4408,lon:12.3155},
+      Tampa:{lat:27.9506,lon:-82.4572}
+    };
+    function italyDateISO(){return new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Rome",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());}
+    function weatherCityForToday(){const d=italyDateISO();if(d>="2026-10-05"&&d<"2026-10-08")return"Rome";if(d>="2026-10-08"&&d<"2026-10-10")return"Florence";if(d>="2026-10-10"&&d<="2026-10-15")return"Venice";if(d>"2026-10-15")return"Tampa";return"Rome";}
+    function weatherIcon(code){code=Number(code);if(code===0)return"☀️";if([1,2].includes(code))return"🌤️";if(code===3)return"☁️";if([45,48].includes(code))return"🌫️";if([51,53,55,56,57].includes(code))return"🌦️";if([61,63,65,66,67,80,81,82].includes(code))return"🌧️";if([71,73,75,77,85,86].includes(code))return"🌨️";if([95,96,99].includes(code))return"⛈️";return"🌤️";}
+    function getWeatherCache(){try{return JSON.parse(localStorage.getItem(WEATHER_CACHE_KEY)||"{}")}catch(e){return{}}}
+    function weatherAgeLabel(iso){if(!iso)return"";const ms=Date.now()-new Date(iso).getTime();if(ms<60000)return"just now";if(ms<3600000)return`${Math.floor(ms/60000)}m ago`;if(ms<86400000)return`${Math.floor(ms/3600000)}h ago`;return new Date(iso).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});}
+    function paintWeatherTile(city,data,isCached){const el=document.getElementById("homeWeatherTile");if(!el)return;if(!data){el.innerHTML=`<div class="weather-main"><span class="weather-icon">🌤️</span><span class="weather-temp">—°</span></div><div class="weather-details">${city} · Weather unavailable</div>`;return;}el.innerHTML=`<button class="weather-refresh" onclick="event.stopPropagation();renderHomeWeather(true)" aria-label="Refresh weather">↻</button><div class="weather-main"><span class="weather-icon">${weatherIcon(data.code)}</span><span class="weather-temp">${Math.round(data.temp)}°</span></div><div class="weather-details">${escapeHtml(city)} · H ${Math.round(data.high)}° / L ${Math.round(data.low)}°<br>💧 ${Math.round(data.rain||0)}% · 💨 ${Math.round(data.wind||0)} mph</div><div class="weather-updated">${isCached?"Offline cache · ":"Updated "}${weatherAgeLabel(data.updatedAt)} · Open-Meteo</div>`;}
+    async function renderHomeWeather(force=false){const city=weatherCityForToday(),loc=WEATHER_LOCATIONS[city],cache=getWeatherCache(),cached=cache[city];if(cached)paintWeatherTile(city,cached,true);if(!navigator.onLine){if(!cached)paintWeatherTile(city,null,true);return;}if(!force&&cached&&Date.now()-new Date(cached.updatedAt).getTime()<30*60*1000){paintWeatherTile(city,cached,false);return;}try{const url=`https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&current=temperature_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=1`;const res=await fetch(url,{cache:"no-store"});if(!res.ok)throw new Error("weather unavailable");const j=await res.json();const data={temp:j.current.temperature_2m,code:j.current.weather_code,wind:j.current.wind_speed_10m,high:j.daily.temperature_2m_max[0],low:j.daily.temperature_2m_min[0],rain:j.daily.precipitation_probability_max[0]||0,updatedAt:new Date().toISOString()};cache[city]=data;localStorage.setItem(WEATHER_CACHE_KEY,JSON.stringify(cache));paintWeatherTile(city,data,false);}catch(e){if(cached)paintWeatherTile(city,cached,true);else paintWeatherTile(city,null,true);}}
+
     // ===================== NAVIGATION =====================
     let currentPage = "home";
     let lastBackPress = 0;
@@ -3989,7 +4641,7 @@
       if (id === "more") renderMore();
       if (id === "attractions") renderAttractions();
       if (id === "maps") renderMaps();
-      if (id === "journal") renderJournal();
+      if (id === "journal") setJournalNotesTab(journalNotesTab);
       if (id === "pretrip") renderPretrip();
       if (id === "wallet") renderWallet();
 
@@ -4049,6 +4701,21 @@
       if (themeMedia.addEventListener) themeMedia.addEventListener("change", syncSystemThemeColor);
     }
 
+
+    function openAppAbout() {
+      const overlay = document.getElementById("appAboutOverlay");
+      const app = document.getElementById("aboutAppVersion");
+      const data = document.getElementById("aboutDataVersion");
+      if (app) app.textContent = APP_VERSION;
+      if (data) data.textContent = DATA_VERSION;
+      if (overlay) overlay.style.display = "flex";
+    }
+
+    function closeAppAbout() {
+      const overlay = document.getElementById("appAboutOverlay");
+      if (overlay) overlay.style.display = "none";
+    }
+
     // ===================== INIT =====================
     document.addEventListener("DOMContentLoaded", () => {
       migrateLegacyDataToMasterRecords();
@@ -4083,6 +4750,9 @@
           a.setAttribute("rel", "noopener noreferrer");
         }
       }, true);
+
+      document.addEventListener("keydown", e => { if (e.key === "Escape") closeGlobalSearch(); });
+      window.addEventListener("online", () => { if (currentPage === "home") renderHomeWeather(true); });
 
       // Timeline filters
       document.getElementById("tlFilters").addEventListener("click", e => {
