@@ -1,3 +1,10 @@
+## [10.6.0-dev-d3] - 2026-08-03
+
+### Timeline step-label cleanup
+- Removed visible Timeline step numbers from the interface.
+- Preserved the underlying `step` field for completion tracking, hidden-item state, deep links, validation, and stable chronological tie-breaking.
+- Deferred removal of the underlying field until the Version 11 cleanup and dependency review.
+
 ## [10.6.0-dev-d2] - 2026-08-03
 
 ### Flight duration correction

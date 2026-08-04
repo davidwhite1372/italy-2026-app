@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-6-d2-flight-duration';
+const CACHE = 'italy-2026-github-v10-6-d3-hide-step-labels';
 const APP_SHELL = [
   './',
   './index.html',

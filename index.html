@@ -659,7 +659,6 @@
     .tl-action-row { padding-top:2px; }
     .tl-action-row .edit-btn { flex:1 1 120px; min-height:36px; border:1px solid rgba(23,32,24,.22); border-radius:9px; background:rgba(255,255,255,.58); }
     .tl-complete-row { padding-top:10px; }
-    .tl-step-number { font-size:.66rem; color:var(--muted); }
     @media (max-width:420px) {
       .tl-day-header { top:59px; }
       .tl-step.actual-travel { padding-left:38px; padding-right:10px; }
@@ -1145,7 +1144,7 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.6.0-dev-d2";
+    const APP_VERSION = "10.6.0-dev-d3";
     const DATA_VERSION = "10.5.0";
     const BUILD_LABEL = "App v10.6.0 DEV D2 · Flight Duration Correction · Data v10.5.0";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
@@ -3046,7 +3045,7 @@
               </div>
               <div class="tl-action-row">${actionBtns}</div>
             </div>` : ""}
-            ${isHidden ? "" : `<div class="tl-complete-row"><label><input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTimelineDone(${t.step}, this.checked)"><span>${isDone ? "Completed" : "Mark completed"}</span></label><span class="tl-step-number">Step ${t.step}</span></div>`}
+            ${isHidden ? "" : `<div class="tl-complete-row"><label><input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTimelineDone(${t.step}, this.checked)"><span>${isDone ? "Completed" : "Mark completed"}</span></label></div>`}
           </div>`;
       }).join("") : `<div class="empty"><div class="icon">${tlFilter === "hidden" ? "🙈" : "📋"}</div>${tlFilter === "hidden" ? "No hidden steps." : "No steps match this filter."}</div>`);
 
