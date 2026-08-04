@@ -180,3 +180,9 @@ Travel now uses a sticky filter and search bar instead of section jump links. Re
 - Home About tab now displays the full three-part version number.
 - Added TSA Known Traveler and Delta/SAS rewards numbers to the Confirmation Wallet.
 - Passport information remains excluded from the app.
+
+### Version 10.7.4
+- Travel filters now contain only actual trip records.
+- Moved general ground transportation advice into a dedicated Local Transportation Guide.
+- Moved contingency planning into Travel Help / What If?
+- Preserved all existing reference content without mixing it into searchable travel items.

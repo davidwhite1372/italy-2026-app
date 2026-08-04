@@ -281,3 +281,9 @@ All notable changes to the Italy 2026 Travel Companion will be documented here.
 - Added David's TSA Known Traveler Number, Delta SkyMiles number, and SAS EuroBonus number to the Confirmation Wallet.
 - Added Pending placeholders for Melody's corresponding numbers.
 - Excluded passport numbers from permanent app data.
+
+## 10.7.4 — Separate travel items from guidance
+- Removed static Ground Transport and Contingency records from Travel filter results.
+- Added Local Transportation Guide and Travel Help / What If? reference panels.
+- Preserved actual custom and miscellaneous trip items under Other items.
+- Updated the Home About tab to Italy App v10.7.4.

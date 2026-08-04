@@ -565,6 +565,18 @@
     .travel-search-row { display:flex; align-items:center; gap:8px; }
     .travel-search-row input { flex:1; min-width:0; margin:0; }
     .travel-result-count { flex:0 0 auto; font-size:.72rem; color:var(--muted); font-weight:750; white-space:nowrap; }
+    .travel-reference-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
+    .travel-reference-actions button { width:100%; border:1px solid var(--border); background:var(--card); color:var(--primary); border-radius:10px; padding:9px 8px; font-size:.76rem; font-weight:800; }
+    .travel-reference-actions button.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+    .travel-reference-panel { margin:0 0 12px; padding:12px; border:1px solid var(--border); border-radius:13px; background:var(--card); }
+    .travel-reference-header { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px; }
+    .travel-reference-title { font-size:1rem; font-weight:850; color:var(--primary); }
+    .travel-reference-subtitle { margin-top:2px; font-size:.76rem; color:var(--muted); line-height:1.35; }
+    .travel-reference-close { flex:0 0 auto; min-width:auto; padding:6px 9px; }
+    .travel-reference-city { margin:14px 1px 7px; font-size:.75rem; font-weight:850; text-transform:uppercase; letter-spacing:.06em; color:var(--primary); }
+    .travel-guide-card { padding:11px 12px; border:1px solid var(--border); border-radius:11px; background:var(--surface); margin-bottom:8px; }
+    .travel-guide-card:last-child { margin-bottom:0; }
+    .travel-help-card { border-left:4px solid var(--warning); }
     .travel-empty { padding:22px 14px; text-align:center; color:var(--muted); border:1px dashed var(--border); border-radius:12px; }
     .travel-section-label { margin:18px 2px 8px; font-size:.78rem; font-weight:850; color:var(--primary); text-transform:uppercase; letter-spacing:.06em; }
     .travel-confirmation { margin-top:10px; padding:10px 11px; border:1px solid rgba(46,125,50,.28); border-radius:11px; background:rgba(46,125,50,.07); }
@@ -754,7 +766,7 @@
         outline-offset:2px;
       }
     }
-  
+
     .today-day-nav{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;margin:2px 0 8px;}
     .today-day-label{text-align:center;font-weight:800;color:var(--primary);font-size:.95rem;line-height:1.25;}
     .today-day-nav button:disabled{opacity:.35;cursor:default;}
@@ -939,13 +951,18 @@
           <button data-travel-filter="transfer" onclick="setTravelTypeFilter('transfer')">🧭 Transfers</button>
           <button data-travel-filter="hotel" onclick="setTravelTypeFilter('hotel')">🏨 Hotels</button>
           <button data-travel-filter="activity" onclick="setTravelTypeFilter('activity')">🎟️ Tours</button>
-          <button data-travel-filter="other" onclick="setTravelTypeFilter('other')">••• Other</button>
+          <button data-travel-filter="other" onclick="setTravelTypeFilter('other')">••• Other items</button>
         </div>
         <div class="travel-search-row">
           <input id="travelSearchInput" type="search" placeholder="Search airline, train, city, hotel, confirmation…" aria-label="Search travel" oninput="setTravelSearch(this.value)">
           <span class="travel-result-count" id="travelResultCount"></span>
         </div>
+        <div class="travel-reference-actions">
+          <button id="travelLocalGuideBtn" onclick="toggleTravelReference('local')">🚕 Local Transport Guide</button>
+          <button id="travelHelpBtn" onclick="toggleTravelReference('help')">🆘 Travel Help / What If?</button>
+        </div>
       </div>
+      <div id="travelReference"></div>
       <div id="travelAttention"></div>
       <div id="travelResults"></div>
     </section>
@@ -1169,7 +1186,7 @@
       <div style="margin-top:18px;display:grid;gap:10px;font-size:.88rem;">
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">App version</span><strong id="aboutAppVersion"></strong></div>
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Data version</span><strong id="aboutDataVersion"></strong></div>
-        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.7.3</strong></div>
+        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.7.4</strong></div>
       </div>
       <div style="margin-top:16px;padding:12px;border-radius:12px;background:var(--soft);font-size:.78rem;color:var(--muted);line-height:1.5;">Technical details are kept here for troubleshooting without cluttering the Home page.</div>
     </div>
@@ -1177,9 +1194,9 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.7.3";
+    const APP_VERSION = "10.7.4";
     const DATA_VERSION = "10.5.0";
-    const BUILD_LABEL = "Italy App v10.7.3 ⓘ";
+    const BUILD_LABEL = "Italy App v10.7.4 ⓘ";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -3401,6 +3418,38 @@
       }, 0);
     }
 
+    let travelReferenceView = "";
+
+    function toggleTravelReference(view) {
+      travelReferenceView = travelReferenceView === view ? "" : view;
+      renderTravelReference();
+    }
+
+    function renderTravelReference() {
+      const host = document.getElementById("travelReference");
+      const localBtn = document.getElementById("travelLocalGuideBtn");
+      const helpBtn = document.getElementById("travelHelpBtn");
+      if (localBtn) localBtn.classList.toggle("active", travelReferenceView === "local");
+      if (helpBtn) helpBtn.classList.toggle("active", travelReferenceView === "help");
+      if (!host) return;
+      if (!travelReferenceView) { host.innerHTML = ""; return; }
+
+      if (travelReferenceView === "local") {
+        const cities = [...new Set(GROUND.map(g => g.city))];
+        const body = cities.map(city => {
+          const cards = GROUND.filter(g => g.city === city).map(g => `<div class="travel-guide-card"><div class="fw-700">${escapeHtml(g.mode)}</div><div class="text-sm mt-8"><strong>Best for:</strong> ${escapeHtml(g.best)}</div><div class="text-sm"><strong>Pay / buy:</strong> ${escapeHtml(g.pay)}</div>${g.notes ? `<div class="text-sm text-muted mt-8">${escapeHtml(g.notes)}</div>` : ""}</div>`).join("");
+          return `<div class="travel-reference-city">${escapeHtml(city)}</div>${cards}`;
+        }).join("");
+        host.innerHTML = `<div class="travel-reference-panel"><div class="travel-reference-header"><div><div class="travel-reference-title">🚕 Local Transportation Guide</div><div class="travel-reference-subtitle">General city transportation advice—not scheduled trip items.</div></div><button class="edit-btn travel-reference-close" onclick="toggleTravelReference('local')">Close</button></div>${body}</div>`;
+        host.scrollIntoView({behavior:"smooth", block:"start"});
+        return;
+      }
+
+      const cards = CONTINGENCIES.map(c => `<div class="travel-guide-card travel-help-card"><div class="row space-between"><div class="fw-700" style="color:var(--danger);">${escapeHtml(c.scenario)}</div>${c.priority ? urgencyBadge(c.priority) : ""}</div><div class="text-sm mt-8"><strong>Do:</strong> ${escapeHtml(c.action)}</div><div class="text-sm"><strong>Contact:</strong> ${escapeHtml(c.contact)}</div><div class="text-sm text-muted"><strong>Avoid:</strong> ${escapeHtml(c.avoid)}</div>${c.docs ? `<div class="text-xs text-muted mt-8"><strong>Keep:</strong> ${escapeHtml(c.docs)}</div>` : ""}</div>`).join("");
+      host.innerHTML = `<div class="travel-reference-panel"><div class="travel-reference-header"><div><div class="travel-reference-title">🆘 Travel Help / What If?</div><div class="travel-reference-subtitle">Prepared backup instructions for delays, missed connections, baggage problems, and disruptions.</div></div><button class="edit-btn travel-reference-close" onclick="toggleTravelReference('help')">Close</button></div>${cards}</div>`;
+      host.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
     function setTravelTypeFilter(filter) {
       travelTypeFilter = filter || "all";
       document.querySelectorAll("#travelTypeFilters [data-travel-filter]").forEach(btn => {
@@ -3516,8 +3565,6 @@
       activities.forEach(t => addRecord("activity", t.date, t.start, [t.title,t.itemType,t.from,t.to,t.start,t.end,t.status,t.instructions,t.notes].join(" "), `
         <div class="card travel-card activity-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span>${statusBadge(t.status || "Confirmed")}</div>${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Details", t.instructions)}${travelDetailPanel("Travel note", t.notes)}</div><div class="travel-actions">${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button></div></div>`, t.title || t.itemType));
 
-      GROUND.forEach((g,i) => addRecord("other", "9999-12-30", "", [g.mode,g.city,g.best,g.pay,g.notes].join(" "), `<div class="card"><div class="row space-between"><div class="fw-600">${escapeHtml(g.mode)}</div><div class="text-xs text-muted">${escapeHtml(g.city)}</div></div><div class="text-sm mt-8"><strong>Best for:</strong> ${escapeHtml(g.best)}</div><div class="text-sm"><strong>Pay / buy:</strong> ${escapeHtml(g.pay)}</div><div class="text-sm text-muted mt-8">${escapeHtml(g.notes)}</div></div>`, `ground-${i}`));
-      CONTINGENCIES.forEach((c,i) => addRecord("other", "9999-12-31", "", [c.scenario,c.action,c.contact,c.avoid,c.docs,c.priority].join(" "), `<div class="card"><div class="row space-between"><div class="fw-600" style="color:var(--danger);">${escapeHtml(c.scenario)}</div>${c.priority ? urgencyBadge(c.priority) : ""}</div><div class="text-sm mt-8"><strong>Do:</strong> ${escapeHtml(c.action)}</div><div class="text-sm"><strong>Contact:</strong> ${escapeHtml(c.contact)}</div><div class="text-sm text-muted"><strong>Avoid:</strong> ${escapeHtml(c.avoid)}</div>${c.docs ? `<div class="text-xs text-muted mt-8"><strong>Keep:</strong> ${escapeHtml(c.docs)}</div>` : ""}</div>`, `contingency-${i}`));
 
       let filtered = records.filter(r => travelTypeFilter === "all" || r.category === travelTypeFilter);
       if (travelSearch) filtered = filtered.filter(r => r.searchText.includes(travelSearch));
