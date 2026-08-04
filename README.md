@@ -4,7 +4,7 @@ GitHub Pages deployment package for David and Melody's Italy 2026 Travel Compani
 
 ## Current build
 
-**Version 10.6D1 DEV — Travel Assistant + Permanent Trip Data**
+**Version 10.6D2 DEV — Flight Duration Correction**
 
 The existing appearance, itinerary content, navigation, pinch-zoom behavior, backup/import tools, and installable PWA experience are preserved. Deployment-specific changes are limited to relative GitHub Pages paths, PWA scope/identity, cache isolation, and the `.nojekyll` marker.
 

@@ -1,3 +1,10 @@
+## [10.6.0-dev-d2] - 2026-08-03
+
+### Flight duration correction
+- Corrected SK3438 JFK to TPA duration from 3h 11m to 3h 23m.
+- Kept the confirmed 7:50 PM departure and 11:13 PM arrival times unchanged.
+- Updated Timeline, flight details, Travel, and Confirmation Wallet source data consistently.
+
 ## [10.6.0-dev-d1] - 2026-08-03
 
 ### Permanent trip-data updates

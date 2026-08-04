@@ -151,7 +151,7 @@
       { step:43, travelId:"travel-43", date:"2026-10-15", start:"13:05", end:"14:20", itemType:"Information", title:"CPH - Copenhagen Airport Schengen arrival gate → CPH - Copenhagen Airport U.S. departure gate", from:"CPH - Copenhagen Airport Schengen arrival gate", to:"CPH - Copenhagen Airport U.S. departure gate", mode:"Airport Connection / Exit Passport Control", time:"75-min connection", status:"Verify Day-Of", instructions:"Follow transfer signs to the non-Schengen/U.S. departure area, complete exit passport control and document checks, and proceed directly to the SK915 gate.", notes:"Shortest connection of the return itinerary; do not stop for food." },
       { step:36, date:"2026-10-15", start:"14:20", end:"17:00", itemType:"Flight", flightId:"flight-sk915", title:"CPH - Copenhagen Airport → JFK - New York John F. Kennedy Airport Terminal 1", from:"CPH - Copenhagen Airport", to:"JFK - New York John F. Kennedy Airport Terminal 1", mode:"Flight SK915", time:"8h 40m", status:"Confirmed", instructions:"Premium Economy.", notes:"Most time-sensitive connection at CPH (exit passport control)." },
       { step:37, travelId:"travel-37", date:"2026-10-15", start:"17:00", end:"19:00", itemType:"Walk", title:"JFK Airport Terminal 1 → JFK Airport Terminal 4 / Delta gate", from:"JFK Airport Terminal 1", to:"JFK Airport Terminal 4 / Delta gate", mode:"Walk", time:"90-120 min", status:"Confirmed", instructions:"Immigration, reclaim bags, customs, recheck, AirTrain to T4, TSA, gate.", notes:"Do not stop until through T4 security." },
-      { step:38, date:"2026-10-15", start:"19:50", end:"23:13", itemType:"Flight", flightId:"flight-sk3438", title:"JFK Airport Terminal 4 → TPA - Tampa International Airport", from:"JFK Airport Terminal 4", to:"TPA - Tampa International Airport", mode:"Flight SK3438 (Delta)", time:"3h 11m", status:"Confirmed", instructions:"Check Delta app for gate.", notes:"" },
+      { step:38, date:"2026-10-15", start:"19:50", end:"23:13", itemType:"Flight", flightId:"flight-sk3438", title:"JFK Airport Terminal 4 → TPA - Tampa International Airport", from:"JFK Airport Terminal 4", to:"TPA - Tampa International Airport", mode:"Flight SK3438 (Delta)", time:"3h 23m", status:"Confirmed", instructions:"Check Delta app for gate.", notes:"" },
       { step:39, travelId:"travel-39", date:"2026-10-15", start:"23:13", end:"23:55", itemType:"Train", title:"Take SkyConnect from TPA baggage claim to Economy Parking", from:"TPA Airport baggage claim", to:"TPA Airport Economy Parking", mode:"SkyConnect Train", time:"30-45 min", status:"Confirmed", instructions:"Collect bags, follow signs to SkyConnect, ride to Economy Parking, and use the parking-location photo.", notes:"Inspect vehicle before leaving." },
       { step:40, travelId:"travel-40", date:"2026-10-16", start:"00:00", end:"01:15", itemType:"Car / Drive", title:"Drive home to Spring Hill", from:"TPA Airport Economy Parking", to:"Spring Hill, FL", mode:"Drive", time:"60-75 min", status:"Confirmed", instructions:"Drive via Veterans / Suncoast. Stop if fatigued.", notes:"Expected home after midnight." },
     ];
@@ -321,7 +321,7 @@
       {id:"flight-sk681",bookingId:"air-main",date:"2026-10-05",flight:"SK681",op:"SAS",from:"CPH - Copenhagen Airport",dep:"8:30 AM",to:"FCO - Rome Fiumicino Airport Terminal 1",arr:"11:05 AM",dur:"2h 35m",cabin:"Premium Economy",status:"Confirmed",notes:"Collect checked bags in Rome.",timelineNotes:""},
       {id:"flight-sk2692",bookingId:"air-main",date:"2026-10-15",flight:"SK2692",op:"SAS Connect",from:"VCE - Venice Marco Polo Airport",dep:"11:00 AM",to:"CPH - Copenhagen Airport",arr:"1:05 PM",dur:"2h 5m",cabin:"Premium Economy",status:"Confirmed",notes:"Confirm bags tagged to TPA.",timelineNotes:"Connection 1h 15m."},
       {id:"flight-sk915",bookingId:"air-main",date:"2026-10-15",flight:"SK915",op:"SAS",from:"CPH - Copenhagen Airport",dep:"2:20 PM",to:"JFK - New York John F. Kennedy Airport Terminal 1",arr:"5:00 PM",dur:"8h 40m",cabin:"Premium Economy",status:"Confirmed",notes:"Reclaim checked bags at JFK.",timelineNotes:"Most time-sensitive connection at CPH (exit passport control)."},
-      {id:"flight-sk3438",bookingId:"air-main",date:"2026-10-15",flight:"SK3438",op:"Delta (operated)",from:"JFK - New York John F. Kennedy Airport Terminal 4",dep:"7:50 PM",to:"TPA - Tampa International Airport",arr:"11:13 PM",dur:"3h 11m",cabin:"Economy",status:"Confirmed",notes:"Check the Delta app for the departure gate.",timelineNotes:""}
+      {id:"flight-sk3438",bookingId:"air-main",date:"2026-10-15",flight:"SK3438",op:"Delta (operated)",from:"JFK - New York John F. Kennedy Airport Terminal 4",dep:"7:50 PM",to:"TPA - Tampa International Airport",arr:"11:13 PM",dur:"3h 23m",cabin:"Economy",status:"Confirmed",notes:"Check the Delta app for the departure gate.",timelineNotes:""}
     ];
 
 
@@ -978,7 +978,7 @@ const MAP_DOOR_ROUTES = [
     "date": "Oct 15",
     "to": "TPA - Tampa International Airport",
     "mode": "Delta-operated SK3438",
-    "duration": "3h 11m",
+    "duration": "3h 23m",
     "link": "https://www.delta.com/",
     "backupLink": "",
     "status": "Ready",
