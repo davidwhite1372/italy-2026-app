@@ -4,7 +4,7 @@ GitHub Pages deployment package for David and Melody's Italy 2026 Travel Compani
 
 ## Current build
 
-**Version 10.8.0 DEV — Notes filter visibility fix**
+**Version 10.8.1 DEV — Comfort & Essentials**
 
 The existing appearance, itinerary content, navigation, pinch-zoom behavior, backup/import tools, and installable PWA experience are preserved. Deployment-specific changes are limited to relative GitHub Pages paths, PWA scope/identity, cache isolation, and the `.nojekyll` marker.
 
@@ -22,7 +22,7 @@ User-entered app data is stored locally in each browser/device. Before removing 
 
 
 
-## Version 10.8.0 — Notes filter visibility fix
+## Version 10.8.1 — Comfort & Essentials
 
 - Corrected inactive Journal/Notes tabs and note-category pills so their labels and icons remain visible.
 - Preserved the selected green state and dark-mode styling.
@@ -214,6 +214,10 @@ Maps, Links & Travel Guide now uses section filters instead of page jumps, the T
 ### Version 10.7.7
 Travel cards are collapsed by default. Their essential route and status information remains visible, while confirmations, notes, maps, and edit controls expand directly below the status row.
 
+
+- Added a filterable **Comfort & Essentials** section under Maps, Links & Travel Guide.
+- Added offline restroom reference maps for Rome, Florence, and Venice.
+- Added concise reliable-option lists, practical tips, nearby Google Maps searches, and global-search indexing.
 
 ## Version 10.8.0
 - Added offline-capable global trip search across itinerary, confirmations, restaurants, notes, packing, safety, maps, links, and travel guides.

@@ -1,3 +1,12 @@
+# Version 10.8.1
+
+## Comfort & Essentials
+- Added a new filter inside Maps, Links & Travel Guide.
+- Added Rome, Florence, and Venice restroom reference maps supplied by the user.
+- Added concise lists of reliable options, practical reminders, and Google Maps nearby searches.
+- Added restroom-related terms to Global Search.
+- Cached the three map images for offline use.
+
 # Version 10.8.0
 
 - Added global search from the app header with direct navigation to matching trip content.

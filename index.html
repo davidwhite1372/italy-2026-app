@@ -583,6 +583,11 @@
     .travel-reference-city { margin:14px 1px 7px; font-size:.75rem; font-weight:850; text-transform:uppercase; letter-spacing:.06em; color:var(--primary); }
     .travel-guide-card { padding:11px 12px; border:1px solid var(--border); border-radius:11px; background:var(--surface); margin-bottom:8px; }
     .travel-guide-card:last-child { margin-bottom:0; }
+    .comfort-city-card{margin-bottom:14px;overflow:hidden;}
+    .comfort-map{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin:10px 0;}
+    .comfort-list{margin:8px 0 0;padding-left:18px;}
+    .comfort-list li{margin:5px 0;line-height:1.4;}
+    .comfort-tip{padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:.82rem;line-height:1.45;margin-top:10px;}
     .travel-help-card { border-left:4px solid var(--warning); }
     .travel-empty { padding:22px 14px; text-align:center; color:var(--muted); border:1px dashed var(--border); border-radius:12px; }
     .travel-section-label { margin:18px 2px 8px; font-size:.78rem; font-weight:850; color:var(--primary); text-transform:uppercase; letter-spacing:.06em; }
@@ -1125,6 +1130,7 @@
         <div class="filter-chip" data-maps-filter="hotels" onclick="setMapsGuideFilter('hotels')">🏨 Hotels</div>
         <div class="filter-chip" data-maps-filter="official" onclick="setMapsGuideFilter('official')">🔗 Official Links</div>
         <div class="filter-chip" data-maps-filter="local" onclick="setMapsGuideFilter('local')">🚕 Local Guide</div>
+<div class="filter-chip" data-maps-filter="comfort" onclick="setMapsGuideFilter('comfort')">🚻 Comfort &amp; Essentials</div>
         <div class="filter-chip" data-maps-filter="help" onclick="setMapsGuideFilter('help')">🆘 Travel Help</div>
         <div class="filter-chip" data-maps-filter="saved" onclick="setMapsGuideFilter('saved')">📌 Saved</div>
       </div>
@@ -1148,6 +1154,11 @@
         <div class="section-title">Local Transportation Guide</div>
         <div class="text-sm text-muted mb-8">General city transportation advice—not scheduled trip items.</div>
         <div id="mapsLocalGuide"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="comfort">
+        <div class="section-title">Comfort &amp; Essentials</div>
+        <div class="text-sm text-muted mb-8">Quick restroom reference for Rome, Florence, and Venice. Verify current hours and access on arrival.</div>
+        <div id="mapsComfortEssentials"></div>
       </div>
       <div class="maps-guide-group" data-maps-group="help">
         <div class="section-title">Travel Help / What If?</div>
@@ -1289,7 +1300,7 @@
   <script>
     const APP_VERSION = "10.8.0";
     const DATA_VERSION = "10.5.0";
-    const BUILD_LABEL = "Italy App v10.8.0 ⓘ";
+    const BUILD_LABEL = "Italy App v10.8.1 ⓘ";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -4318,6 +4329,35 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         return `<div class="travel-reference-city">${escapeHtml(city)}</div>${cards}`;
       }).join("");
 
+      const comfortCities = [
+        {
+          city:"Rome", image:"assets/comfort/rome-restrooms.jpg",
+          picks:["P.Stop Piazza di Spagna","P.Stop Piazza Sidney Sonnino (Trastevere)","P.Stop Piazza della Città Leonina (Vatican area)","La Rinascente Via del Tritone","Termini Station paid toilets"],
+          note:"Best bets are staffed/paid facilities, major museums, and department stores. Carry small change, tissues, and sanitizer."
+        },
+        {
+          city:"Florence", image:"assets/comfort/florence-restrooms.jpg",
+          picks:["Coin on Via dei Calzaiuoli","Rinascente at Piazza della Repubblica","Piazza San Giovanni / Baptistry area","Uffizi or Accademia with admission","Santa Maria Novella station paid toilets"],
+          note:"Department stores and museums are usually the most dependable central options. Public facilities may have limited daytime hours."
+        },
+        {
+          city:"Venice", image:"assets/comfort/venice-restrooms.jpg",
+          picks:["Diurno San Marco","Giardini Reali San Marco","Accademia","Rialto Novo","Piazzale Roma","Santa Lucia station toilets"],
+          note:"Veritas municipal toilets are generally paid and staffed. Cafés and museums are useful backups when public facilities are closed."
+        }
+      ];
+      document.getElementById("mapsComfortEssentials").innerHTML = comfortCities.map(c => `
+        <div class="card comfort-city-card">
+          <div class="row space-between" style="align-items:center;">
+            <div class="fw-700">🚻 ${escapeHtml(c.city)}</div>
+            <a class="link-btn" href="${googleMapSearchUrl('public toilets '+c.city+' Italy')}" target="_blank" rel="noopener">Search nearby</a>
+          </div>
+          <img class="comfort-map" src="${c.image}" alt="${escapeHtml(c.city)} public restroom reference map" loading="lazy">
+          <div class="fw-600">Reliable options</div>
+          <ul class="comfort-list text-sm">${c.picks.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>
+          <div class="comfort-tip"><strong>Practical tip:</strong> ${escapeHtml(c.note)}</div>
+        </div>`).join("");
+
       document.getElementById("mapsTravelHelp").innerHTML = CONTINGENCIES.map(c => `
         <div class="travel-guide-card travel-help-card">
           <div class="row space-between"><div class="fw-700" style="color:var(--danger);">${escapeHtml(c.scenario)}</div>${c.priority ? urgencyBadge(c.priority) : ""}</div>
@@ -4490,6 +4530,11 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       (MAP_HOTELS_VENUES||[]).forEach(x=>add("Maps · Hotel/Venue",x.name,[x.city,x.purpose,x.address].filter(Boolean).join(" · "),"maps",x.name,x,{mapsFilter:"hotels"}));
       (MAP_OFFICIAL_SITES||[]).forEach(x=>add("Official Link",x.name,[x.area,x.use].filter(Boolean).join(" · "),"maps",x.name,x,{mapsFilter:"official"}));
       (GROUND||[]).forEach(x=>add("Local Travel Guide",`${x.city} · ${x.mode}`,x.best,"maps",x.mode,x,{mapsFilter:"local"}));
+      [
+        {city:"Rome", terms:"bathroom restroom toilet P.Stop Piazza di Spagna Trastevere Vatican Rinascente Termini"},
+        {city:"Florence", terms:"bathroom restroom toilet Coin Rinascente Baptistry Uffizi Accademia Santa Maria Novella"},
+        {city:"Venice", terms:"bathroom restroom toilet Diurno San Marco Giardini Reali Accademia Rialto Piazzale Roma Santa Lucia Veritas"}
+      ].forEach(x=>add("Comfort & Essentials",`${x.city} restrooms`,"Public toilets and reliable comfort stops","maps",x.city,x,{mapsFilter:"comfort"}));
       (CONTINGENCIES||[]).forEach(x=>add("Travel Help",x.scenario||x.title||"What If?",x.action||x.plan||searchableText(x).slice(0,160),"maps",x.scenario||x.title||searchableText(x).slice(0,40),x,{mapsFilter:"help"}));
       (MAP_SAVED_PENDING||[]).forEach(x=>add("Saved Link",x.name||x.title||x.item,searchableText(x).slice(0,160),"maps",x.name||x.title||x.item,x,{mapsFilter:"saved"}));
       return entries;
