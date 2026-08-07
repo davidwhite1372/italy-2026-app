@@ -8,34 +8,34 @@ Status: Complete
 - Move hosting from Netlify to GitHub Pages.
 - Establish GitHub Desktop, `main`, and `develop` workflows.
 
-## Version 10.3.0 — Quality-of-Life Improvements
-Status: Planned
+## Versions 10.3.0–10.8.2 — Travel App Expansion
+Status: Complete
 
-- Improve backup and restore guidance.
-- Improve validation and error handling.
-- Review mobile behavior and installation prompts.
-- Document release and testing steps.
+- Added Timeline, Travel, reservations, wallet, maps, trip guidance, and live-trip tools.
+- Added linked master trip records and on-device data-integrity checks.
+- Added restaurant, attraction, packing, budget, journal, notes, search, weather, and backup features.
+- Improved mobile, installed-PWA, dark-mode, and offline behavior.
+- Released and tagged Version 10.8.2 as the stable pre-foundation rollback point.
 
-## Version 10.4.0 — Travel Tools
-Status: Planned
+## Version 10.9.0 — Pre-11 Foundation
+Status: Foundation complete; release validation on `develop`
 
-- Additional map and Plus Code tools.
-- Improved transportation information.
-- Better travel-day instructions.
-- Expanded quick links and QR access.
-
-## Version 10.5.0 — Live Trip Features
-Status: Planned
-
-- Countdown and day-of-trip enhancements.
-- More resilient live data handling.
-- Better offline fallbacks.
+- Clarify app, build, and backup-schema metadata.
+- Clean current documentation and obsolete internal development labels.
+- Introduce stable record IDs before multi-device synchronization. Timeline, restaurant, attraction, reservation, planned-budget, packing, and open-item IDs are complete.
+- Migrate Timeline data, state, editors, map routing, and backup files away from numeric step identifiers. Complete, with schema 4 conversion retained.
+- Define timestamps, deletion markers, and conflict behavior for mutable records.
+- Preserve compatibility with existing local data and Version 4 backup files.
+- Add automated regression coverage before shared-data work.
+- Remove confirmed dead code separately from data-model migration. Complete for retired train/transfer duplicates and uncalled compatibility helpers.
+- Complete automated metadata, stable-ID, migration, backup round-trip, dependency, and offline-shell audits before release.
 
 ## Version 11.0.0 — Shared Cloud Data
 Status: Evaluation planned
 
 - Shared online database for authorized phones.
 - Synchronize selected user-entered data.
-- Preserve export/import as a manual backup.
-- Add appropriate access control.
-- Protect the stable production app during testing.
+- Preserve offline cached operation and export/import as a manual backup.
+- Add authentication, access control, timestamps, deletion markers, and a documented conflict policy.
+- Separate shared trip data from device-only settings and caches.
+- Protect the stable production app while the shared system is tested.

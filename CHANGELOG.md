@@ -1,4 +1,42 @@
-# Version 10.8.2
+# Changelog
+
+## [10.9.0 DEV] - 2026-08-07
+
+### Changed
+
+- Started the Pre-11 Foundation work on `develop` from the tested and tagged Version 10.8.2 release.
+- Replaced the stale About-panel data version with the actual backup schema number.
+- Centralized current app, build, backup schema, and last-edited metadata.
+- Updated current project, deployment, and roadmap documentation.
+- Replaced obsolete development-phase code comments with functional descriptions.
+- Added automated app-startup, data-integrity, restaurant-management, backup-compatibility, and offline-shell regression tests.
+- Added GitHub Actions checks for pushes and pull requests targeting `develop` or `main`.
+- Added permanent opaque IDs to all 49 built-in Timeline records and stable derived IDs for custom Timeline items.
+- Migrated on-phone Timeline completion, hidden-item, expanded-item, NEXT-item, and scroll targeting to stable IDs.
+- Advanced new backup exports to schema 5 while preserving automatic import and conversion of schema 4 Timeline state.
+- Removed numeric Timeline step fields from the data model, editors, and map routing while retaining automatic conversion of older numeric backup keys.
+- Updated the GitHub Actions runtime to the current Node 24-based action versions.
+- Added permanent IDs to all 65 built-in restaurants and all 15 attractions.
+- Migrated restaurant edits, favorites, visits, ratings, notes, and deletion markers from name-based keys to stable IDs.
+- Migrated attraction visit logs and on-phone photo storage from name-based keys to stable IDs.
+- Added UUID-based IDs for newly created restaurants, with automatic IDs for older custom records that lack one.
+- Added permanent IDs to all 10 reservations and all 18 planned-budget items.
+- Migrated existing reservation overrides and planned-budget edits from array indexes to stable IDs.
+- Updated reservation and budget editors to save by record ID while preserving schema 4 and earlier on-phone edits.
+- Added permanent IDs to all 66 built-in packing records and all 13 open pre-trip items.
+- Migrated packing completion, quantities, editor changes, custom items, and deletion markers from indexes and catalog positions to stable IDs.
+- Migrated completed open-item state from visible priority numbers to stable IDs while retaining priority for display and ordering.
+- Replaced the obsolete one-time migration flag with repeatable normalization for legacy Timeline, train, transfer, and reservation overrides.
+- Corrected legacy train and transfer conversion to use explicit current record IDs instead of filtered array positions.
+- Removed retired duplicate train and transfer datasets and five confirmed uncalled compatibility helpers.
+- Expanded the automated release suite to verify metadata consistency, every stable-ID collection, representative schema 5 backup round trips, Version 4 conversion, and the offline application shell.
+- Completed the final dependency audit with no reported vulnerabilities.
+
+### Preserved
+
+- Existing trip content, locally saved user data, Version 4 backup import compatibility, offline behavior, and production design.
+
+## Version 10.8.2
 
 ## About & Restaurant Management
 - Corrected the About panel app and build versions and added the last-edited date and time.
@@ -6,7 +44,7 @@
 - Added deletion for built-in and user-added restaurants, with changes preserved in backup/import data.
 - Added Caffè Florian to Venice and added editable restaurant website and hours fields.
 
-# Version 10.8.1
+## Version 10.8.1
 
 ## Comfort & Essentials
 - Added a new filter inside Maps, Links & Travel Guide.
@@ -15,7 +53,7 @@
 - Added restroom-related terms to Global Search.
 - Cached the three map images for offline use.
 
-# Version 10.8.0
+## Version 10.8.0
 
 - Added global search from the app header with direct navigation to matching trip content.
 - Added search coverage for Timeline, Travel, reservations, Confirmation Wallet, hotels, restaurants, notes, packing, Safety, maps, links, and travel guides.
@@ -98,8 +136,6 @@
 - Reorganized Details into clear What to do, Notes, and Maps & links sections.
 - Improved mobile readability without changing Timeline data or architecture.
 
-# Changelog
-
 ## [10.6.0-dev-b] - 2026-08-01
 
 ### Changed
@@ -117,8 +153,6 @@
 - Removed the obsolete Home Screen installation tip from the bottom of Home.
 - Removed the duplicate empty Quick Tip container/blue bar.
 - Preserved the working Quick Tip section at the top of Home.
-
-# Changelog
 
 ## [10.6A DEV] - 2026-08-01
 

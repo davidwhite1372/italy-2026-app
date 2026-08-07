@@ -1,0 +1,13 @@
+{
+  "name": "italy-2026-travel-companion",
+  "version": "10.9.0",
+  "private": true,
+  "description": "Regression checks for the Italy 2026 Travel Companion",
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.js"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "6.2.5",
+    "jsdom": "26.1.0"
+  }
+}
