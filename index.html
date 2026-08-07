@@ -1303,7 +1303,7 @@
       version: "10.9.0",
       build: "10.9.0",
       backupSchema: 5,
-      lastEdited: "August 7, 2026 at 5:20 PM ET"
+      lastEdited: "August 7, 2026 at 6:05 PM ET"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1609,20 +1609,49 @@
       return '';
     }
 
-    function getPackCatalogData() {
-      try { return JSON.parse(localStorage.getItem("italy2026_packcatalog") || '{"edits":{},"custom":{},"deleted":{}}'); }
-      catch(e) { return {edits:{},custom:{},deleted:{}}; }
+    function packingIdForStoredKey(key) {
+      const raw=String(key);
+      if(PACKING.some(item=>item.id===raw)) return raw;
+      const baseMatch=raw.match(/^base_(\d+)$/);
+      if(baseMatch && PACKING[Number(baseMatch[1])]) return PACKING[Number(baseMatch[1])].id;
+      const byLegacy=PACKING.find(item=>packKey(item)===raw);
+      return byLegacy ? byLegacy.id : raw;
     }
-    function setPackCatalogData(obj) { localStorage.setItem("italy2026_packcatalog", JSON.stringify(obj)); }
+    function normalizePackCatalogData(obj) {
+      const source=obj && typeof obj==="object" ? obj : {};
+      const out={edits:{},custom:{},deleted:{}};
+      Object.entries(source.edits||{}).forEach(([key,value])=>{ out.edits[packingIdForStoredKey(key)]=value; });
+      const customIds={};
+      Object.entries(source.custom||{}).forEach(([key,value])=>{
+        const record=value && typeof value==="object" ? value : {};
+        const id=record._id || key || createRecordId("packing-custom");
+        customIds[key]=id;
+        out.custom[id]={...record,_id:id};
+      });
+      Object.entries(source.deleted||{}).forEach(([key,value])=>{
+        out.deleted[customIds[key] || packingIdForStoredKey(key)]=value;
+      });
+      return out;
+    }
+    function getPackCatalogData() {
+      let raw={};
+      try { raw=JSON.parse(localStorage.getItem("italy2026_packcatalog") || '{"edits":{},"custom":{},"deleted":{}}'); }
+      catch(e) { raw={edits:{},custom:{},deleted:{}}; }
+      const normalized=normalizePackCatalogData(raw);
+      if(JSON.stringify(normalized)!==JSON.stringify(raw)) localStorage.setItem("italy2026_packcatalog",JSON.stringify(normalized));
+      return normalized;
+    }
+    function setPackCatalogData(obj) { localStorage.setItem("italy2026_packcatalog", JSON.stringify(normalizePackCatalogData(obj))); }
     function getPackingItems() {
       const cat=getPackCatalogData();
-      const base=PACKING.map((p,i)=>({...p,_id:"base_"+i,_base:true}));
+      const base=PACKING.map(p=>({...p,_id:p.id,_base:true}));
       const activeBase=base.filter(p=>!cat.deleted[p._id]).map(p=>({...p,...(cat.edits[p._id]||{}),_id:p._id,_base:true}));
       const custom=Object.values(cat.custom||{}).filter(p=>!cat.deleted[p._id]).map(p=>({...p,_base:false}));
       return activeBase.concat(custom);
     }
     function mergePackCatalog(local,incoming) {
-      const out={edits:{...(local&&local.edits||{})},custom:{...(local&&local.custom||{})},deleted:{...(local&&local.deleted||{})}};
+      local=normalizePackCatalogData(local); incoming=normalizePackCatalogData(incoming);
+      const out={edits:{...(local.edits||{})},custom:{...(local.custom||{})},deleted:{...(local.deleted||{})}};
       let added=0,updated=0,skipped=0;
       ["edits","custom","deleted"].forEach(group=>{
         Object.entries((incoming&&incoming[group])||{}).forEach(([id,val])=>{
@@ -1653,7 +1682,7 @@
         const record={traveler:data.traveler,cat:data.cat.trim()||"Other",item:data.item.trim(),qty:Math.max(1,Number(data.qty)||1),bag:data.bag.trim()||"Not assigned",pri:data.pri,updatedAt:now};
         if(item && item._base) cat.edits[id]={...record,updatedAt:now};
         else if(item) cat.custom[id]={...cat.custom[id],...record,_id:id,updatedAt:now};
-        else { const newId="pack_"+Date.now(); cat.custom[newId]={...record,_id:newId,createdAt:now,updatedAt:now}; }
+        else { const newId=createRecordId("packing-custom"); cat.custom[newId]={...record,_id:newId,createdAt:now,updatedAt:now}; }
         setPackCatalogData(cat); renderPrep(); showToast(item?"Packing item updated":"Packing item added");
       }, item ? ()=>deletePackingItem(id) : null);
       const del=document.getElementById("efDelete"); if(del) del.textContent="Remove this packing item";
@@ -1666,30 +1695,31 @@
 
     const LEGACY_PACKING_KEYS = ["David|Passport book", "Melody|Passport book", "Shared|Printed flight/train/hotel confirmations", "David|Driver license", "Melody|Driver license", "Shared|Travel insurance details", "David|Work cellphone", "David|Personal cellphone", "Melody|Personal cellphone", "David|Work laptop + charger", "Shared|Multi-port USB charger", "David|Power bank", "Melody|Power bank", "Shared|Universal Type C/F/L adapters", "David|Prescription medications", "Melody|Prescription medications", "Shared|Advil", "David|Primary credit card (no FTF)", "Melody|Primary credit card (no FTF)", "Shared|Backup credit card", "Shared|Limited euros (€100)", "David|Primary walking shoes", "Melody|Primary walking shoes", "David|Collared shirts", "Melody|Business-casual outfits", "David|Long pants", "Shared|Socks + Underwear", "Shared|Rain jacket / windbreaker", "Shared|Light sweater / layer", "Shared|Second pair of shoes", "Shared|Sleepwear + Casual outfits", "Shared|Checked roller suitcase", "David|Backpack", "Melody|Personal item bag", "Shared|Crossbody anti-pickpocket bag", "Shared|Luggage tags", "Shared|Reusable water bottles", "Shared|Toiletries (travel size carry-on)", "Melody|Makeup bag", "David|Reading glasses", "Shared|Sunglasses", "Shared|Compact umbrella", "David|Business cards", "David|Conference badge / registration", "David|Pen and notebook"];
     function packKey(item) { return packingOwner(item.traveler) + "|" + item.item; }
+    function normalizePackState(obj) {
+      const out={};
+      Object.entries(obj&&typeof obj==="object"?obj:{}).forEach(([storedKey,value])=>{
+        const wasIndex=/^\d+$/.test(storedKey);
+        const legacyKey=wasIndex ? LEGACY_PACKING_KEYS[Number(storedKey)] : storedKey;
+        if(!legacyKey) return;
+        const id=packingIdForStoredKey(legacyKey);
+        const normalizedValue=wasIndex && !(value&&typeof value==="object")
+          ? {checked:!!value,by:"Legacy import",updatedAt:new Date(0).toISOString()}
+          : value;
+        if(!(id in out) || storedKey===id) out[id]=normalizedValue;
+      });
+      return out;
+    }
     function getPackState() {
       let raw={}; try { raw=JSON.parse(localStorage.getItem("italy2026_pack") || "{}"); } catch(e) { raw={}; }
-      // Migrate older index-based checkmarks to stable traveler/item keys once.
-      if (Object.keys(raw).some(k => /^\d+$/.test(k))) {
-        const migrated={};
-        Object.entries(raw).forEach(([k,v]) => {
-          const key=/^\d+$/.test(k) ? LEGACY_PACKING_KEYS[Number(k)] : k;
-          if (!key) return;
-          migrated[key] = (v && typeof v === "object") ? v : {checked:!!v,by:"Legacy import",updatedAt:new Date(0).toISOString()};
-        });
-        raw=migrated; setPackState(raw);
-      }
-      // Migrate stable owner/item keys to stable catalog IDs so renamed items keep their checkmarks.
-      const byLegacy={}; PACKING.forEach((p,i)=>{byLegacy[packKey(p)]="base_"+i;});
-      let changed=false;
-      Object.keys(raw).forEach(k=>{ if(byLegacy[k] && !(byLegacy[k] in raw)) { raw[byLegacy[k]]=raw[k]; delete raw[k]; changed=true; } });
-      if(changed) setPackState(raw);
-      return raw;
+      const normalized=normalizePackState(raw);
+      if(JSON.stringify(normalized)!==JSON.stringify(raw)) localStorage.setItem("italy2026_pack",JSON.stringify(normalized));
+      return normalized;
     }
-    function setPackState(obj) { localStorage.setItem("italy2026_pack", JSON.stringify(obj)); }
+    function setPackState(obj) { localStorage.setItem("italy2026_pack", JSON.stringify(normalizePackState(obj))); }
     function packingRecordChecked(rec) { return rec === true || !!(rec && rec.checked); }
     function mergePackingState(local, incoming) {
-      const out={...(local||{})}; let added=0,updated=0,skipped=0;
-      Object.entries(incoming||{}).forEach(([k,v])=>{
+      const out={...normalizePackState(local)}; let added=0,updated=0,skipped=0;
+      Object.entries(normalizePackState(incoming)).forEach(([k,v])=>{
         const inc=(v && typeof v==="object")?v:{checked:!!v,by:"Imported backup",updatedAt:new Date(0).toISOString()};
         if (!(k in out)) { out[k]=inc; added++; return; }
         const cur=(out[k] && typeof out[k]==="object")?out[k]:{checked:!!out[k],by:"Legacy",updatedAt:new Date(0).toISOString()};
@@ -1698,11 +1728,29 @@
       });
       return {value:out,added,updated,skipped};
     }
+    function openItemIdForStoredKey(key) {
+      const raw=String(key);
+      if(OPEN_ITEMS.some(item=>item.id===raw)) return raw;
+      const priority=Number(raw);
+      const byPriority=Number.isInteger(priority) ? OPEN_ITEMS.find(item=>item.pri===priority) : null;
+      return byPriority ? byPriority.id : raw;
+    }
+    function normalizeOpenState(obj) {
+      const out={};
+      Object.entries(obj&&typeof obj==="object"?obj:{}).forEach(([key,value])=>{
+        const id=openItemIdForStoredKey(key);
+        if(!(id in out) || key===id) out[id]=value;
+      });
+      return out;
+    }
     function getOpenState() {
-      try { return JSON.parse(localStorage.getItem("italy2026_open") || "{}"); } catch(e) { return {}; }
+      let raw={}; try { raw=JSON.parse(localStorage.getItem("italy2026_open") || "{}"); } catch(e) { raw={}; }
+      const normalized=normalizeOpenState(raw);
+      if(JSON.stringify(normalized)!==JSON.stringify(raw)) localStorage.setItem("italy2026_open",JSON.stringify(normalized));
+      return normalized;
     }
     function setOpenState(obj) {
-      localStorage.setItem("italy2026_open", JSON.stringify(obj));
+      localStorage.setItem("italy2026_open", JSON.stringify(normalizeOpenState(obj)));
     }
     function getJournal() {
       try { return JSON.parse(localStorage.getItem("italy2026_journal") || "[]"); } catch(e) { return []; }
@@ -2587,7 +2635,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const seenTimelineIds = new Set();
       const seenSteps = new Set();
 
-      [["Restaurant", RESTAURANTS], ["Attraction", ATTRACTIONS], ["Reservation", RESERVATIONS], ["Budget item", BUDGET_PLANNED]].forEach(([label, records]) => {
+      [["Restaurant", RESTAURANTS], ["Attraction", ATTRACTIONS], ["Reservation", RESERVATIONS], ["Budget item", BUDGET_PLANNED], ["Packing item", PACKING], ["Open item", OPEN_ITEMS]].forEach(([label, records]) => {
         const seen = new Set();
         records.forEach((record, index) => {
           if (!record.id) issues.push(`${label} ${index + 1}: missing stable ID`);
@@ -3071,7 +3119,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       `;
       renderHomeWeather();
       const openState = getOpenState();
-      const highItems = OPEN_ITEMS.filter(o => o.urgency === "High" && o.status !== "Done" && !openState[o.pri]);
+      const highItems = OPEN_ITEMS.filter(o => o.urgency === "High" && o.status !== "Done" && !openState[o.id]);
       document.getElementById("homeOpenItems").innerHTML = highItems.slice(0,5).map(o => `
         <div class="list-item">
           <div class="num">${o.pri}</div>
@@ -3615,10 +3663,10 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
 
       const openState = getOpenState();
       document.getElementById("openItemsList").innerHTML = OPEN_ITEMS.map(o => {
-        const done = openState[o.pri] || o.status === "Done";
+        const done = openState[o.id] || o.status === "Done";
         return `
-          <div class="check-row ${done ? 'done' : ''}" data-pri="${o.pri}">
-            <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleOpen(${o.pri}, this.checked)">
+          <div class="check-row ${done ? 'done' : ''}" data-open-id="${o.id}">
+            <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleOpen('${o.id}', this.checked)">
             <div style="flex:1;">
               <div class="fw-600">${o.pri}. ${o.item} ${urgencyBadge(o.urgency)}</div>
               <div class="text-xs text-muted">${o.area} · ${o.why}</div>
@@ -3645,9 +3693,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       });
     }
 
-    function toggleOpen(pri, checked) {
+    function toggleOpen(id, checked) {
       const st = getOpenState();
-      if (checked) st[pri] = true; else delete st[pri];
+      if (checked) st[id] = true; else delete st[id];
       setOpenState(st);
       renderBookings();
       renderHome();

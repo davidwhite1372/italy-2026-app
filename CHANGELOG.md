@@ -23,6 +23,9 @@
 - Added permanent IDs to all 10 reservations and all 18 planned-budget items.
 - Migrated existing reservation overrides and planned-budget edits from array indexes to stable IDs.
 - Updated reservation and budget editors to save by record ID while preserving schema 4 and earlier on-phone edits.
+- Added permanent IDs to all 66 built-in packing records and all 13 open pre-trip items.
+- Migrated packing completion, quantities, editor changes, custom items, and deletion markers from indexes and catalog positions to stable IDs.
+- Migrated completed open-item state from visible priority numbers to stable IDs while retaining priority for display and ordering.
 
 ### Preserved
 

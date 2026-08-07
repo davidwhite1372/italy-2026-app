@@ -218,6 +218,43 @@ test("legacy reservation and planned-budget edits migrate from indexes to IDs", 
   assert.deepEqual(app.runtimeErrors, []);
 });
 
+test("legacy packing and open-item state migrates to stable IDs", async t => {
+  const legacyPacked = { checked: true, qty: 1, by: "David", updatedAt: "2026-08-01T12:00:00.000Z" };
+  const app = await bootApp({
+    italy2026_pack: {
+      base_0: legacyPacked,
+      "Melody|Primary walking shoes": { checked: true, qty: 1, by: "Melody", updatedAt: "2026-08-02T12:00:00.000Z" }
+    },
+    italy2026_packcatalog: {
+      edits: { base_0: { item: "Primary walking shoes — broken in", updatedAt: "2026-08-03T12:00:00.000Z" } },
+      custom: { pack_legacy: { item: "Legacy custom item", traveler: "Shared", cat: "Other", qty: 1, bag: "Checked" } },
+      deleted: { base_2: { updatedAt: "2026-08-04T12:00:00.000Z" } }
+    },
+    italy2026_open: { "1": true }
+  });
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+
+  assert.deepEqual(Object.keys(window.getPackState()).sort(), ["packing-0001", "packing-0002"]);
+  assert.deepEqual(JSON.parse(JSON.stringify(window.getPackState()["packing-0001"])), legacyPacked);
+  assert.equal(window.getPackingItems().find(item => item._id === "packing-0001").item, "Primary walking shoes — broken in");
+  assert.equal(window.getPackingItems().some(item => item._id === "packing-0003"), false);
+  assert.equal(window.getPackingItems().find(item => item._id === "pack_legacy").item, "Legacy custom item");
+  assert.deepEqual(Object.keys(window.getPackCatalogData().edits), ["packing-0001"]);
+  assert.deepEqual(Object.keys(window.getPackCatalogData().deleted), ["packing-0003"]);
+
+  assert.deepEqual(JSON.parse(JSON.stringify(window.getOpenState())), { "open-0001": true });
+  window.toggleOpen("open-0002", true);
+  assert.deepEqual(JSON.parse(JSON.stringify(window.getOpenState())), { "open-0001": true, "open-0002": true });
+
+  window.exportData();
+  const payload = await blobJson(window, app.exportedBlob());
+  assert.deepEqual(Object.keys(payload.pack).sort(), ["packing-0001", "packing-0002"]);
+  assert.deepEqual(Object.keys(payload.open), ["open-0001", "open-0002"]);
+  assert.deepEqual(Object.keys(payload.packcatalog.edits), ["packing-0001"]);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
 test("schema 5 backups use Timeline IDs and Version 4 backups remain importable", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
