@@ -181,6 +181,43 @@ test("legacy phone Timeline state migrates automatically to stable IDs", async t
   assert.deepEqual(app.runtimeErrors, []);
 });
 
+test("legacy reservation and planned-budget edits migrate from indexes to IDs", async t => {
+  const app = await bootApp({
+    italy2026_phase5_migrated: "1",
+    italy2026_live: {
+      reservations: {
+        "3": { conf: "LEGACY-TRAIN", status: "Pending", notes: "Legacy reservation edit" }
+      }
+    },
+    italy2026_plannededits: {
+      "4": { amt: 777, status: "Booked", notes: "Legacy planned edit" }
+    }
+  });
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+
+  assert.deepEqual(Object.keys(window.getLive().reservations), ["reservation-0004"]);
+  assert.equal(window.liveReservations().find(item => item.id === "reservation-0004").conf, "LEGACY-TRAIN");
+  assert.deepEqual(Object.keys(window.getPlannedEdits()), ["budget-0005"]);
+  assert.equal(window.liveBudgetPlanned().find(item => item.id === "budget-0005").amt, 777);
+
+  window.editReservation("reservation-0004");
+  window.document.querySelector("#ef_conf").value = "STABLE-TRAIN";
+  window.document.querySelector("#efSave").click();
+  assert.equal(window.getLive().reservations["reservation-0004"].conf, "STABLE-TRAIN");
+
+  window.editPlannedItem("budget-0005");
+  window.document.querySelector("#ef_amt").value = "888";
+  window.document.querySelector("#efSave").click();
+  assert.equal(window.getPlannedEdits()["budget-0005"].amt, 888);
+
+  window.exportData();
+  const payload = await blobJson(window, app.exportedBlob());
+  assert.deepEqual(Object.keys(payload.live.reservations), ["reservation-0004"]);
+  assert.deepEqual(Object.keys(payload.plannededits), ["budget-0005"]);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
 test("schema 5 backups use Timeline IDs and Version 4 backups remain importable", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());

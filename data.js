@@ -179,16 +179,16 @@
       }));
 
     const RESERVATIONS = [
-      { item:"Air reservation", provider:"Delta / SAS", conf:"H9BVBD / AZ3BUA", dates:"Oct 4–15", status:"Confirmed", notes:"Store PDFs offline on both phones" },
-      { item:"Rome hotel", hotelId:"hotel-rome-anantara", provider:"Anantara Palazzo Naiadi", conf:"Event-provided", dates:"Oct 5–8", status:"Confirmed", notes:"Need room confirmation and check-in details" },
-      { item:"Florence hotel", hotelId:"hotel-florence-w", provider:"W Florence", conf:"Event-provided", dates:"Oct 8–10", status:"Confirmed", notes:"Need room confirmation and breakfast details" },
-      { item:"Rome to Florence train", provider:"PSA group travel", conf:"TBD", dates:"Oct 8", status:"Pending", notes:"Need station, train number, times, coach, seats" },
-      { item:"Possible PSA Florence-to-Venice group transfer", provider:"PSA", conf:"Event-provided", dates:"Oct 10", status:"Alternative", notes:"Possible backup only. Italo 8904 Club Executive remains the confirmed primary plan." },
-      { item:"Italo Florence-to-Venice ticket", provider:"Italo", conf:"EM7VNB / Rec. 118932941", dates:"Oct 10", status:"Confirmed", notes:"Primary plan: Italo 8904, 9:39–11:55 AM; Club Executive; Coach 1 seats 13 & 16; €177.76. Cancel only if the final PSA group transfer becomes clearly preferable." },
-      { item:"Venice hotel (group)", hotelId:"hotel-venice-jw", provider:"JW Marriott Venice", conf:"Event-provided", dates:"Oct 10–13", status:"Confirmed", notes:"Confirm room details, island shuttle schedule and transfer from central Venice." },
-      { item:"Venice excursion selection", provider:"PSA", conf:"TBD", dates:"Oct 11", status:"Decision Needed", notes:"Choose Ciao Venice OR Murano & Burano" },
-      { item:"Conference registration", provider:"PSA Convention 2026", conf:"NCN4K9C4SJD / WGNRXC5J54C", dates:"Oct 5–12", status:"Confirmed", notes:"Add final registration record and excursion page offline" },
-      { item:"Venice hotel 2", hotelId:"hotel-venice-antiche", provider:"Hotel Antiche Figure", conf:"PO55JT57ZW", dates:"Oct 13–15", status:"Confirmed / Pay Later", notes:"Superior Double; €620 due 7 days before via payment link; €16 city tax on site. Free cancellation until 5 days before." }
+      {id:"reservation-0001", item:"Air reservation", provider:"Delta / SAS", conf:"H9BVBD / AZ3BUA", dates:"Oct 4–15", status:"Confirmed", notes:"Store PDFs offline on both phones" },
+      {id:"reservation-0002", item:"Rome hotel", hotelId:"hotel-rome-anantara", provider:"Anantara Palazzo Naiadi", conf:"Event-provided", dates:"Oct 5–8", status:"Confirmed", notes:"Need room confirmation and check-in details" },
+      {id:"reservation-0003", item:"Florence hotel", hotelId:"hotel-florence-w", provider:"W Florence", conf:"Event-provided", dates:"Oct 8–10", status:"Confirmed", notes:"Need room confirmation and breakfast details" },
+      {id:"reservation-0004", item:"Rome to Florence train", provider:"PSA group travel", conf:"TBD", dates:"Oct 8", status:"Pending", notes:"Need station, train number, times, coach, seats" },
+      {id:"reservation-0005", item:"Possible PSA Florence-to-Venice group transfer", provider:"PSA", conf:"Event-provided", dates:"Oct 10", status:"Alternative", notes:"Possible backup only. Italo 8904 Club Executive remains the confirmed primary plan." },
+      {id:"reservation-0006", item:"Italo Florence-to-Venice ticket", provider:"Italo", conf:"EM7VNB / Rec. 118932941", dates:"Oct 10", status:"Confirmed", notes:"Primary plan: Italo 8904, 9:39–11:55 AM; Club Executive; Coach 1 seats 13 & 16; €177.76. Cancel only if the final PSA group transfer becomes clearly preferable." },
+      {id:"reservation-0007", item:"Venice hotel (group)", hotelId:"hotel-venice-jw", provider:"JW Marriott Venice", conf:"Event-provided", dates:"Oct 10–13", status:"Confirmed", notes:"Confirm room details, island shuttle schedule and transfer from central Venice." },
+      {id:"reservation-0008", item:"Venice excursion selection", provider:"PSA", conf:"TBD", dates:"Oct 11", status:"Decision Needed", notes:"Choose Ciao Venice OR Murano & Burano" },
+      {id:"reservation-0009", item:"Conference registration", provider:"PSA Convention 2026", conf:"NCN4K9C4SJD / WGNRXC5J54C", dates:"Oct 5–12", status:"Confirmed", notes:"Add final registration record and excursion page offline" },
+      {id:"reservation-0010", item:"Venice hotel 2", hotelId:"hotel-venice-antiche", provider:"Hotel Antiche Figure", conf:"PO55JT57ZW", dates:"Oct 13–15", status:"Confirmed / Pay Later", notes:"Superior Double; €620 due 7 days before via payment link; €16 city tax on site. Free cancellation until 5 days before." }
     ];
 
     const OPEN_ITEMS = [
@@ -606,24 +606,24 @@
     ];
 
     const BUDGET_PLANNED = [
-      {cat:"Flights",sub:"International airfare",amt:5254,cur:"USD",company:false,status:"Paid",notes:"Total for two including concierge tip"},
-      {cat:"Hotels",sub:"Rome – Anantara",amt:0,cur:"USD",company:true,status:"Booked",notes:"PSA provided"},
-      {cat:"Hotels",sub:"Florence – W Florence",amt:0,cur:"USD",company:true,status:"Booked",notes:"PSA provided"},
-      {cat:"Hotels",sub:"Venice – JW Marriott",amt:0,cur:"USD",company:true,status:"Pending",notes:"Company-selected"},
-      {cat:"Hotels",sub:"Venice – Antiche Figure",amt:620,cur:"EUR",company:false,status:"Booked / Pay Later",notes:"€620 room balance via payment link"},
-      {cat:"Taxes & Fees",sub:"Venice city tax (Antiche Figure)",amt:16,cur:"EUR",company:false,status:"Due On Site",notes:"Not included in €620 room total"},
-      {cat:"Trains",sub:"Italo 8904 Club Executive",amt:177.76,cur:"EUR",company:false,status:"Paid",notes:"EM7VNB"},
-      {cat:"Trains",sub:"Rome to Florence group train",amt:0,cur:"EUR",company:true,status:"Pending",notes:"Event-provided"},
-      {cat:"Ground",sub:"TPA Economy Parking",amt:264,cur:"USD",company:false,status:"Planned",notes:"12 days × ~$22; verify rate"},
-      {cat:"Ground",sub:"Tolls / SunPass",amt:35,cur:"USD",company:false,status:"Planned",notes:"Round-trip Florida estimate"},
-      {cat:"Ground",sub:"Leonardo Express",amt:28,cur:"EUR",company:false,status:"Planned",notes:"2 × €14 FCO → Termini"},
-      {cat:"Ground",sub:"Local transit & taxis",amt:250,cur:"EUR",company:false,status:"Planned",notes:"Metro, taxi, vaporetto, airport transfers"},
-      {cat:"Dining",sub:"Meals and drinks",amt:2160,cur:"USD",company:false,status:"Planned",notes:"Daily estimate for two"},
-      {cat:"Attractions",sub:"Tickets and tours",amt:600,cur:"USD",company:false,status:"Planned",notes:""},
-      {cat:"Shopping",sub:"Souvenirs and gifts",amt:750,cur:"USD",company:false,status:"Planned",notes:""},
-      {cat:"Tips & Fees",sub:"Tips, coperto, fees",amt:250,cur:"USD",company:false,status:"Planned",notes:"Cash-heavy miscellaneous"},
-      {cat:"Insurance",sub:"Travel insurance",amt:0,cur:"USD",company:false,status:"Pending",notes:"Add if purchased"},
-      {cat:"Miscellaneous",sub:"Contingency",amt:0,cur:"USD",company:false,status:"Planned",notes:"Buffer for unexpected costs"}
+      {id:"budget-0001",cat:"Flights",sub:"International airfare",amt:5254,cur:"USD",company:false,status:"Paid",notes:"Total for two including concierge tip"},
+      {id:"budget-0002",cat:"Hotels",sub:"Rome – Anantara",amt:0,cur:"USD",company:true,status:"Booked",notes:"PSA provided"},
+      {id:"budget-0003",cat:"Hotels",sub:"Florence – W Florence",amt:0,cur:"USD",company:true,status:"Booked",notes:"PSA provided"},
+      {id:"budget-0004",cat:"Hotels",sub:"Venice – JW Marriott",amt:0,cur:"USD",company:true,status:"Pending",notes:"Company-selected"},
+      {id:"budget-0005",cat:"Hotels",sub:"Venice – Antiche Figure",amt:620,cur:"EUR",company:false,status:"Booked / Pay Later",notes:"€620 room balance via payment link"},
+      {id:"budget-0006",cat:"Taxes & Fees",sub:"Venice city tax (Antiche Figure)",amt:16,cur:"EUR",company:false,status:"Due On Site",notes:"Not included in €620 room total"},
+      {id:"budget-0007",cat:"Trains",sub:"Italo 8904 Club Executive",amt:177.76,cur:"EUR",company:false,status:"Paid",notes:"EM7VNB"},
+      {id:"budget-0008",cat:"Trains",sub:"Rome to Florence group train",amt:0,cur:"EUR",company:true,status:"Pending",notes:"Event-provided"},
+      {id:"budget-0009",cat:"Ground",sub:"TPA Economy Parking",amt:264,cur:"USD",company:false,status:"Planned",notes:"12 days × ~$22; verify rate"},
+      {id:"budget-0010",cat:"Ground",sub:"Tolls / SunPass",amt:35,cur:"USD",company:false,status:"Planned",notes:"Round-trip Florida estimate"},
+      {id:"budget-0011",cat:"Ground",sub:"Leonardo Express",amt:28,cur:"EUR",company:false,status:"Planned",notes:"2 × €14 FCO → Termini"},
+      {id:"budget-0012",cat:"Ground",sub:"Local transit & taxis",amt:250,cur:"EUR",company:false,status:"Planned",notes:"Metro, taxi, vaporetto, airport transfers"},
+      {id:"budget-0013",cat:"Dining",sub:"Meals and drinks",amt:2160,cur:"USD",company:false,status:"Planned",notes:"Daily estimate for two"},
+      {id:"budget-0014",cat:"Attractions",sub:"Tickets and tours",amt:600,cur:"USD",company:false,status:"Planned",notes:""},
+      {id:"budget-0015",cat:"Shopping",sub:"Souvenirs and gifts",amt:750,cur:"USD",company:false,status:"Planned",notes:""},
+      {id:"budget-0016",cat:"Tips & Fees",sub:"Tips, coperto, fees",amt:250,cur:"USD",company:false,status:"Planned",notes:"Cash-heavy miscellaneous"},
+      {id:"budget-0017",cat:"Insurance",sub:"Travel insurance",amt:0,cur:"USD",company:false,status:"Pending",notes:"Add if purchased"},
+      {id:"budget-0018",cat:"Miscellaneous",sub:"Contingency",amt:0,cur:"USD",company:false,status:"Planned",notes:"Buffer for unexpected costs"}
     ];
 
 // ===================== MAPS & LINKS DATA (spreadsheet-aligned) =====================

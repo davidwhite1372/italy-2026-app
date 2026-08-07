@@ -1303,7 +1303,7 @@
       version: "10.9.0",
       build: "10.9.0",
       backupSchema: 5,
-      lastEdited: "August 7, 2026 at 5:14 PM ET"
+      lastEdited: "August 7, 2026 at 5:20 PM ET"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1744,11 +1744,34 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function setNotes(arr) { localStorage.setItem("italy2026_notes", JSON.stringify(arr)); }
 
     // ---- Live overrides (timeline notes, train times, transfer notes, reservation notes) ----
+    function reservationIdForStoredKey(key) {
+      const raw = String(key);
+      const byId = RESERVATIONS.find(item => item.id === raw);
+      if (byId) return byId.id;
+      const index = Number(raw);
+      return Number.isInteger(index) && RESERVATIONS[index] ? RESERVATIONS[index].id : raw;
+    }
+    function normalizeReservationEdits(obj) {
+      return Object.entries(obj && typeof obj === "object" ? obj : {}).reduce((out, [key, value]) => {
+        const id = reservationIdForStoredKey(key);
+        out[id] = out[id] && value && typeof value === "object" && !Array.isArray(value) ? { ...out[id], ...value } : value;
+        return out;
+      }, {});
+    }
+    function normalizeLiveState(obj) {
+      const normalized = obj && typeof obj === "object" ? { ...obj } : {};
+      if (normalized.reservations) normalized.reservations = normalizeReservationEdits(normalized.reservations);
+      return normalized;
+    }
     function getLive() {
-      try { return JSON.parse(localStorage.getItem("italy2026_live") || "{}"); } catch(e) { return {}; }
+      let raw = {};
+      try { raw = JSON.parse(localStorage.getItem("italy2026_live") || "{}"); } catch(e) { raw = {}; }
+      const normalized = normalizeLiveState(raw);
+      if (JSON.stringify(normalized) !== JSON.stringify(raw)) localStorage.setItem("italy2026_live", JSON.stringify(normalized));
+      return normalized;
     }
     function setLive(obj) {
-      localStorage.setItem("italy2026_live", JSON.stringify(obj));
+      localStorage.setItem("italy2026_live", JSON.stringify(normalizeLiveState(obj)));
     }
     function getExpenses() {
       try { return JSON.parse(localStorage.getItem("italy2026_expenses") || "[]"); } catch(e) { return []; }
@@ -1757,14 +1780,32 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       localStorage.setItem("italy2026_expenses", JSON.stringify(arr));
     }
     function getPlannedEdits() {
-      try { return JSON.parse(localStorage.getItem("italy2026_plannededits") || "{}"); } catch(e) { return {}; }
+      let raw = {};
+      try { raw = JSON.parse(localStorage.getItem("italy2026_plannededits") || "{}"); } catch(e) { raw = {}; }
+      const normalized = normalizePlannedEdits(raw);
+      if (JSON.stringify(normalized) !== JSON.stringify(raw)) localStorage.setItem("italy2026_plannededits", JSON.stringify(normalized));
+      return normalized;
     }
     function setPlannedEdits(obj) {
-      localStorage.setItem("italy2026_plannededits", JSON.stringify(obj));
+      localStorage.setItem("italy2026_plannededits", JSON.stringify(normalizePlannedEdits(obj)));
+    }
+    function budgetIdForStoredKey(key) {
+      const raw = String(key);
+      const byId = BUDGET_PLANNED.find(item => item.id === raw);
+      if (byId) return byId.id;
+      const index = Number(raw);
+      return Number.isInteger(index) && BUDGET_PLANNED[index] ? BUDGET_PLANNED[index].id : raw;
+    }
+    function normalizePlannedEdits(obj) {
+      return Object.entries(obj && typeof obj === "object" ? obj : {}).reduce((out, [key, value]) => {
+        const id = budgetIdForStoredKey(key);
+        out[id] = out[id] && value && typeof value === "object" && !Array.isArray(value) ? { ...out[id], ...value } : value;
+        return out;
+      }, {});
     }
     function liveBudgetPlanned() {
       const edits = getPlannedEdits();
-      return BUDGET_PLANNED.map((b, i) => ({ ...b, ...(edits[i] || {}), _index: i }));
+      return BUDGET_PLANNED.map(b => ({ ...b, ...(edits[b.id] || {}), _id:b.id }));
     }
     function timelineStateId(item) {
       if (!item) return "";
@@ -2426,7 +2467,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function liveReservations() {
       const live = getLive();
       return RESERVATIONS.map((r, i) => {
-        const o = (live.reservations || {})[i];
+        const o = (live.reservations || {})[r.id];
         const merged = o ? { ...r, ...o } : { ...r };
         if (i === 0) {
           const flights = liveFlights();
@@ -2525,9 +2566,8 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       // Remove overridden copies of master-owned reservation fields.
       if (live.reservations && typeof live.reservations === "object") {
         Object.keys(live.reservations).forEach(k => {
-          const i = Number(k);
-          const base = RESERVATIONS[i];
-          if (i === 0 || (base && base.hotelId)) {
+          const base = RESERVATIONS.find(item => item.id === reservationIdForStoredKey(k));
+          if ((base && base.id === RESERVATIONS[0].id) || (base && base.hotelId)) {
             delete live.reservations[k];
             changed = true;
           }
@@ -2547,7 +2587,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const seenTimelineIds = new Set();
       const seenSteps = new Set();
 
-      [["Restaurant", RESTAURANTS], ["Attraction", ATTRACTIONS]].forEach(([label, records]) => {
+      [["Restaurant", RESTAURANTS], ["Attraction", ATTRACTIONS], ["Reservation", RESERVATIONS], ["Budget item", BUDGET_PLANNED]].forEach(([label, records]) => {
         const seen = new Set();
         records.forEach((record, index) => {
           if (!record.id) issues.push(`${label} ${index + 1}: missing stable ID`);
@@ -2721,14 +2761,14 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       if (!confirm("Delete this expense?")) return false;
       markDeleted("expenses",id); setExpenses(getExpenses().filter(e => e.id !== id)); renderMoney(); showToast("Expense deleted"); return true;
     }
-    function editPlannedItem(i) {
-      const b=liveBudgetPlanned().find(x=>x._index===i); if(!b)return;
+    function editPlannedItem(id) {
+      const b=liveBudgetPlanned().find(x=>x._id===id); if(!b)return;
       openEditSheet("Edit planned cost",[
         {key:"sub",label:"Item / description",value:b.sub},{key:"cat",label:"Category",value:b.cat},
         {key:"amt",label:"Amount",type:"number",value:b.amt},{key:"cur",label:"Currency",type:"select",value:b.cur,options:["USD","EUR"]},
         {key:"status",label:"Status",type:"select",value:b.status,options:["Planned","Booked","Paid","Refunded","Canceled","Company Paid","Due On Site","Pending"]},
         {key:"company",label:"Company paid?",type:"select",value:b.company?"Yes":"No",options:["No","Yes"]},{key:"notes",label:"Notes",type:"textarea",value:b.notes||""}
-      ],data=>{const edits=getPlannedEdits();edits[i]={sub:data.sub,cat:data.cat,amt:Number(data.amt||0),cur:data.cur,status:data.status,company:data.company==="Yes",notes:data.notes};setPlannedEdits(edits);renderMoney();showToast("Planned cost updated");});
+      ],data=>{const edits=getPlannedEdits();edits[id]={sub:data.sub,cat:data.cat,amt:Number(data.amt||0),cur:data.cur,status:data.status,company:data.company==="Yes",notes:data.notes};setPlannedEdits(edits);renderMoney();showToast("Planned cost updated");});
     }
 
     function normalizeDeletedRecords(obj) {
@@ -3565,7 +3605,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         <div class="card">
           <div class="row space-between">
             <div class="fw-600">${r.item}</div>
-            <div>${statusBadge(r.status)} <button class="edit-btn" onclick="${i === 0 ? "editAirBooking()" : (r.hotelId ? `editHotelById('${r.hotelId}')` : `editReservation(${i})`)}">${i === 0 ? "Edit Booking" : "Edit"}</button></div>
+            <div>${statusBadge(r.status)} <button class="edit-btn" onclick="${i === 0 ? "editAirBooking()" : (r.hotelId ? `editHotelById('${r.hotelId}')` : `editReservation('${r.id}')`)}">${i === 0 ? "Edit Booking" : "Edit"}</button></div>
           </div>
           <div class="text-sm text-muted mt-8">${r.provider} · ${r.dates}</div>
           <div class="text-sm mt-8"><strong>Conf:</strong> ${r.conf}</div>
@@ -3588,8 +3628,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       }).join("");
     }
 
-    function editReservation(i) {
-      const r = liveReservations()[i];
+    function editReservation(id) {
+      const r = liveReservations().find(item => item.id === id);
+      if (!r) return;
       openEditSheet("Edit reservation", [
         { key: "conf", label: "Confirmation #", value: r.conf },
         { key: "status", label: "Status", type: "select", value: r.status,
@@ -3598,7 +3639,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       ], (data) => {
         const live = getLive();
         if (!live.reservations) live.reservations = {};
-        live.reservations[i] = data;
+        live.reservations[id] = data;
         setLive(live);
         renderBookings();
       });
@@ -4049,7 +4090,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       document.getElementById("expCount").textContent=`(${expenses.length} shown / ${all.length} total)`;
       document.getElementById("budgetExpenses").innerHTML=expenses.length?expenses.map(e=>`<div class="card" style="${!e.receipt?'border-left:4px solid var(--warning);':''}"><div class="row space-between"><div class="fw-600">${e.desc}</div><div class="fw-600" style="text-align:right;">${moneyPair(e._usd,e._eur,e.cur)}</div></div><div class="text-xs text-muted mt-8">${fmtDate(e.date)} · ${e.city} · ${e.cat} · Paid by ${e.traveler}</div><div class="text-sm mt-8"><strong>Original charge:</strong> ${e.cur==="EUR"?'€':'$'}${Number(e.amt).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} ${e.cur}${e.cur==="EUR"?` · locked FX ${Number(e.fx).toFixed(4)}`:''}${e.statementUsd?' · final card USD used':''}</div><div class="tags mt-8"><span class="tag">${e.payment}</span>${e.company?'<span class="tag top">Company paid</span>':'<span class="tag">Personal</span>'}${e.reimbursable?'<span class="tag price">Reimbursable</span>':''}<span class="tag ${e.receipt?'price':'top'}">${e.receipt?'Receipt saved':'Receipt missing'}</span></div>${e.notes?`<div class="text-sm text-muted mt-8">${e.notes}</div>`:''}<div class="btn-row"><button class="btn-outline" onclick="openExpenseSheet(${e.id})">Edit</button><button class="btn-danger" onclick="deleteExpense(${e.id})">Delete</button></div></div>`).join(""):'<div class="empty"><div class="icon">🧾</div>No expenses match these filters.</div>';
       const byCat={};all.filter(e=>!e.company).forEach(e=>byCat[e.cat]=(byCat[e.cat]||0)+e._usd);
-      document.getElementById("budgetPlanned").innerHTML=planned.map(b=>{const plannedUsd=b.cur==="USD"?Number(b.amt):Number(b.amt)*rate,plannedEur=plannedUsd/rate,actual=byCat[b.cat]||0,rem=plannedUsd-actual,canceled=/canceled|refunded/i.test(b.status||"");return `<div class="card" style="${canceled?'opacity:.65;':''}"><div class="row space-between"><div><div class="fw-600" style="${canceled?'text-decoration:line-through;':''}">${b.sub}</div><div class="text-xs text-muted">${b.cat} · ${b.status}${b.company?' · Company provided':''}</div></div><div style="text-align:right;">${moneyPair(plannedUsd,plannedEur,b.cur)}</div></div><div class="text-sm mt-8"><strong>Category actual:</strong> $${actual.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} · €${(actual/rate).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}<br><strong>Remaining:</strong> <span style="${rem<0?'color:var(--danger);':''}">$${rem.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} · €${(rem/rate).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>${b.notes?`<div class="text-sm text-muted mt-8">${b.notes}</div>`:''}<button class="edit-btn mt-8" onclick="editPlannedItem(${b._index})">Edit planned item</button></div>`}).join("");
+      document.getElementById("budgetPlanned").innerHTML=planned.map(b=>{const plannedUsd=b.cur==="USD"?Number(b.amt):Number(b.amt)*rate,plannedEur=plannedUsd/rate,actual=byCat[b.cat]||0,rem=plannedUsd-actual,canceled=/canceled|refunded/i.test(b.status||"");return `<div class="card" style="${canceled?'opacity:.65;':''}"><div class="row space-between"><div><div class="fw-600" style="${canceled?'text-decoration:line-through;':''}">${b.sub}</div><div class="text-xs text-muted">${b.cat} · ${b.status}${b.company?' · Company provided':''}</div></div><div style="text-align:right;">${moneyPair(plannedUsd,plannedEur,b.cur)}</div></div><div class="text-sm mt-8"><strong>Category actual:</strong> $${actual.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} · €${(actual/rate).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}<br><strong>Remaining:</strong> <span style="${rem<0?'color:var(--danger);':''}">$${rem.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} · €${(rem/rate).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>${b.notes?`<div class="text-sm text-muted mt-8">${b.notes}</div>`:''}<button class="edit-btn mt-8" onclick="editPlannedItem('${b._id}')">Edit planned item</button></div>`}).join("");
     }
 
     function renderMore() {

@@ -20,6 +20,9 @@
 - Migrated restaurant edits, favorites, visits, ratings, notes, and deletion markers from name-based keys to stable IDs.
 - Migrated attraction visit logs and on-phone photo storage from name-based keys to stable IDs.
 - Added UUID-based IDs for newly created restaurants, with automatic IDs for older custom records that lack one.
+- Added permanent IDs to all 10 reservations and all 18 planned-budget items.
+- Migrated existing reservation overrides and planned-budget edits from array indexes to stable IDs.
+- Updated reservation and budget editors to save by record ID while preserving schema 4 and earlier on-phone edits.
 
 ### Preserved
 

@@ -22,7 +22,7 @@ Status: In progress on `develop`
 
 - Clarify app, build, and backup-schema metadata.
 - Clean current documentation and obsolete internal development labels.
-- Introduce stable record IDs before multi-device synchronization. Timeline, restaurant, and attraction IDs are complete; remaining indexed records are next.
+- Introduce stable record IDs before multi-device synchronization. Timeline, restaurant, attraction, reservation, and planned-budget IDs are complete; packing and open items are next.
 - Migrate Timeline state and backup files away from numeric step identifiers. Stable IDs and schema 4 conversion are complete; route/edit dependencies remain.
 - Define timestamps, deletion markers, and conflict behavior for mutable records.
 - Preserve compatibility with existing local data and Version 4 backup files.
