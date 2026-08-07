@@ -954,7 +954,7 @@
 
     <!-- FOOD -->
     <section id="page-food" class="page">
-      <div class="owner-banner"><span class="owner-icon">✏️</span><div><strong>Edit restaurants here.</strong> Favorites, ratings, visits, and restaurant notes belong on this page.</div></div>
+      <div class="owner-banner"><span class="owner-icon">✏️</span><div><strong>Manage restaurants here.</strong> Add, edit, or delete any restaurant, and track favorites, ratings, visits, and notes.</div></div>
       <button style="width:100%;margin:0 0 12px;" onclick="addRestaurant()">＋ Add Restaurant</button>
       <input type="search" class="search-box" id="restSearch" placeholder="Search name, neighborhood, food, dish, price..." />
       <div class="text-xs text-muted" style="margin:-4px 2px 10px;">Use this when you pass a restaurant—search any part of its name, neighborhood, cuisine, recommended dish, priority, or price.</div>
@@ -1290,7 +1290,8 @@
       <div style="margin-top:18px;display:grid;gap:10px;font-size:.88rem;">
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">App version</span><strong id="aboutAppVersion"></strong></div>
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Data version</span><strong id="aboutDataVersion"></strong></div>
-        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong>10.8.0</strong></div>
+        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong id="aboutBuildVersion"></strong></div>
+        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Last edited</span><strong id="aboutLastEdited" style="text-align:right;"></strong></div>
       </div>
       <div style="margin-top:16px;padding:12px;border-radius:12px;background:var(--soft);font-size:.78rem;color:var(--muted);line-height:1.5;">Technical details are kept here for troubleshooting without cluttering the Home page.</div>
     </div>
@@ -1298,9 +1299,11 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.8.0";
+    const APP_VERSION = "10.8.2";
     const DATA_VERSION = "10.5.0";
-    const BUILD_LABEL = "Italy App v10.8.1 ⓘ";
+    const BUILD_VERSION = "10.8.2";
+    const LAST_EDITED = "August 7, 2026 at 4:23 PM ET";
+    const BUILD_LABEL = "Italy App v10.8.2 ⓘ";
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -1798,8 +1801,25 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function setCustomRestaurants(arr) {
       localStorage.setItem("italy2026_customrestaurants", JSON.stringify(arr || []));
     }
+    function getRestaurantEdits() {
+      try { return JSON.parse(localStorage.getItem("italy2026_restaurantedits") || "{}"); } catch(e) { return {}; }
+    }
+    function setRestaurantEdits(obj) {
+      localStorage.setItem("italy2026_restaurantedits", JSON.stringify(obj || {}));
+    }
+    function restaurantId(r) {
+      return r.id || `builtin:${r.city}|${r.name}`;
+    }
     function allRestaurants() {
-      return [...RESTAURANTS, ...getCustomRestaurants().map(r => ({...r, _custom:true}))];
+      const edits = getRestaurantEdits();
+      const deleted = (getDeletedRecords().restaurants || {});
+      const builtIn = RESTAURANTS.map(r => {
+        const id = restaurantId(r);
+        return { ...r, ...(edits[id] || {}), _restaurantId:id, _custom:false };
+      }).filter(r => !(r._restaurantId in deleted));
+      const custom = getCustomRestaurants().map(r => ({ ...r, _restaurantId:restaurantId(r), _custom:true }))
+        .filter(r => !(r._restaurantId in deleted));
+      return [...builtIn, ...custom];
     }
     function nearestTripCity(lat, lng) {
       const cities = [
@@ -1818,8 +1838,18 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         <div class="form-group"><label>Food / style</label><input id="newRestStyle" placeholder="Cafe, pizza, seafood…"></div>
         <div class="form-group"><label>Price</label><select id="newRestPrice"><option>€</option><option selected>€€</option><option>€€€</option><option>€€€€</option></select></div>
         <div class="form-group"><label>What to order</label><input id="newRestOrder" placeholder="Optional"></div>
-        <div class="form-group"><label>Notes</label><textarea id="newRestNotes" rows="3" placeholder="Why it caught your eye, hours, recommendation…"></textarea></div>
+        <div class="form-group"><label>Best time</label><input id="newRestBest" placeholder="Lunch / Dinner"></div>
+        <div class="form-group"><label>Reservation</label><input id="newRestRes" placeholder="Yes, Recommended, Required, or No"></div>
+        <div class="form-group"><label>Access / transportation</label><input id="newRestAccess" placeholder="Walk, taxi, hotel shuttle…"></div>
+        <div class="form-group"><label>Why it is on the list</label><textarea id="newRestWhy" rows="3" placeholder="Recommendation, atmosphere, specialty…"></textarea></div>
+        <div class="form-group"><label>Priority</label><select id="newRestPriority"><option>Top 5</option><option>High</option><option selected>Good Option</option><option>Added</option></select></div>
+        <div class="form-group"><label>Website</label><input id="newRestWebsite" type="url" placeholder="Optional"></div>
+        <div class="form-group"><label>Hours</label><input id="newRestHours" placeholder="Optional"></div>
         <div class="form-group"><label>Google Maps link</label><input id="newRestMaps" type="url" placeholder="Optional"></div>
+        <div class="form-group"><label>Favorite</label><select id="newRestFavorite"><option value="yes" selected>Yes — save as favorite</option><option value="no">No</option></select></div>
+        <div class="form-group"><label>Ate here</label><select id="newRestAte"><option value="no" selected>No — not yet</option><option value="yes">Yes — we ate here</option></select></div>
+        <div class="form-group"><label>Rating</label><select id="newRestRating"><option value="">— no rating —</option><option value="5">★★★★★ Excellent</option><option value="4">★★★★☆ Great</option><option value="3">★★★☆☆ Good</option><option value="2">★★☆☆☆ OK</option><option value="1">★☆☆☆☆ Poor</option></select></div>
+        <div class="form-group"><label>What we ate / visit notes</label><textarea id="newRestNotes" rows="3" placeholder="Optional"></textarea></div>
         <button type="button" class="btn-outline" style="width:100%;" onclick="captureRestaurantLocation()">📍 Use Current Location</button>
         <div id="newRestGpsStatus" class="text-xs text-muted gps-status"></div>
         <div class="btn-row mt-12"><button type="button" class="btn-outline" onclick="closeSheet()">Cancel</button><button type="button" onclick="saveNewRestaurant()">Save Restaurant</button></div>`;
@@ -1844,15 +1874,21 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const city=document.getElementById("newRestCity").value;
       const arr=getCustomRestaurants();
       const id="restaurant_"+Date.now();
-      const r={id,name,city,neigh:document.getElementById("newRestNeigh").value.trim()||"Saved on the go",style:document.getElementById("newRestStyle").value.trim()||"Restaurant",price:document.getElementById("newRestPrice").value,order:document.getElementById("newRestOrder").value.trim()||"Decide there",why:document.getElementById("newRestNotes").value.trim()||"Added during the trip",best:"On-the-go find",res:"Unknown",access:"",priority:"Added",maps:document.getElementById("newRestMaps").value.trim()||`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name+" "+city)}`,createdAt:new Date().toISOString()};
+      const now=new Date().toISOString();
+      const r={id,name,city,neigh:document.getElementById("newRestNeigh").value.trim()||"Saved on the go",style:document.getElementById("newRestStyle").value.trim()||"Restaurant",price:document.getElementById("newRestPrice").value,order:document.getElementById("newRestOrder").value.trim()||"Decide there",best:document.getElementById("newRestBest").value.trim()||"On-the-go find",res:document.getElementById("newRestRes").value.trim()||"Unknown",access:document.getElementById("newRestAccess").value.trim(),why:document.getElementById("newRestWhy").value.trim()||"Added during the trip",priority:document.getElementById("newRestPriority").value,website:document.getElementById("newRestWebsite").value.trim(),hours:document.getElementById("newRestHours").value.trim(),maps:document.getElementById("newRestMaps").value.trim()||`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name+" "+city)}`,createdAt:now,updatedAt:now};
       arr.push(r); setCustomRestaurants(arr);
-      const log=getRestLog(); log[restKey(r)]={favorite:true,notes:document.getElementById("newRestNotes").value.trim()}; setRestLog(log);
+      clearDeleted("restaurants",id);
+      const rating=document.getElementById("newRestRating").value;
+      const log=getRestLog(); log[restKey(r)]={favorite:document.getElementById("newRestFavorite").value==="yes",ate:document.getElementById("newRestAte").value==="yes"||!!rating,rating,notes:document.getElementById("newRestNotes").value.trim()}; setRestLog(log);
       closeSheet(); restCityFilter="all"; restQuickFilter="all"; renderFood(); showToast("Restaurant added and saved");
     }
-    function deleteCustomRestaurant(id, key) {
-      if (!confirm("Delete this added restaurant?")) return false;
-      setCustomRestaurants(getCustomRestaurants().filter(r=>r.id!==id));
-      const log=getRestLog(); delete log[key]; setRestLog(log); renderFood(); showToast("Restaurant deleted"); return true;
+    function deleteRestaurant(id, key) {
+      const restaurant = allRestaurants().find(r=>r._restaurantId===id);
+      if (!restaurant || !confirm(`Delete ${restaurant.name}?`)) return false;
+      if (restaurant._custom) setCustomRestaurants(getCustomRestaurants().filter(r=>restaurantId(r)!==id));
+      markDeleted("restaurants",id);
+      const log=getRestLog(); delete log[key]; setRestLog(log);
+      renderFood(); showToast("Restaurant deleted"); return true;
     }
 
     function getRestLog() {
@@ -2436,16 +2472,16 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
 
     function openEditSheet(title, fields, onSave, onDelete) {
       const html = `
-        <h2>${title}</h2>
+        <h2>${escapeHtml(title)}</h2>
         <form id="editForm" onsubmit="return false;">
           ${fields.map(f => `
             <div class="form-group">
-              <label>${f.label}</label>
+              <label>${escapeHtml(f.label)}</label>
               ${f.type === "textarea"
-                ? `<textarea id="ef_${f.key}" rows="3">${f.value || ""}</textarea>`
+                ? `<textarea id="ef_${f.key}" rows="3">${escapeHtml(f.value || "")}</textarea>`
                 : f.type === "select"
-                  ? `<select id="ef_${f.key}">${f.options.map(o => `<option value="${o}" ${o === f.value ? "selected" : ""}>${o}</option>`).join("")}</select>`
-                  : `<input type="${f.type || "text"}" id="ef_${f.key}" value="${(f.value || "").toString().replace(/"/g, "&quot;")}" />`
+                  ? `<select id="ef_${f.key}">${f.options.map(o => `<option value="${escapeHtml(o)}" ${o === f.value ? "selected" : ""}>${escapeHtml(o)}</option>`).join("")}</select>`
+                  : `<input type="${f.type || "text"}" id="ef_${f.key}" value="${escapeHtml(f.value || "")}" />`
               }
             </div>
           `).join("")}
@@ -2464,8 +2500,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
           const el = document.getElementById("ef_" + f.key);
           data[f.key] = el ? el.value : "";
         });
-        onSave(data);
-        closeSheet();
+        if (onSave(data) !== false) closeSheet();
       };
       if (onDelete) {
         document.getElementById("efDelete").onclick = () => {
@@ -2583,7 +2618,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       return out;
     }
     function applyDeleted(arr, type, idFn, deleted) { const d=(deleted&&deleted[type])||{}; return (arr||[]).filter(x=>!(String(idFn(x)) in d)); }
-    const SAVED_DATA_KEYS = ["italy2026_customrestaurants","italy2026_live","italy2026_expenses","italy2026_pack","italy2026_open","italy2026_journal","italy2026_notes","italy2026_tldone","italy2026_tlhidden","italy2026_restlog","italy2026_attrlog","italy2026_pretrip","italy2026_customlegs","italy2026_routeedits","italy2026_plannededits","italy2026_deleted","italy2026_packcatalog"];
+    const SAVED_DATA_KEYS = ["italy2026_customrestaurants","italy2026_restaurantedits","italy2026_live","italy2026_expenses","italy2026_pack","italy2026_open","italy2026_journal","italy2026_notes","italy2026_tldone","italy2026_tlhidden","italy2026_restlog","italy2026_attrlog","italy2026_pretrip","italy2026_customlegs","italy2026_routeedits","italy2026_plannededits","italy2026_deleted","italy2026_packcatalog"];
     function clearAllSupportedSavedData() { SAVED_DATA_KEYS.forEach(k=>localStorage.removeItem(k)); }
 
     function getBackupMeta() {
@@ -2649,7 +2684,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         exportedBy: getBackupOwner(),
         live: getLive(), expenses: getExpenses(), pack: getPackState(), open: getOpenState(), journal: getJournal(), notes: getNotes(),
         tldone: getTimelineDone(), tlhidden: getTimelineHidden(), restlog: getRestLog(), attrlog: getAttrLog(),
-        pretrip: getPretripState(), customlegs: getCustomLegs(), customrestaurants: getCustomRestaurants(), routeedits: getRouteEdits(), plannededits: getPlannedEdits(), deleted: getDeletedRecords(), packcatalog: getPackCatalogData()
+        pretrip: getPretripState(), customlegs: getCustomLegs(), customrestaurants: getCustomRestaurants(), restaurantedits: getRestaurantEdits(), routeedits: getRouteEdits(), plannededits: getPlannedEdits(), deleted: getDeletedRecords(), packcatalog: getPackCatalogData()
       };
       const meta=getBackupMeta(); meta.lastExport=now; setBackupMeta(meta); renderBackupStatus();
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
@@ -2678,7 +2713,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         setLive(data.live||{}); setExpenses(data.expenses||[]); setPackState(data.pack||{}); setOpenState(data.open||{});
         setJournal(data.journal||[]); setNotes(Array.isArray(data.notes) ? data.notes : DEFAULT_REFERENCE_NOTES.map(n=>({...n}))); setTimelineDone(data.tldone||{}); setTimelineHidden(data.tlhidden||{});
         setRestLog(data.restlog||{}); setAttrLog(data.attrlog||{}); setPretripState(data.pretrip||{});
-        setCustomLegs(data.customlegs||[]); setCustomRestaurants(data.customrestaurants||[]); setRouteEdits(data.routeedits||{}); setPlannedEdits(data.plannededits||{});
+        setCustomLegs(data.customlegs||[]); setCustomRestaurants(data.customrestaurants||[]); setRestaurantEdits(data.restaurantedits||{}); setRouteEdits(data.routeedits||{}); setPlannedEdits(data.plannededits||{});
         setDeletedRecords(data.deleted||{}); setPackCatalogData(data.packcatalog||{edits:{},custom:{},deleted:{}});
       } else {
         const deleted=mergeDeleted(getDeletedRecords(),data.deleted||{}); setDeletedRecords(deleted);
@@ -2691,7 +2726,8 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         r=mergeArrayById(applyDeleted(getNotes(),"notes",noteId,deleted),applyDeleted(data.notes||[],"notes",noteId,deleted),noteId); totals.deleted += getNotes().length-r.value.length; setNotes(tally(r));
         r=mergeArrayById(applyDeleted(getCustomLegs(),"customlegs",legId,deleted),applyDeleted(data.customlegs||[],"customlegs",legId,deleted),legId); totals.deleted += getCustomLegs().length-r.value.length; setCustomLegs(tally(r));
         const restaurantId=x=>x.id||`${x.city}|${x.name}`;
-        r=mergeArrayById(getCustomRestaurants(),data.customrestaurants||[],restaurantId); setCustomRestaurants(tally(r));
+        r=mergeArrayById(applyDeleted(getCustomRestaurants(),"restaurants",restaurantId,deleted),applyDeleted(data.customrestaurants||[],"restaurants",restaurantId,deleted),restaurantId); totals.deleted += getCustomRestaurants().length-r.value.length; setCustomRestaurants(tally(r));
+        if (data.restaurantedits) setRestaurantEdits(tally(mergeObject(getRestaurantEdits(),data.restaurantedits)));
         if (data.live) setLive(tally(mergeObject(getLive(),data.live)));
         if (data.pack) setPackState(tally(mergePackingState(getPackState(),data.pack)));
         if (data.packcatalog) setPackCatalogData(tally(mergePackCatalog(getPackCatalogData(),data.packcatalog)));
@@ -3484,7 +3520,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       if (restQuickFilter === "unvisited") list = list.filter(r => !(log[r._key] && log[r._key].ate));
       if (restSearch) {
         const q = restSearch.toLowerCase().trim();
-        list = list.filter(r => [r.name, r.city, r.neigh, r.style, r.price, r.order, r.best, r.res, r.access, r.why, r.priority]
+        list = list.filter(r => [r.name, r.city, r.neigh, r.style, r.price, r.order, r.best, r.res, r.access, r.why, r.priority, r.website, r.hours]
           .filter(Boolean).join(" ").toLowerCase().includes(q));
       }
       document.getElementById("restaurantsList").innerHTML = list.map(r => {
@@ -3494,25 +3530,25 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         const rating = entry.rating || "";
         const favorite = !!entry.favorite;
         const stars = rating ? "★".repeat(+rating) + "☆".repeat(5 - +rating) : "";
-        const hasVisit = ate || notes || rating;
         return `
         <div class="card rest-card" style="${ate ? 'border-color:#a5d6a7;' : ''}">
           <div class="row space-between">
             <div style="flex:1;min-width:0;">
-              <div class="name">${r.name} ${r._custom ? '<span class="custom-restaurant-badge">Added</span>' : ''} ${ate ? '<span class="badge badge-confirmed">Ate here</span>' : ''} ${favorite ? '<span title="Favorite">❤️</span>' : ''}</div>
-              <div class="neigh">${r.city} · ${r.neigh} · ${r.style}</div>
+              <div class="name">${escapeHtml(r.name)} ${r._custom ? '<span class="custom-restaurant-badge">Added</span>' : ''} ${ate ? '<span class="badge badge-confirmed">Ate here</span>' : ''} ${favorite ? '<span title="Favorite">❤️</span>' : ''}</div>
+              <div class="neigh">${escapeHtml(r.city)} · ${escapeHtml(r.neigh)} · ${escapeHtml(r.style)}</div>
             </div>
-            <div class="tag price">${r.price}</div>
+            <div class="tag price">${escapeHtml(r.price)}</div>
           </div>
-          <div class="order"><strong>Order:</strong> ${r.order}</div>
-          <div class="text-xs text-muted mt-8">${r.why}</div>
+          <div class="order"><strong>Order:</strong> ${escapeHtml(r.order)}</div>
+          <div class="text-xs text-muted mt-8">${escapeHtml(r.why)}</div>
           <div class="tags">
-            ${r.priority === "Top 5" ? '<span class="tag top">Top 5</span>' : `<span class="tag">${r.priority}</span>`}
-            <span class="tag">${r.best}</span>
-            <span class="tag">Res: ${r.res}</span>
+            ${r.priority === "Top 5" ? '<span class="tag top">Top 5</span>' : `<span class="tag">${escapeHtml(r.priority)}</span>`}
+            <span class="tag">${escapeHtml(r.best)}</span>
+            <span class="tag">Res: ${escapeHtml(r.res)}</span>
+            ${r.hours ? `<span class="tag">${escapeHtml(r.hours)}</span>` : ""}
             ${stars ? `<span class="tag" style="background:#fff8e1;color:#f57f17;">${stars}</span>` : ""}
           </div>
-          ${notes ? `<div class="text-xs text-muted mt-8" style="font-style:italic;">“${(notes.length > 80 ? notes.slice(0,80) + "…" : notes).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}”</div>` : ""}
+          ${notes ? `<div class="text-xs text-muted mt-8" style="font-style:italic;">“${escapeHtml(notes.length > 80 ? notes.slice(0,80) + "…" : notes)}”</div>` : ""}
           <div class="row space-between mt-8" style="align-items:center;">
             <label class="check-row" style="padding:0;border:none;margin:0;">
               <input type="checkbox" ${ate ? "checked" : ""} data-rk="${encodeURIComponent(r._key)}" onchange="toggleRestAte(decodeURIComponent(this.dataset.rk), this.checked)">
@@ -3520,8 +3556,10 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
             </label>
             <div class="row" style="gap:8px;align-items:center;">
               <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="toggleRestFavorite(decodeURIComponent(this.dataset.rk))" aria-label="Toggle favorite">${favorite ? "❤️ Saved" : "♡ Favorite"}</button>
-              <a class="link-btn" href="${r.maps}" target="_blank" rel="noopener">Maps</a>
-              <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="editRestaurant(decodeURIComponent(this.dataset.rk))">${hasVisit ? "Edit visit" : "Log visit"}</button>${r._custom ? `<button class="edit-btn" onclick="deleteCustomRestaurant('${r.id}', decodeURIComponent('${encodeURIComponent(r._key)}'))">Delete</button>` : ""}
+              ${r.website ? `<a class="link-btn" href="${escapeHtml(r.website)}" target="_blank" rel="noopener">Website</a>` : ""}
+              ${r.maps ? `<a class="link-btn" href="${escapeHtml(r.maps)}" target="_blank" rel="noopener">Maps</a>` : ""}
+              <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="editRestaurant(decodeURIComponent(this.dataset.rk))">Edit</button>
+              <button class="edit-btn" data-rid="${encodeURIComponent(r._restaurantId)}" data-rk="${encodeURIComponent(r._key)}" onclick="deleteRestaurant(decodeURIComponent(this.dataset.rid), decodeURIComponent(this.dataset.rk))">Delete</button>
             </div>
           </div>
         </div>
@@ -3533,18 +3571,47 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const r = allRestaurants().find(x => restKey(x) === key);
       if (!r) return;
       const entry = getRestLog()[key] || {};
-      openEditSheet(r.name, [
+      openEditSheet("Edit Restaurant", [
+        { key: "name", label: "Name", value: r.name || "" },
+        { key: "city", label: "City", value: r.city || "" },
+        { key: "neigh", label: "Neighborhood / location", value: r.neigh || "" },
+        { key: "style", label: "Food / style", value: r.style || "" },
+        { key: "price", label: "Price", value: r.price || "" },
+        { key: "order", label: "What to order", value: r.order || "" },
+        { key: "best", label: "Best time", value: r.best || "" },
+        { key: "res", label: "Reservation", value: r.res || "" },
+        { key: "access", label: "Access / transportation", value: r.access || "" },
+        { key: "why", label: "Why it is on the list", type: "textarea", value: r.why || "" },
+        { key: "priority", label: "Priority", value: r.priority || "" },
+        { key: "website", label: "Website", type: "url", value: r.website || "" },
+        { key: "hours", label: "Hours", value: r.hours || "" },
+        { key: "maps", label: "Google Maps link", type: "url", value: r.maps || "" },
+        { key: "favorite", label: "Favorite", type: "select", value: entry.favorite ? "yes" : "no", options: ["yes", "no"] },
         { key: "ate", label: "Ate here", type: "select", value: entry.ate ? "yes" : "no", options: ["yes", "no"] },
         { key: "rating", label: "Rating", type: "select", value: entry.rating || "", options: ["", "5", "4", "3", "2", "1"] },
         { key: "notes", label: "What we ate / notes", type: "textarea", value: entry.notes || "" }
       ], (data) => {
+        const name = data.name.trim();
+        const city = data.city.trim();
+        if (!name || !city) { alert("Restaurant name and city are required."); return false; }
+        const now = new Date().toISOString();
+        const updates = {name,city,neigh:data.neigh.trim(),style:data.style.trim(),price:data.price.trim(),order:data.order.trim(),best:data.best.trim(),res:data.res.trim(),access:data.access.trim(),why:data.why.trim(),priority:data.priority.trim(),website:data.website.trim(),hours:data.hours.trim(),maps:data.maps.trim(),updatedAt:now};
+        if (r._custom) {
+          setCustomRestaurants(getCustomRestaurants().map(x=>restaurantId(x)===r._restaurantId ? {...x,...updates} : x));
+        } else {
+          const edits=getRestaurantEdits(); edits[r._restaurantId]={...(edits[r._restaurantId]||{}),...updates}; setRestaurantEdits(edits);
+        }
+        clearDeleted("restaurants",r._restaurantId);
         const log = getRestLog();
         const ate = data.ate === "yes" || (!!data.rating && data.rating !== "");
-        log[key] = { ate: data.ate === "no" && !data.rating ? false : ate, rating: data.rating || "", notes: data.notes || "", favorite: !!(log[key] && log[key].favorite) };
-        if (data.ate === "no" && !data.rating) log[key].ate = false;
+        const newKey = city + "|" + name;
+        if (newKey !== key) delete log[key];
+        log[newKey] = { ate: data.ate === "no" && !data.rating ? false : ate, rating: data.rating || "", notes: data.notes || "", favorite:data.favorite === "yes" };
         setRestLog(log);
         renderFood();
-      });
+        showToast("Restaurant updated");
+      }, () => deleteRestaurant(r._restaurantId,key));
+      const deleteBtn=document.getElementById("efDelete"); if(deleteBtn) deleteBtn.textContent="Delete this restaurant";
       setTimeout(() => {
         const ratingSel = document.getElementById("ef_rating");
         if (ratingSel) {
@@ -3554,6 +3621,10 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         const ateSel = document.getElementById("ef_ate");
         if (ateSel) {
           Array.from(ateSel.options).forEach(o => { o.textContent = o.value === "yes" ? "Yes — we ate here" : "No — not yet"; });
+        }
+        const favoriteSel = document.getElementById("ef_favorite");
+        if (favoriteSel) {
+          Array.from(favoriteSel.options).forEach(o => { o.textContent = o.value === "yes" ? "Yes — favorite" : "No"; });
         }
       }, 0);
     }
@@ -4521,7 +4592,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       liveReservations().forEach(x=>add("Reservation",x.item||x.provider,[x.provider,x.conf,x.dates,x.status].filter(Boolean).join(" · "),"bookings",x.conf||x.provider||x.item,x));
       const walletIds=["1383385020","9941234776","EBB772160933",airConfirmationText(),TRIP.italo,TRIP.confRomeFlo,TRIP.confVen].filter(Boolean);
       walletIds.forEach(v=>add("Confirmation Wallet",v,"Traveler ID, rewards, or confirmation number","wallet",v,v));
-      [...RESTAURANTS,...getCustomRestaurants()].forEach(x=>add("Restaurant",x.name,[x.city,x.neigh,x.style,x.price].filter(Boolean).join(" · "),"food",x.name,x,{restaurant:true}));
+      allRestaurants().forEach(x=>add("Restaurant",x.name,[x.city,x.neigh,x.style,x.price].filter(Boolean).join(" · "),"food",x.name,x,{restaurant:true}));
       getNotes().forEach(x=>add("Note",x.title,[x.category,x.body].filter(Boolean).join(" · "),"journal",x.title,x,{note:true}));
       getPackingItems().forEach(x=>add("Packing",x.item,[x.traveler,x.cat,x.bag].filter(Boolean).join(" · "),"prep",x.item,x));
       Object.entries(SAFETY||{}).forEach(([k,v])=>add("Safety",k.replace(/([A-Z])/g," $1"),searchableText(v).slice(0,160),"prep",k,{[k]:v},{safety:true}));
@@ -4706,8 +4777,12 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const overlay = document.getElementById("appAboutOverlay");
       const app = document.getElementById("aboutAppVersion");
       const data = document.getElementById("aboutDataVersion");
+      const build = document.getElementById("aboutBuildVersion");
+      const lastEdited = document.getElementById("aboutLastEdited");
       if (app) app.textContent = APP_VERSION;
       if (data) data.textContent = DATA_VERSION;
+      if (build) build.textContent = BUILD_VERSION;
+      if (lastEdited) lastEdited.textContent = LAST_EDITED;
       if (overlay) overlay.style.display = "flex";
     }
 

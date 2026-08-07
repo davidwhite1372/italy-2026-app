@@ -1,3 +1,11 @@
+# Version 10.8.2
+
+## About & Restaurant Management
+- Corrected the About panel app and build versions and added the last-edited date and time.
+- Added full editing for every built-in and user-added restaurant field.
+- Added deletion for built-in and user-added restaurants, with changes preserved in backup/import data.
+- Added Caffè Florian to Venice and added editable restaurant website and hours fields.
+
 # Version 10.8.1
 
 ## Comfort & Essentials
