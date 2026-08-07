@@ -27,7 +27,7 @@ Status: In progress on `develop`
 - Define timestamps, deletion markers, and conflict behavior for mutable records.
 - Preserve compatibility with existing local data and Version 4 backup files.
 - Add automated regression coverage before shared-data work.
-- Remove confirmed dead code separately from data-model migration.
+- Remove confirmed dead code separately from data-model migration. Complete for retired train/transfer duplicates and uncalled compatibility helpers.
 
 ## Version 11.0.0 — Shared Cloud Data
 Status: Evaluation planned

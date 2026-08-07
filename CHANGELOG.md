@@ -26,6 +26,9 @@
 - Added permanent IDs to all 66 built-in packing records and all 13 open pre-trip items.
 - Migrated packing completion, quantities, editor changes, custom items, and deletion markers from indexes and catalog positions to stable IDs.
 - Migrated completed open-item state from visible priority numbers to stable IDs while retaining priority for display and ordering.
+- Replaced the obsolete one-time migration flag with repeatable normalization for legacy Timeline, train, transfer, and reservation overrides.
+- Corrected legacy train and transfer conversion to use explicit current record IDs instead of filtered array positions.
+- Removed retired duplicate train and transfer datasets and five confirmed uncalled compatibility helpers.
 
 ### Preserved
 

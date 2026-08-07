@@ -183,7 +183,6 @@ test("legacy phone Timeline state migrates automatically to stable IDs", async t
 
 test("Timeline records, edits, and route links use IDs without numeric step fields", async t => {
   const app = await bootApp({
-    italy2026_phase5_migrated: "1",
     italy2026_live: {
       timeline: {
         "5": { itemType: "Information" },
@@ -209,9 +208,41 @@ test("Timeline records, edits, and route links use IDs without numeric step fiel
   assert.deepEqual(app.runtimeErrors, []);
 });
 
+test("legacy travel overrides normalize without one-time migration flags", async t => {
+  const app = await bootApp({
+    italy2026_live: {
+      trains: {
+        "0": { dep:"1:30 PM", arr:"2:02 PM", dur:"32 min", conf:"Legacy train", notes:"Saved train edit" }
+      },
+      transfers: {
+        "0": { mode:"Rental car", time:"90 min", status:"Confirmed", steps:"Legacy driving steps" },
+        "10": { mode:"Airport transfer", time:"75 min", status:"Ready", steps:"Legacy airport steps" }
+      },
+      reservations: {
+        "0": { conf:"Retired duplicate air override" }
+      }
+    }
+  });
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+  const live=window.getLive();
+
+  assert.equal("trains" in live, false);
+  assert.equal("transfers" in live, false);
+  assert.equal("reservations" in live, false);
+  assert.equal(live.sharedTravel["travel-11"].start, "1:30 PM");
+  assert.equal(live.sharedTravel["travel-1"].mode, "Rental car");
+  assert.equal(live.sharedTravel["travel-34"].instructions, "Legacy airport steps");
+
+  const appCode=fs.readFileSync(path.join(projectRoot,"index.html"),"utf8");
+  const masterData=fs.readFileSync(path.join(projectRoot,"data.js"),"utf8");
+  assert.doesNotMatch(appCode,/italy2026_phase5_migrated|DATA_MIGRATION_KEY/);
+  assert.doesNotMatch(masterData,/\bconst\s+(?:TRAINS|TRANSFERS)\s*=/);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
 test("legacy reservation and planned-budget edits migrate from indexes to IDs", async t => {
   const app = await bootApp({
-    italy2026_phase5_migrated: "1",
     italy2026_live: {
       reservations: {
         "3": { conf: "LEGACY-TRAIN", status: "Pending", notes: "Legacy reservation edit" }
