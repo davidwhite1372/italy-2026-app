@@ -342,6 +342,59 @@ test("schema 5 backups use Timeline IDs and Version 4 backups remain importable"
   assert.deepEqual(app.runtimeErrors, []);
 });
 
+test("release metadata and stable-ID collections stay consistent", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const manifest=JSON.parse(fs.readFileSync(path.join(projectRoot,"manifest.json"),"utf8"));
+  const packageData=JSON.parse(fs.readFileSync(path.join(projectRoot,"package.json"),"utf8"));
+  const worker=fs.readFileSync(path.join(projectRoot,"sw.js"),"utf8");
+  const counts=JSON.parse(app.window.eval(`JSON.stringify({
+    timeline:TIMELINE.map(x=>x.id),restaurants:RESTAURANTS.map(x=>x.id),
+    attractions:ATTRACTIONS.map(x=>x.id),reservations:RESERVATIONS.map(x=>x.id),
+    budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
+  })`));
+
+  assert.equal(packageData.version,"10.9.0");
+  assert.match(manifest.description,/Version 10\.9\.0/);
+  assert.match(worker,/v10-9-0/);
+  assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
+    timeline:49,restaurants:65,attractions:15,reservations:10,budget:18,packing:66,open:13
+  });
+  Object.values(counts).forEach(ids=>{
+    assert.equal(ids.every(Boolean),true);
+    assert.equal(new Set(ids).size,ids.length);
+  });
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("schema 5 backup round trip preserves representative stable-ID records", async t => {
+  const savedPacking={checked:true,qty:1,by:"David",updatedAt:"2026-08-07T12:00:00.000Z"};
+  const app = await bootApp({
+    italy2026_tldone:{"tl-0001":true},
+    italy2026_open:{"open-0001":true},
+    italy2026_pack:{"packing-0001":savedPacking},
+    italy2026_restlog:{"restaurant-0064":{favorite:true,rating:"5",notes:"Round trip"}},
+    italy2026_attrlog:{"attraction-0001":{visited:true,notes:"Round trip"}},
+    italy2026_live:{reservations:{"reservation-0004":{conf:"ROUND-TRIP"}}},
+    italy2026_plannededits:{"budget-0005":{amt:999,status:"Booked"}}
+  });
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+
+  window.exportData();
+  const payload=await blobJson(window,app.exportedBlob());
+  window.performImport(payload,"replace");
+
+  assert.equal(window.getTimelineDone()["tl-0001"],true);
+  assert.equal(window.getOpenState()["open-0001"],true);
+  assert.deepEqual(JSON.parse(JSON.stringify(window.getPackState()["packing-0001"])),savedPacking);
+  assert.equal(window.getRestLog()["restaurant-0064"].notes,"Round trip");
+  assert.equal(window.getAttrLog()["attraction-0001"].visited,true);
+  assert.equal(window.getLive().reservations["reservation-0004"].conf,"ROUND-TRIP");
+  assert.equal(window.getPlannedEdits()["budget-0005"].amt,999);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
 test("offline application shell lists every required local asset", () => {
   const worker = fs.readFileSync(path.join(projectRoot, "sw.js"), "utf8");
   const required = [

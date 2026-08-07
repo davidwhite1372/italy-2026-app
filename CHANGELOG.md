@@ -29,6 +29,8 @@
 - Replaced the obsolete one-time migration flag with repeatable normalization for legacy Timeline, train, transfer, and reservation overrides.
 - Corrected legacy train and transfer conversion to use explicit current record IDs instead of filtered array positions.
 - Removed retired duplicate train and transfer datasets and five confirmed uncalled compatibility helpers.
+- Expanded the automated release suite to verify metadata consistency, every stable-ID collection, representative schema 5 backup round trips, Version 4 conversion, and the offline application shell.
+- Completed the final dependency audit with no reported vulnerabilities.
 
 ### Preserved
 

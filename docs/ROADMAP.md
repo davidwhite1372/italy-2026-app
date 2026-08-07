@@ -18,7 +18,7 @@ Status: Complete
 - Released and tagged Version 10.8.2 as the stable pre-foundation rollback point.
 
 ## Version 10.9.0 — Pre-11 Foundation
-Status: In progress on `develop`
+Status: Foundation complete; release validation on `develop`
 
 - Clarify app, build, and backup-schema metadata.
 - Clean current documentation and obsolete internal development labels.
@@ -28,6 +28,7 @@ Status: In progress on `develop`
 - Preserve compatibility with existing local data and Version 4 backup files.
 - Add automated regression coverage before shared-data work.
 - Remove confirmed dead code separately from data-model migration. Complete for retired train/transfer duplicates and uncalled compatibility helpers.
+- Complete automated metadata, stable-ID, migration, backup round-trip, dependency, and offline-shell audits before release.
 
 ## Version 11.0.0 — Shared Cloud Data
 Status: Evaluation planned

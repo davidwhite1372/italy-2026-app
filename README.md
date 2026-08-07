@@ -8,6 +8,8 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 
 Version 10.9.0 prepares the existing app for the larger Version 11 shared-data work. It focuses on clear version metadata, stable record identities, storage migration, and regression protection while preserving the current design and offline behavior.
 
+Foundation implementation is complete on `develop` and is undergoing final release validation. See `docs/RELEASE-CHECKLIST.md` for the approval and publishing sequence.
+
 Production remains on the stable `main` branch. New work is developed and tested on `develop` before release.
 
 ## Data and backups
