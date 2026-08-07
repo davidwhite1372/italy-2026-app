@@ -238,7 +238,7 @@
     .tl-step.emphasis-burgundy .travel-callout { color:var(--primary-dark); }
     .tl-step.emphasis-burgundy .travel-time { background:var(--primary); }
 
-    /* Version 10.5 DEV R2: explicit item types; no legacy emphasis guessing */
+    /* Timeline colors are driven by explicit item types. */
     .tl-step { margin-bottom:16px; border-bottom-width:3px; }
     .tl-step.type-train { background:linear-gradient(135deg,#ffe0b2 0%,#fff4e3 100%); border-color:#ef6c00; }
     .tl-step.type-train .travel-time { background:#e65100; }
@@ -270,7 +270,7 @@
     .tl-step.type-information { background:#fff; border-color:#cfd4da; box-shadow:0 2px 6px rgba(0,0,0,.06); }
     .tl-step.type-information .tl-dot { background:#87919b; box-shadow:0 0 0 2px #87919b; }
 
-    /* Version 10.5.1: timeline colors remain readable in light and night mode.
+    /* Keep Timeline colors readable in light and night mode.
        Colored cards use intentionally light fills with dark content; only time badges stay white. */
     .tl-step.actual-travel:not(.type-information),
     .tl-step.actual-travel:not(.type-information) .tl-title,
@@ -491,7 +491,7 @@
 
 
 
-    /* Version 10.5 development: compact dual clock */
+    /* Compact Home and Italy clocks. */
     .dual-clock {
       display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 14px;
     }
@@ -503,7 +503,7 @@
     .clock-time { font-size:1.08rem; font-weight:800; color:var(--primary); margin-top:2px; }
     .clock-date { font-size:.65rem; color:var(--muted); margin-top:1px; }
 
-    /* Version 10.5 development: quieter, expandable timeline */
+    /* Compact Timeline cards with expandable details. */
     .tl-step.done-step { opacity:.48; }
     .tl-step.done-step .tl-title,
     .tl-step.done-step .travel-callout,
@@ -530,7 +530,7 @@
     .route-arrow { text-align:center; color:var(--muted); line-height:1.1; font-size:1.05rem; }
     .route-metrics { text-align:center; color:var(--muted); font-size:.75rem; margin-top:5px; }
 
-    /* Version 10.6C: Travel page experience */
+    /* Travel page layout and controls. */
     .travel-overview-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:0 0 14px; }
     .travel-overview-stat { padding:10px 8px; text-align:center; border:1px solid var(--border); border-radius:12px; background:var(--card); }
     .travel-overview-stat strong { display:block; font-size:1.15rem; color:var(--primary); }
@@ -612,7 +612,7 @@
     body.dark .travel-card.transfer-card .travel-card-top { background:linear-gradient(135deg,rgba(77,182,172,.14),rgba(0,0,0,0)); }
     body.dark .travel-card.activity-card .travel-card-top { background:linear-gradient(135deg,rgba(255,213,79,.14),rgba(0,0,0,0)); }
 
-    /* Version 10.6B1: move trip-item creation to Travel */
+    /* Trip-item creation controls on Travel. */
     .tl-day-header {
       display:flex; align-items:center; gap:10px; margin:22px 2px 10px;
       color:var(--primary); font-weight:800; font-size:.88rem; letter-spacing:.02em;
@@ -654,7 +654,7 @@
       .tl-route-summary .from, .tl-route-summary .to { font-size:.72rem; }
       .tl-toggle { padding:7px 8px; }
     }
-    /* Version 10.6B2: Timeline polish and day-by-day progress */
+    /* Timeline day grouping and progress. */
     .tl-progress-card { padding:13px 14px; margin-bottom:14px; }
     .tl-progress-top { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; }
     .tl-progress-title { font-size:.72rem; color:var(--muted); font-weight:800; text-transform:uppercase; letter-spacing:.07em; }
@@ -760,7 +760,7 @@
       .tl-step.type-information .tl-route-summary { background:#24292d; border-color:var(--border); }
       .tl-day-header::after { background:var(--border); }
 
-      /* Version 10.5.2: high-contrast Timeline Details controls in night mode. */
+      /* High-contrast Timeline Details controls in night mode. */
       .tl-toggle,
       .tl-step.actual-travel:not(.type-information) .tl-toggle,
       .tl-step.type-information .tl-toggle {
@@ -1289,7 +1289,7 @@
       </div>
       <div style="margin-top:18px;display:grid;gap:10px;font-size:.88rem;">
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">App version</span><strong id="aboutAppVersion"></strong></div>
-        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Data version</span><strong id="aboutDataVersion"></strong></div>
+        <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Backup schema</span><strong id="aboutBackupSchema"></strong></div>
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Build</span><strong id="aboutBuildVersion"></strong></div>
         <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:var(--muted);">Last edited</span><strong id="aboutLastEdited" style="text-align:right;"></strong></div>
       </div>
@@ -1299,11 +1299,17 @@
 
   <script src="data.js"></script>
   <script>
-    const APP_VERSION = "10.8.2";
-    const DATA_VERSION = "10.5.0";
-    const BUILD_VERSION = "10.8.2";
-    const LAST_EDITED = "August 7, 2026 at 4:23 PM ET";
-    const BUILD_LABEL = "Italy App v10.8.2 ⓘ";
+    const APP_METADATA = Object.freeze({
+      version: "10.9.0",
+      build: "10.9.0",
+      backupSchema: 4,
+      lastEdited: "August 7, 2026 at 4:50 PM ET"
+    });
+    const APP_VERSION = APP_METADATA.version;
+    const BUILD_VERSION = APP_METADATA.build;
+    const BACKUP_SCHEMA_VERSION = APP_METADATA.backupSchema;
+    const LAST_EDITED = APP_METADATA.lastEdited;
+    const BUILD_LABEL = `Italy App v${APP_VERSION} ⓘ`;
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const expandedTimelineSteps = new Set();
@@ -2680,7 +2686,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function exportData() {
       const now = new Date().toISOString();
       const payload = {
-        version: 4, appVersion: APP_VERSION, dataVersion: DATA_VERSION, exported: now,
+        version: BACKUP_SCHEMA_VERSION, appVersion: APP_VERSION, exported: now,
         exportedBy: getBackupOwner(),
         live: getLive(), expenses: getExpenses(), pack: getPackState(), open: getOpenState(), journal: getJournal(), notes: getNotes(),
         tldone: getTimelineDone(), tlhidden: getTimelineHidden(), restlog: getRestLog(), attrlog: getAttrLog(),
@@ -4776,11 +4782,11 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function openAppAbout() {
       const overlay = document.getElementById("appAboutOverlay");
       const app = document.getElementById("aboutAppVersion");
-      const data = document.getElementById("aboutDataVersion");
+      const backupSchema = document.getElementById("aboutBackupSchema");
       const build = document.getElementById("aboutBuildVersion");
       const lastEdited = document.getElementById("aboutLastEdited");
       if (app) app.textContent = APP_VERSION;
-      if (data) data.textContent = DATA_VERSION;
+      if (backupSchema) backupSchema.textContent = BACKUP_SCHEMA_VERSION;
       if (build) build.textContent = BUILD_VERSION;
       if (lastEdited) lastEdited.textContent = LAST_EDITED;
       if (overlay) overlay.style.display = "flex";

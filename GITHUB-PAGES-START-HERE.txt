@@ -1,13 +1,13 @@
-ITALY 2026 TRAVEL APP - GITHUB PAGES PACKAGE
-Version 10.2.1 GitHub Migration Build
+ITALY 2026 TRAVEL APP - GITHUB PAGES DEPLOYMENT
+Current development line: Version 10.9.0
 
-UPLOAD ALL FILES IN THIS FOLDER TO THE ROOT OF YOUR GITHUB REPOSITORY.
-Do not upload this folder as a folder and do not upload the ZIP itself.
+GitHub Pages publishes the main branch from the repository root.
+Make and test changes on develop, then merge an approved release into main.
 
 IMPORTANT:
-- .nojekyll is a hidden file. It may not appear in Windows File Explorer unless hidden items are enabled.
-- GitHub's upload page should still accept it when all extracted files are selected.
-- index.html must remain in the repository root.
-- Do not rename any app files.
+- Keep index.html, data.js, manifest.json, sw.js, and .nojekyll in the repository root.
+- Do not upload a ZIP file as the website content.
+- Do not include a local .git directory in replacement-file ZIP packages.
+- Tag each tested main-branch release so it can be restored if needed.
 
-This package preserves the existing app design and content. Changes are limited to GitHub Pages and PWA compatibility.
+Production URL: https://davidwhite1372.github.io/italy-2026-app/

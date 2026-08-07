@@ -1,4 +1,20 @@
-# Version 10.8.2
+# Changelog
+
+## [10.9.0 DEV] - 2026-08-07
+
+### Changed
+
+- Started the Pre-11 Foundation work on `develop` from the tested and tagged Version 10.8.2 release.
+- Replaced the stale About-panel data version with the actual backup schema number.
+- Centralized current app, build, backup schema, and last-edited metadata.
+- Updated current project, deployment, and roadmap documentation.
+- Replaced obsolete development-phase code comments with functional descriptions.
+
+### Preserved
+
+- Existing trip content, locally saved user data, Version 4 backup import compatibility, offline behavior, and production design.
+
+## Version 10.8.2
 
 ## About & Restaurant Management
 - Corrected the About panel app and build versions and added the last-edited date and time.
@@ -6,7 +22,7 @@
 - Added deletion for built-in and user-added restaurants, with changes preserved in backup/import data.
 - Added Caffè Florian to Venice and added editable restaurant website and hours fields.
 
-# Version 10.8.1
+## Version 10.8.1
 
 ## Comfort & Essentials
 - Added a new filter inside Maps, Links & Travel Guide.
@@ -15,7 +31,7 @@
 - Added restroom-related terms to Global Search.
 - Cached the three map images for offline use.
 
-# Version 10.8.0
+## Version 10.8.0
 
 - Added global search from the app header with direct navigation to matching trip content.
 - Added search coverage for Timeline, Travel, reservations, Confirmation Wallet, hotels, restaurants, notes, packing, Safety, maps, links, and travel guides.
@@ -98,8 +114,6 @@
 - Reorganized Details into clear What to do, Notes, and Maps & links sections.
 - Improved mobile readability without changing Timeline data or architecture.
 
-# Changelog
-
 ## [10.6.0-dev-b] - 2026-08-01
 
 ### Changed
@@ -117,8 +131,6 @@
 - Removed the obsolete Home Screen installation tip from the bottom of Home.
 - Removed the duplicate empty Quick Tip container/blue bar.
 - Preserved the working Quick Tip section at the top of Home.
-
-# Changelog
 
 ## [10.6A DEV] - 2026-08-01
 
