@@ -13,7 +13,7 @@ function appSource() {
     .replace('<script src="data.js"></script>', `<script>${data}</script>`);
 }
 
-async function bootApp() {
+async function bootApp(initialStorage = {}) {
   const runtimeErrors = [];
   let exportedBlob = null;
   const virtualConsole = new VirtualConsole();
@@ -26,6 +26,9 @@ async function bootApp() {
     pretendToBeVisual: true,
     virtualConsole,
     beforeParse(window) {
+      Object.entries(initialStorage).forEach(([key, value]) => {
+        window.localStorage.setItem(key, typeof value === "string" ? value : JSON.stringify(value));
+      });
       window.matchMedia = () => ({
         matches: false,
         addEventListener() {},
@@ -75,7 +78,7 @@ test("app boots with current metadata and valid master data", async t => {
   const document = app.window.document;
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.9.0");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.9.0");
-  assert.equal(document.querySelector("#aboutBackupSchema").textContent, "4");
+  assert.equal(document.querySelector("#aboutBackupSchema").textContent, "5");
   assert.match(document.querySelector("#aboutLastEdited").textContent, /August 7, 2026/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
@@ -118,26 +121,53 @@ test("built-in and custom restaurants remain editable and deletable", async t =>
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("Version 4 backups export and older Version 4 backups remain importable", async t => {
+test("legacy phone Timeline state migrates automatically to stable IDs", async t => {
+  const app = await bootApp({
+    italy2026_tldone: { "1": true, "9000": true },
+    italy2026_tlhidden: { "2": true },
+    italy2026_customlegs: [{
+      id: "legacy-custom-leg",
+      date: "2026-10-12",
+      from: "Hotel",
+      to: "Dinner",
+      itemType: "Walk"
+    }]
+  });
+  t.after(() => app.dom.window.close());
+
+  assert.deepEqual(Object.keys(app.window.getTimelineDone()).sort(), ["tl-0001", "tl-custom-legacy-custom-leg"]);
+  assert.deepEqual(Object.keys(app.window.getTimelineHidden()), ["tl-0002"]);
+  assert.equal(app.window.localStorage.getItem("italy2026_tldone").includes('"1"'), false);
+
+  app.window.toggleTimelineDone("tl-0003", true);
+  assert.equal(app.window.getTimelineDone()["tl-0003"], true);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("schema 5 backups use Timeline IDs and Version 4 backups remain importable", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
   const { window } = app;
 
-  window.exportData();
-  const payload = await blobJson(window, app.exportedBlob());
-  assert.equal(payload.version, 4);
-  assert.equal(payload.appVersion, "10.9.0");
-  assert.equal("dataVersion" in payload, false);
-
-  window.chooseImportMode({
+  window.performImport({
     version: 4,
     appVersion: "10.8.2",
     dataVersion: "10.5.0",
     exported: new Date().toISOString(),
-    live: {}
-  }, "legacy-v4.json");
-  assert.ok(window.document.querySelector("#mergeImportBtn"));
-  assert.ok(window.document.querySelector("#replaceImportBtn"));
+    tldone: { "1": true },
+    tlhidden: { "2": true },
+    customlegs: []
+  }, "replace");
+  assert.deepEqual(Object.keys(window.getTimelineDone()), ["tl-0001"]);
+  assert.deepEqual(Object.keys(window.getTimelineHidden()), ["tl-0002"]);
+
+  window.exportData();
+  const payload = await blobJson(window, app.exportedBlob());
+  assert.equal(payload.version, 5);
+  assert.equal(payload.appVersion, "10.9.0");
+  assert.equal("dataVersion" in payload, false);
+  assert.deepEqual(Object.keys(payload.tldone), ["tl-0001"]);
+  assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
   assert.deepEqual(app.runtimeErrors, []);
 });
 

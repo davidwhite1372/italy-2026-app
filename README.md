@@ -16,6 +16,7 @@ User-entered information is currently stored locally in each browser or installe
 
 - Export a fresh backup before changing devices, clearing browser data, or reinstalling the app.
 - Backup schema numbers describe file compatibility; they are separate from the app version.
+- Version 10.9.0 creates schema 5 backups and continues to import schema 4 backups automatically.
 - Version 11 will evaluate authorized shared cloud data while retaining offline support and manual backups.
 
 ## Publishing

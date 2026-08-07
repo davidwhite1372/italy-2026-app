@@ -1302,8 +1302,8 @@
     const APP_METADATA = Object.freeze({
       version: "10.9.0",
       build: "10.9.0",
-      backupSchema: 4,
-      lastEdited: "August 7, 2026 at 4:50 PM ET"
+      backupSchema: 5,
+      lastEdited: "August 7, 2026 at 5:03 PM ET"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1312,7 +1312,7 @@
     const BUILD_LABEL = `Italy App v${APP_VERSION} ⓘ`;
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
-    const expandedTimelineSteps = new Set();
+    const expandedTimelineItems = new Set();
     let timelineAutoScrollPending = false;
     let clockTimer = null;
 
@@ -1335,9 +1335,9 @@
       if (!clockTimer) clockTimer = setInterval(renderDualClocks, 30000);
     }
 
-    function toggleTimelineDetails(step) {
-      if (expandedTimelineSteps.has(step)) expandedTimelineSteps.delete(step);
-      else expandedTimelineSteps.add(step);
+    function toggleTimelineDetails(timelineId) {
+      if (expandedTimelineItems.has(timelineId)) expandedTimelineItems.delete(timelineId);
+      else expandedTimelineItems.add(timelineId);
       renderTimeline();
     }
 
@@ -1766,36 +1766,66 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const edits = getPlannedEdits();
       return BUDGET_PLANNED.map((b, i) => ({ ...b, ...(edits[i] || {}), _index: i }));
     }
+    function timelineStateId(item) {
+      if (!item) return "";
+      if (item.id) return String(item.id);
+      if (item._customId != null) return `tl-custom-${item._customId}`;
+      return `tl-legacy-${item.step}`;
+    }
+    function timelineIdForLegacyKey(key) {
+      const raw = String(key);
+      const permanent = TIMELINE.find(item => item.id === raw || String(item.step) === raw);
+      if (permanent) return permanent.id;
+      const customIndex = Number(raw) - 9000;
+      if (Number.isInteger(customIndex) && customIndex >= 0) {
+        const custom = getCustomLegs()[customIndex];
+        if (custom && custom.id != null) return `tl-custom-${custom.id}`;
+      }
+      return raw;
+    }
+    function normalizeTimelineStateMap(obj) {
+      return Object.entries(obj && typeof obj === "object" ? obj : {}).reduce((out, [key, value]) => {
+        out[timelineIdForLegacyKey(key)] = value;
+        return out;
+      }, {});
+    }
+    function readTimelineState(storageKey) {
+      let raw = {};
+      try { raw = JSON.parse(localStorage.getItem(storageKey) || "{}"); } catch(e) { raw = {}; }
+      const normalized = normalizeTimelineStateMap(raw);
+      if (JSON.stringify(normalized) !== JSON.stringify(raw)) localStorage.setItem(storageKey, JSON.stringify(normalized));
+      return normalized;
+    }
     function getTimelineDone() {
-      try { return JSON.parse(localStorage.getItem("italy2026_tldone") || "{}"); } catch(e) { return {}; }
+      return readTimelineState("italy2026_tldone");
     }
     function setTimelineDone(obj) {
-      localStorage.setItem("italy2026_tldone", JSON.stringify(obj));
+      localStorage.setItem("italy2026_tldone", JSON.stringify(normalizeTimelineStateMap(obj)));
     }
-    function toggleTimelineDone(step, checked) {
+    function toggleTimelineDone(timelineId, checked) {
       const st = getTimelineDone();
-      if (checked) st[step] = true; else delete st[step];
+      if (checked) st[timelineId] = true; else delete st[timelineId];
       setTimelineDone(st);
       renderTimeline();
     }
     function getTimelineHidden() {
-      try { return JSON.parse(localStorage.getItem("italy2026_tlhidden") || "{}"); } catch(e) { return {}; }
+      return readTimelineState("italy2026_tlhidden");
     }
     function setTimelineHidden(obj) {
-      localStorage.setItem("italy2026_tlhidden", JSON.stringify(obj));
+      localStorage.setItem("italy2026_tlhidden", JSON.stringify(normalizeTimelineStateMap(obj)));
     }
-    function hideTimelineStep(step) {
+    function hideTimelineStep(timelineId) {
       if (!confirm("Hide this step from the Master Timeline? (e.g. cancelled hotel or transfer)\n\nYou can restore it anytime from the Hidden filter.")) return false;
       const st = getTimelineHidden();
-      st[step] = true;
+      st[timelineId] = true;
       setTimelineHidden(st);
       renderTimeline();
       showToast("Step hidden — use Hidden filter to restore");
       return true;
     }
-    function restoreTimelineStep(step) {
+    function restoreTimelineStep(timelineId) {
       const st = getTimelineHidden();
-      delete st[step];
+      delete st[timelineId];
       setTimelineHidden(st);
       renderTimeline();
       showToast("Step restored to timeline");
@@ -2280,6 +2310,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       });
       // Custom door-to-door legs appear on the master timeline too
       const custom = getCustomLegs().map((leg, i) => ({
+        id: `tl-custom-${leg.id}`,
         step: 9000 + i,
         date: leg.date,
         start: leg.start || "",
@@ -2436,9 +2467,13 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const flightIds = new Set(FLIGHTS.map(x => x.id));
       const hotelIds = new Set(HOTELS.map(x => x.id));
       const travelIds = new Set(SHARED_TRAVEL_ITEMS.map(x => x.id));
+      const seenTimelineIds = new Set();
       const seenSteps = new Set();
 
       TIMELINE.forEach(t => {
+        if (!t.id) issues.push(`Timeline step ${t.step}: missing stable ID`);
+        if (seenTimelineIds.has(t.id)) issues.push(`Duplicate Timeline ID ${t.id}`);
+        seenTimelineIds.add(t.id);
         if (seenSteps.has(t.step)) issues.push(`Duplicate Timeline step ${t.step}`);
         seenSteps.add(t.step);
         if (t.flightId && !flightIds.has(t.flightId)) issues.push(`Timeline step ${t.step}: missing flight ${t.flightId}`);
@@ -2717,9 +2752,10 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       if (mode === "replace") {
         clearAllSupportedSavedData();
         setLive(data.live||{}); setExpenses(data.expenses||[]); setPackState(data.pack||{}); setOpenState(data.open||{});
-        setJournal(data.journal||[]); setNotes(Array.isArray(data.notes) ? data.notes : DEFAULT_REFERENCE_NOTES.map(n=>({...n}))); setTimelineDone(data.tldone||{}); setTimelineHidden(data.tlhidden||{});
+        setJournal(data.journal||[]); setNotes(Array.isArray(data.notes) ? data.notes : DEFAULT_REFERENCE_NOTES.map(n=>({...n})));
         setRestLog(data.restlog||{}); setAttrLog(data.attrlog||{}); setPretripState(data.pretrip||{});
-        setCustomLegs(data.customlegs||[]); setCustomRestaurants(data.customrestaurants||[]); setRestaurantEdits(data.restaurantedits||{}); setRouteEdits(data.routeedits||{}); setPlannedEdits(data.plannededits||{});
+        setCustomLegs(data.customlegs||[]); setTimelineDone(data.tldone||{}); setTimelineHidden(data.tlhidden||{});
+        setCustomRestaurants(data.customrestaurants||[]); setRestaurantEdits(data.restaurantedits||{}); setRouteEdits(data.routeedits||{}); setPlannedEdits(data.plannededits||{});
         setDeletedRecords(data.deleted||{}); setPackCatalogData(data.packcatalog||{edits:{},custom:{},deleted:{}});
       } else {
         const deleted=mergeDeleted(getDeletedRecords(),data.deleted||{}); setDeletedRecords(deleted);
@@ -2844,7 +2880,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     }
     function nextTimelineItem() {
       const done=getTimelineDone(), hidden=getTimelineHidden();
-      const active=liveTimeline().filter(t => (t._isCustom || !hidden[t.step]) && !done[t.step]).slice().sort((a,b)=>parseTimelineSortKey(a).localeCompare(parseTimelineSortKey(b)));
+      const active=liveTimeline().filter(t => (t._isCustom || !hidden[timelineStateId(t)]) && !done[timelineStateId(t)]).slice().sort((a,b)=>parseTimelineSortKey(a).localeCompare(parseTimelineSortKey(b)));
       const now=new Date();
       return active.find(t => { const d=timelineDateTime(t); return !d || d >= new Date(now.getTime()-60*60*1000); }) || active[0] || null;
     }
@@ -3260,7 +3296,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const m = start.match(/(\d{1,2}):(\d{2})/);
       let mins = 24 * 60; // flexible / unknown → end of day
       if (m) mins = (+m[1]) * 60 + (+m[2]) + dayOffset * 24 * 60;
-      return date + "|" + String(mins).padStart(5, "0") + "|" + String(t.step).padStart(3, "0");
+      return date + "|" + String(mins).padStart(5, "0") + "|" + timelineStateId(t);
     }
 
     function timelineModeGroup(t) {
@@ -3280,13 +3316,13 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       items = items.slice().sort((a, b) => parseTimelineSortKey(a).localeCompare(parseTimelineSortKey(b)));
 
       if (tlFilter === "hidden") {
-        items = items.filter(t => !t._isCustom && hiddenMap[t.step]);
+        items = items.filter(t => !t._isCustom && hiddenMap[timelineStateId(t)]);
       } else {
-        items = items.filter(t => t._isCustom || !hiddenMap[t.step]);
+        items = items.filter(t => t._isCustom || !hiddenMap[timelineStateId(t)]);
         if (tlFilter === "pending") items = items.filter(t => /pending|verify|partial|timetable/i.test(t.status));
         if (tlFilter === "decision") items = items.filter(t => /decision/i.test(t.status));
-        if (tlFilter === "open") items = items.filter(t => !doneMap[t.step]);
-        if (tlFilter === "done") items = items.filter(t => !!doneMap[t.step]);
+        if (tlFilter === "open") items = items.filter(t => !doneMap[timelineStateId(t)]);
+        if (tlFilter === "done") items = items.filter(t => !!doneMap[timelineStateId(t)]);
       }
 
       if (tlModeFilter !== "all") items = items.filter(t => timelineModeGroup(t) === tlModeFilter);
@@ -3297,18 +3333,18 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       }
 
       const allActive = liveTimeline()
-        .filter(t => t._isCustom || !hiddenMap[t.step])
+        .filter(t => t._isCustom || !hiddenMap[timelineStateId(t)])
         .slice().sort((a,b) => parseTimelineSortKey(a).localeCompare(parseTimelineSortKey(b)));
       const total = allActive.length;
-      const doneCount = allActive.filter(t => doneMap[t.step]).length;
+      const doneCount = allActive.filter(t => doneMap[timelineStateId(t)]).length;
       const hiddenCount = Object.keys(hiddenMap).length;
-      const firstOpen = allActive.find(t => !doneMap[t.step]) || null;
-      const firstOpenStep = firstOpen ? firstOpen.step : null;
+      const firstOpen = allActive.find(t => !doneMap[timelineStateId(t)]) || null;
+      const firstOpenId = firstOpen ? timelineStateId(firstOpen) : null;
       const overallPct = total ? Math.round(doneCount / total * 100) : 0;
       const dayStats = allActive.reduce((acc,t) => {
         if (!acc[t.date]) acc[t.date] = { total:0, done:0 };
         acc[t.date].total++;
-        if (doneMap[t.step]) acc[t.date].done++;
+        if (doneMap[timelineStateId(t)]) acc[t.date].done++;
         return acc;
       }, {});
 
@@ -3329,10 +3365,11 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
           ? `<div class="tl-day-header"><div class="tl-day-header-main"><span class="tl-day-header-date">${fmtDate(t.date)}</span><span class="tl-day-header-count">${stat.done}/${stat.total}</span><span class="tl-day-progress" aria-label="${dayPct}% complete"><span style="width:${dayPct}%"></span></span></div></div>`
           : "";
         let cls = "";
-        const isDone = !!doneMap[t.step];
-        const isHidden = !t._isCustom && !!hiddenMap[t.step];
-        const isExpanded = expandedTimelineSteps.has(t.step);
-        const isNext = !isDone && t.step === firstOpenStep && tlFilter === "all" && tlModeFilter === "all" && !tlSearch.trim();
+        const timelineId = timelineStateId(t);
+        const isDone = !!doneMap[timelineId];
+        const isHidden = !t._isCustom && !!hiddenMap[timelineId];
+        const isExpanded = expandedTimelineItems.has(timelineId);
+        const isNext = !isDone && timelineId === firstOpenId && tlFilter === "all" && tlModeFilter === "all" && !tlSearch.trim();
         if (isDone) cls = "done-step";
         else if (/decision/i.test(t.status)) cls = "decision";
         else if (/pending|verify|partial|timetable/i.test(t.status)) cls = "pending";
@@ -3340,9 +3377,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         let actionBtns;
         const ownerAction = timelineOwnerAction(t);
         if (isHidden) {
-          actionBtns = `<button class="edit-btn" style="color:var(--accent);" onclick="restoreTimelineStep(${t.step})">Restore</button><button class="edit-btn" onclick="editTimelineItemType(${t.step})">Item Type</button><button class="edit-btn" onclick="showPage('${ownerAction.page}')">${ownerAction.label}</button>`;
+          actionBtns = `<button class="edit-btn" style="color:var(--accent);" onclick="restoreTimelineStep('${timelineId}')">Restore</button><button class="edit-btn" onclick="editTimelineItemType(${t.step})">Item Type</button><button class="edit-btn" onclick="showPage('${ownerAction.page}')">${ownerAction.label}</button>`;
         } else {
-          actionBtns = `<button class="edit-btn" style="color:var(--danger);" onclick="hideTimelineStep(${t.step})">Hide Event</button><button class="edit-btn" onclick="editTimelineItemType(${t.step})">Item Type</button><button class="edit-btn" onclick="showPage('${ownerAction.page}')">${ownerAction.label}</button>`;
+          actionBtns = `<button class="edit-btn" style="color:var(--danger);" onclick="hideTimelineStep('${timelineId}')">Hide Event</button><button class="edit-btn" onclick="editTimelineItemType(${t.step})">Item Type</button><button class="edit-btn" onclick="showPage('${ownerAction.page}')">${ownerAction.label}</button>`;
         }
         const route = t._isCustom && t._customId ? getAllDoorRoutes().find(r => r._isCustom && r._id === t._customId) : routeForTimelineStep(t.step);
         const primary = route ? normalizedLink(route.link) : "";
@@ -3357,7 +3394,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         const metaBits = [timelineItemType(t), (t.mode && t.mode !== timelineItemType(t)) ? t.mode : "", t.time || ""].filter(Boolean);
         const timeLabel = t.start ? `${escapeHtml(t.start)}${t.end ? "–" + escapeHtml(t.end) : ""}` : "Time TBD";
         return `${dateHeader}
-          <div class="tl-step ${cls} ${timelineStyleClass(t)} ${isNext ? "is-next" : ""}" data-step="${t.step}" style="${isHidden ? 'opacity:0.75;' : ''}">
+          <div class="tl-step ${cls} ${timelineStyleClass(t)} ${isNext ? "is-next" : ""}" data-timeline-id="${timelineId}" style="${isHidden ? 'opacity:0.75;' : ''}">
             <div class="tl-dot"></div>
             ${isNext ? `<div class="tl-current-marker">▶ NEXT</div>` : ""}
             <div class="tl-card-head">
@@ -3366,7 +3403,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
                 <div class="tl-title">${escapeHtml(title)}</div>
                 <div class="tl-date-time"><span>🕒</span><span>${timeLabel}</span></div>
               </div>
-              <button class="tl-toggle" onclick="toggleTimelineDetails(${t.step})" aria-expanded="${isExpanded}">${isExpanded ? "Hide" : "Details"}</button>
+              <button class="tl-toggle" onclick="toggleTimelineDetails('${timelineId}')" aria-expanded="${isExpanded}">${isExpanded ? "Hide" : "Details"}</button>
             </div>
             ${routeSummary}
             <div class="tl-meta-line">${metaBits.map(x => `<span class="tl-meta-chip">${escapeHtml(x)}</span>`).join("")} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
@@ -3378,15 +3415,15 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
               </div>
               <div class="tl-action-row">${actionBtns}</div>
             </div>` : ""}
-            ${isHidden ? "" : `<div class="tl-complete-row"><label><input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTimelineDone(${t.step}, this.checked)"><span>${isDone ? "Completed" : "Mark completed"}</span></label></div>`}
+            ${isHidden ? "" : `<div class="tl-complete-row"><label><input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTimelineDone('${timelineId}', this.checked)"><span>${isDone ? "Completed" : "Mark completed"}</span></label></div>`}
           </div>`;
       }).join("") : `<div class="empty"><div class="icon">${tlFilter === "hidden" ? "🙈" : "📋"}</div>${tlFilter === "hidden" ? "No hidden steps." : "No steps match this filter."}</div>`);
 
       if (timelineAutoScrollPending && tlFilter === "all" && tlModeFilter === "all" && !tlSearch.trim()) {
         timelineAutoScrollPending = false;
         requestAnimationFrame(() => {
-          const nodes = Array.from(document.querySelectorAll("#timelineList .tl-step[data-step]"));
-          const nextItem = nodes.find(n => Number(n.dataset.step) === Number(firstOpenStep));
+          const nodes = Array.from(document.querySelectorAll("#timelineList .tl-step[data-timeline-id]"));
+          const nextItem = nodes.find(n => n.dataset.timelineId === firstOpenId);
           if (nextItem) {
             const desiredTop = Math.max(105, Math.round(window.innerHeight * 0.3));
             const absoluteTop = nextItem.getBoundingClientRect().top + window.scrollY;

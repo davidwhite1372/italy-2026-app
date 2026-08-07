@@ -23,7 +23,7 @@ Status: In progress on `develop`
 - Clarify app, build, and backup-schema metadata.
 - Clean current documentation and obsolete internal development labels.
 - Introduce stable record IDs before multi-device synchronization.
-- Migrate Timeline state and backup files away from numeric step identifiers.
+- Migrate Timeline state and backup files away from numeric step identifiers. Stable IDs and schema 4 conversion are complete; route/edit dependencies remain.
 - Define timestamps, deletion markers, and conflict behavior for mutable records.
 - Preserve compatibility with existing local data and Version 4 backup files.
 - Add automated regression coverage before shared-data work.
