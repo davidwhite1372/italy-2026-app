@@ -9,6 +9,7 @@ desktop.ini
 *.log
 .vscode/
 .idea/
+node_modules/
 *.zip
 *.7z
 *.rar

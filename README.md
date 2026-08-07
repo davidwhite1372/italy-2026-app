@@ -40,5 +40,17 @@ Release workflow:
 - `sw.js` — offline application cache.
 - `CHANGELOG.md` — release history.
 - `docs/ROADMAP.md` — upcoming foundation and Version 11 work.
+- `tests/` — automated regression checks for current app behavior.
+
+## Testing
+
+With Node.js installed, run:
+
+```text
+npm ci
+npm test
+```
+
+GitHub Actions runs the same checks whenever changes are pushed to `develop` or `main`, and for pull requests targeting either branch.
 
 Do not include the local `.git` directory in replacement-file or ZIP packages.

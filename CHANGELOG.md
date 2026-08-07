@@ -9,6 +9,8 @@
 - Centralized current app, build, backup schema, and last-edited metadata.
 - Updated current project, deployment, and roadmap documentation.
 - Replaced obsolete development-phase code comments with functional descriptions.
+- Added automated app-startup, data-integrity, restaurant-management, backup-compatibility, and offline-shell regression tests.
+- Added GitHub Actions checks for pushes and pull requests targeting `develop` or `main`.
 
 ### Preserved
 
