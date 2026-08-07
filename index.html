@@ -1303,7 +1303,7 @@
       version: "10.9.0",
       build: "10.9.0",
       backupSchema: 5,
-      lastEdited: "August 7, 2026 at 6:05 PM ET"
+      lastEdited: "August 7, 2026 at 6:35 PM ET"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1510,9 +1510,12 @@
     }
 
     const TIMELINE_ROUTE_MAP = {
-      1:1, 2:2, 5:3, 6:4, 7:5, 8:6, 9:7, 10:8, 11:9, 12:10,
-      17:11, 19:12, 22:13, 23:14, 24:15, 31:16, 32:16.1, 41:16.2,
-      34:17, 35:18, 43:19, 36:20, 37:21, 38:22, 39:23, 40:23.1
+      "tl-0001":1, "tl-0002":2, "tl-0005":3, "tl-0006":4, "tl-0007":5,
+      "tl-0008":6, "tl-0009":7, "tl-0010":8, "tl-0011":9, "tl-0012":10,
+      "tl-0017":11, "tl-0019":12, "tl-0022":13, "tl-0023":14, "tl-0024":15,
+      "tl-0031":16, "tl-0032":16.1, "tl-0041":16.2, "tl-0034":17,
+      "tl-0035":18, "tl-0043":19, "tl-0036":20, "tl-0037":21, "tl-0038":22,
+      "tl-0039":23, "tl-0040":23.1
     };
 
     function modeIcon(mode) {
@@ -1589,15 +1592,15 @@
       return backup ? "Backup / Alternate" : "Official Site";
     }
 
-    function routeForTimelineStep(step) {
-      const order = TIMELINE_ROUTE_MAP[step];
+    function routeForTimelineId(timelineId) {
+      const order = TIMELINE_ROUTE_MAP[timelineId];
       if (order == null) return null;
       return getAllDoorRoutes().find(r => Number(r.order) === Number(order)) || null;
     }
 
-    function timelineStepForRoute(route) {
+    function timelineIdForRoute(route) {
       const entry = Object.entries(TIMELINE_ROUTE_MAP).find(([, order]) => Number(order) === Number(route.order));
-      return entry ? Number(entry[0]) : null;
+      return entry ? entry[0] : null;
     }
 
     function urgencyBadge(u) {
@@ -1806,9 +1809,37 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         return out;
       }, {});
     }
+    function normalizeTimelineOverrides(obj, sharedTravel) {
+      const timeline={};
+      const shared={...(sharedTravel&&typeof sharedTravel==="object"?sharedTravel:{})};
+      const fieldMap={date:"date",start:"start",end:"end",itemType:"itemType",title:"title",from:"from",to:"to",mode:"mode",time:"duration",status:"status",instructions:"instructions",notes:"notes"};
+      Object.entries(obj&&typeof obj==="object"?obj:{}).forEach(([key,value])=>{
+        const timelineId=timelineIdForLegacyKey(key);
+        const base=TIMELINE.find(item=>item.id===timelineId);
+        if(base&&base.travelId&&value&&typeof value==="object"&&!Array.isArray(value)) {
+          const mapped={};
+          Object.entries(fieldMap).forEach(([oldKey,newKey])=>{
+            if(value[oldKey]!==undefined&&value[oldKey]!=="") mapped[newKey]=value[oldKey];
+          });
+          shared[base.travelId]=key===timelineId
+            ? {...(shared[base.travelId]||{}),...mapped}
+            : {...mapped,...(shared[base.travelId]||{})};
+        } else {
+          timeline[timelineId]=timeline[timelineId]&&value&&typeof value==="object"&&!Array.isArray(value)
+            ? {...timeline[timelineId],...value}
+            : value;
+        }
+      });
+      return {timeline,sharedTravel:shared};
+    }
     function normalizeLiveState(obj) {
       const normalized = obj && typeof obj === "object" ? { ...obj } : {};
       if (normalized.reservations) normalized.reservations = normalizeReservationEdits(normalized.reservations);
+      if (normalized.timeline) {
+        const migrated=normalizeTimelineOverrides(normalized.timeline,normalized.sharedTravel);
+        if(Object.keys(migrated.timeline).length) normalized.timeline=migrated.timeline; else delete normalized.timeline;
+        if(Object.keys(migrated.sharedTravel).length) normalized.sharedTravel=migrated.sharedTravel;
+      }
       return normalized;
     }
     function getLive() {
@@ -1859,12 +1890,15 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       if (!item) return "";
       if (item.id) return String(item.id);
       if (item._customId != null) return `tl-custom-${item._customId}`;
-      return `tl-legacy-${item.step}`;
+      return "";
     }
     function timelineIdForLegacyKey(key) {
       const raw = String(key);
-      const permanent = TIMELINE.find(item => item.id === raw || String(item.step) === raw);
-      if (permanent) return permanent.id;
+      if (TIMELINE.some(item => item.id === raw)) return raw;
+      if (/^\d+$/.test(raw)) {
+        const legacyId=`tl-${raw.padStart(4,"0")}`;
+        if (TIMELINE.some(item => item.id === legacyId)) return legacyId;
+      }
       const customIndex = Number(raw) - 9000;
       if (Number.isInteger(customIndex) && customIndex >= 0) {
         const custom = getCustomLegs()[customIndex];
@@ -2413,7 +2447,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function liveSharedTravelItems() {
       const live = getLive();
       const edits = live.sharedTravel || {};
-      return SHARED_TRAVEL_ITEMS.map(base => edits[base.id] ? { ...base, ...edits[base.id], id:base.id, timelineStep:base.timelineStep } : { ...base });
+      return SHARED_TRAVEL_ITEMS.map(base => edits[base.id] ? { ...base, ...edits[base.id], id:base.id, timelineId:base.timelineId } : { ...base });
     }
 
     function syncTimelineTravel(t) {
@@ -2439,7 +2473,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       };
       // Remove obsolete duplicated timeline fields for this linked record.
       const base = SHARED_TRAVEL_ITEMS.find(x => x.id === id);
-      if (base && live.timeline && live.timeline[base.timelineStep]) delete live.timeline[base.timelineStep];
+      if (base && live.timeline && live.timeline[base.timelineId]) delete live.timeline[base.timelineId];
       setLive(live);
     }
 
@@ -2470,14 +2504,13 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function liveTimeline() {
       const live = getLive();
       const base = TIMELINE.map(t => {
-        const o = (live.timeline || {})[t.step];
+        const o = (live.timeline || {})[t.id];
         const merged = o ? { ...t, ...o } : { ...t };
         return syncTimelineHotels(syncTimelineFlight(syncTimelineTravel(merged)));
       });
       // Custom door-to-door legs appear on the master timeline too
-      const custom = getCustomLegs().map((leg, i) => ({
+      const custom = getCustomLegs().map(leg => ({
         id: `tl-custom-${leg.id}`,
-        step: 9000 + i,
         date: leg.date,
         start: leg.start || "",
         end: leg.end || "",
@@ -2551,7 +2584,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       if (live.timeline && typeof live.timeline === "object") {
         TIMELINE.forEach(base => {
           if (!base.travelId) return;
-          const old = live.timeline[base.step];
+          const old = live.timeline[base.id];
           if (!old || typeof old !== "object") return;
           const mapped = {};
           const fieldMap = {
@@ -2565,7 +2598,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
           if (Object.keys(mapped).length) {
             live.sharedTravel[base.travelId] = { ...mapped, ...(live.sharedTravel[base.travelId] || {}) };
           }
-          delete live.timeline[base.step];
+          delete live.timeline[base.id];
           changed = true;
         });
         if (!Object.keys(live.timeline).length) delete live.timeline;
@@ -2633,7 +2666,6 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const hotelIds = new Set(HOTELS.map(x => x.id));
       const travelIds = new Set(SHARED_TRAVEL_ITEMS.map(x => x.id));
       const seenTimelineIds = new Set();
-      const seenSteps = new Set();
 
       [["Restaurant", RESTAURANTS], ["Attraction", ATTRACTIONS], ["Reservation", RESERVATIONS], ["Budget item", BUDGET_PLANNED], ["Packing item", PACKING], ["Open item", OPEN_ITEMS]].forEach(([label, records]) => {
         const seen = new Set();
@@ -2645,15 +2677,13 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       });
 
       TIMELINE.forEach(t => {
-        if (!t.id) issues.push(`Timeline step ${t.step}: missing stable ID`);
+        if (!t.id) issues.push("Timeline record missing stable ID");
         if (seenTimelineIds.has(t.id)) issues.push(`Duplicate Timeline ID ${t.id}`);
         seenTimelineIds.add(t.id);
-        if (seenSteps.has(t.step)) issues.push(`Duplicate Timeline step ${t.step}`);
-        seenSteps.add(t.step);
-        if (t.flightId && !flightIds.has(t.flightId)) issues.push(`Timeline step ${t.step}: missing flight ${t.flightId}`);
-        if (t.hotelId && !hotelIds.has(t.hotelId)) issues.push(`Timeline step ${t.step}: missing hotel ${t.hotelId}`);
-        if (t.travelId && !travelIds.has(t.travelId)) issues.push(`Timeline step ${t.step}: missing travel item ${t.travelId}`);
-        if (t.travelId && (t.flightId || t.hotelId)) issues.push(`Timeline step ${t.step}: multiple master owners`);
+        if (t.flightId && !flightIds.has(t.flightId)) issues.push(`Timeline ${t.id}: missing flight ${t.flightId}`);
+        if (t.hotelId && !hotelIds.has(t.hotelId)) issues.push(`Timeline ${t.id}: missing hotel ${t.hotelId}`);
+        if (t.travelId && !travelIds.has(t.travelId)) issues.push(`Timeline ${t.id}: missing travel item ${t.travelId}`);
+        if (t.travelId && (t.flightId || t.hotelId)) issues.push(`Timeline ${t.id}: multiple master owners`);
       });
 
       RESERVATIONS.forEach((r,i) => {
@@ -2664,11 +2694,11 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       if (live.trains) issues.push("Legacy live.trains overrides remain");
       if (live.transfers) issues.push("Legacy live.transfers overrides remain");
       if (live.timeline) {
-        const duplicateSteps = Object.keys(live.timeline).filter(step => {
-          const t = TIMELINE.find(x => String(x.step) === String(step));
+        const duplicateSteps = Object.keys(live.timeline).filter(timelineId => {
+          const t = TIMELINE.find(x => x.id === timelineId);
           return t && t.travelId;
         });
-        if (duplicateSteps.length) issues.push(`Legacy Timeline content overrides remain for steps: ${duplicateSteps.join(", ")}`);
+        if (duplicateSteps.length) issues.push(`Duplicate Timeline content overrides remain for IDs: ${duplicateSteps.join(", ")}`);
       }
       return issues;
     }
@@ -3562,11 +3592,11 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         let actionBtns;
         const ownerAction = timelineOwnerAction(t);
         if (isHidden) {
-          actionBtns = `<button class="edit-btn" style="color:var(--accent);" onclick="restoreTimelineStep('${timelineId}')">Restore</button><button class="edit-btn" onclick="editTimelineItemType(${t.step})">Item Type</button><button class="edit-btn" onclick="showPage('${ownerAction.page}')">${ownerAction.label}</button>`;
+          actionBtns = `<button class="edit-btn" style="color:var(--accent);" onclick="restoreTimelineStep('${timelineId}')">Restore</button><button class="edit-btn" onclick="editTimelineItemType('${timelineId}')">Item Type</button><button class="edit-btn" onclick="showPage('${ownerAction.page}')">${ownerAction.label}</button>`;
         } else {
-          actionBtns = `<button class="edit-btn" style="color:var(--danger);" onclick="hideTimelineStep('${timelineId}')">Hide Event</button><button class="edit-btn" onclick="editTimelineItemType(${t.step})">Item Type</button><button class="edit-btn" onclick="showPage('${ownerAction.page}')">${ownerAction.label}</button>`;
+          actionBtns = `<button class="edit-btn" style="color:var(--danger);" onclick="hideTimelineStep('${timelineId}')">Hide Event</button><button class="edit-btn" onclick="editTimelineItemType('${timelineId}')">Item Type</button><button class="edit-btn" onclick="showPage('${ownerAction.page}')">${ownerAction.label}</button>`;
         }
-        const route = t._isCustom && t._customId ? getAllDoorRoutes().find(r => r._isCustom && r._id === t._customId) : routeForTimelineStep(t.step);
+        const route = t._isCustom && t._customId ? getAllDoorRoutes().find(r => r._isCustom && r._id === t._customId) : routeForTimelineId(timelineId);
         const primary = route ? normalizedLink(route.link) : "";
         const backup = route ? normalizedLink(route.backupLink) : "";
         const routeSummary = isActualTravelStep(t) && (t.from || t.to)
@@ -3618,8 +3648,8 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       }
     }
 
-    function editTimelineItemType(step) {
-      const t = liveTimeline().find(x => x.step === step);
+    function editTimelineItemType(timelineId) {
+      const t = liveTimeline().find(x => timelineStateId(x) === timelineId);
       if (!t) return;
       openEditSheet("Timeline display type", [
         { key:"itemType", label:"Item Type / Color", type:"select", value:timelineItemType(t), options:ITEM_TYPE_OPTIONS }
@@ -3630,10 +3660,10 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
           live.sharedTravel[t.travelId] = { ...(live.sharedTravel[t.travelId] || {}), itemType:data.itemType };
         } else if (t.flightId) {
           if (!live.timeline) live.timeline = {};
-          live.timeline[step] = { ...(live.timeline[step] || {}), itemType:data.itemType };
+          live.timeline[timelineId] = { ...(live.timeline[timelineId] || {}), itemType:data.itemType };
         } else {
           if (!live.timeline) live.timeline = {};
-          live.timeline[step] = { ...(live.timeline[step] || {}), itemType:data.itemType };
+          live.timeline[timelineId] = { ...(live.timeline[timelineId] || {}), itemType:data.itemType };
         }
         setLive(live);
         renderTimeline();
@@ -4311,8 +4341,8 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const base = baseDoorRoutes().map(r => {
         const id = baseRouteId(r);
         let merged = { ...r, ...(routeEdits[id] || {}), _isCustom: false, _id: id };
-        const step = timelineStepForRoute(merged);
-        const linked = step == null ? null : liveTimeline().find(t => Number(t.step) === Number(step) && (t.flightId || t.travelId));
+        const timelineId = timelineIdForRoute(merged);
+        const linked = timelineId == null ? null : liveTimeline().find(t => t.id === timelineId && (t.flightId || t.travelId));
         if (linked) {
           merged = { ...merged, dateISO:linked.date, date:shortDateLabel(linked.date), start:linked.start, end:linked.end,
             from:linked.from, to:linked.to, mode:linked.mode, duration:linked.time,
@@ -4386,12 +4416,12 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
           backupLink: (data.backupLink || "").trim()
         };
         setRouteEdits(edits);
-        const step = timelineStepForRoute(route);
-        if (step != null) {
+        const timelineId = timelineIdForRoute(route);
+        if (timelineId != null) {
           const live = getLive();
           if (!live.timeline) live.timeline = {};
-          live.timeline[step] = {
-            ...(live.timeline[step] || {}),
+          live.timeline[timelineId] = {
+            ...(live.timeline[timelineId] || {}),
             from: data.from, to: data.to, date: data.dateISO, start: data.start, end: data.end,
             mode: data.mode, time: data.duration, status: data.status, instructions: data.note, notes: data.secondaryNote
           };

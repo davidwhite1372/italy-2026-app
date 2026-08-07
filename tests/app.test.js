@@ -181,6 +181,34 @@ test("legacy phone Timeline state migrates automatically to stable IDs", async t
   assert.deepEqual(app.runtimeErrors, []);
 });
 
+test("Timeline records, edits, and route links use IDs without numeric step fields", async t => {
+  const app = await bootApp({
+    italy2026_phase5_migrated: "1",
+    italy2026_live: {
+      timeline: {
+        "5": { itemType: "Information" },
+        "17": { start: "09:00", notes: "Legacy linked Timeline edit" }
+      }
+    }
+  });
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+
+  assert.equal(window.eval('TIMELINE.some(item => "step" in item)'), false);
+  assert.equal(window.eval('SHARED_TRAVEL_ITEMS.some(item => "timelineStep" in item)'), false);
+  assert.equal(window.eval('SHARED_TRAVEL_ITEMS.every(item => /^tl-\\d{4}$/.test(item.timelineId))'), true);
+  assert.deepEqual(Object.keys(window.getLive().timeline || {}), ["tl-0005"]);
+  assert.equal(window.getLive().sharedTravel["travel-17"].start, "09:00");
+  assert.equal(window.liveTimeline().find(item => item.id === "tl-0017").notes, "Legacy linked Timeline edit");
+  assert.equal(window.routeForTimelineId("tl-0001").order, 1);
+
+  window.editTimelineItemType("tl-0005");
+  window.document.querySelector("#ef_itemType").value = "Flight";
+  window.document.querySelector("#efSave").click();
+  assert.equal(window.getLive().timeline["tl-0005"].itemType, "Flight");
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
 test("legacy reservation and planned-budget edits migrate from indexes to IDs", async t => {
   const app = await bootApp({
     italy2026_phase5_migrated: "1",
@@ -267,9 +295,10 @@ test("schema 5 backups use Timeline IDs and Version 4 backups remain importable"
     exported: new Date().toISOString(),
     tldone: { "1": true },
     tlhidden: { "2": true },
-    customlegs: []
+    customlegs: [{ id:"imported-custom-leg", date:"2026-10-12", from:"Hotel", to:"Dinner" }]
   }, "replace");
-  assert.deepEqual(Object.keys(window.getTimelineDone()), ["tl-0001"]);
+  window.setTimelineDone({ "1":true, "9000":true });
+  assert.deepEqual(Object.keys(window.getTimelineDone()).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(window.getTimelineHidden()), ["tl-0002"]);
 
   window.exportData();
@@ -277,7 +306,7 @@ test("schema 5 backups use Timeline IDs and Version 4 backups remain importable"
   assert.equal(payload.version, 5);
   assert.equal(payload.appVersion, "10.9.0");
   assert.equal("dataVersion" in payload, false);
-  assert.deepEqual(Object.keys(payload.tldone), ["tl-0001"]);
+  assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
   assert.deepEqual(app.runtimeErrors, []);
 });

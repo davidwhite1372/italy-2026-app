@@ -14,7 +14,7 @@
 - Added permanent opaque IDs to all 49 built-in Timeline records and stable derived IDs for custom Timeline items.
 - Migrated on-phone Timeline completion, hidden-item, expanded-item, NEXT-item, and scroll targeting to stable IDs.
 - Advanced new backup exports to schema 5 while preserving automatic import and conversion of schema 4 Timeline state.
-- Retained numeric Timeline steps temporarily for route and edit compatibility until the remaining dependencies are migrated and tested.
+- Removed numeric Timeline step fields from the data model, editors, and map routing while retaining automatic conversion of older numeric backup keys.
 - Updated the GitHub Actions runtime to the current Node 24-based action versions.
 - Added permanent IDs to all 65 built-in restaurants and all 15 attractions.
 - Migrated restaurant edits, favorites, visits, ratings, notes, and deletion markers from name-based keys to stable IDs.
