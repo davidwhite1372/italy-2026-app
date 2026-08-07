@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-8-1-comfort-essentials';
+const CACHE = 'italy-2026-github-v10-8-2-about-restaurants';
 const APP_SHELL = [
   './',
   './index.html',
