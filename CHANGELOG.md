@@ -16,6 +16,10 @@
 - Advanced new backup exports to schema 5 while preserving automatic import and conversion of schema 4 Timeline state.
 - Retained numeric Timeline steps temporarily for route and edit compatibility until the remaining dependencies are migrated and tested.
 - Updated the GitHub Actions runtime to the current Node 24-based action versions.
+- Added permanent IDs to all 65 built-in restaurants and all 15 attractions.
+- Migrated restaurant edits, favorites, visits, ratings, notes, and deletion markers from name-based keys to stable IDs.
+- Migrated attraction visit logs and on-phone photo storage from name-based keys to stable IDs.
+- Added UUID-based IDs for newly created restaurants, with automatic IDs for older custom records that lack one.
 
 ### Preserved
 

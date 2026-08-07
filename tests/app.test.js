@@ -3,6 +3,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const { JSDOM, VirtualConsole } = require("jsdom");
+const { IDBFactory } = require("fake-indexeddb");
 
 const projectRoot = path.resolve(__dirname, "..");
 
@@ -29,6 +30,7 @@ async function bootApp(initialStorage = {}) {
       Object.entries(initialStorage).forEach(([key, value]) => {
         window.localStorage.setItem(key, typeof value === "string" ? value : JSON.stringify(value));
       });
+      window.indexedDB = new IDBFactory();
       window.matchMedia = () => ({
         matches: false,
         addEventListener() {},
@@ -109,6 +111,7 @@ test("built-in and custom restaurants remain editable and deletable", async t =>
   window.saveNewRestaurant();
   let custom = window.allRestaurants().find(item => item.name === "Regression Test Café");
   assert.ok(custom, "A user restaurant should be added");
+  assert.match(custom.id, /^restaurant-custom-/);
 
   window.editRestaurant(window.restKey(custom));
   document.querySelector("#ef_style").value = "Coffee and snacks";
@@ -118,6 +121,40 @@ test("built-in and custom restaurants remain editable and deletable", async t =>
 
   assert.equal(window.deleteRestaurant(custom._restaurantId, window.restKey(custom)), true);
   assert.equal(window.allRestaurants().some(item => item._restaurantId === custom._restaurantId), false);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("legacy restaurant and attraction keys migrate without losing saved activity", async t => {
+  const app = await bootApp({
+    italy2026_restaurantedits: {
+      "builtin:Venice|Caffè Florian": { hours: "Legacy saved hours" }
+    },
+    italy2026_restlog: {
+      "Venice|Caffè Florian": { favorite: true, ate: true, rating: "5", notes: "Legacy visit" }
+    },
+    italy2026_deleted: {
+      restaurants: { "builtin:Rome|Armando al Pantheon": true }
+    },
+    italy2026_attrlog: {
+      "Rome|Trevi Fountain": { visited: true, notes: "Legacy attraction visit" }
+    }
+  });
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+
+  const florian = window.allRestaurants().find(item => item.id === "restaurant-0064");
+  assert.equal(florian.hours, "Legacy saved hours");
+  assert.deepEqual(Object.keys(window.getRestaurantEdits()), ["restaurant-0064"]);
+  assert.equal(window.getRestLog()["restaurant-0064"].notes, "Legacy visit");
+  assert.equal(window.allRestaurants().some(item => item.id === "restaurant-0001"), false);
+  assert.deepEqual(Object.keys(window.getDeletedRecords().restaurants), ["restaurant-0001"]);
+
+  assert.equal(window.getAttrLog()["attraction-0001"].notes, "Legacy attraction visit");
+  assert.deepEqual(Object.keys(window.getAttrLog()), ["attraction-0001"]);
+
+  await window.setAttrPhotos("Rome|Trevi Fountain", ["data:image/jpeg;base64,bGVnYWN5"]);
+  assert.deepEqual(Array.from(await window.getAttrPhotos("attraction-0001")), ["data:image/jpeg;base64,bGVnYWN5"]);
+  assert.equal(await window.readAttrPhotosValue("Rome|Trevi Fountain"), undefined);
   assert.deepEqual(app.runtimeErrors, []);
 });
 

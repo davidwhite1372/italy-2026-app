@@ -1303,7 +1303,7 @@
       version: "10.9.0",
       build: "10.9.0",
       backupSchema: 5,
-      lastEdited: "August 7, 2026 at 5:03 PM ET"
+      lastEdited: "August 7, 2026 at 5:14 PM ET"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1832,19 +1832,56 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       return true;
     }
     function getCustomRestaurants() {
-      try { return JSON.parse(localStorage.getItem("italy2026_customrestaurants") || "[]"); } catch(e) { return []; }
+      let raw = [];
+      try { raw = JSON.parse(localStorage.getItem("italy2026_customrestaurants") || "[]"); } catch(e) { raw = []; }
+      let changed = false;
+      const normalized = (Array.isArray(raw) ? raw : []).map(item => {
+        if (item && item.id) return item;
+        changed = true;
+        return { ...item, id:createRecordId("restaurant-custom") };
+      });
+      if (changed) localStorage.setItem("italy2026_customrestaurants", JSON.stringify(normalized));
+      return normalized;
     }
     function setCustomRestaurants(arr) {
       localStorage.setItem("italy2026_customrestaurants", JSON.stringify(arr || []));
     }
     function getRestaurantEdits() {
-      try { return JSON.parse(localStorage.getItem("italy2026_restaurantedits") || "{}"); } catch(e) { return {}; }
+      return readRestaurantRecordMap("italy2026_restaurantedits");
     }
     function setRestaurantEdits(obj) {
-      localStorage.setItem("italy2026_restaurantedits", JSON.stringify(obj || {}));
+      localStorage.setItem("italy2026_restaurantedits", JSON.stringify(normalizeRestaurantRecordMap(obj)));
+    }
+    function createRecordId(prefix) {
+      if (globalThis.crypto && typeof globalThis.crypto.randomUUID === "function") return `${prefix}-${globalThis.crypto.randomUUID()}`;
+      return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+    function legacyRestaurantKey(r) {
+      return `${r.city}|${r.name}`;
     }
     function restaurantId(r) {
       return r.id || `builtin:${r.city}|${r.name}`;
+    }
+    function restaurantIdForStoredKey(key) {
+      const raw = String(key);
+      const builtIn = RESTAURANTS.find(item => item.id === raw || legacyRestaurantKey(item) === raw || `builtin:${legacyRestaurantKey(item)}` === raw);
+      if (builtIn) return builtIn.id;
+      const custom = getCustomRestaurants().find(item => restaurantId(item) === raw || legacyRestaurantKey(item) === raw);
+      return custom ? restaurantId(custom) : raw;
+    }
+    function normalizeRestaurantRecordMap(obj) {
+      return Object.entries(obj && typeof obj === "object" ? obj : {}).reduce((out, [key, value]) => {
+        const id = restaurantIdForStoredKey(key);
+        out[id] = out[id] && value && typeof value === "object" && !Array.isArray(value) ? { ...out[id], ...value } : value;
+        return out;
+      }, {});
+    }
+    function readRestaurantRecordMap(storageKey) {
+      let raw = {};
+      try { raw = JSON.parse(localStorage.getItem(storageKey) || "{}"); } catch(e) { raw = {}; }
+      const normalized = normalizeRestaurantRecordMap(raw);
+      if (JSON.stringify(normalized) !== JSON.stringify(raw)) localStorage.setItem(storageKey, JSON.stringify(normalized));
+      return normalized;
     }
     function allRestaurants() {
       const edits = getRestaurantEdits();
@@ -1909,7 +1946,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       if (!name) { showToast("Enter a restaurant name"); return; }
       const city=document.getElementById("newRestCity").value;
       const arr=getCustomRestaurants();
-      const id="restaurant_"+Date.now();
+      const id=createRecordId("restaurant-custom");
       const now=new Date().toISOString();
       const r={id,name,city,neigh:document.getElementById("newRestNeigh").value.trim()||"Saved on the go",style:document.getElementById("newRestStyle").value.trim()||"Restaurant",price:document.getElementById("newRestPrice").value,order:document.getElementById("newRestOrder").value.trim()||"Decide there",best:document.getElementById("newRestBest").value.trim()||"On-the-go find",res:document.getElementById("newRestRes").value.trim()||"Unknown",access:document.getElementById("newRestAccess").value.trim(),why:document.getElementById("newRestWhy").value.trim()||"Added during the trip",priority:document.getElementById("newRestPriority").value,website:document.getElementById("newRestWebsite").value.trim(),hours:document.getElementById("newRestHours").value.trim(),maps:document.getElementById("newRestMaps").value.trim()||`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name+" "+city)}`,createdAt:now,updatedAt:now};
       arr.push(r); setCustomRestaurants(arr);
@@ -1928,13 +1965,13 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     }
 
     function getRestLog() {
-      try { return JSON.parse(localStorage.getItem("italy2026_restlog") || "{}"); } catch(e) { return {}; }
+      return readRestaurantRecordMap("italy2026_restlog");
     }
     function setRestLog(obj) {
-      localStorage.setItem("italy2026_restlog", JSON.stringify(obj));
+      localStorage.setItem("italy2026_restlog", JSON.stringify(normalizeRestaurantRecordMap(obj)));
     }
     function restKey(r) {
-      return r.city + "|" + r.name;
+      return restaurantId(r);
     }
     function toggleRestAte(key, checked) {
       const log = getRestLog();
@@ -1967,13 +2004,32 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     }
 
     function getAttrLog() {
-      try { return JSON.parse(localStorage.getItem("italy2026_attrlog") || "{}"); } catch(e) { return {}; }
+      let raw = {};
+      try { raw = JSON.parse(localStorage.getItem("italy2026_attrlog") || "{}"); } catch(e) { raw = {}; }
+      const normalized = normalizeAttractionRecordMap(raw);
+      if (JSON.stringify(normalized) !== JSON.stringify(raw)) localStorage.setItem("italy2026_attrlog", JSON.stringify(normalized));
+      return normalized;
     }
     function setAttrLog(obj) {
-      localStorage.setItem("italy2026_attrlog", JSON.stringify(obj));
+      localStorage.setItem("italy2026_attrlog", JSON.stringify(normalizeAttractionRecordMap(obj)));
+    }
+    function legacyAttractionKey(a) {
+      return `${a.city}|${a.name}`;
     }
     function attrKey(a) {
-      return a.city + "|" + a.name;
+      return a.id || legacyAttractionKey(a);
+    }
+    function attractionIdForStoredKey(key) {
+      const raw = String(key);
+      const attraction = ATTRACTIONS.find(item => attrKey(item) === raw || legacyAttractionKey(item) === raw);
+      return attraction ? attrKey(attraction) : raw;
+    }
+    function normalizeAttractionRecordMap(obj) {
+      return Object.entries(obj && typeof obj === "object" ? obj : {}).reduce((out, [key, value]) => {
+        const id = attractionIdForStoredKey(key);
+        out[id] = out[id] && value && typeof value === "object" && !Array.isArray(value) ? { ...out[id], ...value } : value;
+        return out;
+      }, {});
     }
     function toggleAttrVisited(key, checked) {
       const log = getAttrLog();
@@ -1995,15 +2051,36 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         req.onerror = () => reject(req.error);
       });
     }
+    async function readAttrPhotosValue(key) {
+      const db = await openPhotoDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction("photos", "readonly");
+        const req = tx.objectStore("photos").get(key);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+    async function deleteAttrPhotos(key) {
+      const db = await openPhotoDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction("photos", "readwrite");
+        tx.objectStore("photos").delete(key);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
     async function getAttrPhotos(key) {
       try {
-        const db = await openPhotoDB();
-        return await new Promise((resolve, reject) => {
-          const tx = db.transaction("photos", "readonly");
-          const req = tx.objectStore("photos").get(key);
-          req.onsuccess = () => resolve(req.result || []);
-          req.onerror = () => reject(req.error);
-        });
+        const current = await readAttrPhotosValue(key);
+        if (current !== undefined) return current;
+        const attraction = ATTRACTIONS.find(item => attrKey(item) === key);
+        if (!attraction) return [];
+        const legacyKey = legacyAttractionKey(attraction);
+        const legacy = await readAttrPhotosValue(legacyKey);
+        if (legacy === undefined) return [];
+        await setAttrPhotos(key, legacy);
+        await deleteAttrPhotos(legacyKey);
+        return legacy;
       } catch (e) { return []; }
     }
     async function setAttrPhotos(key, photos) {
@@ -2470,6 +2547,15 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const seenTimelineIds = new Set();
       const seenSteps = new Set();
 
+      [["Restaurant", RESTAURANTS], ["Attraction", ATTRACTIONS]].forEach(([label, records]) => {
+        const seen = new Set();
+        records.forEach((record, index) => {
+          if (!record.id) issues.push(`${label} ${index + 1}: missing stable ID`);
+          if (seen.has(record.id)) issues.push(`Duplicate ${label.toLowerCase()} ID ${record.id}`);
+          seen.add(record.id);
+        });
+      });
+
       TIMELINE.forEach(t => {
         if (!t.id) issues.push(`Timeline step ${t.step}: missing stable ID`);
         if (seenTimelineIds.has(t.id)) issues.push(`Duplicate Timeline ID ${t.id}`);
@@ -2645,8 +2731,19 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       ],data=>{const edits=getPlannedEdits();edits[i]={sub:data.sub,cat:data.cat,amt:Number(data.amt||0),cur:data.cur,status:data.status,company:data.company==="Yes",notes:data.notes};setPlannedEdits(edits);renderMoney();showToast("Planned cost updated");});
     }
 
-    function getDeletedRecords() { try { return JSON.parse(localStorage.getItem("italy2026_deleted") || "{}"); } catch(e) { return {}; } }
-    function setDeletedRecords(obj) { localStorage.setItem("italy2026_deleted", JSON.stringify(obj)); }
+    function normalizeDeletedRecords(obj) {
+      const normalized = obj && typeof obj === "object" ? { ...obj } : {};
+      if (normalized.restaurants) normalized.restaurants = normalizeRestaurantRecordMap(normalized.restaurants);
+      return normalized;
+    }
+    function getDeletedRecords() {
+      let raw = {};
+      try { raw = JSON.parse(localStorage.getItem("italy2026_deleted") || "{}"); } catch(e) { raw = {}; }
+      const normalized = normalizeDeletedRecords(raw);
+      if (JSON.stringify(normalized) !== JSON.stringify(raw)) localStorage.setItem("italy2026_deleted", JSON.stringify(normalized));
+      return normalized;
+    }
+    function setDeletedRecords(obj) { localStorage.setItem("italy2026_deleted", JSON.stringify(normalizeDeletedRecords(obj))); }
     function markDeleted(type, id) {
       const all=getDeletedRecords(); if(!all[type]) all[type]={}; all[type][String(id)]=new Date().toISOString(); setDeletedRecords(all);
     }
@@ -3647,7 +3744,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         clearDeleted("restaurants",r._restaurantId);
         const log = getRestLog();
         const ate = data.ate === "yes" || (!!data.rating && data.rating !== "");
-        const newKey = city + "|" + name;
+        const newKey = r._restaurantId;
         if (newKey !== key) delete log[key];
         log[newKey] = { ate: data.ate === "no" && !data.rating ? false : ate, rating: data.rating || "", notes: data.notes || "", favorite:data.favorite === "yes" };
         setRestLog(log);
