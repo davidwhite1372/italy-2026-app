@@ -382,6 +382,43 @@ test("Packing, phrases, and safety are separate tools and phrase changes survive
   assert.deepEqual(app.runtimeErrors, []);
 });
 
+test("Maps separates hotels, dinner venues, and consular help", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+  const document = window.document;
+
+  const mapData = JSON.parse(window.eval(`JSON.stringify({
+    hotels: MAP_HOTELS,
+    venues: MAP_VENUES_EVENTS,
+    help: MAP_TRAVEL_HELP_LOCATIONS
+  })`));
+  assert.deepEqual(mapData.hotels.map(item => item.name), [
+    "Anantara Palazzo Naiadi",
+    "W Florence",
+    "JW Marriott Venice Resort & Spa",
+    "Hotel Antiche Figure"
+  ]);
+  assert.deepEqual(mapData.venues.map(item => [item.name,item.event,item.transportation]), [
+    ["SEEN by Olivier","Dinner","None / Not applicable"],
+    ["Villa Miani","Awards Dinner","Bus / Coach"],
+    ["Giardino Corsini al Prato","Dinner","Walk"]
+  ]);
+  assert.deepEqual(mapData.help.map(item => item.name), ["U.S. Embassy Rome"]);
+
+  window.showPage("maps");
+  assert.equal(document.querySelectorAll("#mapsHotels .card").length, 4);
+  assert.equal(document.querySelectorAll("#mapsVenues .card").length, 3);
+  assert.match(document.querySelector("#mapsVenues").textContent, /Villa Miani[\s\S]*Awards Dinner[\s\S]*Bus \/ Coach/);
+  assert.match(document.querySelector("#mapsTravelHelpLocations").textContent, /U\.S\. Embassy Rome/);
+
+  const seenSearch = window.globalSearchEntries().find(item => item.title === "SEEN by Olivier");
+  const embassySearch = window.globalSearchEntries().find(item => item.title === "U.S. Embassy Rome" && item.mapsFilter);
+  assert.equal(seenSearch.mapsFilter, "venues");
+  assert.equal(embassySearch.mapsFilter, "help");
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
 test("legacy reservation and planned-budget edits migrate from indexes to IDs", async t => {
   const app = await bootApp({
     italy2026_live: {

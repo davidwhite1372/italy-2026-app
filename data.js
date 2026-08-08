@@ -1243,7 +1243,7 @@ const MAP_AIRPORTS = [
   }
 ];
 
-const MAP_HOTELS_VENUES = [
+const MAP_HOTELS = [
   {
     "city": "Rome",
     "name": "Anantara Palazzo Naiadi",
@@ -1255,26 +1255,6 @@ const MAP_HOTELS_VENUES = [
     "status": "Confirmed"
   },
   {
-    "city": "Rome",
-    "name": "SEEN by Olivier",
-    "purpose": "Welcome dinner",
-    "address": "Inside Anantara Palazzo Naiadi",
-    "link": "https://www.google.com/maps/search/?api=1&query=SEEN+by+Olivier+Rome",
-    "access": "In hotel",
-    "note": "Oct. 5, 8:00 PM",
-    "status": "Confirmed"
-  },
-  {
-    "city": "Rome",
-    "name": "Villa Miani",
-    "purpose": "Awards dinner",
-    "address": "",
-    "link": "https://www.google.com/maps/search/?api=1&query=Villa+Miani+Rome",
-    "access": "20–35 min by road from hotel",
-    "note": "Use group coach; not practical by Metro",
-    "status": "Confirmed / details pending"
-  },
-  {
     "city": "Florence",
     "name": "W Florence",
     "purpose": "Hotel / event base",
@@ -1283,16 +1263,6 @@ const MAP_HOTELS_VENUES = [
     "access": "5–10 min walk from S.M.N.",
     "note": "Confirm breakfast and luggage storage",
     "status": "Confirmed"
-  },
-  {
-    "city": "Florence",
-    "name": "Giardino Corsini al Prato",
-    "purpose": "Networking event",
-    "address": "",
-    "link": "https://www.google.com/maps/search/?api=1&query=Giardino+Corsini+al+Prato",
-    "access": "15–20 min walk from W Florence",
-    "note": "Follow group transport if provided",
-    "status": "Confirmed / details pending"
   },
   {
     "city": "Venice",
@@ -1313,11 +1283,53 @@ const MAP_HOTELS_VENUES = [
     "access": "Across the Grand Canal from Venezia Santa Lucia; cross Scalzi Bridge, turn right, walk about 50 m",
     "note": "Confirmation PO55JT57ZW; check-in after 2:00 PM; checkout before 11:00 AM",
     "status": "Confirmed"
+  }
+];
+
+const MAP_VENUES_EVENTS = [
+  {
+    "city": "Rome",
+    "name": "SEEN by Olivier",
+    "kind": "Restaurant",
+    "event": "Dinner",
+    "transportation": "None / Not applicable",
+    "address": "Inside Anantara Palazzo Naiadi",
+    "link": "https://www.google.com/maps/search/?api=1&query=SEEN+by+Olivier+Rome",
+    "access": "Inside the hotel",
+    "note": "Oct. 5, 8:00 PM",
+    "status": "Confirmed"
   },
   {
     "city": "Rome",
+    "name": "Villa Miani",
+    "kind": "Event venue",
+    "event": "Awards Dinner",
+    "transportation": "Bus / Coach",
+    "address": "",
+    "link": "https://www.google.com/maps/search/?api=1&query=Villa+Miani+Rome",
+    "access": "20–35 min by road from hotel",
+    "note": "Use the group bus; not practical by Metro",
+    "status": "Confirmed / details pending"
+  },
+  {
+    "city": "Florence",
+    "name": "Giardino Corsini al Prato",
+    "kind": "Event venue",
+    "event": "Dinner",
+    "transportation": "Walk",
+    "address": "",
+    "link": "https://www.google.com/maps/search/?api=1&query=Giardino+Corsini+al+Prato",
+    "access": "15–20 min walk from W Florence",
+    "note": "Walk from the hotel",
+    "status": "Confirmed / details pending"
+  }
+];
+
+const MAP_TRAVEL_HELP_LOCATIONS = [
+  {
+    "city": "Rome",
     "name": "U.S. Embassy Rome",
-    "purpose": "Emergency / consular",
+    "purpose": "Emergency / consular help",
     "address": "Via Vittorio Veneto 121, Rome",
     "link": "https://www.google.com/maps/search/?api=1&query=US+Embassy+Rome",
     "access": "From Anantara: verify live route",

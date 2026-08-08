@@ -19,6 +19,9 @@
 - Made Italian phrases editable with add and delete support, Italian-language spellcheck fields, and an Italian dictionary shortcut.
 - Added the requested question words and Italian numbers through 25 plus the common tens, 100, and 1000.
 - Included phrase edits, additions, and deletions in schema 6 backup export, replace, and merge workflows.
+- Separated true hotels from restaurant and dinner venues in Maps, Links & Travel Guide.
+- Classified SEEN by Olivier as a dinner restaurant, Villa Miani as an awards-dinner venue reached by bus, and Giardino Corsini al Prato as a dinner venue reached on foot.
+- Moved the U.S. Embassy Rome reference from Hotels to Travel Help/Safety without deleting its address or map links.
 
 ### Preserved
 

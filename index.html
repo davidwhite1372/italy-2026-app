@@ -1151,6 +1151,7 @@
         <div class="filter-chip" data-maps-filter="routes" onclick="setMapsGuideFilter('routes')">🗺️ Routes</div>
         <div class="filter-chip" data-maps-filter="airports" onclick="setMapsGuideFilter('airports')">✈️ Airports</div>
         <div class="filter-chip" data-maps-filter="hotels" onclick="setMapsGuideFilter('hotels')">🏨 Hotels</div>
+        <div class="filter-chip" data-maps-filter="venues" onclick="setMapsGuideFilter('venues')">🍽️ Venues &amp; Events</div>
         <div class="filter-chip" data-maps-filter="official" onclick="setMapsGuideFilter('official')">🔗 Official Links</div>
         <div class="filter-chip" data-maps-filter="local" onclick="setMapsGuideFilter('local')">🚕 Local Guide</div>
 <div class="filter-chip" data-maps-filter="comfort" onclick="setMapsGuideFilter('comfort')">🚻 Comfort &amp; Essentials</div>
@@ -1166,8 +1167,12 @@
         <div id="mapsAirports"></div>
       </div>
       <div class="maps-guide-group" data-maps-group="hotels">
-        <div class="section-title">Hotels &amp; Venues</div>
+        <div class="section-title">Hotels</div>
         <div id="mapsHotels"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="venues">
+        <div class="section-title">Venues &amp; Events</div>
+        <div id="mapsVenues"></div>
       </div>
       <div class="maps-guide-group" data-maps-group="official">
         <div class="section-title">Official Transport Sites</div>
@@ -1186,6 +1191,7 @@
       <div class="maps-guide-group" data-maps-group="help">
         <div class="section-title">Travel Help / What If?</div>
         <div class="text-sm text-muted mb-8">Prepared backup instructions for delays, missed connections, baggage problems, and disruptions.</div>
+        <div id="mapsTravelHelpLocations"></div>
         <div id="mapsTravelHelp"></div>
       </div>
       <div class="maps-guide-group" data-maps-group="saved">
@@ -1326,7 +1332,7 @@
       version: "10.10.0",
       build: "10.10.0",
       backupSchema: 6,
-      lastEdited: "August 8, 2026 at 5:37 PM ET"
+      lastEdited: "August 8, 2026 at 6:01 PM ET"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -4753,7 +4759,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
           </div>
         </div>`).join("");
 
-      document.getElementById("mapsHotels").innerHTML = MAP_HOTELS_VENUES.map(h => `
+      document.getElementById("mapsHotels").innerHTML = MAP_HOTELS.map(h => `
         <div class="card">
           <div class="row space-between"><div class="fw-600">${h.name}</div>${statusBadge(h.status)}</div>
           <div class="text-xs text-muted">${h.city} · ${h.purpose}</div>
@@ -4761,6 +4767,18 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
           ${h.access ? `<div class="text-sm mt-8"><strong>Access:</strong> ${h.access}</div>` : ""}
           ${h.note ? `<div class="text-sm text-muted mt-8"><strong>Note:</strong> ${h.note}</div>` : ""}
           <div class="quick-action-row">${h.link ? `<a class="link-btn" href="${normalizedLink(h.link)}" target="_blank" rel="noopener">Saved Map</a>` : ""}${h.address || h.name ? `<a class="link-btn" href="${googleMapSearchUrl(h.address || h.name)}" target="_blank" rel="noopener">Google Maps</a><a class="link-btn" href="${appleMapSearchUrl(h.address || h.name)}" target="_blank" rel="noopener">Apple Maps</a>` : ""}</div>
+        </div>`).join("");
+
+      document.getElementById("mapsVenues").innerHTML = MAP_VENUES_EVENTS.map(v => `
+        <div class="card">
+          <div class="row space-between"><div class="fw-600">${escapeHtml(v.name)}</div>${statusBadge(v.status)}</div>
+          <div class="text-xs text-muted">${escapeHtml(v.city)} · ${escapeHtml(v.kind)}</div>
+          <div class="text-sm mt-8"><strong>Event:</strong> ${escapeHtml(v.event)}</div>
+          <div class="text-sm"><strong>Transportation:</strong> ${escapeHtml(v.transportation)}</div>
+          ${v.address ? `<div class="text-sm mt-8"><strong>Address:</strong> ${escapeHtml(v.address)}</div>` : ""}
+          ${v.access ? `<div class="text-sm mt-8"><strong>Access:</strong> ${escapeHtml(v.access)}</div>` : ""}
+          ${v.note ? `<div class="text-sm text-muted mt-8"><strong>Note:</strong> ${escapeHtml(v.note)}</div>` : ""}
+          <div class="quick-action-row">${v.link ? `<a class="link-btn" href="${normalizedLink(v.link)}" target="_blank" rel="noopener">Saved Map</a>` : ""}${v.address || v.name ? `<a class="link-btn" href="${googleMapSearchUrl(v.address || v.name)}" target="_blank" rel="noopener">Google Maps</a><a class="link-btn" href="${appleMapSearchUrl(v.address || v.name)}" target="_blank" rel="noopener">Apple Maps</a>` : ""}</div>
         </div>`).join("");
 
       document.getElementById("mapsOfficial").innerHTML = MAP_OFFICIAL_SITES.map(s => `
@@ -4811,6 +4829,16 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
           <div class="fw-600">Reliable options</div>
           <ul class="comfort-list text-sm">${c.picks.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>
           <div class="comfort-tip"><strong>Practical tip:</strong> ${escapeHtml(c.note)}</div>
+        </div>`).join("");
+
+      document.getElementById("mapsTravelHelpLocations").innerHTML = MAP_TRAVEL_HELP_LOCATIONS.map(h => `
+        <div class="card">
+          <div class="row space-between"><div class="fw-600">${escapeHtml(h.name)}</div>${statusBadge(h.status)}</div>
+          <div class="text-xs text-muted">${escapeHtml(h.city)} · ${escapeHtml(h.purpose)}</div>
+          <div class="text-sm mt-8"><strong>Address:</strong> ${escapeHtml(h.address)}</div>
+          <div class="text-sm"><strong>Access:</strong> ${escapeHtml(h.access)}</div>
+          <div class="text-sm text-muted mt-8"><strong>Note:</strong> ${escapeHtml(h.note)}</div>
+          <div class="quick-action-row"><a class="link-btn" href="${normalizedLink(h.link)}" target="_blank" rel="noopener">Saved Map</a><a class="link-btn" href="${googleMapSearchUrl(h.address)}" target="_blank" rel="noopener">Google Maps</a><a class="link-btn" href="${appleMapSearchUrl(h.address)}" target="_blank" rel="noopener">Apple Maps</a></div>
         </div>`).join("");
 
       document.getElementById("mapsTravelHelp").innerHTML = CONTINGENCIES.map(c => `
@@ -4983,7 +5011,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       Object.entries(SAFETY||{}).forEach(([k,v])=>add("Safety",k.replace(/([A-Z])/g," $1"),searchableText(v).slice(0,160),"prep",k,{[k]:v},{safety:true,prepTab:"safety"}));
       getAllDoorRoutes().forEach(x=>add("Maps · Route",x.title||`${x.from||""} → ${x.to||""}`,[x.date,x.mode,x.note].filter(Boolean).join(" · "),"maps",x.title||x.from||x.to,x,{mapsFilter:"routes"}));
       (MAP_AIRPORTS||[]).forEach(x=>add("Maps · Airport",`${x.name} (${x.code})`,x.tripUse,"maps",x.name,x,{mapsFilter:"airports"}));
-      (MAP_HOTELS_VENUES||[]).forEach(x=>add("Maps · Hotel/Venue",x.name,[x.city,x.purpose,x.address].filter(Boolean).join(" · "),"maps",x.name,x,{mapsFilter:"hotels"}));
+      (MAP_HOTELS||[]).forEach(x=>add("Maps · Hotel",x.name,[x.city,x.purpose,x.address].filter(Boolean).join(" · "),"maps",x.name,x,{mapsFilter:"hotels"}));
+      (MAP_VENUES_EVENTS||[]).forEach(x=>add("Maps · Venue/Event",x.name,[x.city,x.kind,x.event,x.transportation,x.address].filter(Boolean).join(" · "),"maps",x.name,x,{mapsFilter:"venues"}));
+      (MAP_TRAVEL_HELP_LOCATIONS||[]).forEach(x=>add("Travel Help",x.name,[x.city,x.purpose,x.address].filter(Boolean).join(" · "),"maps",x.name,x,{mapsFilter:"help"}));
       (MAP_OFFICIAL_SITES||[]).forEach(x=>add("Official Link",x.name,[x.area,x.use].filter(Boolean).join(" · "),"maps",x.name,x,{mapsFilter:"official"}));
       (GROUND||[]).forEach(x=>add("Local Travel Guide",`${x.city} · ${x.mode}`,x.best,"maps",x.mode,x,{mapsFilter:"local"}));
       [
