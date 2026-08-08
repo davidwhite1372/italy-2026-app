@@ -15,6 +15,10 @@
 - Changed Timeline Details to expand in place without rebuilding all Timeline cards.
 - Preserved the visible Timeline position after edits and other required refreshes.
 - Made a second tap on the active Timeline navigation button scroll smoothly to the top.
+- Split Packing, Italian Phrases, and Safety & Emergency into distinct Trip Tools destinations.
+- Made Italian phrases editable with add and delete support, Italian-language spellcheck fields, and an Italian dictionary shortcut.
+- Added the requested question words and Italian numbers through 25 plus the common tens, 100, and 1000.
+- Included phrase edits, additions, and deletions in schema 6 backup export, replace, and merge workflows.
 
 ### Preserved
 

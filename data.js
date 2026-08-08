@@ -520,16 +520,38 @@
         {en:"How much?",it:"Quanto costa?",pr:"KWAN-to KOS-ta"},
         {en:"Too expensive",it:"Troppo caro",pr:"TROP-po CA-ro"}
       ],
+      "Questions": [
+        {en:"Where?",it:"Dove?",pr:"DOH-veh"},
+        {en:"How?",it:"Come?",pr:"KOH-meh"},
+        {en:"When?",it:"Quando?",pr:"KWAHN-doh"},
+        {en:"Why?",it:"Perché?",pr:"pair-KEH"},
+        {en:"Who?",it:"Chi?",pr:"kee"},
+        {en:"What?",it:"Che cosa?",pr:"keh KOH-zah"}
+      ],
       "Medical / Emergency": [
         {en:"I need a doctor",it:"Ho bisogno di un medico",pr:"oh bee-ZON-yo"},
         {en:"Pharmacy",it:"Farmacia",pr:"far-ma-CHEE-ah"},
         {en:"Emergency",it:"112",pr:"Italy-wide"}
       ],
       "Numbers": [
-        {en:"One",it:"Uno",pr:"OO-no"},
-        {en:"Two",it:"Due",pr:"DOO-eh"},
-        {en:"Three",it:"Tre",pr:"treh"},
-        {en:"Ten",it:"Dieci",pr:"dee-EH-chee"}
+        {en:"0",it:"zero",pr:""}, {en:"1",it:"uno",pr:"OO-no"},
+        {en:"2",it:"due",pr:"DOO-eh"}, {en:"3",it:"tre",pr:"treh"},
+        {en:"4",it:"quattro",pr:""}, {en:"5",it:"cinque",pr:""},
+        {en:"6",it:"sei",pr:""}, {en:"7",it:"sette",pr:""},
+        {en:"8",it:"otto",pr:""}, {en:"9",it:"nove",pr:""},
+        {en:"10",it:"dieci",pr:"dee-EH-chee"}, {en:"11",it:"undici",pr:""},
+        {en:"12",it:"dodici",pr:""}, {en:"13",it:"tredici",pr:""},
+        {en:"14",it:"quattordici",pr:""}, {en:"15",it:"quindici",pr:""},
+        {en:"16",it:"sedici",pr:""}, {en:"17",it:"diciassette",pr:""},
+        {en:"18",it:"diciotto",pr:""}, {en:"19",it:"diciannove",pr:""},
+        {en:"20",it:"venti",pr:""}, {en:"21",it:"ventuno",pr:""},
+        {en:"22",it:"ventidue",pr:""}, {en:"23",it:"ventitré",pr:""},
+        {en:"24",it:"ventiquattro",pr:""}, {en:"25",it:"venticinque",pr:""},
+        {en:"30",it:"trenta",pr:""}, {en:"40",it:"quaranta",pr:""},
+        {en:"50",it:"cinquanta",pr:""}, {en:"60",it:"sessanta",pr:""},
+        {en:"70",it:"settanta",pr:""}, {en:"80",it:"ottanta",pr:""},
+        {en:"90",it:"novanta",pr:""}, {en:"100",it:"cento",pr:""},
+        {en:"1000",it:"mille",pr:""}
       ],
       "Quick Reference": [
         {en:"Excuse me",it:"Mi scusi",pr:""},
@@ -537,6 +559,10 @@
         {en:"Thank you",it:"Grazie",pr:"Most used"}
       ]
     };
+    Object.entries(PHRASES).forEach(([category,items]) => items.forEach(item => {
+      item.id = `phrase-${category}-${item.en}`.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+      item.category = category;
+    }));
 
     const SAFETY = {
       emergency: [

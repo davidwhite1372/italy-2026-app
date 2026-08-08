@@ -44,6 +44,7 @@ async function bootApp(initialStorage = {}) {
       window.alert = () => {};
       window.confirm = () => true;
       window.prompt = () => null;
+      window.open = () => null;
       window.scrollTo = () => {};
       window.URL.createObjectURL = blob => {
         exportedBlob = blob;
@@ -322,6 +323,62 @@ test("Timeline details toggle in place and a second Timeline-nav tap goes to the
   assert.equal(renderCalls, 0);
   assert.equal(topCalls, 1);
   window.renderTimeline = originalRender;
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("Packing, phrases, and safety are separate tools and phrase changes survive backups", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+  const document = window.document;
+
+  window.showPage("more");
+  const toolCards = Array.from(document.querySelectorAll("#page-more .card")).map(card => card.textContent.trim());
+  assert.equal(toolCards.some(text => text.includes("Packing")), true);
+  assert.equal(toolCards.some(text => text.includes("Italian Phrases")), true);
+  assert.equal(toolCards.some(text => text.includes("Safety & Emergency")), true);
+  assert.equal(document.querySelectorAll("[data-prep]").length, 0);
+
+  window.openPrepTab("phrases");
+  assert.equal(document.querySelector("#prepPageTitle").textContent, "Italian Phrases");
+  const builtIns = window.getPhraseItems();
+  assert.equal(builtIns.some(item => item.en === "What?" && item.it === "Che cosa?"), true);
+  assert.equal(builtIns.filter(item => item.en === "What?").length, 1);
+  assert.equal(builtIns.some(item => item.en === "23" && item.it === "ventitré"), true);
+  assert.equal(builtIns.some(item => item.en === "1000" && item.it === "mille"), true);
+
+  window.openPhraseEditor(null);
+  assert.equal(document.querySelector("#ef_it").getAttribute("lang"), "it");
+  assert.equal(document.querySelector("#ef_it").getAttribute("spellcheck"), "true");
+  document.querySelector("#ef_category").value = "Restaurants";
+  document.querySelector("#ef_en").value = "No cheese, please";
+  document.querySelector("#ef_it").value = "Senza formaggio, per favore";
+  document.querySelector("#ef_pr").value = "SEN-tsa for-MAD-joh";
+  document.querySelector("#efSave").click();
+  const custom = window.getPhraseItems().find(item => item.en === "No cheese, please");
+  assert.ok(custom);
+  assert.match(custom.id, /^phrase-custom-/);
+
+  const hello = window.getPhraseItems().find(item => item.en === "Hello (day)");
+  window.openPhraseEditor(hello.id);
+  document.querySelector("#ef_pr").value = "Updated pronunciation";
+  document.querySelector("#efSave").click();
+  const goodbye = window.getPhraseItems().find(item => item.en === "Goodbye");
+  assert.equal(window.deletePhrase(goodbye.id), true);
+
+  window.exportData();
+  const payload = await blobJson(window, app.exportedBlob());
+  assert.equal(Object.values(payload.phrasecatalog.custom).some(item => item.en === "No cheese, please"), true);
+  assert.equal(payload.phrasecatalog.edits[hello.id].pr, "Updated pronunciation");
+  assert.ok(payload.phrasecatalog.deleted[goodbye.id]);
+
+  window.performImport(payload, "replace");
+  assert.equal(window.getPhraseItems().some(item => item.en === "No cheese, please"), true);
+  assert.equal(window.getPhraseItems().find(item => item.id === hello.id).pr, "Updated pronunciation");
+  assert.equal(window.getPhraseItems().some(item => item.id === goodbye.id), false);
+
+  const searchEntry = window.globalSearchEntries().find(item => item.title === "No cheese, please");
+  assert.equal(searchEntry.prepTab, "phrases");
   assert.deepEqual(app.runtimeErrors, []);
 });
 
