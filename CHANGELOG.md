@@ -11,6 +11,10 @@
 - Renamed the Travel card disclosure to Details and removed the redundant More information label.
 - Corrected the JW Marriott Venice address and map target.
 - Changed both currency converter defaults from 100 to 1.
+- Removed repeated live-data reconstruction while rendering the Timeline.
+- Changed Timeline Details to expand in place without rebuilding all Timeline cards.
+- Preserved the visible Timeline position after edits and other required refreshes.
+- Made a second tap on the active Timeline navigation button scroll smoothly to the top.
 
 ### Preserved
 

@@ -296,6 +296,35 @@ test("Version 10.9 phone classifications convert to the new controlled model", a
   assert.deepEqual(app.runtimeErrors, []);
 });
 
+test("Timeline details toggle in place and a second Timeline-nav tap goes to the top", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+
+  window.showPage("timeline");
+  const card = window.document.querySelector('[data-timeline-id="tl-0023"]');
+  const details = card.querySelector(".tl-expanded");
+  const button = card.querySelector(".tl-toggle");
+  assert.equal(details.hidden, true);
+
+  let renderCalls = 0;
+  let topCalls = 0;
+  const originalRender = window.renderTimeline;
+  window.renderTimeline = () => { renderCalls++; };
+  window.scrollTo = options => { if (options && options.top === 0) topCalls++; };
+
+  window.toggleTimelineDetails("tl-0023");
+  assert.equal(details.hidden, false);
+  assert.equal(button.textContent, "Hide");
+  assert.equal(renderCalls, 0);
+
+  window.openTimelineFromNav();
+  assert.equal(renderCalls, 0);
+  assert.equal(topCalls, 1);
+  window.renderTimeline = originalRender;
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
 test("legacy reservation and planned-budget edits migrate from indexes to IDs", async t => {
   const app = await bootApp({
     italy2026_live: {

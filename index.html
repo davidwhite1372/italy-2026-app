@@ -1239,7 +1239,7 @@
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg>
       <span>Today</span>
     </button>
-    <button class="nav-item" data-page="timeline" onclick="showPage('timeline')">
+    <button class="nav-item" data-page="timeline" onclick="openTimelineFromNav()">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"/></svg>
       <span>Timeline</span>
     </button>
@@ -1321,7 +1321,7 @@
       version: "10.10.0",
       build: "10.10.0",
       backupSchema: 6,
-      lastEdited: "August 8, 2026 at 4:50 PM ET"
+      lastEdited: "August 8, 2026 at 5:18 PM ET"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1354,9 +1354,16 @@
     }
 
     function toggleTimelineDetails(timelineId) {
-      if (expandedTimelineItems.has(timelineId)) expandedTimelineItems.delete(timelineId);
-      else expandedTimelineItems.add(timelineId);
-      renderTimeline();
+      const card = document.querySelector(`#timelineList .tl-step[data-timeline-id="${timelineId}"]`);
+      const details = card && card.querySelector(".tl-expanded");
+      const button = card && card.querySelector(".tl-toggle");
+      if (!card || !details || !button) return;
+      const opening = details.hidden;
+      details.hidden = !opening;
+      button.textContent = opening ? "Hide" : "Details";
+      button.setAttribute("aria-expanded", String(opening));
+      if (opening) expandedTimelineItems.add(timelineId);
+      else expandedTimelineItems.delete(timelineId);
     }
 
     function requestTimelineAutoScroll() {
@@ -1997,7 +2004,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const st = getTimelineDone();
       if (checked) st[timelineId] = true; else delete st[timelineId];
       setTimelineDone(st);
-      renderTimeline();
+      renderTimeline(true);
     }
     function getTimelineHidden() {
       return readTimelineState("italy2026_tlhidden");
@@ -2010,7 +2017,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const st = getTimelineHidden();
       st[timelineId] = true;
       setTimelineHidden(st);
-      renderTimeline();
+      renderTimeline(true);
       showToast("Step hidden — use Hidden filter to restore");
       return true;
     }
@@ -2018,7 +2025,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const st = getTimelineHidden();
       delete st[timelineId];
       setTimelineHidden(st);
-      renderTimeline();
+      renderTimeline(true);
       showToast("Step restored to timeline");
       return true;
     }
@@ -2365,9 +2372,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       return String(h).padStart(2,"0") + ":" + min + (plusOne ? "+1" : "");
     }
 
-    function syncTimelineFlight(t) {
+    function syncTimelineFlight(t, flightsById) {
       if (!t.flightId) return t;
-      const f = flightById(t.flightId);
+      const f = flightsById ? flightsById.get(t.flightId) : flightById(t.flightId);
       if (!f) return t;
       return {
         ...t,
@@ -2471,10 +2478,10 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       });
     }
 
-    function replaceHotelReferences(text) {
+    function replaceHotelReferences(text, hotelsOverride) {
       if (!text) return text;
       let out = String(text);
-      liveHotels().forEach(h => {
+      (hotelsOverride || liveHotels()).forEach(h => {
         const base = HOTELS.find(x => x.id === h.id) || h;
         const names = [base.name, ...(base.aliases || [])].filter(Boolean).sort((a,b)=>b.length-a.length);
         names.forEach(name => { out = out.split(name).join(h.name); });
@@ -2483,14 +2490,14 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       return out;
     }
 
-    function syncTimelineHotels(t) {
+    function syncTimelineHotels(t, hotelsOverride) {
       return {
         ...t,
-        title:replaceHotelReferences(t.title),
-        from:replaceHotelReferences(t.from),
-        to:replaceHotelReferences(t.to),
-        instructions:replaceHotelReferences(t.instructions),
-        notes:replaceHotelReferences(t.notes)
+        title:replaceHotelReferences(t.title,hotelsOverride),
+        from:replaceHotelReferences(t.from,hotelsOverride),
+        to:replaceHotelReferences(t.to,hotelsOverride),
+        instructions:replaceHotelReferences(t.instructions,hotelsOverride),
+        notes:replaceHotelReferences(t.notes,hotelsOverride)
       };
     }
 
@@ -2504,9 +2511,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       return SHARED_TRAVEL_ITEMS.map(base => edits[base.id] ? { ...base, ...edits[base.id], id:base.id, timelineId:base.timelineId } : { ...base });
     }
 
-    function syncTimelineTravel(t) {
+    function syncTimelineTravel(t, sharedTravelByIdMap) {
       if (!t.travelId) return t;
-      const x = sharedTravelById(t.travelId);
+      const x = sharedTravelByIdMap ? sharedTravelByIdMap.get(t.travelId) : sharedTravelById(t.travelId);
       if (!x) return t;
       return {
         ...t, date:x.date, start:x.start, end:x.end, itemType:x.itemType, title:x.title,
@@ -2561,10 +2568,17 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
 
     function liveTimeline() {
       const live = getLive();
+      const flights = FLIGHTS.map(f => live.flights && live.flights[f.id] ? { ...f, ...live.flights[f.id], id:f.id, bookingId:f.bookingId } : { ...f });
+      const hotels = HOTELS.map(h => live.hotels && live.hotels[h.id] ? { ...h, ...live.hotels[h.id], id:h.id, aliases:h.aliases || [] } : { ...h });
+      const sharedTravel = SHARED_TRAVEL_ITEMS.map(item => live.sharedTravel && live.sharedTravel[item.id]
+        ? { ...item, ...live.sharedTravel[item.id], id:item.id, timelineId:item.timelineId }
+        : { ...item });
+      const flightsById = new Map(flights.map(item => [item.id,item]));
+      const sharedTravelByIdMap = new Map(sharedTravel.map(item => [item.id,item]));
       const base = TIMELINE.map(t => {
         const o = (live.timeline || {})[t.id];
         const merged = o ? { ...t, ...o } : { ...t };
-        return syncTimelineHotels(syncTimelineFlight(syncTimelineTravel(merged)));
+        return syncTimelineHotels(syncTimelineFlight(syncTimelineTravel(merged,sharedTravelByIdMap),flightsById),hotels);
       });
       // Custom door-to-door legs appear on the master timeline too
       const custom = getCustomLegs().map(leg => ({
@@ -3494,10 +3508,30 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       return "event";
     }
 
-    function renderTimeline() {
+    function captureTimelineViewport() {
+      if (currentPage !== "timeline") return null;
+      const topGuard = 105;
+      const cards = Array.from(document.querySelectorAll("#timelineList .tl-step[data-timeline-id]"));
+      const card = cards.find(node => node.getBoundingClientRect().bottom > topGuard) || cards[0];
+      return card ? { id:card.dataset.timelineId, top:card.getBoundingClientRect().top } : null;
+    }
+
+    function restoreTimelineViewport(anchor) {
+      if (!anchor) return;
+      requestAnimationFrame(() => {
+        const card = document.querySelector(`#timelineList .tl-step[data-timeline-id="${anchor.id}"]`);
+        if (!card) return;
+        const delta = card.getBoundingClientRect().top - anchor.top;
+        if (Math.abs(delta) > 1) window.scrollTo({ top:Math.max(0,window.scrollY + delta), behavior:"auto" });
+      });
+    }
+
+    function renderTimeline(preserveViewport=false) {
+      const viewportAnchor = preserveViewport ? captureTimelineViewport() : null;
       const doneMap = getTimelineDone();
       const hiddenMap = getTimelineHidden();
-      let items = liveTimeline();
+      const allTimelineItems = liveTimeline();
+      let items = allTimelineItems;
       items = items.slice().sort((a, b) => parseTimelineSortKey(a).localeCompare(parseTimelineSortKey(b)));
 
       if (tlFilter === "hidden") {
@@ -3517,7 +3551,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
           .filter(Boolean).join(" ").toLowerCase().includes(q));
       }
 
-      const allActive = liveTimeline()
+      const allActive = allTimelineItems
         .filter(t => t._isCustom || !hiddenMap[timelineStateId(t)])
         .slice().sort((a,b) => parseTimelineSortKey(a).localeCompare(parseTimelineSortKey(b)));
       const total = allActive.length;
@@ -3593,14 +3627,14 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
             </div>
             ${routeSummary}
             <div class="tl-meta-line">${metaBits.map(x => `<span class="tl-meta-chip">${escapeHtml(x)}</span>`).join("")} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
-            ${isExpanded ? `<div class="tl-expanded">
+            <div class="tl-expanded" ${isExpanded ? "" : "hidden"}>
               <div class="tl-detail-grid">
                 <div class="tl-detail-section"><div class="tl-detail-label">What to do</div><div class="tl-detail-text">${escapeHtml(t.instructions || "No additional instructions.")}</div></div>
                 ${t.notes ? `<div class="tl-detail-section"><div class="tl-detail-label">Notes</div><div class="tl-detail-text">${escapeHtml(t.notes)}</div></div>` : ""}
                 ${(primary || backup) ? `<div class="tl-detail-section"><div class="tl-detail-label">Maps & links</div><div class="tl-map-row">${primary ? `<a class="link-btn" href="${primary}" target="_blank" rel="noopener">${linkLabel(route.link, false)} →</a>` : ""}${backup ? `<a class="link-btn" href="${backup}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(route.backupLink, true)} →</a>` : ""}</div></div>` : ""}
               </div>
               <div class="tl-action-row">${actionBtns}</div>
-            </div>` : ""}
+            </div>
             ${isHidden ? "" : `<div class="tl-complete-row"><label><input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTimelineDone('${timelineId}', this.checked)"><span>${isDone ? "Completed" : "Mark completed"}</span></label></div>`}
           </div>`;
       }).join("") : `<div class="empty"><div class="icon">${tlFilter === "hidden" ? "🙈" : "📋"}</div>${tlFilter === "hidden" ? "No hidden steps." : "No steps match this filter."}</div>`);
@@ -3616,6 +3650,8 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
             window.scrollTo({ top: Math.max(0, absoluteTop - desiredTop), behavior:"smooth" });
           }
         });
+      } else {
+        restoreTimelineViewport(viewportAnchor);
       }
     }
 
@@ -3644,7 +3680,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
           live.timeline[timelineId] = { ...(live.timeline[timelineId] || {}), ...classification };
         }
         setLive(live);
-        renderTimeline();
+        renderTimeline(true);
         showToast("Timeline classification updated");
       });
     }
@@ -4933,6 +4969,14 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       tip.textContent = msg;
       document.body.appendChild(tip);
       setTimeout(() => tip.remove(), 2000);
+    }
+
+    function openTimelineFromNav() {
+      if (currentPage === "timeline") {
+        window.scrollTo({ top:0, behavior:"smooth" });
+        return;
+      }
+      showPage("timeline");
     }
 
     function showPage(id, fromHistory) {
