@@ -78,10 +78,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.9.0");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.9.0");
-  assert.equal(document.querySelector("#aboutBackupSchema").textContent, "5");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /August 7, 2026/);
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.10.0");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.10.0");
+  assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /August 8, 2026/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -231,13 +231,68 @@ test("legacy travel overrides normalize without one-time migration flags", async
   assert.equal("transfers" in live, false);
   assert.equal("reservations" in live, false);
   assert.equal(live.sharedTravel["travel-11"].start, "1:30 PM");
-  assert.equal(live.sharedTravel["travel-1"].mode, "Rental car");
+  assert.equal(live.sharedTravel["travel-1"].transportation, "Car");
+  assert.equal(live.sharedTravel["travel-1"].transportationDetails, "Rental car");
+  assert.equal("mode" in live.sharedTravel["travel-1"], false);
   assert.equal(live.sharedTravel["travel-34"].instructions, "Legacy airport steps");
 
   const appCode=fs.readFileSync(path.join(projectRoot,"index.html"),"utf8");
   const masterData=fs.readFileSync(path.join(projectRoot,"data.js"),"utf8");
   assert.doesNotMatch(appCode,/italy2026_phase5_migrated|DATA_MIGRATION_KEY/);
   assert.doesNotMatch(masterData,/\bconst\s+(?:TRAINS|TRANSFERS)\s*=/);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("every shared travel item uses controlled purpose and transportation values", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+
+  assert.equal(window.eval("SHARED_TRAVEL_ITEMS.length"), 43);
+  assert.equal(window.eval("SHARED_TRAVEL_ITEMS.every(item => ITEM_TYPE_OPTIONS.includes(item.itemType))"), true);
+  assert.equal(window.eval("SHARED_TRAVEL_ITEMS.every(item => TRANSPORTATION_OPTIONS.includes(item.transportation))"), true);
+  assert.equal(window.eval("TIMELINE.every(item => ITEM_TYPE_OPTIONS.includes(item.itemType))"), true);
+  assert.equal(window.eval("TIMELINE.every(item => TRANSPORTATION_OPTIONS.includes(item.transportation))"), true);
+  assert.equal(window.eval("liveTrains().every(item => item.itemType === 'Transfer' && item.transportation === 'Train')"), true);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("Version 10.9 phone classifications convert to the new controlled model", async t => {
+  const app = await bootApp({
+    italy2026_live: {
+      sharedTravel: {
+        "travel-8": { itemType:"Walk", mode:"Airport connection / passport control" },
+        "travel-14": { itemType:"Event", mode:"Walk" }
+      }
+    }
+  });
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+  const live = window.getLive().sharedTravel;
+
+  assert.equal(live["travel-8"].itemType, "Transfer");
+  assert.equal(live["travel-8"].transportation, "Walk");
+  assert.equal(live["travel-8"].transportationDetails, "Airport connection / passport control");
+  assert.equal(live["travel-14"].itemType, "Event");
+  assert.equal(live["travel-14"].transportation, "Walk");
+
+  window.renderTransport();
+  window.setTravelTransportationFilter("Train");
+  assert.match(window.document.querySelector("#travelResultCount").textContent, /^\d+ result/);
+  assert.equal(Array.from(window.document.querySelectorAll("#travelResults .travel-card")).length > 0, true);
+
+  window.addTripItem();
+  window.document.querySelector("#ef_itemType").value = "Transfer";
+  window.document.querySelector("#ef_transportation").value = "Boat / Ferry";
+  window.document.querySelector("#ef_transportationDetails").value = "Hotel shuttle boat";
+  window.document.querySelector("#ef_title").value = "Regression transfer";
+  window.document.querySelector("#ef_from").value = "Hotel";
+  window.document.querySelector("#ef_to").value = "Venice";
+  window.document.querySelector("#efSave").click();
+  const custom = window.getCustomLegs().find(item => item.title === "Regression transfer");
+  assert.equal(custom.itemType, "Transfer");
+  assert.equal(custom.transportation, "Boat / Ferry");
+  assert.equal(custom.transportationDetails, "Hotel shuttle boat");
   assert.deepEqual(app.runtimeErrors, []);
 });
 
@@ -314,7 +369,7 @@ test("legacy packing and open-item state migrates to stable IDs", async t => {
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("schema 5 backups use Timeline IDs and Version 4 backups remain importable", async t => {
+test("schema 6 backups use Timeline IDs and Version 4 backups remain importable", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
   const { window } = app;
@@ -334,8 +389,8 @@ test("schema 5 backups use Timeline IDs and Version 4 backups remain importable"
 
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
-  assert.equal(payload.version, 5);
-  assert.equal(payload.appVersion, "10.9.0");
+  assert.equal(payload.version, 6);
+  assert.equal(payload.appVersion, "10.10.0");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -354,9 +409,9 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.9.0");
-  assert.match(manifest.description,/Version 10\.9\.0/);
-  assert.match(worker,/v10-9-0/);
+  assert.equal(packageData.version,"10.10.0");
+  assert.match(manifest.description,/Version 10\.10\.0/);
+  assert.match(worker,/v10-10-0/);
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
     timeline:49,restaurants:65,attractions:15,reservations:10,budget:18,packing:66,open:13
   });
@@ -367,7 +422,7 @@ test("release metadata and stable-ID collections stay consistent", async t => {
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("schema 5 backup round trip preserves representative stable-ID records", async t => {
+test("schema 6 backup round trip preserves representative stable-ID records", async t => {
   const savedPacking={checked:true,qty:1,by:"David",updatedAt:"2026-08-07T12:00:00.000Z"};
   const app = await bootApp({
     italy2026_tldone:{"tl-0001":true},

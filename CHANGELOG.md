@@ -1,6 +1,22 @@
 # Changelog
 
-## [10.9.0 DEV] - 2026-08-07
+## [10.10.0 DEV] - 2026-08-08
+
+### Changed
+
+- Promoted the intentional Pixel-phone Travel item type and title corrections into permanent master data.
+- Split Item Type from Transportation using controlled dropdown values, with optional free-text Transportation Details.
+- Added independent Item Type and Transportation filtering on Travel and updated Timeline classification editing.
+- Advanced new backup exports to schema 6 while retaining automatic normalization of Version 10.9 schema 5 travel overrides.
+- Renamed the Travel card disclosure to Details and removed the redundant More information label.
+- Corrected the JW Marriott Venice address and map target.
+- Changed both currency converter defaults from 100 to 1.
+
+### Preserved
+
+- Existing stable IDs, saved phone data, legacy backup import, offline behavior, and production design.
+
+## [10.9.0] - 2026-08-07
 
 ### Changed
 

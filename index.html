@@ -267,6 +267,15 @@
     .tl-step.type-tour { background:linear-gradient(135deg,#ffe7a6 0%,#fff6d9 100%); border-color:#c98200; }
     .tl-step.type-tour .travel-time { background:#a96400; }
     .tl-step.type-tour .travel-callout { color:#754500; }
+    .tl-step.type-transfer { background:linear-gradient(135deg,#d7ecff 0%,#eef7ff 100%); border-color:#1976d2; }
+    .tl-step.type-transfer .travel-time { background:#1565c0; }
+    .tl-step.type-transfer .travel-callout { color:#0d47a1; }
+    .tl-step.type-meal { background:linear-gradient(135deg,#f9dce7 0%,#fff3f7 100%); border-color:#ad3761; }
+    .tl-step.type-meal .travel-time { background:#922b50; }
+    .tl-step.type-shopping { background:linear-gradient(135deg,#eadcff 0%,#f7f0ff 100%); border-color:#7b1fa2; }
+    .tl-step.type-shopping .travel-time { background:#6a1b9a; }
+    .tl-step.type-todo { background:linear-gradient(135deg,#d9f0dc 0%,#f1faf2 100%); border-color:#2e7d32; }
+    .tl-step.type-todo .travel-time { background:#2e7d32; }
     .tl-step.type-information { background:#fff; border-color:#cfd4da; box-shadow:0 2px 6px rgba(0,0,0,.06); }
     .tl-step.type-information .tl-dot { background:#87919b; box-shadow:0 0 0 2px #87919b; }
 
@@ -987,12 +996,21 @@
         <div class="travel-filter-nav" id="travelTypeFilters">
           <button class="active" data-travel-filter="all" onclick="setTravelTypeFilter('all')">All</button>
           <button data-travel-filter="flight" onclick="setTravelTypeFilter('flight')">✈️ Flights</button>
-          <button data-travel-filter="train" onclick="setTravelTypeFilter('train')">🚆 Trains</button>
           <button data-travel-filter="transfer" onclick="setTravelTypeFilter('transfer')">🧭 Transfers</button>
           <button data-travel-filter="hotel" onclick="setTravelTypeFilter('hotel')">🏨 Hotels</button>
-          <button data-travel-filter="tour" onclick="setTravelTypeFilter('tour')">🎟️ Tours</button>
+          <button data-travel-filter="tour-event" onclick="setTravelTypeFilter('tour-event')">🎟️ Tours / Events</button>
+          <button data-travel-filter="meal" onclick="setTravelTypeFilter('meal')">🍽️ Meals</button>
+          <button data-travel-filter="shopping" onclick="setTravelTypeFilter('shopping')">🛍️ Shopping</button>
           <button data-travel-filter="todo" onclick="setTravelTypeFilter('todo')">✅ To-Dos</button>
-          <button data-travel-filter="other" onclick="setTravelTypeFilter('other')">••• Other items</button>
+          <button data-travel-filter="information" onclick="setTravelTypeFilter('information')">ℹ️ Information</button>
+        </div>
+        <div class="travel-search-row" style="margin-bottom:8px;">
+          <select id="travelTransportationFilter" aria-label="Filter by transportation" onchange="setTravelTransportationFilter(this.value)" style="width:100%;margin:0;">
+            <option value="all">All transportation</option>
+            <option>None / Not applicable</option><option>Walk</option><option>Plane</option><option>Train</option>
+            <option>Boat / Ferry</option><option>Bus / Coach</option><option>Taxi / Rideshare</option><option>Car</option>
+            <option>Mixed / Multiple</option><option>Other</option>
+          </select>
         </div>
         <div class="travel-search-row">
           <input id="travelSearchInput" type="search" placeholder="Search airline, train, city, hotel, confirmation…" aria-label="Search travel" oninput="setTravelSearch(this.value)">
@@ -1300,10 +1318,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.9.0",
-      build: "10.9.0",
-      backupSchema: 5,
-      lastEdited: "August 7, 2026 at 7:05 PM ET"
+      version: "10.10.0",
+      build: "10.10.0",
+      backupSchema: 6,
+      lastEdited: "August 8, 2026 at 4:50 PM ET"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1462,6 +1480,7 @@
     // ===================== STATE & HELPERS =====================
     let currentCity = "rome";
     let travelTypeFilter = "all";
+    let travelTransportationFilter = "all";
     let travelSearch = "";
     let restCityFilter = "all";
     let restAteFilter = "all";
@@ -1532,18 +1551,20 @@
 
     const ITEM_TYPES = Object.freeze({
       "Flight": { css:"type-flight", icon:"✈️", label:"FLIGHT" },
-      "Train": { css:"type-train", icon:"🚆", label:"TRAIN" },
-      "Boat / Ferry": { css:"type-boat", icon:"⛴️", label:"BOAT / FERRY" },
-      "Walk": { css:"type-walk", icon:"🚶", label:"WALK" },
-      "Bus": { css:"type-bus", icon:"🚌", label:"BUS" },
-      "Taxi": { css:"type-taxi", icon:"🚕", label:"TAXI" },
-      "Car / Drive": { css:"type-car", icon:"🚗", label:"CAR / DRIVE" },
-      "Hotel": { css:"type-hotel", icon:"🏨", label:"HOTEL" },
+      "Transfer": { css:"type-transfer", icon:"🧭", label:"TRANSFER" },
       "Event": { css:"type-event", icon:"✅", label:"EVENT" },
       "Tour": { css:"type-tour", icon:"🎟️", label:"TOUR" },
+      "Hotel / Check-in": { css:"type-hotel", icon:"🏨", label:"HOTEL / CHECK-IN" },
+      "Meal": { css:"type-meal", icon:"🍽️", label:"MEAL" },
+      "Shopping": { css:"type-shopping", icon:"🛍️", label:"SHOPPING" },
+      "To-do": { css:"type-todo", icon:"☑️", label:"TO-DO" },
       "Information": { css:"type-information", icon:"ℹ️", label:"INFORMATION" }
     });
     const ITEM_TYPE_OPTIONS = Object.keys(ITEM_TYPES);
+    const TRANSPORTATION_OPTIONS = Object.freeze([
+      "None / Not applicable","Walk","Plane","Train","Boat / Ferry","Bus / Coach",
+      "Taxi / Rideshare","Car","Mixed / Multiple","Other"
+    ]);
 
     function timelineItemType(t) {
       return ITEM_TYPES[t.itemType] ? t.itemType : "Information";
@@ -1551,7 +1572,17 @@
     function timelineTypeMeta(t) { return ITEM_TYPES[timelineItemType(t)]; }
     function isActualTravelStep(t) { return timelineItemType(t) !== "Information"; }
     function timelineStyleClass(t) { return timelineItemType(t) === "Information" ? "type-information" : `actual-travel ${timelineTypeMeta(t).css}`; }
-    function itemTypeIcon(t) { return timelineTypeMeta(t).icon; }
+    function itemTypeIcon(t) { return timelineTypeMeta(typeof t === "string" ? {itemType:t} : t).icon; }
+    function timelineTransportation(t) {
+      return TRANSPORTATION_OPTIONS.includes(t && t.transportation) ? t.transportation : "Other";
+    }
+    function transportationIcon(value) {
+      return ({
+        "None / Not applicable":"—","Walk":"🚶","Plane":"✈️","Train":"🚆",
+        "Boat / Ferry":"⛴️","Bus / Coach":"🚌","Taxi / Rideshare":"🚕",
+        "Car":"🚗","Mixed / Multiple":"🔀","Other":"🧭"
+      })[value] || "🧭";
+    }
 
     function normalizedLink(raw) {
       const v = (raw || "").trim();
@@ -1790,7 +1821,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function normalizeTimelineOverrides(obj, sharedTravel) {
       const timeline={};
       const shared={...(sharedTravel&&typeof sharedTravel==="object"?sharedTravel:{})};
-      const fieldMap={date:"date",start:"start",end:"end",itemType:"itemType",title:"title",from:"from",to:"to",mode:"mode",time:"duration",status:"status",instructions:"instructions",notes:"notes"};
+      const fieldMap={date:"date",start:"start",end:"end",itemType:"itemType",transportation:"transportation",transportationDetails:"transportationDetails",title:"title",from:"from",to:"to",mode:"mode",time:"duration",status:"status",instructions:"instructions",notes:"notes"};
       Object.entries(obj&&typeof obj==="object"?obj:{}).forEach(([key,value])=>{
         const timelineId=timelineIdForLegacyKey(key);
         const base=TIMELINE.find(item=>item.id===timelineId);
@@ -1809,6 +1840,39 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         }
       });
       return {timeline,sharedTravel:shared};
+    }
+    function inferLegacyTransportation(itemType, details, fallback) {
+      const typeMap={"Flight":"Plane","Train":"Train","Boat / Ferry":"Boat / Ferry","Walk":"Walk","Bus":"Bus / Coach","Taxi":"Taxi / Rideshare","Car / Drive":"Car"};
+      if(typeMap[itemType]) return typeMap[itemType];
+      const text=String(details||"").toLowerCase();
+      if(/flight|plane|aircraft/.test(text)) return "Plane";
+      if(/train|italo|leonardo|skyconnect/.test(text)) return "Train";
+      if(/boat|ferry|vaporetto|water transfer/.test(text)) return "Boat / Ferry";
+      if(/bus|coach/.test(text)) return "Bus / Coach";
+      if(/taxi|rideshare|cab/.test(text)) return "Taxi / Rideshare";
+      if(/drive|car|vehicle/.test(text)) return "Car";
+      if(/walk|passport|security|airport connection/.test(text)) return "Walk";
+      return fallback||"None / Not applicable";
+    }
+    function normalizeSharedTravelEdits(obj) {
+      return Object.entries(obj&&typeof obj==="object"?obj:{}).reduce((out,[id,value])=>{
+        if(!value||typeof value!=="object"||Array.isArray(value)) return out;
+        const base=SHARED_TRAVEL_ITEMS.find(item=>item.id===id);
+        const next={...value};
+        const legacy=!TRANSPORTATION_OPTIONS.includes(next.transportation);
+        if(legacy) {
+          next.transportation=inferLegacyTransportation(next.itemType,next.transportationDetails||next.mode,base&&base.transportation);
+          // Version 10.9 and earlier used movement methods as Item Types. Preserve
+          // intentional Event/Tour choices and use the new canonical purpose otherwise.
+          next.itemType=["Event","Tour"].includes(next.itemType) ? next.itemType : (base&&base.itemType)||"Information";
+        }
+        if(!ITEM_TYPE_OPTIONS.includes(next.itemType)) next.itemType=(base&&base.itemType)||"Information";
+        if(!TRANSPORTATION_OPTIONS.includes(next.transportation)) next.transportation=(base&&base.transportation)||"Other";
+        if(next.transportationDetails===undefined) next.transportationDetails=next.mode||((base&&base.transportationDetails)||"");
+        delete next.mode;
+        out[id]=next;
+        return out;
+      },{});
     }
     function normalizeLiveState(obj) {
       const normalized = obj && typeof obj === "object" ? { ...obj } : {};
@@ -1840,9 +1904,10 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         notes:[old.seats,old.conf,old.notes].filter(Boolean).join(" · ")||current.notes
       }));
       migrateIndexedTravel("transfers",["travel-1","travel-2","travel-6","travel-8","travel-11","travel-12","travel-17","travel-19","travel-22","travel-24","travel-34","travel-43","travel-37","travel-39"],(old,current)=>({
-        mode:old.mode||current.mode,duration:old.time||current.duration,status:old.status||current.status,
+        transportationDetails:old.mode||current.transportationDetails,duration:old.time||current.duration,status:old.status||current.status,
         instructions:old.steps||current.instructions,notes:[old.backup,old.mistake].filter(Boolean).join(" · ")||current.notes
       }));
+      if(normalized.sharedTravel) normalized.sharedTravel=normalizeSharedTravelEdits(normalized.sharedTravel);
       return normalized;
     }
     function getLive() {
@@ -2445,7 +2510,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       if (!x) return t;
       return {
         ...t, date:x.date, start:x.start, end:x.end, itemType:x.itemType, title:x.title,
-        from:x.from, to:x.to, mode:x.mode, time:x.duration, status:x.status,
+        from:x.from, to:x.to, transportation:x.transportation,
+        transportationDetails:x.transportationDetails, mode:x.transportationDetails,
+        time:x.duration, status:x.status,
         instructions:x.instructions, notes:x.notes
       };
     }
@@ -2455,8 +2522,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       if (!live.sharedTravel) live.sharedTravel = {};
       live.sharedTravel[id] = {
         date:(data.date || "").trim(), start:(data.start || "").trim(), end:(data.end || "").trim(),
-        itemType:data.itemType || "Information", title:(data.title || "").trim(),
-        from:(data.from || "").trim(), to:(data.to || "").trim(), mode:(data.mode || "").trim(),
+        itemType:data.itemType || "Information", transportation:data.transportation || "None / Not applicable",
+        transportationDetails:(data.transportationDetails || "").trim(), title:(data.title || "").trim(),
+        from:(data.from || "").trim(), to:(data.to || "").trim(),
         duration:(data.duration || "").trim(), status:data.status || "Confirmed",
         instructions:(data.instructions || "").trim(), notes:(data.notes || "").trim()
       };
@@ -2474,10 +2542,11 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         {key:"start",label:"Start",value:x.start || ""},
         {key:"end",label:"End",value:x.end || ""},
         {key:"itemType",label:"Item Type",type:"select",value:x.itemType || "Information",options:ITEM_TYPE_OPTIONS},
+        {key:"transportation",label:"Transportation",type:"select",value:x.transportation || "None / Not applicable",options:TRANSPORTATION_OPTIONS},
+        {key:"transportationDetails",label:"Transportation Details (optional)",value:x.transportationDetails || ""},
         {key:"title",label:"Title",value:x.title || ""},
         {key:"from",label:"From",value:x.from || ""},
         {key:"to",label:"To",value:x.to || ""},
-        {key:"mode",label:"Mode / service",value:x.mode || ""},
         {key:"duration",label:"Duration",value:x.duration || ""},
         {key:"status",label:"Status",type:"select",value:x.status || "Confirmed",options:["Confirmed","Pending","Partial","Verify Day-Of","Decision Needed","Plan Confirmed / Timetable Pending","Done"]},
         {key:"instructions",label:"Instructions",type:"textarea",value:x.instructions || ""},
@@ -2505,7 +2574,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         end: leg.end || "",
         from: leg.from,
         to: leg.to,
-        mode: leg.mode || leg.itemType || "Information",
+        transportation: leg.transportation || inferLegacyTransportation(leg.itemType,leg.mode,"Other"),
+        transportationDetails: leg.transportationDetails || leg.mode || "",
+        mode: leg.transportationDetails || leg.mode || "",
         itemType: leg.itemType || "Information",
         time: leg.duration || "",
         status: leg.status || "Confirmed",
@@ -2518,15 +2589,13 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       return base.concat(custom);
     }
     function liveTrains() {
-      return liveSharedTravelItems().filter(x => x.itemType === "Train");
+      return liveSharedTravelItems().filter(x => x.itemType === "Transfer" && x.transportation === "Train");
     }
     function liveTransfers() {
-      const transferTypes = new Set(["Boat / Ferry","Bus","Taxi","Car / Drive","Walk"]);
-      return liveSharedTravelItems().filter(x => transferTypes.has(x.itemType));
+      return liveSharedTravelItems().filter(x => x.itemType === "Transfer" && x.transportation !== "Train");
     }
     function liveActivities() {
-      const activityTypes = new Set(["Event","Tour","Information"]);
-      return liveSharedTravelItems().filter(x => activityTypes.has(x.itemType));
+      return liveSharedTravelItems().filter(x => x.itemType !== "Transfer");
     }
     function shortDateLabel(iso) {
       if (!iso) return "";
@@ -2952,13 +3021,13 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
             <div class="fx-box">
               <div class="fx-rate">€1 = $${formatFx(rate)} USD</div>
               <label>Convert EUR to USD</label>
-              <input id="fxEurInput" type="number" min="0" step="0.01" value="100" oninput="updateFxConversions()">
+              <input id="fxEurInput" type="number" min="0" step="0.01" value="1" oninput="updateFxConversions()">
               <div id="fxEurResult" class="fx-result"></div>
             </div>
             <div class="fx-box">
               <div class="fx-rate">$1 = €${formatFx(inverse)} EUR</div>
               <label>Convert USD to EUR</label>
-              <input id="fxUsdInput" type="number" min="0" step="0.01" value="100" oninput="updateFxConversions()">
+              <input id="fxUsdInput" type="number" min="0" step="0.01" value="1" oninput="updateFxConversions()">
               <div id="fxUsdResult" class="fx-result"></div>
             </div>
           </div>
@@ -3416,12 +3485,12 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     }
 
     function timelineModeGroup(t) {
-      const type = timelineItemType(t);
-      if (type === "Flight") return "flight";
-      if (type === "Train") return "train";
-      if (type === "Boat / Ferry") return "water";
-      if (type === "Walk") return "walk";
-      if (["Bus","Taxi","Car / Drive"].includes(type)) return "road";
+      const transportation = timelineTransportation(t);
+      if (transportation === "Plane") return "flight";
+      if (transportation === "Train") return "train";
+      if (transportation === "Boat / Ferry") return "water";
+      if (transportation === "Walk") return "walk";
+      if (["Bus / Coach","Taxi / Rideshare","Car"].includes(transportation)) return "road";
       return "event";
     }
 
@@ -3444,7 +3513,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       if (tlModeFilter !== "all") items = items.filter(t => timelineModeGroup(t) === tlModeFilter);
       if (tlSearch.trim()) {
         const q = tlSearch.trim().toLowerCase();
-        items = items.filter(t => [t.title,t.itemType,t.from,t.to,t.mode,t.time,t.status,t.instructions,t.notes,t.date,t.start,t.end]
+        items = items.filter(t => [t.title,t.itemType,t.transportation,t.transportationDetails,t.from,t.to,t.mode,t.time,t.status,t.instructions,t.notes,t.date,t.start,t.end]
           .filter(Boolean).join(" ").toLowerCase().includes(q));
       }
 
@@ -3493,9 +3562,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         let actionBtns;
         const ownerAction = timelineOwnerAction(t);
         if (isHidden) {
-          actionBtns = `<button class="edit-btn" style="color:var(--accent);" onclick="restoreTimelineStep('${timelineId}')">Restore</button><button class="edit-btn" onclick="editTimelineItemType('${timelineId}')">Item Type</button><button class="edit-btn" onclick="showPage('${ownerAction.page}')">${ownerAction.label}</button>`;
+          actionBtns = `<button class="edit-btn" style="color:var(--accent);" onclick="restoreTimelineStep('${timelineId}')">Restore</button><button class="edit-btn" onclick="editTimelineItemType('${timelineId}')">Classification</button><button class="edit-btn" onclick="showPage('${ownerAction.page}')">${ownerAction.label}</button>`;
         } else {
-          actionBtns = `<button class="edit-btn" style="color:var(--danger);" onclick="hideTimelineStep('${timelineId}')">Hide Event</button><button class="edit-btn" onclick="editTimelineItemType('${timelineId}')">Item Type</button><button class="edit-btn" onclick="showPage('${ownerAction.page}')">${ownerAction.label}</button>`;
+          actionBtns = `<button class="edit-btn" style="color:var(--danger);" onclick="hideTimelineStep('${timelineId}')">Hide Event</button><button class="edit-btn" onclick="editTimelineItemType('${timelineId}')">Classification</button><button class="edit-btn" onclick="showPage('${ownerAction.page}')">${ownerAction.label}</button>`;
         }
         const route = t._isCustom && t._customId ? getAllDoorRoutes().find(r => r._isCustom && r._id === t._customId) : routeForTimelineId(timelineId);
         const primary = route ? normalizedLink(route.link) : "";
@@ -3507,7 +3576,8 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
               <div class="to"><span class="tl-route-label">To</span><div class="tl-route-place">${escapeHtml(t.to || "Destination")}</div>${t.end ? `<div class="tl-route-clock">${escapeHtml(t.end)}</div>` : ""}</div>
             </div>`
           : "";
-        const metaBits = [timelineItemType(t), (t.mode && t.mode !== timelineItemType(t)) ? t.mode : "", t.time || ""].filter(Boolean);
+        const transportation = timelineTransportation(t);
+        const metaBits = [timelineItemType(t), `${transportationIcon(transportation)} ${transportation}`, t.transportationDetails || "", t.time || ""].filter(Boolean);
         const timeLabel = t.start ? `${escapeHtml(t.start)}${t.end ? "–" + escapeHtml(t.end) : ""}` : "Time TBD";
         return `${dateHeader}
           <div class="tl-step ${cls} ${timelineStyleClass(t)} ${isNext ? "is-next" : ""}" data-timeline-id="${timelineId}" style="${isHidden ? 'opacity:0.75;' : ''}">
@@ -3552,23 +3622,30 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function editTimelineItemType(timelineId) {
       const t = liveTimeline().find(x => timelineStateId(x) === timelineId);
       if (!t) return;
-      openEditSheet("Timeline display type", [
-        { key:"itemType", label:"Item Type / Color", type:"select", value:timelineItemType(t), options:ITEM_TYPE_OPTIONS }
+      openEditSheet("Timeline classification", [
+        { key:"itemType", label:"Item Type", type:"select", value:timelineItemType(t), options:ITEM_TYPE_OPTIONS },
+        { key:"transportation", label:"Transportation", type:"select", value:timelineTransportation(t), options:TRANSPORTATION_OPTIONS },
+        { key:"transportationDetails", label:"Transportation Details (optional)", value:t.transportationDetails || "" }
       ], (data) => {
         const live = getLive();
+        const classification = {
+          itemType:data.itemType,
+          transportation:data.transportation,
+          transportationDetails:(data.transportationDetails || "").trim()
+        };
         if (t.travelId) {
           if (!live.sharedTravel) live.sharedTravel = {};
-          live.sharedTravel[t.travelId] = { ...(live.sharedTravel[t.travelId] || {}), itemType:data.itemType };
+          live.sharedTravel[t.travelId] = { ...(live.sharedTravel[t.travelId] || {}), ...classification };
         } else if (t.flightId) {
           if (!live.timeline) live.timeline = {};
-          live.timeline[timelineId] = { ...(live.timeline[timelineId] || {}), itemType:data.itemType };
+          live.timeline[timelineId] = { ...(live.timeline[timelineId] || {}), ...classification };
         } else {
           if (!live.timeline) live.timeline = {};
-          live.timeline[timelineId] = { ...(live.timeline[timelineId] || {}), itemType:data.itemType };
+          live.timeline[timelineId] = { ...(live.timeline[timelineId] || {}), ...classification };
         }
         setLive(live);
         renderTimeline();
-        showToast("Timeline item type updated");
+        showToast("Timeline classification updated");
       });
     }
 
@@ -3790,16 +3867,11 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     }
 
     function activityTravelCategory(item) {
-      const text = [item.title, item.itemType, item.mode, item.instructions, item.notes, item.from, item.to].filter(Boolean).join(" " ).toLowerCase();
-      const todoTerms = [
-        "bag drop", "check-in", "check in", "check-out", "check out", "checkout",
-        "security", "ticket pickup", "pick up ticket", "pickup ticket", "luggage storage",
-        "drop luggage", "drop bags", "meet the group", "meet psa", "registration",
-        "departure gate", "airport check", "excursion preparation", "prepare for"
-      ];
-      if (todoTerms.some(term => text.includes(term))) return "todo";
-      if (/tour|excursion|gondola|reception|experience|museum|winery|islands|murano|burano/.test(text) || /^(tour|event)$/i.test(item.itemType || "")) return "tour";
-      return "other";
+      return ({
+        "Tour":"tour-event","Event":"tour-event","Hotel / Check-in":"hotel",
+        "Meal":"meal","Shopping":"shopping","To-do":"todo","Information":"information",
+        "Transfer":"transfer","Flight":"flight"
+      })[item.itemType] || "information";
     }
 
     function setTravelTypeFilter(filter) {
@@ -3807,6 +3879,11 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       document.querySelectorAll("#travelTypeFilters [data-travel-filter]").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.travelFilter === travelTypeFilter);
       });
+      renderTransport();
+    }
+
+    function setTravelTransportationFilter(filter) {
+      travelTransportationFilter = TRANSPORTATION_OPTIONS.includes(filter) ? filter : "all";
       renderTransport();
     }
 
@@ -3847,7 +3924,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     }
 
     function travelCollapsedDetails(detailsHtml, actionsHtml) {
-      return `<details class="travel-card-details"><summary><span>More information</span></summary><div class="travel-card-details-body">${detailsHtml || ""}${actionsHtml ? `<div class="travel-actions">${actionsHtml}</div>` : ""}</div></details>`;
+      return `<details class="travel-card-details"><summary><span>Details</span></summary><div class="travel-card-details-body">${detailsHtml || ""}${actionsHtml ? `<div class="travel-actions">${actionsHtml}</div>` : ""}</div></details>`;
     }
 
     function trainConfirmation(t) {
@@ -3897,31 +3974,32 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         : "";
 
       const records = [];
-      const addRecord = (category, date, time, searchText, html, sortExtra="") => records.push({category,date,time,searchText:String(searchText||"").toLowerCase(),html,sortKey:travelDateTimeKey(date,time)+"|"+sortExtra});
+      const addRecord = (category, transportation, date, time, searchText, html, sortExtra="") => records.push({category,transportation,date,time,searchText:String(searchText||"").toLowerCase(),html,sortKey:travelDateTimeKey(date,time)+"|"+sortExtra});
 
-      customTripItems.forEach(t => addRecord(activityTravelCategory(t), t.date, t.start, [t.title,t.from,t.to,t.itemType,t.duration,t.status,t.confirmation,t.note].join(" "), `
+      customTripItems.forEach(t => addRecord(activityTravelCategory(t), timelineTransportation(t), t.date, t.start, [t.title,t.from,t.to,t.itemType,t.transportation,t.transportationDetails,t.duration,t.status,t.confirmation,t.note].join(" "), `
         <div class="card travel-card transfer-card">
           <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t)} ${escapeHtml(t.title || [t.from,t.to].filter(Boolean).join(" → ") || "Trip Item")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
-          <div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType || "Information")}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(t.confirmation || "", t.status || "Confirmed")}${travelDetailPanel("Travel details", t.note)}${travelDetailPanel("Connected views", `Added Trip Item · linked to Timeline${(t.from && t.to) ? " and Maps" : ""}`)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editCustomLeg('${t.id}')">Edit Trip Item</button>`)}</div>
+          <div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType || "Information")}</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(t.confirmation || "", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Travel notes", t.note)}${travelDetailPanel("Connected views", `Added Trip Item · linked to Timeline${(t.from && t.to) ? " and Maps" : ""}`)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editCustomLeg('${t.id}')">Edit Trip Item</button>`)}</div>
         </div>`, t.title || ""));
 
-      flights.forEach(f => addRecord("flight", f.date, f.dep, [f.flight,f.op,f.from,f.to,f.dep,f.arr,f.dur,f.cabin,f.status,f.seats,f.notes,airConfirmationText()].join(" "), `
+      flights.forEach(f => addRecord("flight", "Plane", f.date, f.dep, [f.flight,f.op,f.from,f.to,f.dep,f.arr,f.dur,f.cabin,f.status,f.seats,f.notes,airConfirmationText()].join(" "), `
         <div class="card travel-card flight-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">✈️ ${escapeHtml(f.flight)} · ${escapeHtml(f.op)}</div><div class="travel-date-label">${fmtDate(f.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(f.from,f.dep,f.to,f.arr)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(f.dur || "Duration TBD")}</span><span class="travel-chip">${escapeHtml(f.cabin || "Cabin TBD")}</span>${statusBadge(f.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(airConfirmationText(), f.status || "Confirmed")}${travelDetailPanel("Seats", f.seats || "Not assigned — verify in airline app")}${travelDetailPanel("Travel note", f.notes)}`, `<button class="edit-btn" onclick="copyText('${String(airConfirmationText()).replace(/'/g,"\\'")}','Air confirmation copied')">Copy Confirmation</button>${travelMapActions(f.from,f.to)}<button class="edit-btn" onclick="editFlightById('${f.id}')">Edit Flight</button>`)}</div></div>`, f.flight));
 
-      trains.forEach(t => addRecord("train", t.date, t.start, [t.mode,t.title,t.from,t.to,t.start,t.end,t.duration,t.status,t.instructions,t.notes,trainConfirmation(t)].join(" "), `
-        <div class="card travel-card train-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🚆 ${escapeHtml(t.mode || t.title || "Train")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row">${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(trainConfirmation(t), t.status || "Confirmed")}${travelDetailPanel("Trip details", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Train</button>`)}</div></div>`, t.mode || t.title));
+      trains.forEach(t => addRecord("transfer", "Train", t.date, t.start, [t.transportationDetails,t.mode,t.title,t.from,t.to,t.start,t.end,t.duration,t.status,t.instructions,t.notes,trainConfirmation(t)].join(" "), `
+        <div class="card travel-card train-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🚆 ${escapeHtml(t.transportationDetails || t.title || "Train")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">🚆 Train</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(trainConfirmation(t), t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Train</button>`)}</div></div>`, t.transportationDetails || t.title));
 
-      transfers.forEach(t => addRecord("transfer", t.date, t.start, [t.title,t.from,t.to,t.mode,t.itemType,t.duration,t.status,t.instructions,t.notes].join(" "), `
-        <div class="card travel-card transfer-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.mode || t.itemType)}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Steps", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button>`)}</div></div>`, t.title || t.from));
+      transfers.forEach(t => addRecord("transfer", timelineTransportation(t), t.date, t.start, [t.title,t.from,t.to,t.mode,t.itemType,t.transportation,t.transportationDetails,t.duration,t.status,t.instructions,t.notes].join(" "), `
+        <div class="card travel-card transfer-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Steps", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button>`)}</div></div>`, t.title || t.from));
 
-      hotels.forEach(h => addRecord("hotel", h.checkIn, "15:00", [h.name,h.city,h.address,h.dates,h.conf,h.status,h.room,h.payment,h.tax,h.breakfast,h.notes].join(" "), `
+      hotels.forEach(h => addRecord("hotel", "None / Not applicable", h.checkIn, "15:00", [h.name,h.city,h.address,h.dates,h.conf,h.status,h.room,h.payment,h.tax,h.breakfast,h.notes].join(" "), `
         <div class="card travel-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🏨 ${escapeHtml(h.name)}</div><div class="travel-date-label">${escapeHtml(h.dates || fmtDate(h.checkIn))}</div></div></div><div class="travel-card-main"><div class="travel-chip-row"><span class="travel-chip">${escapeHtml(h.city)}</span><span class="travel-chip">Check-in ${fmtDate(h.checkIn)}</span><span class="travel-chip">Check-out ${fmtDate(h.checkOut)}</span>${statusBadge(h.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(h.conf, h.status || "Confirmed")}${travelDetailPanel("Address", h.address)}${travelDetailPanel("Room", h.room)}${travelDetailPanel("Payment", [h.payment,h.tax].filter(Boolean).join(" · "))}${travelDetailPanel("Hotel note", [h.breakfast,h.notes].filter(Boolean).join(" · "))}`, `${travelMapActions(h.address || h.name,"")}<button class="edit-btn" onclick="editHotelById('${h.id}')">Edit Hotel</button>`)}</div></div>`, h.name));
 
-      activities.forEach(t => addRecord(activityTravelCategory(t), t.date, t.start, [t.title,t.itemType,t.from,t.to,t.start,t.end,t.status,t.instructions,t.notes].join(" "), `
-        <div class="card travel-card activity-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span>${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Details", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button>`)}</div></div>`, t.title || t.itemType));
+      activities.forEach(t => addRecord(activityTravelCategory(t), timelineTransportation(t), t.date, t.start, [t.title,t.itemType,t.transportation,t.transportationDetails,t.from,t.to,t.start,t.end,t.status,t.instructions,t.notes].join(" "), `
+        <div class="card travel-card activity-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button>`)}</div></div>`, t.title || t.itemType));
 
 
       let filtered = records.filter(r => travelTypeFilter === "all" || r.category === travelTypeFilter);
+      if (travelTransportationFilter !== "all") filtered = filtered.filter(r => r.transportation === travelTransportationFilter);
       if (travelSearch) filtered = filtered.filter(r => r.searchText.includes(travelSearch));
       filtered.sort((a,b) => a.sortKey.localeCompare(b.sortKey));
 
@@ -4346,13 +4424,14 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function addTripItem() {
       openEditSheet("Add Trip Item", [
         { key: "itemType", label: "Item Type", type: "select", value: "Information", options: ITEM_TYPE_OPTIONS },
+        { key: "transportation", label: "Transportation", type: "select", value: "None / Not applicable", options: TRANSPORTATION_OPTIONS },
+        { key: "transportationDetails", label: "Transportation Details (optional)", value: "" },
         { key: "title", label: "Title", value: "" },
         { key: "from", label: "From (optional for events, tours, hotels and information)", value: "" },
         { key: "to", label: "To / Location (optional)", value: "" },
         { key: "date", label: "Date (YYYY-MM-DD)", value: "2026-10-05" },
         { key: "start", label: "Start time (e.g. 14:30)", value: "" },
         { key: "end", label: "End time", value: "" },
-        { key: "mode", label: "Service / mode / activity name", value: "" },
         { key: "duration", label: "Duration", value: "" },
         { key: "status", label: "Status", type: "select", value: "Confirmed",
           options: ["Confirmed","Pending","Verify Day-Of","Decision Needed","Done"] },
@@ -4365,13 +4444,17 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         const from = (data.from || "").trim();
         const to = (data.to || "").trim();
         const itemType = data.itemType || "Information";
-        const movementTypes = new Set(["Flight","Train","Boat / Ferry","Walk","Bus","Taxi","Car / Drive"]);
+        const transportation = data.transportation || "None / Not applicable";
         if (!title && !from && !to) {
           alert("Enter a title or a From/To location.");
           return;
         }
-        if (movementTypes.has(itemType) && (!from || !to)) {
-          alert("From and To are required for travel items.");
+        if (["Flight","Transfer"].includes(itemType) && (!from || !to)) {
+          alert("From and To are required for flights and transfers.");
+          return;
+        }
+        if (transportation === "Other" && !(data.transportationDetails || "").trim()) {
+          alert("Enter Transportation Details when Transportation is Other.");
           return;
         }
         if (!(data.date || "").trim()) {
@@ -4387,8 +4470,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
           date: data.date.trim(),
           start: (data.start || "").trim(),
           end: (data.end || "").trim(),
-          mode: (data.mode || "").trim() || itemType,
           itemType,
+          transportation,
+          transportationDetails: (data.transportationDetails || "").trim(),
           duration: (data.duration || "").trim(),
           status: data.status || "Confirmed",
           note: (data.note || "").trim(),
@@ -4412,14 +4496,15 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const leg = arr.find(x => x.id === id);
       if (!leg) return;
       openEditSheet("Edit Trip Item", [
+        { key: "itemType", label: "Item Type", type: "select", value: leg.itemType || "Information", options: ITEM_TYPE_OPTIONS },
+        { key: "transportation", label: "Transportation", type: "select", value: leg.transportation || inferLegacyTransportation(leg.itemType,leg.mode,"None / Not applicable"), options: TRANSPORTATION_OPTIONS },
+        { key: "transportationDetails", label: "Transportation Details (optional)", value: leg.transportationDetails || leg.mode || "" },
         { key: "title", label: "Title (optional)", value: leg.title || "" },
         { key: "from", label: "From (optional)", value: leg.from },
         { key: "to", label: "To / Location (optional)", value: leg.to },
         { key: "date", label: "Date (YYYY-MM-DD)", value: leg.date },
         { key: "start", label: "Start time", value: leg.start || "" },
         { key: "end", label: "End time", value: leg.end || "" },
-        { key: "mode", label: "Mode", value: leg.mode || "" },
-        { key: "itemType", label: "Item Type", type: "select", value: leg.itemType || "Information", options: ITEM_TYPE_OPTIONS },
         { key: "duration", label: "Duration", value: leg.duration || "" },
         { key: "status", label: "Status", type: "select", value: leg.status || "Confirmed",
           options: ["Confirmed","Pending","Verify Day-Of","Decision Needed","Done"] },
@@ -4428,6 +4513,14 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         { key: "link", label: "Primary map / route URL", value: leg.link || "" },
         { key: "backupLink", label: "Backup link", value: leg.backupLink || "" }
       ], (data) => {
+        if (["Flight","Transfer"].includes(data.itemType) && (!(data.from || "").trim() || !(data.to || "").trim())) {
+          alert("From and To are required for flights and transfers.");
+          return false;
+        }
+        if (data.transportation === "Other" && !(data.transportationDetails || "").trim()) {
+          alert("Enter Transportation Details when Transportation is Other.");
+          return false;
+        }
         const next = getCustomLegs().map(x => x.id === id ? {
           ...x,
           title: (data.title || "").trim(),
@@ -4436,8 +4529,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
           date: data.date.trim(),
           start: (data.start || "").trim(),
           end: (data.end || "").trim(),
-          mode: (data.mode || "").trim() || (data.itemType || "Information"),
           itemType: data.itemType || "Information",
+          transportation: data.transportation || "None / Not applicable",
+          transportationDetails: (data.transportationDetails || "").trim(),
           duration: (data.duration || "").trim(),
           status: data.status || "Confirmed",
           note: (data.note || "").trim(),
