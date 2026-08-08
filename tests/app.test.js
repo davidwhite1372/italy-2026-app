@@ -44,6 +44,7 @@ async function bootApp(initialStorage = {}) {
       window.alert = () => {};
       window.confirm = () => true;
       window.prompt = () => null;
+      window.open = () => null;
       window.scrollTo = () => {};
       window.URL.createObjectURL = blob => {
         exportedBlob = blob;
@@ -78,10 +79,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.9.0");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.9.0");
-  assert.equal(document.querySelector("#aboutBackupSchema").textContent, "5");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /August 7, 2026/);
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.10.0");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.10.0");
+  assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /August 8, 2026/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -231,13 +232,190 @@ test("legacy travel overrides normalize without one-time migration flags", async
   assert.equal("transfers" in live, false);
   assert.equal("reservations" in live, false);
   assert.equal(live.sharedTravel["travel-11"].start, "1:30 PM");
-  assert.equal(live.sharedTravel["travel-1"].mode, "Rental car");
+  assert.equal(live.sharedTravel["travel-1"].transportation, "Car");
+  assert.equal(live.sharedTravel["travel-1"].transportationDetails, "Rental car");
+  assert.equal("mode" in live.sharedTravel["travel-1"], false);
   assert.equal(live.sharedTravel["travel-34"].instructions, "Legacy airport steps");
 
   const appCode=fs.readFileSync(path.join(projectRoot,"index.html"),"utf8");
   const masterData=fs.readFileSync(path.join(projectRoot,"data.js"),"utf8");
   assert.doesNotMatch(appCode,/italy2026_phase5_migrated|DATA_MIGRATION_KEY/);
   assert.doesNotMatch(masterData,/\bconst\s+(?:TRAINS|TRANSFERS)\s*=/);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("every shared travel item uses controlled purpose and transportation values", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+
+  assert.equal(window.eval("SHARED_TRAVEL_ITEMS.length"), 43);
+  assert.equal(window.eval("SHARED_TRAVEL_ITEMS.every(item => ITEM_TYPE_OPTIONS.includes(item.itemType))"), true);
+  assert.equal(window.eval("SHARED_TRAVEL_ITEMS.every(item => TRANSPORTATION_OPTIONS.includes(item.transportation))"), true);
+  assert.equal(window.eval("TIMELINE.every(item => ITEM_TYPE_OPTIONS.includes(item.itemType))"), true);
+  assert.equal(window.eval("TIMELINE.every(item => TRANSPORTATION_OPTIONS.includes(item.transportation))"), true);
+  assert.equal(window.eval("liveTrains().every(item => item.itemType === 'Transfer' && item.transportation === 'Train')"), true);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("Version 10.9 phone classifications convert to the new controlled model", async t => {
+  const app = await bootApp({
+    italy2026_live: {
+      sharedTravel: {
+        "travel-8": { itemType:"Walk", mode:"Airport connection / passport control" },
+        "travel-14": { itemType:"Event", mode:"Walk" }
+      }
+    }
+  });
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+  const live = window.getLive().sharedTravel;
+
+  assert.equal(live["travel-8"].itemType, "Transfer");
+  assert.equal(live["travel-8"].transportation, "Walk");
+  assert.equal(live["travel-8"].transportationDetails, "Airport connection / passport control");
+  assert.equal(live["travel-14"].itemType, "Event");
+  assert.equal(live["travel-14"].transportation, "Walk");
+
+  window.renderTransport();
+  window.setTravelTransportationFilter("Train");
+  assert.match(window.document.querySelector("#travelResultCount").textContent, /^\d+ result/);
+  assert.equal(Array.from(window.document.querySelectorAll("#travelResults .travel-card")).length > 0, true);
+
+  window.addTripItem();
+  window.document.querySelector("#ef_itemType").value = "Transfer";
+  window.document.querySelector("#ef_transportation").value = "Boat / Ferry";
+  window.document.querySelector("#ef_transportationDetails").value = "Hotel shuttle boat";
+  window.document.querySelector("#ef_title").value = "Regression transfer";
+  window.document.querySelector("#ef_from").value = "Hotel";
+  window.document.querySelector("#ef_to").value = "Venice";
+  window.document.querySelector("#efSave").click();
+  const custom = window.getCustomLegs().find(item => item.title === "Regression transfer");
+  assert.equal(custom.itemType, "Transfer");
+  assert.equal(custom.transportation, "Boat / Ferry");
+  assert.equal(custom.transportationDetails, "Hotel shuttle boat");
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("Timeline details toggle in place and a second Timeline-nav tap goes to the top", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+
+  window.showPage("timeline");
+  const card = window.document.querySelector('[data-timeline-id="tl-0023"]');
+  const details = card.querySelector(".tl-expanded");
+  const button = card.querySelector(".tl-toggle");
+  assert.equal(details.hidden, true);
+
+  let renderCalls = 0;
+  let topCalls = 0;
+  const originalRender = window.renderTimeline;
+  window.renderTimeline = () => { renderCalls++; };
+  window.scrollTo = options => { if (options && options.top === 0) topCalls++; };
+
+  window.toggleTimelineDetails("tl-0023");
+  assert.equal(details.hidden, false);
+  assert.equal(button.textContent, "Hide");
+  assert.equal(renderCalls, 0);
+
+  window.openTimelineFromNav();
+  assert.equal(renderCalls, 0);
+  assert.equal(topCalls, 1);
+  window.renderTimeline = originalRender;
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("Packing, phrases, and safety are separate tools and phrase changes survive backups", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+  const document = window.document;
+
+  window.showPage("more");
+  const toolCards = Array.from(document.querySelectorAll("#page-more .card")).map(card => card.textContent.trim());
+  assert.equal(toolCards.some(text => text.includes("Packing")), true);
+  assert.equal(toolCards.some(text => text.includes("Italian Phrases")), true);
+  assert.equal(toolCards.some(text => text.includes("Safety & Emergency")), true);
+  assert.equal(document.querySelectorAll("[data-prep]").length, 0);
+
+  window.openPrepTab("phrases");
+  assert.equal(document.querySelector("#prepPageTitle").textContent, "Italian Phrases");
+  const builtIns = window.getPhraseItems();
+  assert.equal(builtIns.some(item => item.en === "What?" && item.it === "Che cosa?"), true);
+  assert.equal(builtIns.filter(item => item.en === "What?").length, 1);
+  assert.equal(builtIns.some(item => item.en === "23" && item.it === "ventitré"), true);
+  assert.equal(builtIns.some(item => item.en === "1000" && item.it === "mille"), true);
+
+  window.openPhraseEditor(null);
+  assert.equal(document.querySelector("#ef_it").getAttribute("lang"), "it");
+  assert.equal(document.querySelector("#ef_it").getAttribute("spellcheck"), "true");
+  document.querySelector("#ef_category").value = "Restaurants";
+  document.querySelector("#ef_en").value = "No cheese, please";
+  document.querySelector("#ef_it").value = "Senza formaggio, per favore";
+  document.querySelector("#ef_pr").value = "SEN-tsa for-MAD-joh";
+  document.querySelector("#efSave").click();
+  const custom = window.getPhraseItems().find(item => item.en === "No cheese, please");
+  assert.ok(custom);
+  assert.match(custom.id, /^phrase-custom-/);
+
+  const hello = window.getPhraseItems().find(item => item.en === "Hello (day)");
+  window.openPhraseEditor(hello.id);
+  document.querySelector("#ef_pr").value = "Updated pronunciation";
+  document.querySelector("#efSave").click();
+  const goodbye = window.getPhraseItems().find(item => item.en === "Goodbye");
+  assert.equal(window.deletePhrase(goodbye.id), true);
+
+  window.exportData();
+  const payload = await blobJson(window, app.exportedBlob());
+  assert.equal(Object.values(payload.phrasecatalog.custom).some(item => item.en === "No cheese, please"), true);
+  assert.equal(payload.phrasecatalog.edits[hello.id].pr, "Updated pronunciation");
+  assert.ok(payload.phrasecatalog.deleted[goodbye.id]);
+
+  window.performImport(payload, "replace");
+  assert.equal(window.getPhraseItems().some(item => item.en === "No cheese, please"), true);
+  assert.equal(window.getPhraseItems().find(item => item.id === hello.id).pr, "Updated pronunciation");
+  assert.equal(window.getPhraseItems().some(item => item.id === goodbye.id), false);
+
+  const searchEntry = window.globalSearchEntries().find(item => item.title === "No cheese, please");
+  assert.equal(searchEntry.prepTab, "phrases");
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("Maps separates hotels, dinner venues, and consular help", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+  const document = window.document;
+
+  const mapData = JSON.parse(window.eval(`JSON.stringify({
+    hotels: MAP_HOTELS,
+    venues: MAP_VENUES_EVENTS,
+    help: MAP_TRAVEL_HELP_LOCATIONS
+  })`));
+  assert.deepEqual(mapData.hotels.map(item => item.name), [
+    "Anantara Palazzo Naiadi",
+    "W Florence",
+    "JW Marriott Venice Resort & Spa",
+    "Hotel Antiche Figure"
+  ]);
+  assert.deepEqual(mapData.venues.map(item => [item.name,item.event,item.transportation]), [
+    ["SEEN by Olivier","Dinner","None / Not applicable"],
+    ["Villa Miani","Awards Dinner","Bus / Coach"],
+    ["Giardino Corsini al Prato","Dinner","Walk"]
+  ]);
+  assert.deepEqual(mapData.help.map(item => item.name), ["U.S. Embassy Rome"]);
+
+  window.showPage("maps");
+  assert.equal(document.querySelectorAll("#mapsHotels .card").length, 4);
+  assert.equal(document.querySelectorAll("#mapsVenues .card").length, 3);
+  assert.match(document.querySelector("#mapsVenues").textContent, /Villa Miani[\s\S]*Awards Dinner[\s\S]*Bus \/ Coach/);
+  assert.match(document.querySelector("#mapsTravelHelpLocations").textContent, /U\.S\. Embassy Rome/);
+
+  const seenSearch = window.globalSearchEntries().find(item => item.title === "SEEN by Olivier");
+  const embassySearch = window.globalSearchEntries().find(item => item.title === "U.S. Embassy Rome" && item.mapsFilter);
+  assert.equal(seenSearch.mapsFilter, "venues");
+  assert.equal(embassySearch.mapsFilter, "help");
   assert.deepEqual(app.runtimeErrors, []);
 });
 
@@ -314,7 +492,7 @@ test("legacy packing and open-item state migrates to stable IDs", async t => {
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("schema 5 backups use Timeline IDs and Version 4 backups remain importable", async t => {
+test("schema 6 backups use Timeline IDs and Version 4 backups remain importable", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
   const { window } = app;
@@ -334,8 +512,8 @@ test("schema 5 backups use Timeline IDs and Version 4 backups remain importable"
 
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
-  assert.equal(payload.version, 5);
-  assert.equal(payload.appVersion, "10.9.0");
+  assert.equal(payload.version, 6);
+  assert.equal(payload.appVersion, "10.10.0");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -354,9 +532,9 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.9.0");
-  assert.match(manifest.description,/Version 10\.9\.0/);
-  assert.match(worker,/v10-9-0/);
+  assert.equal(packageData.version,"10.10.0");
+  assert.match(manifest.description,/Version 10\.10\.0/);
+  assert.match(worker,/v10-10-0/);
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
     timeline:49,restaurants:65,attractions:15,reservations:10,budget:18,packing:66,open:13
   });
@@ -367,7 +545,7 @@ test("release metadata and stable-ID collections stay consistent", async t => {
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("schema 5 backup round trip preserves representative stable-ID records", async t => {
+test("schema 6 backup round trip preserves representative stable-ID records", async t => {
   const savedPacking={checked:true,qty:1,by:"David",updatedAt:"2026-08-07T12:00:00.000Z"};
   const app = await bootApp({
     italy2026_tldone:{"tl-0001":true},

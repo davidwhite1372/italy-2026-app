@@ -1,6 +1,33 @@
 # Changelog
 
-## [10.9.0 DEV] - 2026-08-07
+## [10.10.0 DEV] - 2026-08-08
+
+### Changed
+
+- Promoted the intentional Pixel-phone Travel item type and title corrections into permanent master data.
+- Split Item Type from Transportation using controlled dropdown values, with optional free-text Transportation Details.
+- Added independent Item Type and Transportation filtering on Travel and updated Timeline classification editing.
+- Advanced new backup exports to schema 6 while retaining automatic normalization of Version 10.9 schema 5 travel overrides.
+- Renamed the Travel card disclosure to Details and removed the redundant More information label.
+- Corrected the JW Marriott Venice address and map target.
+- Changed both currency converter defaults from 100 to 1.
+- Removed repeated live-data reconstruction while rendering the Timeline.
+- Changed Timeline Details to expand in place without rebuilding all Timeline cards.
+- Preserved the visible Timeline position after edits and other required refreshes.
+- Made a second tap on the active Timeline navigation button scroll smoothly to the top.
+- Split Packing, Italian Phrases, and Safety & Emergency into distinct Trip Tools destinations.
+- Made Italian phrases editable with add and delete support, Italian-language spellcheck fields, and an Italian dictionary shortcut.
+- Added the requested question words and Italian numbers through 25 plus the common tens, 100, and 1000.
+- Included phrase edits, additions, and deletions in schema 6 backup export, replace, and merge workflows.
+- Separated true hotels from restaurant and dinner venues in Maps, Links & Travel Guide.
+- Classified SEEN by Olivier as a dinner restaurant, Villa Miani as an awards-dinner venue reached by bus, and Giardino Corsini al Prato as a dinner venue reached on foot.
+- Moved the U.S. Embassy Rome reference from Hotels to Travel Help/Safety without deleting its address or map links.
+
+### Preserved
+
+- Existing stable IDs, saved phone data, legacy backup import, offline behavior, and production design.
+
+## [10.9.0] - 2026-08-07
 
 ### Changed
 

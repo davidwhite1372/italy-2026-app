@@ -18,7 +18,7 @@ Status: Complete
 - Released and tagged Version 10.8.2 as the stable pre-foundation rollback point.
 
 ## Version 10.9.0 — Pre-11 Foundation
-Status: Foundation complete; release validation on `develop`
+Status: Released
 
 - Clarify app, build, and backup-schema metadata.
 - Clean current documentation and obsolete internal development labels.
@@ -29,6 +29,15 @@ Status: Foundation complete; release validation on `develop`
 - Add automated regression coverage before shared-data work.
 - Remove confirmed dead code separately from data-model migration. Complete for retired train/transfer duplicates and uncalled compatibility helpers.
 - Complete automated metadata, stable-ID, migration, backup round-trip, dependency, and offline-shell audits before release.
+
+## Version 10.10.0 — Travel Data Refinement
+Status: In development on `develop`
+
+- Separate itinerary purpose from transportation with controlled, filterable values.
+- Promote confirmed phone edits into permanent master trip data.
+- Improve Timeline responsiveness and preserve the user’s position after details and edits.
+- Make phrases editable and reorganize Packing, Phrases, and Safety.
+- Correct stale maps and travel references, and prepare a readable import-ready workbook.
 
 ## Version 11.0.0 — Shared Cloud Data
 Status: Evaluation planned

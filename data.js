@@ -7,7 +7,7 @@
       hotels: [
         { city: "Rome", name: "Anantara Palazzo Naiadi", dates: "Oct 5–8", conf: "Event-provided", address: "Piazza della Repubblica 48-49" },
         { city: "Florence", name: "W Florence", dates: "Oct 8–10", conf: "Event-provided", address: "Via del Melarancio 1" },
-        { city: "Venice", name: "JW Marriott Venice Resort & Spa", dates: "Oct 10–13", conf: "Event-provided", address: "Isola delle Rose" },
+        { city: "Venice", name: "JW Marriott Venice Resort & Spa", dates: "Oct 10–13", conf: "Event-provided", address: "Sacca Sessola Laguna di, 30133 Venezia VE, Italy" },
         { city: "Venice", name: "Hotel Antiche Figure", dates: "Oct 13–15", conf: "PO55JT57ZW", address: "Santa Croce 686, Fondamenta San Simeon Piccolo" }
       ],
       air: "H9BVBD / AZ3BUA",
@@ -157,6 +157,65 @@
     ];
 
 
+    // Canonical purpose and transportation classifications. Item Type describes why an
+    // itinerary record exists; Transportation describes how the travelers move. Keeping
+    // these controlled values separate makes both fields dependable for editing and filters.
+    const TIMELINE_CLASSIFICATION = Object.freeze({
+      "tl-0001": {itemType:"Transfer",transportation:"Car"},
+      "tl-0002": {itemType:"Transfer",transportation:"Train"},
+      "tl-0003": {itemType:"Transfer",transportation:"Walk"},
+      "tl-0004": {itemType:"Transfer",transportation:"Walk"},
+      "tl-0005": {itemType:"Flight",transportation:"Plane"},
+      "tl-0006": {itemType:"Transfer",transportation:"Walk"},
+      "tl-0007": {itemType:"Flight",transportation:"Plane"},
+      "tl-0008": {itemType:"Transfer",transportation:"Walk"},
+      "tl-0009": {itemType:"Flight",transportation:"Plane"},
+      "tl-0010": {itemType:"Transfer",transportation:"Walk"},
+      "tl-0011": {itemType:"Transfer",transportation:"Train"},
+      "tl-0012": {itemType:"Transfer",transportation:"Walk"},
+      "tl-0013": {itemType:"Hotel / Check-in",transportation:"None / Not applicable"},
+      "tl-0014": {itemType:"Event",transportation:"Walk"},
+      "tl-0015": {itemType:"Tour",transportation:"Bus / Coach"},
+      "tl-0016": {itemType:"Event",transportation:"Bus / Coach"},
+      "tl-0017": {itemType:"Transfer",transportation:"Walk"},
+      "tl-0018": {itemType:"Transfer",transportation:"Train"},
+      "tl-0019": {itemType:"Transfer",transportation:"Walk"},
+      "tl-0020": {itemType:"Event",transportation:"Walk"},
+      "tl-0021": {itemType:"Event",transportation:"Walk"},
+      "tl-0022": {itemType:"Transfer",transportation:"Walk"},
+      "tl-0023": {itemType:"Transfer",transportation:"Train"},
+      "tl-0024": {itemType:"Transfer",transportation:"Boat / Ferry"},
+      "tl-0025": {itemType:"Tour",transportation:"Boat / Ferry"},
+      "tl-0026": {itemType:"Event",transportation:"Walk"},
+      "tl-0027": {itemType:"Meal",transportation:"None / Not applicable",title:"JW Venice breakfast on own"},
+      "tl-0028": {itemType:"Tour",transportation:"Mixed / Multiple"},
+      "tl-0029": {itemType:"Event",transportation:"Walk"},
+      "tl-0030": {itemType:"Event",transportation:"Boat / Ferry"},
+      "tl-0031": {itemType:"Transfer",transportation:"Boat / Ferry"},
+      "tl-0032": {itemType:"Transfer",transportation:"Boat / Ferry"},
+      "tl-0033": {itemType:"Event",transportation:"Walk"},
+      "tl-0034": {itemType:"To-do",transportation:"Walk"},
+      "tl-0035": {itemType:"Flight",transportation:"Plane"},
+      "tl-0036": {itemType:"Flight",transportation:"Plane"},
+      "tl-0037": {itemType:"Transfer",transportation:"Walk"},
+      "tl-0038": {itemType:"Flight",transportation:"Plane"},
+      "tl-0039": {itemType:"Transfer",transportation:"Train"},
+      "tl-0040": {itemType:"Transfer",transportation:"Car"},
+      "tl-0041": {itemType:"Transfer",transportation:"Walk"},
+      "tl-0042": {itemType:"Hotel / Check-in",transportation:"None / Not applicable",title:"Hotel Antiche Figure Check In"},
+      "tl-0043": {itemType:"Transfer",transportation:"Walk"},
+      "tl-0045": {itemType:"Event",transportation:"Boat / Ferry"},
+      "tl-0046": {itemType:"Event",transportation:"Walk"},
+      "tl-0047": {itemType:"To-do",transportation:"None / Not applicable"},
+      "tl-0048": {itemType:"Event",transportation:"Walk"},
+      "tl-0049": {itemType:"Transfer",transportation:"Walk"},
+      "tl-0050": {itemType:"Transfer",transportation:"Bus / Coach"}
+    });
+    TIMELINE.forEach(item => Object.assign(item, TIMELINE_CLASSIFICATION[item.id] || {
+      itemType:"Information", transportation:"Other"
+    }, {transportationDetails:item.mode || ""}));
+
+
     // Master shared travel/activity records. Timeline, Travel and Maps read from these records.
     // Flights and hotels remain in their own master collections.
     const SHARED_TRAVEL_ITEMS = TIMELINE
@@ -168,6 +227,8 @@
         start: t.start || "",
         end: t.end || "",
         itemType: t.itemType || "Information",
+        transportation: t.transportation || "None / Not applicable",
+        transportationDetails: t.transportationDetails || t.mode || "",
         title: t.title || "",
         from: t.from || "",
         to: t.to || "",
@@ -331,7 +392,7 @@
     const HOTELS = [
       {id:"hotel-rome-anantara",city:"Rome",name:"Anantara Palazzo Naiadi",aliases:["Anantara Palazzo Naiadi Hotel"],checkIn:"2026-10-05",checkOut:"2026-10-08",dates:"Oct 5–8",conf:"Event-provided",status:"Confirmed",address:"Piazza della Repubblica 48-49",room:"Event-provided room",payment:"Provided by PSA / Joe Lynch program",tax:"Confirm with hotel",breakfast:"Confirm program inclusions",notes:"Need final room confirmation and check-in details.",maps:"https://www.google.com/maps/search/?api=1&query=Anantara+Palazzo+Naiadi+Rome"},
       {id:"hotel-florence-w",city:"Florence",name:"W Florence",aliases:["W Florence Hotel"],checkIn:"2026-10-08",checkOut:"2026-10-10",dates:"Oct 8–10",conf:"Event-provided",status:"Confirmed",address:"Via del Melarancio 1",room:"Event-provided room",payment:"Provided by PSA / Joe Lynch program",tax:"Confirm with hotel",breakfast:"Confirm breakfast details",notes:"Need final room confirmation and breakfast details.",maps:"https://www.google.com/maps/search/?api=1&query=W+Florence+Via+del+Melarancio+1"},
-      {id:"hotel-venice-jw",city:"Venice",name:"JW Marriott Venice Resort & Spa",aliases:["JW Marriott Venice","JW Venice","JW Marriott Venice Resort & Spa Hotel"],checkIn:"2026-10-10",checkOut:"2026-10-13",dates:"Oct 10–13",conf:"Event-provided",status:"Confirmed",address:"Isola delle Rose",room:"Event-provided room",payment:"Provided by PSA / Joe Lynch program",tax:"Confirm with hotel",breakfast:"Confirm program inclusions",notes:"Confirm room details, island shuttle schedule, and transfer from central Venice.",maps:"https://www.google.com/maps/search/?api=1&query=JW+Marriott+Venice+Resort+Spa"},
+      {id:"hotel-venice-jw",city:"Venice",name:"JW Marriott Venice Resort & Spa",aliases:["JW Marriott Venice","JW Venice","JW Marriott Venice Resort & Spa Hotel"],checkIn:"2026-10-10",checkOut:"2026-10-13",dates:"Oct 10–13",conf:"Event-provided",status:"Confirmed",address:"Sacca Sessola Laguna di, 30133 Venezia VE, Italy",room:"Event-provided room",payment:"Provided by PSA / Joe Lynch program",tax:"Confirm with hotel",breakfast:"Confirm program inclusions",notes:"Confirm room details, island shuttle schedule, and transfer from central Venice.",maps:"https://www.google.com/maps/search/?api=1&query=Sacca+Sessola+Laguna+di%2C+30133+Venezia+VE%2C+Italy"},
       {id:"hotel-venice-antiche",city:"Venice",name:"Hotel Antiche Figure",aliases:["Antiche Figure"],checkIn:"2026-10-13",checkOut:"2026-10-15",dates:"Oct 13–15",conf:"PO55JT57ZW",status:"Confirmed / Pay Later",address:"Santa Croce 686, Fondamenta San Simeon Piccolo",room:"Superior Double",payment:"€620 due 7 days before via payment link",tax:"€16 city tax on site",breakfast:"Breakfast and gluten-free breakfast included",notes:"Free cancellation until 5 days before arrival.",maps:"https://www.google.com/maps/search/?api=1&query=Hotel+Antiche+Figure+Venice"}
     ];
 
@@ -459,16 +520,38 @@
         {en:"How much?",it:"Quanto costa?",pr:"KWAN-to KOS-ta"},
         {en:"Too expensive",it:"Troppo caro",pr:"TROP-po CA-ro"}
       ],
+      "Questions": [
+        {en:"Where?",it:"Dove?",pr:"DOH-veh"},
+        {en:"How?",it:"Come?",pr:"KOH-meh"},
+        {en:"When?",it:"Quando?",pr:"KWAHN-doh"},
+        {en:"Why?",it:"Perché?",pr:"pair-KEH"},
+        {en:"Who?",it:"Chi?",pr:"kee"},
+        {en:"What?",it:"Che cosa?",pr:"keh KOH-zah"}
+      ],
       "Medical / Emergency": [
         {en:"I need a doctor",it:"Ho bisogno di un medico",pr:"oh bee-ZON-yo"},
         {en:"Pharmacy",it:"Farmacia",pr:"far-ma-CHEE-ah"},
         {en:"Emergency",it:"112",pr:"Italy-wide"}
       ],
       "Numbers": [
-        {en:"One",it:"Uno",pr:"OO-no"},
-        {en:"Two",it:"Due",pr:"DOO-eh"},
-        {en:"Three",it:"Tre",pr:"treh"},
-        {en:"Ten",it:"Dieci",pr:"dee-EH-chee"}
+        {en:"0",it:"zero",pr:""}, {en:"1",it:"uno",pr:"OO-no"},
+        {en:"2",it:"due",pr:"DOO-eh"}, {en:"3",it:"tre",pr:"treh"},
+        {en:"4",it:"quattro",pr:""}, {en:"5",it:"cinque",pr:""},
+        {en:"6",it:"sei",pr:""}, {en:"7",it:"sette",pr:""},
+        {en:"8",it:"otto",pr:""}, {en:"9",it:"nove",pr:""},
+        {en:"10",it:"dieci",pr:"dee-EH-chee"}, {en:"11",it:"undici",pr:""},
+        {en:"12",it:"dodici",pr:""}, {en:"13",it:"tredici",pr:""},
+        {en:"14",it:"quattordici",pr:""}, {en:"15",it:"quindici",pr:""},
+        {en:"16",it:"sedici",pr:""}, {en:"17",it:"diciassette",pr:""},
+        {en:"18",it:"diciotto",pr:""}, {en:"19",it:"diciannove",pr:""},
+        {en:"20",it:"venti",pr:""}, {en:"21",it:"ventuno",pr:""},
+        {en:"22",it:"ventidue",pr:""}, {en:"23",it:"ventitré",pr:""},
+        {en:"24",it:"ventiquattro",pr:""}, {en:"25",it:"venticinque",pr:""},
+        {en:"30",it:"trenta",pr:""}, {en:"40",it:"quaranta",pr:""},
+        {en:"50",it:"cinquanta",pr:""}, {en:"60",it:"sessanta",pr:""},
+        {en:"70",it:"settanta",pr:""}, {en:"80",it:"ottanta",pr:""},
+        {en:"90",it:"novanta",pr:""}, {en:"100",it:"cento",pr:""},
+        {en:"1000",it:"mille",pr:""}
       ],
       "Quick Reference": [
         {en:"Excuse me",it:"Mi scusi",pr:""},
@@ -476,6 +559,10 @@
         {en:"Thank you",it:"Grazie",pr:"Most used"}
       ]
     };
+    Object.entries(PHRASES).forEach(([category,items]) => items.forEach(item => {
+      item.id = `phrase-${category}-${item.en}`.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+      item.category = category;
+    }));
 
     const SAFETY = {
       emergency: [
@@ -1156,7 +1243,7 @@ const MAP_AIRPORTS = [
   }
 ];
 
-const MAP_HOTELS_VENUES = [
+const MAP_HOTELS = [
   {
     "city": "Rome",
     "name": "Anantara Palazzo Naiadi",
@@ -1166,26 +1253,6 @@ const MAP_HOTELS_VENUES = [
     "access": "10–15 min walk from Termini",
     "note": "Event check-in and welcome dinner at hotel",
     "status": "Confirmed"
-  },
-  {
-    "city": "Rome",
-    "name": "SEEN by Olivier",
-    "purpose": "Welcome dinner",
-    "address": "Inside Anantara Palazzo Naiadi",
-    "link": "https://www.google.com/maps/search/?api=1&query=SEEN+by+Olivier+Rome",
-    "access": "In hotel",
-    "note": "Oct. 5, 8:00 PM",
-    "status": "Confirmed"
-  },
-  {
-    "city": "Rome",
-    "name": "Villa Miani",
-    "purpose": "Awards dinner",
-    "address": "",
-    "link": "https://www.google.com/maps/search/?api=1&query=Villa+Miani+Rome",
-    "access": "20–35 min by road from hotel",
-    "note": "Use group coach; not practical by Metro",
-    "status": "Confirmed / details pending"
   },
   {
     "city": "Florence",
@@ -1198,20 +1265,10 @@ const MAP_HOTELS_VENUES = [
     "status": "Confirmed"
   },
   {
-    "city": "Florence",
-    "name": "Giardino Corsini al Prato",
-    "purpose": "Networking event",
-    "address": "",
-    "link": "https://www.google.com/maps/search/?api=1&query=Giardino+Corsini+al+Prato",
-    "access": "15–20 min walk from W Florence",
-    "note": "Follow group transport if provided",
-    "status": "Confirmed / details pending"
-  },
-  {
     "city": "Venice",
     "name": "JW Marriott Venice Resort & Spa",
     "purpose": "Hotel / group base",
-    "address": "Isola delle Rose, Laguna di San Marco, 30133 Venezia, Italy",
+    "address": "Sacca Sessola Laguna di, 30133 Venezia VE, Italy",
     "link": "https://www.google.com/maps/search/?api=1&query=JW+Marriott+Venice+Resort+Spa",
     "access": "Island resort; use confirmed JW/PSA shuttle or water transfer",
     "note": "Confirm shuttle schedule and central Venice pickup point",
@@ -1226,11 +1283,53 @@ const MAP_HOTELS_VENUES = [
     "access": "Across the Grand Canal from Venezia Santa Lucia; cross Scalzi Bridge, turn right, walk about 50 m",
     "note": "Confirmation PO55JT57ZW; check-in after 2:00 PM; checkout before 11:00 AM",
     "status": "Confirmed"
+  }
+];
+
+const MAP_VENUES_EVENTS = [
+  {
+    "city": "Rome",
+    "name": "SEEN by Olivier",
+    "kind": "Restaurant",
+    "event": "Dinner",
+    "transportation": "None / Not applicable",
+    "address": "Inside Anantara Palazzo Naiadi",
+    "link": "https://www.google.com/maps/search/?api=1&query=SEEN+by+Olivier+Rome",
+    "access": "Inside the hotel",
+    "note": "Oct. 5, 8:00 PM",
+    "status": "Confirmed"
   },
   {
     "city": "Rome",
+    "name": "Villa Miani",
+    "kind": "Event venue",
+    "event": "Awards Dinner",
+    "transportation": "Bus / Coach",
+    "address": "",
+    "link": "https://www.google.com/maps/search/?api=1&query=Villa+Miani+Rome",
+    "access": "20–35 min by road from hotel",
+    "note": "Use the group bus; not practical by Metro",
+    "status": "Confirmed / details pending"
+  },
+  {
+    "city": "Florence",
+    "name": "Giardino Corsini al Prato",
+    "kind": "Event venue",
+    "event": "Dinner",
+    "transportation": "Walk",
+    "address": "",
+    "link": "https://www.google.com/maps/search/?api=1&query=Giardino+Corsini+al+Prato",
+    "access": "15–20 min walk from W Florence",
+    "note": "Walk from the hotel",
+    "status": "Confirmed / details pending"
+  }
+];
+
+const MAP_TRAVEL_HELP_LOCATIONS = [
+  {
+    "city": "Rome",
     "name": "U.S. Embassy Rome",
-    "purpose": "Emergency / consular",
+    "purpose": "Emergency / consular help",
     "address": "Via Vittorio Veneto 121, Rome",
     "link": "https://www.google.com/maps/search/?api=1&query=US+Embassy+Rome",
     "access": "From Anantara: verify live route",
