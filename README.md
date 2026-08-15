@@ -4,11 +4,11 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 
 ## Current development build
 
-**Version 10.10.0 DEV — Travel Data Refinement**
+**Version 10.10.1 DEV — Phone Export Reconciliation**
 
-Version 10.10.0 refines the permanent itinerary model before Version 11. Item purpose and transportation are separate controlled fields, phone-tested travel classifications are promoted into master data, and legacy backups remain automatically compatible.
+Version 10.10.1 promotes the reviewed August 15 changes from both phones into permanent travel, packing, phrase, expense, and checklist data while preserving stable IDs and backup compatibility.
 
-Version 10.9.0 is the stable production release. Version 10.10.0 work is developed and tested on `develop` before release.
+Version 10.10.0 is the stable production release. Version 10.10.1 work is developed and tested on `develop` before release.
 
 Production remains on the stable `main` branch. New work is developed and tested on `develop` before release.
 
@@ -18,7 +18,7 @@ User-entered information is currently stored locally in each browser or installe
 
 - Export a fresh backup before changing devices, clearing browser data, or reinstalling the app.
 - Backup schema numbers describe file compatibility; they are separate from the app version.
-- Version 10.10.0 creates schema 6 backups and continues to import schema 5, schema 4, and older supported backups automatically.
+- Version 10.10.1 creates schema 6 backups and continues to import schema 5, schema 4, and older supported backups automatically.
 - Version 11 will evaluate authorized shared cloud data while retaining offline support and manual backups.
 
 ## Publishing

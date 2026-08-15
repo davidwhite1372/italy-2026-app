@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-10-0-map-categories-4';
+const CACHE = 'italy-2026-github-v10-10-1-receipts-2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -8,7 +8,10 @@ const APP_SHELL = [
   './icon-512.png',
   './assets/comfort/rome-restrooms.jpg',
   './assets/comfort/florence-restrooms.jpg',
-  './assets/comfort/venice-restrooms.jpg'
+  './assets/comfort/venice-restrooms.jpg',
+  './assets/tides/san-marco.png',
+  './assets/tides/rialto.png',
+  './assets/tides/santa-lucia.png'
 ];
 
 self.addEventListener('install', event => {

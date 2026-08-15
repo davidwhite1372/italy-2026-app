@@ -79,10 +79,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.10.0");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.10.0");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.10.1");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.10.1");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /August 8, 2026/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /August 15, 2026/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -346,6 +346,12 @@ test("Packing, phrases, and safety are separate tools and phrase changes survive
   assert.equal(builtIns.filter(item => item.en === "What?").length, 1);
   assert.equal(builtIns.some(item => item.en === "23" && item.it === "ventitré"), true);
   assert.equal(builtIns.some(item => item.en === "1000" && item.it === "mille"), true);
+  assert.equal(builtIns.some(item => item.en === "Good night" && item.it === "Buonanotte" && item.pr), true);
+  assert.equal(builtIns.some(item => item.en === "Where is the bathroom?" && item.it === "Dov'è il bagno?" && item.pr), true);
+  assert.equal(builtIns.some(item => item.en === "Watch out, pickpocket!" && item.it === "Attenzione, borseggiatore!" && item.pr), true);
+  assert.match(document.querySelector(".phrase-group h3").textContent, /Greetings/);
+  assert.match(document.querySelector("#prepContent").textContent, /English ↔ Italian Translator/);
+  assert.match(window.openItalianTranslator.toString(), /context\.reverso\.net\/translation\/english-italian/);
 
   window.openPhraseEditor(null);
   assert.equal(document.querySelector("#ef_it").getAttribute("lang"), "it");
@@ -382,6 +388,52 @@ test("Packing, phrases, and safety are separate tools and phrase changes survive
   assert.deepEqual(app.runtimeErrors, []);
 });
 
+test("Journal and Note photos stay on one phone and out of JSON backups", async t => {
+  const app = await bootApp({
+    italy2026_journal: [{ts:12345,date:"2026-10-08",highlight:"Florence",meal:"Dinner",notes:"Test memory"}],
+    italy2026_notes: [{id:"note_photo_test",title:"Photo note",category:"General",body:"Test note",pinned:false,createdAt:"2026-08-15T00:00:00.000Z",updatedAt:"2026-08-15T00:00:00.000Z"}]
+  });
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+  const sample="data:image/jpeg;base64,cGhvdG8=";
+
+  await window.setAttrPhotos(window.localPhotoKey("journal","12345"),[sample]);
+  await window.setAttrPhotos(window.localPhotoKey("note","note_photo_test"),[sample,sample]);
+  await window.renderJournal();
+  assert.match(window.document.querySelector("#journalEntries").textContent,/1 of 3 photos/);
+  await window.renderNotes();
+  assert.match(window.document.querySelector("#notesEntries").textContent,/2 of 3 photos/);
+
+  await window.openEntryPhotos("note","note_photo_test");
+  assert.match(window.document.querySelector("#sheetContent").textContent,/Saved on this phone/);
+  assert.match(window.document.querySelector("#sheetContent").textContent,/Save \/ Share/);
+
+  window.exportData();
+  const payload=await blobJson(window,app.exportedBlob());
+  assert.equal("photos" in payload,false);
+  assert.equal(JSON.stringify(payload).includes(sample),false);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("dark-mode converter styling and controlled Checked packing location are present", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+  const source=fs.readFileSync(path.join(projectRoot,"index.html"),"utf8");
+  assert.match(source,/\.fx-box\s*\{\s*background:#16241e;\s*color:var\(--text\)/);
+  assert.match(source,/\.fx-box input\s*\{\s*background:var\(--card\);\s*color:var\(--text\)/);
+  assert.equal(window.normalizePackingBag("Checked roller"),"Checked");
+  assert.equal(window.normalizePackingBag("Checked rollers"),"Checked");
+  assert.equal(window.eval("PACKING.some(item => item.bag === 'Checked roller' || item.bag === 'Checked rollers')"),false);
+  assert.equal(window.eval("PACKING_BAG_OPTIONS.includes('Checked')"),true);
+  window.matchMedia = query => ({matches:query === "(prefers-color-scheme: dark)",addEventListener(){},removeEventListener(){}});
+  window.syncSystemThemeColor();
+  assert.equal(window.document.body.classList.contains("dark"),true);
+  assert.equal(window.document.documentElement.style.colorScheme,"dark");
+  assert.equal(window.document.querySelector('meta[name="theme-color"]').content,"#111315");
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
 test("Maps separates hotels, dinner venues, and consular help", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
@@ -411,6 +463,12 @@ test("Maps separates hotels, dinner venues, and consular help", async t => {
   assert.equal(document.querySelectorAll("#mapsVenues .card").length, 3);
   assert.match(document.querySelector("#mapsVenues").textContent, /Villa Miani[\s\S]*Awards Dinner[\s\S]*Bus \/ Coach/);
   assert.match(document.querySelector("#mapsTravelHelpLocations").textContent, /U\.S\. Embassy Rome/);
+  assert.match(document.querySelector("#mapsLocalGuide").textContent, /Venice High Water Guide[\s\S]*82 cm[\s\S]*105 cm[\s\S]*135 cm/);
+  assert.deepEqual(
+    [...document.querySelectorAll("#mapsLocalGuide .venice-tide-item img")].map(image => image.getAttribute("src")),
+    ["assets/tides/san-marco.png", "assets/tides/rialto.png", "assets/tides/santa-lucia.png"]
+  );
+  assert.equal(document.querySelector('#mapsLocalGuide a[href="https://www.comune.venezia.it/maree"]')?.textContent.trim(), "Check live tide forecast →");
 
   const seenSearch = window.globalSearchEntries().find(item => item.title === "SEEN by Olivier");
   const embassySearch = window.globalSearchEntries().find(item => item.title === "U.S. Embassy Rome" && item.mapsFilter);
@@ -492,6 +550,43 @@ test("legacy packing and open-item state migrates to stable IDs", async t => {
   assert.deepEqual(app.runtimeErrors, []);
 });
 
+test("approved August 15 phone changes are permanent and conflicting expenses normalize", async t => {
+  const app = await bootApp({
+    italy2026_expenses:[{
+      id:1785675679218,date:"2026-08-02",city:"Other",cat:"Miscellaneous",
+      desc:"Walmart - tracker cards",amt:31.94,cur:"USD",fx:1,traveler:"David",
+      payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:""
+    }]
+  });
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+
+  const travel=JSON.parse(window.eval("JSON.stringify(SHARED_TRAVEL_ITEMS)"));
+  assert.equal(travel.find(item=>item.id==="travel-17").status,"Confirmed");
+  assert.equal(travel.find(item=>item.id==="travel-19").status,"Confirmed");
+  assert.equal(travel.find(item=>item.id==="travel-13").itemType,"Hotel / Check-in");
+  assert.equal(travel.find(item=>item.id==="travel-27").itemType,"Meal");
+  assert.equal(travel.find(item=>item.id==="travel-42").itemType,"Hotel / Check-in");
+
+  const packing=window.getPackingItems();
+  assert.equal(packing.find(item=>item._id==="packing-0019").qty,2);
+  assert.equal(packing.find(item=>item._id==="packing-0021").qty,2);
+  assert.equal(packing.find(item=>item._id==="packing-0061").qty,2);
+  assert.equal(packing.some(item=>item._id==="packing-0031"),false);
+  assert.equal(packing.some(item=>item.item==="T-shirts" && item.qty===5),true);
+  assert.equal(packing.some(item=>item.item==="Tracker cards" && item.qty===2),true);
+  assert.equal(packing.some(item=>item.item==="Sunglasses case"),true);
+  assert.equal(packing.filter(item=>/credit card/i.test(item.item)).length,3);
+
+  const expenses=window.getExpenses();
+  assert.equal(expenses.some(item=>item.desc==="Alibaba backpacks" && item.amt===25),true);
+  assert.equal(expenses.some(item=>item.desc==="Amazon - tracker cards" && item.amt===80),true);
+  assert.equal(expenses.some(item=>/Walmart/i.test(item.desc)),false);
+  assert.equal(window.eval('OPEN_ITEMS.find(item=>item.id==="open-0007").status'),"Done");
+  assert.equal(window.eval('PRETRIP.flatMap(group=>group.items).find(item=>item.id==="h7").done'),true);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
 test("schema 6 backups use Timeline IDs and Version 4 backups remain importable", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
@@ -513,7 +608,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.10.0");
+  assert.equal(payload.appVersion, "10.10.1");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -532,11 +627,11 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.10.0");
-  assert.match(manifest.description,/Version 10\.10\.0/);
-  assert.match(worker,/v10-10-0/);
+  assert.equal(packageData.version,"10.10.1");
+  assert.match(manifest.description,/Version 10\.10\.1/);
+  assert.match(worker,/v10-10-1/);
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
-    timeline:49,restaurants:65,attractions:15,reservations:10,budget:18,packing:66,open:13
+    timeline:49,restaurants:65,attractions:15,reservations:10,budget:18,packing:68,open:13
   });
   Object.values(counts).forEach(ids=>{
     assert.equal(ids.every(Boolean),true);
@@ -583,7 +678,63 @@ test("offline application shell lists every required local asset", () => {
     "./icon-512.png",
     "./assets/comfort/rome-restrooms.jpg",
     "./assets/comfort/florence-restrooms.jpg",
-    "./assets/comfort/venice-restrooms.jpg"
+    "./assets/comfort/venice-restrooms.jpg",
+    "./assets/tides/san-marco.png",
+    "./assets/tides/rialto.png",
+    "./assets/tides/santa-lucia.png"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
+});
+
+test("retired planning notes are removed without deleting reference notes", async t => {
+  const app = await bootApp({
+    italy2026_notes: [
+      {id:"note_1786799240417", title:"Watch Venice tides - over 80cm floods start", body:"Temporary tide note"},
+      {id:"note_1786799292126", title:"App add", body:"Temporary development list"},
+      {id:"note_sweet_drinks_italy", title:"Sweet Drinks in Italy", body:"Estathé: available everywhere", pinned:true},
+      {id:"note_keep_me", title:"Keep this note", body:"User content", pinned:false}
+    ]
+  });
+  t.after(() => app.dom.window.close());
+  const notes = JSON.parse(JSON.stringify(app.dom.window.getNotes()));
+  assert.deepEqual(notes.map(note => note.id), ["note_sweet_drinks_italy", "note_keep_me"]);
+  assert.equal(notes[0].pinned, false);
+  assert.match(notes[0].body, /Estathé: \(ess-tah-tay\)/);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("pre-departure checklist includes the Italy EES app support reminder", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+  window.showPage("pretrip");
+  const item = window.eval('PRETRIP.flatMap(group=>group.items).find(item=>item.id==="h9")');
+  assert.ok(item);
+  assert.match(item.text, /Italy.*Travel to Europe.*72 hours/);
+  const links = [...window.document.querySelectorAll('#pretripContent a')].map(link=>link.href);
+  assert.equal(links.includes("https://travel-europe.europa.eu/ees/Travel-to-Europe-mobile-app"), true);
+  assert.equal(links.includes("https://play.google.com/store/apps/details?id=eu.europa.publications.quickborder"), true);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("expense receipt photos stay local and keep receipt status accurate", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+  const expense = window.getExpenses()[0];
+
+  await window.setExpenseReceiptPhotos(expense.id, ["data:image/jpeg;base64,receipt-one"]);
+  assert.equal(window.getExpenses().find(item => item.id === expense.id).receipt, true);
+  assert.deepEqual(
+    await window.getLocalPhotos(window.expenseReceiptPhotoKey(expense.id)),
+    ["data:image/jpeg;base64,receipt-one"]
+  );
+
+  window.exportData();
+  const payload = await blobJson(window, app.exportedBlob());
+  assert.equal(JSON.stringify(payload).includes("receipt-one"), false);
+
+  await window.setExpenseReceiptPhotos(expense.id, []);
+  assert.equal(window.getExpenses().find(item => item.id === expense.id).receipt, false);
+  assert.deepEqual(app.runtimeErrors, []);
 });

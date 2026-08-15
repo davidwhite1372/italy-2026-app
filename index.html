@@ -327,8 +327,12 @@
     .city-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
     /* Phrases */
-    .phrase-group { margin-bottom: 16px; }
-    .phrase-group h3 { font-size: 0.85rem; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .phrase-group { margin-bottom: 18px; }
+    .phrase-group h3 {
+      font-size: 1rem; font-weight: 800; color: var(--primary); margin-bottom: 8px;
+      padding: 8px 10px; background: var(--accent-light); border-left: 4px solid var(--primary);
+      border-radius: 8px; text-transform: uppercase; letter-spacing: 0.055em;
+    }
     .phrase-row { padding: 8px 0; border-bottom: 1px solid var(--border); }
     .phrase-row:last-child { border-bottom: none; }
     .phrase-en { font-weight: 600; font-size: 0.9rem; }
@@ -592,6 +596,16 @@
     .travel-reference-city { margin:14px 1px 7px; font-size:.75rem; font-weight:850; text-transform:uppercase; letter-spacing:.06em; color:var(--primary); }
     .travel-guide-card { padding:11px 12px; border:1px solid var(--border); border-radius:11px; background:var(--surface); margin-bottom:8px; }
     .travel-guide-card:last-child { margin-bottom:0; }
+    .venice-tide-card { padding:12px; border:1px solid var(--border); border-radius:12px; background:var(--card); margin:10px 0 12px; }
+    .venice-tide-title { font-size:.96rem; font-weight:850; color:var(--primary); }
+    .venice-tide-intro { margin:3px 0 10px; font-size:.78rem; line-height:1.4; color:var(--muted); }
+    .venice-tide-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
+    .venice-tide-item { overflow:hidden; border:1px solid var(--border); border-radius:10px; background:var(--surface); }
+    .venice-tide-item img { display:block; width:100%; height:auto; background:#fff; }
+    .venice-tide-threshold { padding:8px 9px; font-size:.74rem; line-height:1.35; font-weight:750; }
+    .venice-tide-links { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .venice-tide-links .link-btn { margin:0; }
+    @media (max-width:650px) { .venice-tide-grid { grid-template-columns:1fr; } }
     .comfort-city-card{margin-bottom:14px;overflow:hidden;}
     .comfort-map{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin:10px 0;}
     .comfort-list{margin:8px 0 0;padding-left:18px;}
@@ -757,6 +771,21 @@
       .badge-medium { background:#3a2914; color:#ffb56b; }
       .badge-low { background:#292d31; color:#c5cbd0; }
       .search-box { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%23aeb5bb' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242.656a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E"); }
+      .fx-widget { color:var(--text); }
+      .fx-box {
+        background:#16241e;
+        color:var(--text);
+        border-color:#355b48;
+      }
+      .fx-rate { color:#8bddad; }
+      .fx-box label,
+      .fx-meta { color:var(--muted); }
+      .fx-box input {
+        background:var(--card);
+        color:var(--text);
+        border-color:#53616a;
+      }
+      .fx-result { color:var(--text); }
       /* Keep neutral Information cards native to night mode. Colored cards above stay light for contrast. */
       .tl-step.type-information { background:var(--card); color:var(--text); border-color:var(--border); }
       .tl-step.type-information .tl-title,
@@ -1120,7 +1149,7 @@
           <button class="btn-outline" onclick="document.getElementById('importFile').click()">Import Backup</button>
         </div>
         <input type="file" id="importFile" accept=".json,application/json" class="hidden" onchange="importData(event)" />
-        <div class="text-xs text-muted mt-8">Import lets you <strong>Merge</strong> updates safely or <strong>Replace</strong> all saved app data. Attraction photos remain on the phone that took them.</div>
+        <div class="text-xs text-muted mt-8">Import lets you <strong>Merge</strong> updates safely or <strong>Replace</strong> all saved app data. Attached photos remain on the phone where they were saved.</div>
       </div>
     </section>
 
@@ -1329,10 +1358,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.10.0",
-      build: "10.10.0",
+      version: "10.10.1",
+      build: "10.10.1",
       backupSchema: 6,
-      lastEdited: "August 8, 2026 at 6:01 PM ET"
+      lastEdited: "August 15, 2026"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1647,16 +1676,25 @@
       const byLegacy=PACKING.find(item=>packKey(item)===raw);
       return byLegacy ? byLegacy.id : raw;
     }
+    const PACKING_CATEGORY_OPTIONS = Object.freeze(["Clothing","Documents","Electronics","Health","Money","Personal Care","Travel Gear","Work/Conference","Other"]);
+    const PACKING_BAG_OPTIONS = Object.freeze(["Backpack","Backpack/personal item","Checked","Crossbody","Home only","Personal item","Separate secure location","Split between travelers","Wallet","Wear","Not assigned"]);
+    function normalizePackingBag(value) {
+      const bag=String(value||"").trim();
+      return /^Checked(?: roller)?s?$/i.test(bag) ? "Checked" : (bag||"Not assigned");
+    }
     function normalizePackCatalogData(obj) {
       const source=obj && typeof obj==="object" ? obj : {};
       const out={edits:{},custom:{},deleted:{}};
-      Object.entries(source.edits||{}).forEach(([key,value])=>{ out.edits[packingIdForStoredKey(key)]=value; });
+      Object.entries(source.edits||{}).forEach(([key,value])=>{
+        const record=value&&typeof value==="object" ? value : {};
+        out.edits[packingIdForStoredKey(key)]={...record,...(record.bag!==undefined?{bag:normalizePackingBag(record.bag)}:{})};
+      });
       const customIds={};
       Object.entries(source.custom||{}).forEach(([key,value])=>{
         const record=value && typeof value==="object" ? value : {};
         const id=record._id || key || createRecordId("packing-custom");
         customIds[key]=id;
-        out.custom[id]={...record,_id:id};
+        out.custom[id]={...record,bag:normalizePackingBag(record.bag),_id:id};
       });
       Object.entries(source.deleted||{}).forEach(([key,value])=>{
         out.deleted[customIds[key] || packingIdForStoredKey(key)]=value;
@@ -1674,7 +1712,7 @@
     function setPackCatalogData(obj) { localStorage.setItem("italy2026_packcatalog", JSON.stringify(normalizePackCatalogData(obj))); }
     function getPackingItems() {
       const cat=getPackCatalogData();
-      const base=PACKING.map(p=>({...p,_id:p.id,_base:true}));
+      const base=PACKING.map(p=>({...p,bag:normalizePackingBag(p.bag),_id:p.id,_base:true}));
       const activeBase=base.filter(p=>!cat.deleted[p._id]).map(p=>({...p,...(cat.edits[p._id]||{}),_id:p._id,_base:true}));
       const custom=Object.values(cat.custom||{}).filter(p=>!cat.deleted[p._id]).map(p=>({...p,_base:false}));
       return activeBase.concat(custom);
@@ -1701,15 +1739,15 @@
       const item=id ? getPackingItems().find(p=>p._id===id) : null;
       openEditSheet(item ? "Edit packing item" : "Add packing item", [
         {key:"traveler",label:"List",type:"select",value:item?packingOwner(item.traveler):(packingTravelerFilter==="all"?"Shared":packingTravelerFilter),options:["David","Melody","Shared"]},
-        {key:"cat",label:"Category",value:item?item.cat:"Travel Gear"},
+        {key:"cat",label:"Category",type:"select",value:item?item.cat:"Travel Gear",options:PACKING_CATEGORY_OPTIONS},
         {key:"item",label:"Item",value:item?item.item:""},
         {key:"qty",label:"Quantity",type:"number",value:item?item.qty:1},
-        {key:"bag",label:"Bag / location",value:item?item.bag:"Checked"},
+        {key:"bag",label:"Bag / location",type:"select",value:item?normalizePackingBag(item.bag):"Checked",options:PACKING_BAG_OPTIONS},
         {key:"pri",label:"Priority",type:"select",value:item?item.pri:"Medium",options:["Critical","High","Medium","Low"]}
       ], data=>{
         if(!data.item.trim()) { alert("Item name is required."); return; }
         const cat=getPackCatalogData(), now=new Date().toISOString();
-        const record={traveler:data.traveler,cat:data.cat.trim()||"Other",item:data.item.trim(),qty:Math.max(1,Number(data.qty)||1),bag:data.bag.trim()||"Not assigned",pri:data.pri,updatedAt:now};
+        const record={traveler:data.traveler,cat:data.cat||"Other",item:data.item.trim(),qty:Math.max(1,Number(data.qty)||1),bag:normalizePackingBag(data.bag),pri:data.pri,updatedAt:now};
         if(item && item._base) cat.edits[id]={...record,updatedAt:now};
         else if(item) cat.custom[id]={...cat.custom[id],...record,_id:id,updatedAt:now};
         else { const newId=createRecordId("packing-custom"); cat.custom[newId]={...record,_id:newId,createdAt:now,updatedAt:now}; }
@@ -1791,8 +1829,14 @@
       catalog.deleted[id]={updatedAt:new Date().toISOString(),by:getBackupOwner()};
       setPhraseCatalogData(catalog); renderPrep(); showToast("Phrase deleted"); return true;
     }
-    function openItalianDictionary() {
-      window.open("https://www.treccani.it/vocabolario/","_blank","noopener");
+    function openItalianTranslator() {
+      const link=document.createElement("a");
+      link.href="https://context.reverso.net/translation/english-italian/";
+      link.target="_blank";
+      link.rel="noopener noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     }
 
     const LEGACY_PACKING_KEYS = ["David|Passport book", "Melody|Passport book", "Shared|Printed flight/train/hotel confirmations", "David|Driver license", "Melody|Driver license", "Shared|Travel insurance details", "David|Work cellphone", "David|Personal cellphone", "Melody|Personal cellphone", "David|Work laptop + charger", "Shared|Multi-port USB charger", "David|Power bank", "Melody|Power bank", "Shared|Universal Type C/F/L adapters", "David|Prescription medications", "Melody|Prescription medications", "Shared|Advil", "David|Primary credit card (no FTF)", "Melody|Primary credit card (no FTF)", "Shared|Backup credit card", "Shared|Limited euros (€100)", "David|Primary walking shoes", "Melody|Primary walking shoes", "David|Collared shirts", "Melody|Business-casual outfits", "David|Long pants", "Shared|Socks + Underwear", "Shared|Rain jacket / windbreaker", "Shared|Light sweater / layer", "Shared|Second pair of shoes", "Shared|Sleepwear + Casual outfits", "Shared|Checked roller suitcase", "David|Backpack", "Melody|Personal item bag", "Shared|Crossbody anti-pickpocket bag", "Shared|Luggage tags", "Shared|Reusable water bottles", "Shared|Toiletries (travel size carry-on)", "Melody|Makeup bag", "David|Reading glasses", "Shared|Sunglasses", "Shared|Compact umbrella", "David|Business cards", "David|Conference badge / registration", "David|Pen and notebook"];
@@ -1864,14 +1908,14 @@
       id: "note_sweet_drinks_italy",
       title: "What to drink in Italy if you usually drink sweet tea",
       category: "Food & Drink",
-      pinned: true,
+      pinned: false,
       createdAt: "2026-08-03T00:00:00.000Z",
-      updatedAt: "2026-08-03T00:00:00.000Z",
+      updatedAt: "2026-08-15T13:21:40.054Z",
       body: `Italy does not have southern-style sweet tea, but you can find great sweet alternatives like Estathé, Caffè Ginseng, and Chinotto.
 
 ICED TEA AND SWEET SODAS
 
-Estathé: This is the most famous bottled iced tea in Italy. It comes in lemon (limone) or peach (pesca) and is quite sweet. You can buy it at any grocery store or café.
+Estathé: (ess-tah-tay) This is the most famous bottled iced tea in Italy. It comes in lemon (limone) or peach (pesca) and is quite sweet. You can buy it at any grocery store or café.
 
 Chinotto: A dark, sparkling Italian soda made from citrus. It looks like cola but has a sweet and slightly bitter taste.
 
@@ -1885,13 +1929,30 @@ Caffè Freddo: A sweet, refrigerated cold coffee drink served in many cafés.
 
 Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and foamy.`
     }];
+    const RETIRED_REFERENCE_NOTE_IDS = new Set([
+      "note_1786799240417",
+      "note_1786799292126"
+    ]);
+    function normalizeNotes(arr) {
+      return (Array.isArray(arr) ? arr : [])
+        .filter(note => note && !RETIRED_REFERENCE_NOTE_IDS.has(note.id))
+        .map(note => {
+        if (!note || note.id !== "note_sweet_drinks_italy") return note;
+        const body = String(note.body || "").includes("Estathé: (ess-tah-tay)")
+          ? note.body
+          : String(note.body || "").replace("Estathé:", "Estathé: (ess-tah-tay)");
+        return {...note, pinned:false, body};
+      });
+    }
     function getNotes() {
       try {
         const raw = localStorage.getItem("italy2026_notes");
-        return raw === null ? DEFAULT_REFERENCE_NOTES.map(n => ({...n})) : JSON.parse(raw || "[]");
-      } catch(e) { return DEFAULT_REFERENCE_NOTES.map(n => ({...n})); }
+        const notes = normalizeNotes(raw === null ? DEFAULT_REFERENCE_NOTES.map(n => ({...n})) : JSON.parse(raw || "[]"));
+        if (raw !== null) localStorage.setItem("italy2026_notes", JSON.stringify(notes));
+        return notes;
+      } catch(e) { return normalizeNotes(DEFAULT_REFERENCE_NOTES.map(n => ({...n}))); }
     }
-    function setNotes(arr) { localStorage.setItem("italy2026_notes", JSON.stringify(arr)); }
+    function setNotes(arr) { localStorage.setItem("italy2026_notes", JSON.stringify(normalizeNotes(arr))); }
 
     // ---- Live overrides (timeline notes, train times, transfer notes, reservation notes) ----
     function reservationIdForStoredKey(key) {
@@ -2010,8 +2071,24 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function setLive(obj) {
       localStorage.setItem("italy2026_live", JSON.stringify(normalizeLiveState(obj)));
     }
+    function normalizeExpenses(arr) {
+      const canonical = new Map(BASE_EXPENSES.map(item => [String(item.id), {...item}]));
+      (Array.isArray(arr) ? arr : []).forEach(item => {
+        if (!item || item.id === undefined || item.id === null) return;
+        const id=String(item.id);
+        // The work-phone export accidentally reused the Amazon expense ID for a
+        // Walmart tracker-card entry. Keep the reviewed Amazon record instead.
+        if (id === "1785675679218" && /walmart\s*-?\s*tracker cards/i.test(item.desc || "")) return;
+        canonical.set(id,item);
+      });
+      return applyDeleted([...canonical.values()],"expenses",item=>item.id,getDeletedRecords());
+    }
     function getExpenses() {
-      try { return JSON.parse(localStorage.getItem("italy2026_expenses") || "[]"); } catch(e) { return []; }
+      let raw=[];
+      try { raw=JSON.parse(localStorage.getItem("italy2026_expenses") || "[]"); } catch(e) { raw=[]; }
+      const normalized=normalizeExpenses(raw);
+      if(JSON.stringify(normalized)!==JSON.stringify(raw)) localStorage.setItem("italy2026_expenses",JSON.stringify(normalized));
+      return normalized;
     }
     function setExpenses(arr) {
       localStorage.setItem("italy2026_expenses", JSON.stringify(arr));
@@ -2306,7 +2383,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       renderAttractions();
     }
 
-    // Photo storage (IndexedDB) — survives offline, larger than localStorage
+    // On-phone photo storage (IndexedDB) — survives offline, larger than localStorage
     function openPhotoDB() {
       return new Promise((resolve, reject) => {
         const req = indexedDB.open("italy2026_photos", 1);
@@ -2358,6 +2435,46 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         tx.oncomplete = () => resolve();
         tx.onerror = () => reject(tx.error);
       });
+    }
+    function localPhotoKey(kind, id) {
+      return `${kind}:${String(id)}`;
+    }
+    function expenseReceiptPhotoKey(id) {
+      return localPhotoKey("expense", id);
+    }
+    async function getLocalPhotos(key) {
+      try {
+        const value = await readAttrPhotosValue(key);
+        return Array.isArray(value) ? value : [];
+      } catch (e) { return []; }
+    }
+    function journalPhotoId(entry) {
+      return String(entry.ts || `${entry.date}|${entry.highlight}|${entry.meal}`);
+    }
+    function safePhotoFileName(value) {
+      return String(value || "italy-photo")
+        .normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "italy-photo";
+    }
+    async function saveOrSharePhoto(dataUrl, title, index) {
+      const name = `${safePhotoFileName(title)}-${index + 1}.jpg`;
+      try {
+        const blob = await (await fetch(dataUrl)).blob();
+        const file = new File([blob], name, {type: blob.type || "image/jpeg"});
+        if (navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
+          await navigator.share({title, files:[file]});
+          return;
+        }
+      } catch (e) {
+        if (e && e.name === "AbortError") return;
+      }
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = name;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      showToast("Photo save started");
     }
     function compressImage(file, maxW, quality) {
       return new Promise((resolve, reject) => {
@@ -2875,6 +2992,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
           <div class="form-group"><label>Reimbursable?</label><select id="sxReimb"><option value="no" ${!e.reimbursable?"selected":""}>No</option><option value="yes" ${e.reimbursable?"selected":""}>Yes</option></select></div>
         </div>
         <div class="form-group"><label>Notes</label><textarea id="sxNotes" rows="3">${e.notes||""}</textarea></div>
+        ${isEdit ? `<div class="alert alert-info text-sm">Receipt photos are managed from this expense’s <strong>Receipt Photos</strong> button on the Budget page. Photos stay only on this phone and are not included in JSON backups.</div>` : `<div class="alert alert-info text-sm">Save the expense first, then use <strong>Add Receipt</strong> on its Budget card to take or choose receipt photos.</div>`}
         <div class="btn-row"><button class="btn-outline" onclick="closeSheet()">Cancel</button><button onclick="saveExpenseSheet(${isEdit ? e.id : "null"})">${isEdit ? "Save Changes" : "Save Expense"}</button></div>
         ${isEdit ? `<button class="btn-danger" style="width:100%;margin-top:12px;" onclick="deleteExpense(${e.id});closeSheet();">Delete Expense</button>` : ""}`;
     }
@@ -2904,7 +3022,60 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     }
     function deleteExpense(id) {
       if (!confirm("Delete this expense?")) return false;
-      markDeleted("expenses",id); setExpenses(getExpenses().filter(e => e.id !== id)); renderMoney(); showToast("Expense deleted"); return true;
+      markDeleted("expenses",id); setExpenses(getExpenses().filter(e => e.id !== id)); deleteAttrPhotos(expenseReceiptPhotoKey(id)).catch(()=>{}); renderMoney(); showToast("Expense deleted"); return true;
+    }
+
+    async function setExpenseReceiptPhotos(id, photos) {
+      const limited=(Array.isArray(photos)?photos:[]).slice(0,2);
+      await setAttrPhotos(expenseReceiptPhotoKey(id),limited);
+      const expenses=getExpenses(), expense=expenses.find(item=>String(item.id)===String(id));
+      if(expense){
+        expense.receipt=limited.length>0;
+        setExpenses(expenses);
+      }
+      await renderMoney();
+      return limited;
+    }
+
+    async function openExpenseReceiptPhotos(id) {
+      const expense=getExpenses().find(item=>String(item.id)===String(id));
+      if(!expense)return;
+      let photos=await getLocalPhotos(expenseReceiptPhotoKey(id));
+      const title=`Receipt · ${expense.desc}`;
+      const renderSheet=()=>{
+        document.getElementById("sheetContent").innerHTML=`
+          <h2>${escapeHtml(title)}</h2>
+          <div class="alert alert-info text-sm"><strong>Saved only on this phone.</strong> Add up to two compressed receipt photos. They are not included in JSON backups. Attaching a photo automatically marks the receipt saved.</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px;margin:14px 0;">
+            ${photos.map((photo,index)=>`<div style="border:1px solid var(--border);border-radius:10px;padding:7px;"><img src="${photo}" alt="Receipt photo ${index+1}" style="width:100%;height:145px;object-fit:cover;border-radius:7px;" /><div class="row" style="gap:6px;margin-top:7px;"><button type="button" class="btn-sm btn-outline receipt-photo-export" data-index="${index}" style="flex:1;">Save / Share</button><button type="button" class="btn-sm btn-danger receipt-photo-delete" data-index="${index}">Delete</button></div></div>`).join("")}
+          </div>
+          ${photos.length<2?`<div class="text-sm fw-600 mb-8">Add receipt photo (${photos.length} of 2 used)</div><div class="btn-row" style="margin-bottom:12px;"><label class="btn btn-outline" style="flex:1;text-align:center;cursor:pointer;">📷 Take Photo<input type="file" id="receiptCameraInput" accept="image/*" capture="environment" hidden /></label><label class="btn btn-outline" style="flex:1;text-align:center;cursor:pointer;">🖼️ Choose Photo<input type="file" id="receiptGalleryInput" accept="image/*" multiple hidden /></label></div>`:`<div class="text-sm text-muted mb-8">Maximum two receipt photos attached.</div>`}
+          <button type="button" id="receiptPhotosDone" style="width:100%;">Done</button>`;
+        document.getElementById("overlay").classList.add("open");
+        document.querySelectorAll(".receipt-photo-export").forEach(button=>button.onclick=()=>saveOrSharePhoto(photos[Number(button.dataset.index)],title,Number(button.dataset.index)));
+        document.querySelectorAll(".receipt-photo-delete").forEach(button=>button.onclick=async()=>{
+          photos.splice(Number(button.dataset.index),1);
+          photos=await setExpenseReceiptPhotos(id,photos);
+          renderSheet();
+        });
+        const addFiles=async files=>{
+          const chosen=Array.from(files||[]), room=2-photos.length;
+          if(chosen.length>room)alert(`Only ${room} more receipt photo${room===1?"":"s"} can be added. Extra selections will be skipped.`);
+          try{
+            for(const file of chosen.slice(0,room)){
+              if(!String(file.type||"").startsWith("image/"))continue;
+              photos.push(await compressImage(file,1400,0.8));
+            }
+            photos=await setExpenseReceiptPhotos(id,photos);
+            renderSheet();
+          }catch(e){alert("Could not add that receipt photo. Try a smaller image or choose it again.");renderSheet();}
+        };
+        const camera=document.getElementById("receiptCameraInput"), gallery=document.getElementById("receiptGalleryInput");
+        if(camera)camera.onchange=()=>addFiles(camera.files);
+        if(gallery)gallery.onchange=()=>addFiles(gallery.files);
+        document.getElementById("receiptPhotosDone").onclick=()=>{closeSheet();renderMoney();};
+      };
+      renderSheet();
     }
     function editPlannedItem(id) {
       const b=liveBudgetPlanned().find(x=>x._id===id); if(!b)return;
@@ -3068,7 +3239,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       }
       const now=new Date().toISOString(), meta=getBackupMeta(); meta.lastImport=now; meta.lastImportFrom=data.exportedBy||"Unknown device"; meta.lastImportMode=mode; setBackupMeta(meta);
       closeSheet(); renderBackupStatus(); renderHome();
-      document.getElementById("sheetContent").innerHTML=`<h2>Import Complete</h2><div class="alert alert-info"><strong>${mode === "merge" ? "Merged" : "Replaced"} successfully</strong><br>Source: ${data.exportedBy||"Unknown device"}<br>Backup: ${data.exported ? new Date(data.exported).toLocaleString("en-US") : "Unknown date"}</div>${mode==="merge"?`<div class="text-sm" style="line-height:1.9;"><strong>Added:</strong> ${totals.added}<br><strong>Updated:</strong> ${totals.updated}<br><strong>Deleted:</strong> ${totals.deleted}<br><strong>Already identical / skipped:</strong> ${totals.skipped}</div>`:`<div class="text-sm">All supported saved app data was cleared first, then replaced by the selected backup.</div>`}<div class="alert alert-warn mt-12">Attraction photos are stored separately and were not imported.</div><button style="width:100%;" onclick="closeSheet();showPage('more')">Done</button>`;
+      document.getElementById("sheetContent").innerHTML=`<h2>Import Complete</h2><div class="alert alert-info"><strong>${mode === "merge" ? "Merged" : "Replaced"} successfully</strong><br>Source: ${data.exportedBy||"Unknown device"}<br>Backup: ${data.exported ? new Date(data.exported).toLocaleString("en-US") : "Unknown date"}</div>${mode==="merge"?`<div class="text-sm" style="line-height:1.9;"><strong>Added:</strong> ${totals.added}<br><strong>Updated:</strong> ${totals.updated}<br><strong>Deleted:</strong> ${totals.deleted}<br><strong>Already identical / skipped:</strong> ${totals.skipped}</div>`:`<div class="text-sm">All supported saved app data was cleared first, then replaced by the selected backup.</div>`}<div class="alert alert-warn mt-12">Attached photos are stored separately on each phone and were not imported.</div><button style="width:100%;" onclick="closeSheet();showPage('more')">Done</button>`;
       document.getElementById("overlay").classList.add("open");
     }
 
@@ -3413,7 +3584,8 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     }
     function togglePretrip(id, checked) {
       const st = getPretripState();
-      if (checked) st[id] = true; else delete st[id];
+      const defaultDone=PRETRIP.some(group=>group.items.some(item=>item.id===id && item.done));
+      if (checked) st[id] = true; else if(defaultDone) st[id]=false; else delete st[id];
       setPretripState(st);
       renderPretrip();
     }
@@ -3432,8 +3604,12 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         { id: "h4", text: "Confirm Giardino Corsini transport and dress code" },
         { id: "h5", text: "Download Venice Excursions page for offline use" },
         { id: "h6", text: "Verify flight seat assignments; save seat maps offline" },
-        { id: "h7", text: "Check TPA Economy Parking rate and SunPass" },
-        { id: "h8", text: "Update EUR→USD rate in Budget if needed" }
+        { id: "h7", text: "Check TPA Economy Parking rate and SunPass", done: true },
+        { id: "h8", text: "Update EUR→USD rate in Budget if needed" },
+        { id: "h9", text: "Check whether Italy now supports the EU Travel to Europe / Quick Border app; if available, preregister within 72 hours of entry", links: [
+          { label: "Check Italy support", href: "https://travel-europe.europa.eu/ees/Travel-to-Europe-mobile-app" },
+          { label: "Open Android app", href: "https://play.google.com/store/apps/details?id=eu.europa.publications.quickborder" }
+        ]}
       ]},
       { id: "p3", group: "Packing — critical (carry-on)", items: [
         { id: "c1", text: "Passports (check names match tickets)" },
@@ -3462,7 +3638,8 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function renderPretrip() {
       const st = getPretripState();
       let total = 0, done = 0;
-      PRETRIP.forEach(g => g.items.forEach(i => { total++; if (st[i.id]) done++; }));
+      const pretripChecked=i=>Object.prototype.hasOwnProperty.call(st,i.id) ? !!st[i.id] : !!i.done;
+      PRETRIP.forEach(g => g.items.forEach(i => { total++; if (pretripChecked(i)) done++; }));
       const pct = total ? Math.round(done / total * 100) : 0;
       let html = `
         <div class="card">
@@ -3476,11 +3653,14 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       PRETRIP.forEach(g => {
         html += `<div class="pack-cat"><h3>${g.group}</h3>`;
         g.items.forEach(i => {
-          const checked = !!st[i.id];
+          const checked = pretripChecked(i);
           html += `
             <div class="check-row ${checked ? "done" : ""}">
               <input type="checkbox" ${checked ? "checked" : ""} onchange="togglePretrip('${i.id}', this.checked)">
-              <span class="text-sm">${i.text}</span>
+              <div style="flex:1;min-width:0;">
+                <div class="text-sm">${i.text}</div>
+                ${Array.isArray(i.links) ? `<div class="quick-action-row" style="margin-top:6px;">${i.links.map(link=>`<a class="link-btn" href="${link.href}" target="_blank" rel="noopener">${link.label} →</a>`).join("")}</div>` : ""}
+              </div>
             </div>`;
         });
         html += `</div>`;
@@ -4226,7 +4406,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         document.getElementById("prepContent").innerHTML = html || '<div class="empty"><div class="icon">🧳</div>No packing items match this filter.</div>';
       } else if (prepTab === "phrases") {
         const phrases=getPhraseItems();
-        let html = `<div class="btn-row" style="margin-bottom:12px;"><button onclick="openPhraseEditor(null)">＋ Add Phrase</button><button class="btn-outline" onclick="openItalianDictionary()">Italian Dictionary ↗</button></div><div class="text-xs text-muted" style="margin-bottom:12px;">Italian text fields use your browser or phone’s spellcheck when available.</div>`;
+        let html = `<div class="btn-row" style="margin-bottom:12px;"><button onclick="openPhraseEditor(null)">＋ Add Phrase</button><button class="btn-outline" onclick="openItalianTranslator()">English ↔ Italian Translator ↗</button></div><div class="text-xs text-muted" style="margin-bottom:12px;">Italian text fields use your browser or phone’s spellcheck when available.</div>`;
         PHRASE_CATEGORY_OPTIONS.forEach(g => {
           const group=phrases.filter(item=>item.category===g);
           if(!group.length) return;
@@ -4284,7 +4464,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const todayISO=new Date().toISOString().slice(0,10), todaySpent=all.filter(e=>e.date===todayISO&&!e.company).reduce((a,e)=>a+e._usd,0), tripSpent=all.reduce((a,e)=>a+e._usd,0);
       document.getElementById("budgetSummary").innerHTML=`<div class="budget-hero">${stat(todaySpent,"Spent today")}${stat(tripSpent,"Trip total")}${stat(remaining,"Personal budget left",remaining<0)}</div><div class="stats">${stat(personalSpent,"Personal actual")}${stat(companyPaid,"Company paid")}${stat(reimb,"Reimbursable")}</div><div class="alert ${missing?'alert-warn':'alert-info'} text-sm"><strong>${missing}</strong> receipt${missing===1?'':'s'} missing. Every total is shown in USD and EUR. EUR purchases retain their locked transaction rate; USD-to-EUR reference values use the latest saved live rate of 1 EUR = $${rate.toFixed(4)}.</div>`;
       document.getElementById("expCount").textContent=`(${expenses.length} shown / ${all.length} total)`;
-      document.getElementById("budgetExpenses").innerHTML=expenses.length?expenses.map(e=>`<div class="card" style="${!e.receipt?'border-left:4px solid var(--warning);':''}"><div class="row space-between"><div class="fw-600">${e.desc}</div><div class="fw-600" style="text-align:right;">${moneyPair(e._usd,e._eur,e.cur)}</div></div><div class="text-xs text-muted mt-8">${fmtDate(e.date)} · ${e.city} · ${e.cat} · Paid by ${e.traveler}</div><div class="text-sm mt-8"><strong>Original charge:</strong> ${e.cur==="EUR"?'€':'$'}${Number(e.amt).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} ${e.cur}${e.cur==="EUR"?` · locked FX ${Number(e.fx).toFixed(4)}`:''}${e.statementUsd?' · final card USD used':''}</div><div class="tags mt-8"><span class="tag">${e.payment}</span>${e.company?'<span class="tag top">Company paid</span>':'<span class="tag">Personal</span>'}${e.reimbursable?'<span class="tag price">Reimbursable</span>':''}<span class="tag ${e.receipt?'price':'top'}">${e.receipt?'Receipt saved':'Receipt missing'}</span></div>${e.notes?`<div class="text-sm text-muted mt-8">${e.notes}</div>`:''}<div class="btn-row"><button class="btn-outline" onclick="openExpenseSheet(${e.id})">Edit</button><button class="btn-danger" onclick="deleteExpense(${e.id})">Delete</button></div></div>`).join(""):'<div class="empty"><div class="icon">🧾</div>No expenses match these filters.</div>';
+      document.getElementById("budgetExpenses").innerHTML=expenses.length?expenses.map(e=>`<div class="card" style="${!e.receipt?'border-left:4px solid var(--warning);':''}"><div class="row space-between"><div class="fw-600">${e.desc}</div><div class="fw-600" style="text-align:right;">${moneyPair(e._usd,e._eur,e.cur)}</div></div><div class="text-xs text-muted mt-8">${fmtDate(e.date)} · ${e.city} · ${e.cat} · Paid by ${e.traveler}</div><div class="text-sm mt-8"><strong>Original charge:</strong> ${e.cur==="EUR"?'€':'$'}${Number(e.amt).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} ${e.cur}${e.cur==="EUR"?` · locked FX ${Number(e.fx).toFixed(4)}`:''}${e.statementUsd?' · final card USD used':''}</div><div class="tags mt-8"><span class="tag">${e.payment}</span>${e.company?'<span class="tag top">Company paid</span>':'<span class="tag">Personal</span>'}${e.reimbursable?'<span class="tag price">Reimbursable</span>':''}<span class="tag ${e.receipt?'price':'top'}">${e.receipt?'Receipt saved':'Receipt missing'}</span></div>${e.notes?`<div class="text-sm text-muted mt-8">${e.notes}</div>`:''}<div class="btn-row"><button class="btn-outline" onclick="openExpenseReceiptPhotos(${e.id})">${e.receipt?'Receipt Photos':'＋ Add Receipt'}</button><button class="btn-outline" onclick="openExpenseSheet(${e.id})">Edit</button><button class="btn-danger" onclick="deleteExpense(${e.id})">Delete</button></div></div>`).join(""):'<div class="empty"><div class="icon">🧾</div>No expenses match these filters.</div>';
       const byCat={};all.filter(e=>!e.company).forEach(e=>byCat[e.cat]=(byCat[e.cat]||0)+e._usd);
       document.getElementById("budgetPlanned").innerHTML=planned.map(b=>{const plannedUsd=b.cur==="USD"?Number(b.amt):Number(b.amt)*rate,plannedEur=plannedUsd/rate,actual=byCat[b.cat]||0,rem=plannedUsd-actual,canceled=/canceled|refunded/i.test(b.status||"");return `<div class="card" style="${canceled?'opacity:.65;':''}"><div class="row space-between"><div><div class="fw-600" style="${canceled?'text-decoration:line-through;':''}">${b.sub}</div><div class="text-xs text-muted">${b.cat} · ${b.status}${b.company?' · Company provided':''}</div></div><div style="text-align:right;">${moneyPair(plannedUsd,plannedEur,b.cur)}</div></div><div class="text-sm mt-8"><strong>Category actual:</strong> $${actual.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} · €${(actual/rate).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}<br><strong>Remaining:</strong> <span style="${rem<0?'color:var(--danger);':''}">$${rem.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} · €${(rem/rate).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>${b.notes?`<div class="text-sm text-muted mt-8">${b.notes}</div>`:''}<button class="edit-btn mt-8" onclick="editPlannedItem('${b._id}')">Edit planned item</button></div>`}).join("");
     }
@@ -4799,7 +4979,30 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
             <div class="text-sm"><strong>Pay / buy:</strong> ${escapeHtml(g.pay)}</div>
             ${g.notes ? `<div class="text-sm text-muted mt-8">${escapeHtml(g.notes)}</div>` : ""}
           </div>`).join("");
-        return `<div class="travel-reference-city">${escapeHtml(city)}</div>${cards}`;
+        const tideGuide = city === "Venice" ? `
+          <div class="venice-tide-card">
+            <div class="venice-tide-title">Venice High Water Guide</div>
+            <div class="venice-tide-intro">Check the forecast before heading out. Flooding begins at different heights around the city.</div>
+            <div class="venice-tide-grid">
+              <div class="venice-tide-item">
+                <img src="assets/tides/san-marco.png" alt="High-water walking levels at Piazza San Marco" loading="lazy">
+                <div class="venice-tide-threshold">≈82 cm — Piazza San Marco: flooding may begin.</div>
+              </div>
+              <div class="venice-tide-item">
+                <img src="assets/tides/rialto.png" alt="High-water walking levels at Ponte di Rialto" loading="lazy">
+                <div class="venice-tide-threshold">105 cm — Rialto: waterfront and vaporetto areas may begin flooding.</div>
+              </div>
+              <div class="venice-tide-item">
+                <img src="assets/tides/santa-lucia.png" alt="High-water walking levels at Venezia Santa Lucia station" loading="lazy">
+                <div class="venice-tide-threshold">135 cm — Santa Lucia station: water may reach the station forecourt.</div>
+              </div>
+            </div>
+            <div class="venice-tide-links">
+              <a class="link-btn" href="https://www.comune.venezia.it/maree" target="_blank" rel="noopener">Check live tide forecast →</a>
+              <a class="link-btn" href="https://www.comune.venezia.it/en/content/venice-and-high-water" target="_blank" rel="noopener">How to read the levels →</a>
+            </div>
+          </div>` : "";
+        return `<div class="travel-reference-city">${escapeHtml(city)}</div>${cards}${tideGuide}`;
       }).join("");
 
       const comfortCities = [
@@ -4863,6 +5066,8 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
 
     let journalNotesTab = "journal";
     let notesCategoryFilter = "All";
+    let journalRenderToken = 0;
+    let notesRenderToken = 0;
     function setJournalNotesTab(tab) {
       journalNotesTab = tab === "notes" ? "notes" : "journal";
       document.getElementById("journalPanel").style.display = journalNotesTab === "journal" ? "block" : "none";
@@ -4871,8 +5076,15 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       document.getElementById("notesTabBtn").classList.toggle("active", journalNotesTab === "notes");
       if (journalNotesTab === "notes") renderNotes(); else renderJournal();
     }
-    function renderJournal() {
+    async function renderJournal() {
+      const token=++journalRenderToken;
       const entries = getJournal().sort((a,b) => b.date.localeCompare(a.date));
+      const photoMap={};
+      await Promise.all(entries.map(async entry=>{
+        const id=journalPhotoId(entry);
+        photoMap[id]=await getLocalPhotos(localPhotoKey("journal",id));
+      }));
+      if(token!==journalRenderToken)return;
       let html = `
         <div class="section-title">Photo Wishlist</div>
         <div class="card">
@@ -4885,17 +5097,24 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         </div>
         <div class="section-title">Your Entries</div>
       `;
-      html += entries.length ? entries.map((e,i) => `
+      html += entries.length ? entries.map((e,i) => {
+        const photoId=journalPhotoId(e), photos=photoMap[photoId]||[];
+        return `
         <div class="card">
           <div class="row space-between">
             <div class="fw-600">${fmtDate(e.date)}</div>
             <button class="btn-sm btn-outline" onclick="deleteJournal(${i})">Delete</button>
           </div>
-          <div class="text-sm mt-8"><strong>Highlight:</strong> ${e.highlight || "—"}</div>
-          <div class="text-sm"><strong>Best meal:</strong> ${e.meal || "—"}</div>
-          <div class="text-sm text-muted">${e.notes || ""}</div>
+          <div class="text-sm mt-8"><strong>Highlight:</strong> ${escapeHtml(e.highlight || "—")}</div>
+          <div class="text-sm"><strong>Best meal:</strong> ${escapeHtml(e.meal || "—")}</div>
+          <div class="text-sm text-muted" style="white-space:pre-wrap;">${escapeHtml(e.notes || "")}</div>
+          ${photos.length ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">${photos.map(photo=>`<img src="${photo}" alt="Journal photo" style="width:72px;height:72px;object-fit:cover;border-radius:8px;" />`).join("")}</div>` : ""}
+          <div class="row space-between mt-8" style="align-items:center;gap:10px;">
+            <div class="text-xs text-muted">${photos.length ? `${photos.length} of 3 photos` : "Photos saved only on this phone"}</div>
+            <button class="btn-sm btn-outline" data-photo-id="${encodeURIComponent(photoId)}" onclick='openEntryPhotos("journal",decodeURIComponent(this.dataset.photoId))'>${photos.length ? "Manage Photos" : "+ Add Photos"}</button>
+          </div>
         </div>
-      `).join("") : '<div class="empty"><div class="icon">📔</div>No entries yet. Add your first memory above!</div>';
+      `;}).join("") : '<div class="empty"><div class="icon">📔</div>No entries yet. Add your first memory above!</div>';
       document.getElementById("journalEntries").innerHTML = html;
     }
 
@@ -4916,7 +5135,12 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
 
     function deleteJournal(idx) {
       const arr = getJournal().sort((a,b) => b.date.localeCompare(a.date));
-      const removed=arr[idx]; if(removed) markDeleted("journal",removed.ts||`${removed.date}|${removed.highlight}|${removed.meal}`);
+      const removed=arr[idx];
+      if(removed){
+        const id=journalPhotoId(removed);
+        markDeleted("journal",removed.ts||`${removed.date}|${removed.highlight}|${removed.meal}`);
+        deleteAttrPhotos(localPhotoKey("journal",id)).catch(()=>{});
+      }
       arr.splice(idx, 1); setJournal(arr); renderJournal();
     }
 
@@ -4925,7 +5149,8 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       return ["All", ...Array.from(new Set(notes.map(n => n.category || "General"))).sort((a,b)=>a.localeCompare(b))];
     }
     function setNotesCategory(category) { notesCategoryFilter = category; renderNotes(); }
-    function renderNotes() {
+    async function renderNotes() {
+      const token=++notesRenderToken;
       const holder=document.getElementById("notesEntries");
       if(!holder) return;
       const notes=getNotes();
@@ -4936,7 +5161,12 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const q=(document.getElementById("notesSearch")?.value||"").trim().toLowerCase();
       const filtered=notes.filter(n=>(notesCategoryFilter==="All" || (n.category||"General")===notesCategoryFilter) && (!q || [n.title,n.category,n.body].join(" ").toLowerCase().includes(q)))
         .sort((a,b)=>(Number(!!b.pinned)-Number(!!a.pinned)) || ((Date.parse(b.updatedAt)||0)-(Date.parse(a.updatedAt)||0)));
-      holder.innerHTML=filtered.length ? filtered.map(n=>`
+      const photoMap={};
+      await Promise.all(filtered.map(async note=>{photoMap[note.id]=await getLocalPhotos(localPhotoKey("note",note.id));}));
+      if(token!==notesRenderToken)return;
+      holder.innerHTML=filtered.length ? filtered.map(n=>{
+        const photos=photoMap[n.id]||[];
+        return `
         <div class="card">
           <div class="row space-between" style="align-items:flex-start;gap:10px;">
             <div style="min-width:0;">
@@ -4949,7 +5179,12 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
             </div>
           </div>
           <div class="text-sm mt-8" style="white-space:pre-wrap;line-height:1.55;">${escapeHtml(n.body||"")}</div>
-        </div>`).join("") : '<div class="empty"><div class="icon">📝</div>No notes match this search.</div>';
+          ${photos.length ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">${photos.map(photo=>`<img src="${photo}" alt="Note photo" style="width:72px;height:72px;object-fit:cover;border-radius:8px;" />`).join("")}</div>` : ""}
+          <div class="row space-between mt-8" style="align-items:center;gap:10px;">
+            <div class="text-xs text-muted">${photos.length ? `${photos.length} of 3 photos` : "Photos saved only on this phone"}</div>
+            <button class="btn-sm btn-outline" data-photo-id="${encodeURIComponent(n.id)}" onclick='openEntryPhotos("note",decodeURIComponent(this.dataset.photoId))'>${photos.length ? "Manage Photos" : "+ Add Photos"}</button>
+          </div>
+        </div>`;}).join("") : '<div class="empty"><div class="icon">📝</div>No notes match this search.</div>';
     }
     function noteEditor(note) {
       const categories=["General","Food & Drink","Travel Tips","Shopping","Packing","Ideas","Emergency","Miscellaneous"];
@@ -4977,7 +5212,51 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function deleteReferenceNote(id){
       const n=getNotes().find(x=>x.id===id); if(!n)return;
       if(!confirm(`Delete note “${n.title}”?`))return;
-      markDeleted("notes",id); setNotes(getNotes().filter(x=>x.id!==id)); closeSheet(); renderNotes(); showToast("Note deleted");
+      markDeleted("notes",id); setNotes(getNotes().filter(x=>x.id!==id)); deleteAttrPhotos(localPhotoKey("note",id)).catch(()=>{}); closeSheet(); renderNotes(); showToast("Note deleted");
+    }
+
+    async function openEntryPhotos(kind,id){
+      const isJournal=kind==="journal";
+      const record=isJournal ? getJournal().find(entry=>journalPhotoId(entry)===String(id)) : getNotes().find(note=>String(note.id)===String(id));
+      if(!record)return;
+      const title=isJournal ? `Journal · ${fmtDate(record.date)}` : (record.title||"Note");
+      const key=localPhotoKey(kind,id);
+      let photos=await getLocalPhotos(key);
+      const refreshPage=()=>isJournal?renderJournal():renderNotes();
+      const renderSheet=()=>{
+        document.getElementById("sheetContent").innerHTML=`
+          <h2>${escapeHtml(title)}</h2>
+          <div class="alert alert-info text-sm"><strong>Saved on this phone.</strong> Add up to 3 compressed copies from your Photos/Gallery. They stay out of JSON backups; use Save / Share when you want a separate copy.</div>
+          <div id="entryPhotoGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:14px 0;">
+            ${photos.map((photo,index)=>`<div style="border:1px solid var(--border);border-radius:10px;padding:7px;"><img src="${photo}" alt="Attached photo ${index+1}" style="width:100%;height:110px;object-fit:cover;border-radius:7px;" /><div class="row" style="gap:6px;margin-top:7px;"><button type="button" class="btn-sm btn-outline entry-photo-export" data-index="${index}" style="flex:1;">Save / Share</button><button type="button" class="btn-sm btn-danger entry-photo-delete" data-index="${index}" aria-label="Delete photo">Delete</button></div></div>`).join("")}
+          </div>
+          ${photos.length<3?`<div class="form-group"><label>Add photos (${photos.length} of 3 used)</label><input type="file" id="entryPhotoInput" accept="image/*" multiple /><div class="text-xs text-muted mt-8">Choose existing originals from your phone’s Photos or Gallery.</div></div>`:`<div class="text-sm text-muted mb-8">Maximum 3 photos attached.</div>`}
+          <button type="button" style="width:100%;" id="entryPhotosDone">Done</button>`;
+        document.getElementById("overlay").classList.add("open");
+        document.querySelectorAll(".entry-photo-export").forEach(button=>button.onclick=()=>saveOrSharePhoto(photos[Number(button.dataset.index)],title,Number(button.dataset.index)));
+        document.querySelectorAll(".entry-photo-delete").forEach(button=>button.onclick=async()=>{
+          photos.splice(Number(button.dataset.index),1);
+          await setAttrPhotos(key,photos);
+          refreshPage(); renderSheet();
+        });
+        const input=document.getElementById("entryPhotoInput");
+        if(input)input.onchange=async()=>{
+          const chosen=Array.from(input.files||[]);
+          const room=3-photos.length;
+          if(chosen.length>room)alert(`Only ${room} more photo${room===1?"":"s"} can be added. The extra selection will be skipped.`);
+          input.disabled=true;
+          try{
+            for(const file of chosen.slice(0,room)){
+              if(!String(file.type||"").startsWith("image/"))continue;
+              photos.push(await compressImage(file,1200,0.78));
+            }
+            await setAttrPhotos(key,photos);
+            refreshPage(); renderSheet();
+          }catch(e){alert("Could not add one of those photos. Try a smaller image or choose it again.");renderSheet();}
+        };
+        document.getElementById("entryPhotosDone").onclick=()=>{closeSheet();refreshPage();};
+      };
+      renderSheet();
     }
 
 
@@ -5188,12 +5467,16 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
 
     function syncSystemThemeColor() {
       const dark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.classList.toggle("dark", !!dark);
+      if (document.body) document.body.classList.toggle("dark", !!dark);
+      document.documentElement.style.colorScheme = dark ? "dark" : "light";
       const meta = document.querySelector('meta[name="theme-color"]');
       if (meta) meta.setAttribute("content", dark ? "#111315" : "#8B1E3F");
     }
     if (window.matchMedia) {
       const themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
       if (themeMedia.addEventListener) themeMedia.addEventListener("change", syncSystemThemeColor);
+      else if (themeMedia.addListener) themeMedia.addListener(syncSystemThemeColor);
     }
 
 
