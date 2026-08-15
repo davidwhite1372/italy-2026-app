@@ -10,6 +10,8 @@
 - Added “Good night” and “Where is the bathroom?” with pronunciations, and made phrase-category headings easier to scan.
 - Preserved the Alibaba backpack and Amazon tracker-card expenses while removing the conflicting Walmart tracker-card entry.
 - Marked the awards-dinner details and TPA parking/SunPass checks complete.
+- Added an official-source reminder to recheck whether Italy supports the EU Travel to Europe / Quick Border app before departure.
+- Added camera/gallery receipt attachments for expenses, with up to two local-only photos and automatic receipt-status updates.
 
 ### Preserved
 
