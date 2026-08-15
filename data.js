@@ -121,9 +121,9 @@
       { id:"tl-0014", travelId:"travel-14", date:"2026-10-05", start:"20:00", end:"22:30", itemType:"Walk", title:"Hotel → SEEN by Olivier", from:"Hotel", to:"SEEN by Olivier", mode:"Walk", time:"On-site", status:"Confirmed", instructions:"Attend welcome dinner.", notes:"Confirm exact venue on agenda." },
       { id:"tl-0015", travelId:"travel-15", date:"2026-10-06", start:"All day", end:"", itemType:"Bus", title:"Hotel → Rome / official excursion", from:"Hotel", to:"Rome / official excursion", mode:"Group Coach", time:"TBD", status:"Pending", instructions:"Joe Lynch private agenda TBD. Fallback: winery or Castel Gandolfo.", notes:"Do not book conflicting nonrefundable tour." },
       { id:"tl-0016", travelId:"travel-16", date:"2026-10-07", start:"All day", end:"", itemType:"Bus", title:"Hotel → Rome / Villa Miani", from:"Hotel", to:"Rome / Villa Miani", mode:"Group Coach", time:"20-35 min to venue", status:"Partial", instructions:"Private group day; awards dinner at Villa Miani. Use group coach if provided.", notes:"Confirm dress code and coach time." },
-      { id:"tl-0017", travelId:"travel-17", date:"2026-10-08", start:"Morning", end:"", itemType:"Walk", title:"Anantara Palazzo Naiadi Hotel → Roma Termini Train Station", from:"Anantara Palazzo Naiadi Hotel", to:"Roma Termini Train Station", mode:"Walk", time:"TBD", status:"Pending", instructions:"Walk with the PSA/Joe Lynch group to Roma Termini Train Station. Final train details are still TBD.", notes:"Station route is current; final train number, departure time, coach, and seats are pending." },
+      { id:"tl-0017", travelId:"travel-17", date:"2026-10-08", start:"Morning", end:"", itemType:"Walk", title:"Anantara Palazzo Naiadi Hotel → Roma Termini Train Station", from:"Anantara Palazzo Naiadi Hotel", to:"Roma Termini Train Station", mode:"Walk", time:"TBD", status:"Confirmed", instructions:"Walk with the PSA/Joe Lynch group to Roma Termini Train Station. Final train details are still TBD.", notes:"Station route is current; final train number, departure time, coach, and seats are pending." },
       { id:"tl-0018", travelId:"travel-18", date:"2026-10-08", start:"Morning", end:"", itemType:"Train", title:"Rome to Florence Train - PSA group transfer", from:"Roma Termini Train Station", to:"Firenze S.M.N. Train Station", mode:"Train", time:"Approx. 5 hr group travel window", status:"Pending", instructions:"Follow the PSA/Joe Lynch group. The station-to-station plan is current; the final train is being booked by the group.", notes:"Need final train number, exact departure/arrival times, coach, and seats." },
-      { id:"tl-0019", travelId:"travel-19", date:"2026-10-08", start:"Day", end:"", itemType:"Walk", title:"Firenze S.M.N. Train Station → W Florence Hotel", from:"Firenze S.M.N. Train Station", to:"W Florence Hotel", mode:"Walk", time:"5-10 min", status:"Pending", instructions:"Stay with group. If S.M.N., walk to Via del Melarancio 1.", notes:"Exact station depends on group train." },
+      { id:"tl-0019", travelId:"travel-19", date:"2026-10-08", start:"Day", end:"", itemType:"Walk", title:"Firenze S.M.N. Train Station → W Florence Hotel", from:"Firenze S.M.N. Train Station", to:"W Florence Hotel", mode:"Walk", time:"5-10 min", status:"Confirmed", instructions:"Stay with group. If S.M.N., walk to Via del Melarancio 1.", notes:"Exact station depends on group train." },
       { id:"tl-0020", travelId:"travel-20", date:"2026-10-08", start:"Evening", end:"", itemType:"Walk", title:"W Florence → Giardino Corsini al Prato", from:"W Florence", to:"Giardino Corsini al Prato", mode:"Walk", time:"15-20 min walk", status:"Pending", instructions:"Networking event. Use event transport if provided.", notes:"Need dress code and transport plan." },
       { id:"tl-0021", travelId:"travel-21", date:"2026-10-09", start:"All day", end:"", itemType:"Walk", title:"W Florence → Florence activities", from:"W Florence", to:"Florence activities", mode:"Walk", time:"TBD", status:"Pending", instructions:"Official excursions and dinner are fallback items.", notes:"Do not lock museum tickets until private agenda is final." },
       { id:"tl-0022", travelId:"travel-22", date:"2026-10-10", start:"08:15", end:"08:30", itemType:"Walk", title:"W Florence Hotel → Firenze S.M.N. Train Station", from:"W Florence Hotel", to:"Firenze S.M.N. Train Station", mode:"Walk", time:"5-10 min + buffer", status:"Confirmed", instructions:"Check out, retrieve luggage, walk to station. Allow extra time for Club Executive boarding.", notes:"Ticket EM7VNB; train departs 9:39 AM." },
@@ -259,7 +259,7 @@
       { id:"open-0004", pri:4, item:"Reconfirm Italo 8904 remains the primary Florence-to-Venice plan", area:"Transportation", urgency:"Medium", status:"Optional", why:"Keep the excellent Club Executive seats; cancel only if the final PSA group transfer becomes clearly preferable." },
       { id:"open-0005", pri:5, item:"Select Oct 11 Venice excursion", area:"Conference", urgency:"High", status:"Pending", why:"Choose Ciao Venice OR Murano & Burano" },
       { id:"open-0006", pri:6, item:"Flight seat assignments", area:"Flights", urgency:"Medium", status:"Pending", why:"Completes flight preparation" },
-      { id:"open-0007", pri:7, item:"Awards dinner dress code and coach time", area:"Conference", urgency:"Medium", status:"Pending", why:"Finalizes Oct 7 plan" },
+      { id:"open-0007", pri:7, item:"Awards dinner dress code and coach time", area:"Conference", urgency:"Done", status:"Done", why:"Confirmed for the Oct 7 awards dinner" },
       { id:"open-0008", pri:8, item:"Giardino Corsini transport and dress code", area:"Conference", urgency:"Medium", status:"Pending", why:"Finalizes Oct 8 evening" },
       { id:"open-0009", pri:9, item:"Download Venice Excursions page", area:"Conference", urgency:"Medium", status:"Pending", why:"Keep details available offline" },
       { id:"open-0010", pri:10, item:"Restaurant reservations", area:"Dining", urgency:"Low", status:"Optional", why:"Add only after private agenda is known" },
@@ -440,9 +440,9 @@
       {"id":"packing-0016","cat":"Travel Gear","traveler":"Melody","item":"Checked roller suitcase","qty":1,"bag":"Checked","pri":"Critical","notes":""},
       {"id":"packing-0017","cat":"Travel Gear","traveler":"David","item":"Backpack","qty":1,"bag":"Personal item","pri":"Critical","notes":""},
       {"id":"packing-0018","cat":"Travel Gear","traveler":"Melody","item":"Personal item bag","qty":1,"bag":"Personal item","pri":"Critical","notes":""},
-      {"id":"packing-0019","cat":"Travel Gear","traveler":"David","item":"Crossbody anti-pickpocket bag","qty":1,"bag":"Wear","pri":"Critical","notes":""},
+      {"id":"packing-0019","cat":"Travel Gear","traveler":"David","item":"Crossbody anti-pickpocket bag","qty":2,"bag":"Wear","pri":"Critical","notes":""},
       {"id":"packing-0020","cat":"Travel Gear","traveler":"David","item":"Cell phone stand","qty":1,"bag":"Checked","pri":"Medium","notes":""},
-      {"id":"packing-0021","cat":"Travel Gear","traveler":"Melody","item":"Crossbody anti-pickpocket bag","qty":1,"bag":"Wear","pri":"Critical","notes":""},
+      {"id":"packing-0021","cat":"Travel Gear","traveler":"Melody","item":"Crossbody anti-pickpocket bag","qty":2,"bag":"Wear","pri":"Critical","notes":""},
       {"id":"packing-0022","cat":"Clothing","traveler":"David","item":"Rain jacket/windbreaker","qty":1,"bag":"Backpack","pri":"High","notes":""},
       {"id":"packing-0023","cat":"Clothing","traveler":"Melody","item":"Business-casual outfits","qty":5,"bag":"Checked roller","pri":"High","notes":""},
       {"id":"packing-0024","cat":"Clothing","traveler":"David","item":"Collared shirts","qty":5,"bag":"Checked roller","pri":"High","notes":""},
@@ -452,7 +452,6 @@
       {"id":"packing-0028","cat":"Clothing","traveler":"David","item":"Socks","qty":10,"bag":"Checked roller","pri":"High","notes":""},
       {"id":"packing-0029","cat":"Clothing","traveler":"Melody","item":"Socks","qty":10,"bag":"Checked roller","pri":"High","notes":""},
       {"id":"packing-0030","cat":"Clothing","traveler":"David","item":"Underwear","qty":10,"bag":"Checked roller","pri":"High","notes":""},
-      {"id":"packing-0031","cat":"Clothing","traveler":"Melody","item":"Underwear","qty":10,"bag":"Checked roller","pri":"High","notes":""},
       {"id":"packing-0032","cat":"Clothing","traveler":"Melody","item":"Rain jacket/windbreaker","qty":1,"bag":"Personal item","pri":"High","notes":""},
       {"id":"packing-0033","cat":"Documents","traveler":"Shared","item":"Printed flight/train/hotel confirmations","qty":1,"bag":"Backpack","pri":"High","notes":"One paper backup set"},
       {"id":"packing-0034","cat":"Documents","traveler":"David","item":"Driver license","qty":1,"bag":"Wallet","pri":"High","notes":""},
@@ -482,18 +481,22 @@
       {"id":"packing-0058","cat":"Health","traveler":"Shared","item":"Advil","qty":1,"bag":"Backpack","pri":"Medium","notes":""},
       {"id":"packing-0059","cat":"Money","traveler":"Shared","item":"Limited euros","qty":100,"bag":"Split between travelers","pri":"Medium","notes":"Small bills and coins"},
       {"id":"packing-0060","cat":"Personal Care","traveler":"Melody","item":"Hair tools","qty":1,"bag":"Checked roller","pri":"Medium","notes":"Confirm dual voltage"},
-      {"id":"packing-0061","cat":"Personal Care","traveler":"Shared","item":"Umbrella","qty":1,"bag":"Checked roller","pri":"Medium","notes":"Compact travel umbrella"},
+      {"id":"packing-0061","cat":"Personal Care","traveler":"Shared","item":"Umbrella","qty":2,"bag":"Checked roller","pri":"Medium","notes":"Compact travel umbrellas"},
       {"id":"packing-0062","cat":"Personal Care","traveler":"David","item":"Sunglasses","qty":1,"bag":"Crossbody","pri":"Medium","notes":""},
       {"id":"packing-0063","cat":"Personal Care","traveler":"Melody","item":"Sunglasses","qty":1,"bag":"Crossbody","pri":"Medium","notes":""},
       {"id":"packing-0064","cat":"Travel Gear","traveler":"Shared","item":"Reusable water bottles","qty":2,"bag":"Backpack/personal item","pri":"Medium","notes":"Empty through security"},
       {"id":"packing-0065","cat":"Travel Gear","traveler":"Shared","item":"Luggage scale","qty":1,"bag":"Home only","pri":"Medium","notes":"Use before departure"},
-      {"id":"packing-0066","cat":"Work/Conference","traveler":"David","item":"Pen and notebook","qty":1,"bag":"Backpack","pri":"Medium","notes":""}
+      {"id":"packing-0066","cat":"Work/Conference","traveler":"David","item":"Pen and notebook","qty":1,"bag":"Backpack","pri":"Medium","notes":""},
+      {"id":"packing-0067","cat":"Clothing","traveler":"David","item":"T-shirts","qty":5,"bag":"Checked roller","pri":"Medium","notes":""},
+      {"id":"packing-0068","cat":"Electronics","traveler":"Shared","item":"Tracker cards","qty":2,"bag":"Checked roller","pri":"High","notes":""},
+      {"id":"packing-0069","cat":"Personal Care","traveler":"David","item":"Sunglasses case","qty":1,"bag":"Backpack","pri":"Medium","notes":""}
     ];
 
     const PHRASES = {
       "Greetings": [
         {en:"Hello (day)",it:"Buongiorno",pr:"bwon-jor-NO"},
         {en:"Good evening",it:"Buonasera",pr:"bwoh-nah-SEH-rah"},
+        {en:"Good night",it:"Buonanotte",pr:"bwoh-nah-NOT-teh"},
         {en:"Goodbye",it:"Arrivederci",pr:"ah-ree-veh-DER-chee"},
         {en:"Please",it:"Per favore",pr:"pair fah-VOH-ray"},
         {en:"Thank you",it:"Grazie",pr:"GRAHT-see-eh"},
@@ -522,6 +525,7 @@
       ],
       "Questions": [
         {en:"Where?",it:"Dove?",pr:"DOH-veh"},
+        {en:"Where is the bathroom?",it:"Dov'è il bagno?",pr:"doh-VEH eel BAHN-nyoh"},
         {en:"How?",it:"Come?",pr:"KOH-meh"},
         {en:"When?",it:"Quando?",pr:"KWAHN-doh"},
         {en:"Why?",it:"Perché?",pr:"pair-KEH"},
@@ -646,6 +650,14 @@
       {id:"budget-0016",cat:"Tips & Fees",sub:"Tips, coperto, fees",amt:250,cur:"USD",company:false,status:"Planned",notes:"Cash-heavy miscellaneous"},
       {id:"budget-0017",cat:"Insurance",sub:"Travel insurance",amt:0,cur:"USD",company:false,status:"Pending",notes:"Add if purchased"},
       {id:"budget-0018",cat:"Miscellaneous",sub:"Contingency",amt:0,cur:"USD",company:false,status:"Planned",notes:"Buffer for unexpected costs"}
+    ];
+
+    // Confirmed pre-trip purchases imported from the two August 15 phone exports.
+    // These are defaults for a fresh install and retain their original IDs so future
+    // phone backups merge instead of creating duplicate expenses.
+    const BASE_EXPENSES = [
+      {id:1785675607375,date:"2026-08-02",city:"Other",cat:"Shopping",desc:"Alibaba backpacks",amt:25,cur:"USD",fx:1,statementUsd:25,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:""},
+      {id:1785675679218,date:"2026-08-04",city:"Home",cat:"Miscellaneous",desc:"Amazon - tracker cards",amt:80,cur:"USD",fx:1,statementUsd:null,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:""}
     ];
 
 // ===================== MAPS & LINKS DATA (spreadsheet-aligned) =====================

@@ -327,8 +327,12 @@
     .city-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
     /* Phrases */
-    .phrase-group { margin-bottom: 16px; }
-    .phrase-group h3 { font-size: 0.85rem; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .phrase-group { margin-bottom: 18px; }
+    .phrase-group h3 {
+      font-size: 1rem; font-weight: 800; color: var(--primary); margin-bottom: 8px;
+      padding: 8px 10px; background: var(--accent-light); border-left: 4px solid var(--primary);
+      border-radius: 8px; text-transform: uppercase; letter-spacing: 0.055em;
+    }
     .phrase-row { padding: 8px 0; border-bottom: 1px solid var(--border); }
     .phrase-row:last-child { border-bottom: none; }
     .phrase-en { font-weight: 600; font-size: 0.9rem; }
@@ -1329,10 +1333,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.10.0",
-      build: "10.10.0",
+      version: "10.10.1",
+      build: "10.10.1",
       backupSchema: 6,
-      lastEdited: "August 8, 2026 at 6:01 PM ET"
+      lastEdited: "August 15, 2026"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -2010,8 +2014,24 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function setLive(obj) {
       localStorage.setItem("italy2026_live", JSON.stringify(normalizeLiveState(obj)));
     }
+    function normalizeExpenses(arr) {
+      const canonical = new Map(BASE_EXPENSES.map(item => [String(item.id), {...item}]));
+      (Array.isArray(arr) ? arr : []).forEach(item => {
+        if (!item || item.id === undefined || item.id === null) return;
+        const id=String(item.id);
+        // The work-phone export accidentally reused the Amazon expense ID for a
+        // Walmart tracker-card entry. Keep the reviewed Amazon record instead.
+        if (id === "1785675679218" && /walmart\s*-?\s*tracker cards/i.test(item.desc || "")) return;
+        canonical.set(id,item);
+      });
+      return applyDeleted([...canonical.values()],"expenses",item=>item.id,getDeletedRecords());
+    }
     function getExpenses() {
-      try { return JSON.parse(localStorage.getItem("italy2026_expenses") || "[]"); } catch(e) { return []; }
+      let raw=[];
+      try { raw=JSON.parse(localStorage.getItem("italy2026_expenses") || "[]"); } catch(e) { raw=[]; }
+      const normalized=normalizeExpenses(raw);
+      if(JSON.stringify(normalized)!==JSON.stringify(raw)) localStorage.setItem("italy2026_expenses",JSON.stringify(normalized));
+      return normalized;
     }
     function setExpenses(arr) {
       localStorage.setItem("italy2026_expenses", JSON.stringify(arr));
@@ -3413,7 +3433,8 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     }
     function togglePretrip(id, checked) {
       const st = getPretripState();
-      if (checked) st[id] = true; else delete st[id];
+      const defaultDone=PRETRIP.some(group=>group.items.some(item=>item.id===id && item.done));
+      if (checked) st[id] = true; else if(defaultDone) st[id]=false; else delete st[id];
       setPretripState(st);
       renderPretrip();
     }
@@ -3432,7 +3453,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         { id: "h4", text: "Confirm Giardino Corsini transport and dress code" },
         { id: "h5", text: "Download Venice Excursions page for offline use" },
         { id: "h6", text: "Verify flight seat assignments; save seat maps offline" },
-        { id: "h7", text: "Check TPA Economy Parking rate and SunPass" },
+        { id: "h7", text: "Check TPA Economy Parking rate and SunPass", done: true },
         { id: "h8", text: "Update EUR→USD rate in Budget if needed" }
       ]},
       { id: "p3", group: "Packing — critical (carry-on)", items: [
@@ -3462,7 +3483,8 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function renderPretrip() {
       const st = getPretripState();
       let total = 0, done = 0;
-      PRETRIP.forEach(g => g.items.forEach(i => { total++; if (st[i.id]) done++; }));
+      const pretripChecked=i=>Object.prototype.hasOwnProperty.call(st,i.id) ? !!st[i.id] : !!i.done;
+      PRETRIP.forEach(g => g.items.forEach(i => { total++; if (pretripChecked(i)) done++; }));
       const pct = total ? Math.round(done / total * 100) : 0;
       let html = `
         <div class="card">
@@ -3476,7 +3498,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       PRETRIP.forEach(g => {
         html += `<div class="pack-cat"><h3>${g.group}</h3>`;
         g.items.forEach(i => {
-          const checked = !!st[i.id];
+          const checked = pretripChecked(i);
           html += `
             <div class="check-row ${checked ? "done" : ""}">
               <input type="checkbox" ${checked ? "checked" : ""} onchange="togglePretrip('${i.id}', this.checked)">

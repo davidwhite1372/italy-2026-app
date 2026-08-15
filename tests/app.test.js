@@ -79,10 +79,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.10.0");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.10.0");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.10.1");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.10.1");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /August 8, 2026/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /August 15, 2026/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -346,6 +346,9 @@ test("Packing, phrases, and safety are separate tools and phrase changes survive
   assert.equal(builtIns.filter(item => item.en === "What?").length, 1);
   assert.equal(builtIns.some(item => item.en === "23" && item.it === "ventitré"), true);
   assert.equal(builtIns.some(item => item.en === "1000" && item.it === "mille"), true);
+  assert.equal(builtIns.some(item => item.en === "Good night" && item.it === "Buonanotte" && item.pr), true);
+  assert.equal(builtIns.some(item => item.en === "Where is the bathroom?" && item.it === "Dov'è il bagno?" && item.pr), true);
+  assert.match(document.querySelector(".phrase-group h3").textContent, /Greetings/);
 
   window.openPhraseEditor(null);
   assert.equal(document.querySelector("#ef_it").getAttribute("lang"), "it");
@@ -492,6 +495,43 @@ test("legacy packing and open-item state migrates to stable IDs", async t => {
   assert.deepEqual(app.runtimeErrors, []);
 });
 
+test("approved August 15 phone changes are permanent and conflicting expenses normalize", async t => {
+  const app = await bootApp({
+    italy2026_expenses:[{
+      id:1785675679218,date:"2026-08-02",city:"Other",cat:"Miscellaneous",
+      desc:"Walmart - tracker cards",amt:31.94,cur:"USD",fx:1,traveler:"David",
+      payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:""
+    }]
+  });
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+
+  const travel=JSON.parse(window.eval("JSON.stringify(SHARED_TRAVEL_ITEMS)"));
+  assert.equal(travel.find(item=>item.id==="travel-17").status,"Confirmed");
+  assert.equal(travel.find(item=>item.id==="travel-19").status,"Confirmed");
+  assert.equal(travel.find(item=>item.id==="travel-13").itemType,"Hotel / Check-in");
+  assert.equal(travel.find(item=>item.id==="travel-27").itemType,"Meal");
+  assert.equal(travel.find(item=>item.id==="travel-42").itemType,"Hotel / Check-in");
+
+  const packing=window.getPackingItems();
+  assert.equal(packing.find(item=>item._id==="packing-0019").qty,2);
+  assert.equal(packing.find(item=>item._id==="packing-0021").qty,2);
+  assert.equal(packing.find(item=>item._id==="packing-0061").qty,2);
+  assert.equal(packing.some(item=>item._id==="packing-0031"),false);
+  assert.equal(packing.some(item=>item.item==="T-shirts" && item.qty===5),true);
+  assert.equal(packing.some(item=>item.item==="Tracker cards" && item.qty===2),true);
+  assert.equal(packing.some(item=>item.item==="Sunglasses case"),true);
+  assert.equal(packing.filter(item=>/credit card/i.test(item.item)).length,3);
+
+  const expenses=window.getExpenses();
+  assert.equal(expenses.some(item=>item.desc==="Alibaba backpacks" && item.amt===25),true);
+  assert.equal(expenses.some(item=>item.desc==="Amazon - tracker cards" && item.amt===80),true);
+  assert.equal(expenses.some(item=>/Walmart/i.test(item.desc)),false);
+  assert.equal(window.eval('OPEN_ITEMS.find(item=>item.id==="open-0007").status'),"Done");
+  assert.equal(window.eval('PRETRIP.flatMap(group=>group.items).find(item=>item.id==="h7").done'),true);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
 test("schema 6 backups use Timeline IDs and Version 4 backups remain importable", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
@@ -513,7 +553,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.10.0");
+  assert.equal(payload.appVersion, "10.10.1");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -532,11 +572,11 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.10.0");
-  assert.match(manifest.description,/Version 10\.10\.0/);
-  assert.match(worker,/v10-10-0/);
+  assert.equal(packageData.version,"10.10.1");
+  assert.match(manifest.description,/Version 10\.10\.1/);
+  assert.match(worker,/v10-10-1/);
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
-    timeline:49,restaurants:65,attractions:15,reservations:10,budget:18,packing:66,open:13
+    timeline:49,restaurants:65,attractions:15,reservations:10,budget:18,packing:68,open:13
   });
   Object.values(counts).forEach(ids=>{
     assert.equal(ids.every(Boolean),true);

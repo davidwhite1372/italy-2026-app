@@ -1,6 +1,21 @@
 # Changelog
 
-## [10.10.0 DEV] - 2026-08-08
+## [10.10.1 DEV] - 2026-08-15
+
+### Changed
+
+- Promoted the approved August 15 changes from David's two phone exports into permanent master data.
+- Confirmed the hotel-to-station walks in Rome and Florence while retaining the reviewed purpose and transportation classifications.
+- Updated permanent packing quantities, removed the erroneous duplicate credit-card entry and obsolete Melody underwear row, and added T-shirts, tracker cards, and a sunglasses case.
+- Added “Good night” and “Where is the bathroom?” with pronunciations, and made phrase-category headings easier to scan.
+- Preserved the Alibaba backpack and Amazon tracker-card expenses while removing the conflicting Walmart tracker-card entry.
+- Marked the awards-dinner details and TPA parking/SunPass checks complete.
+
+### Preserved
+
+- Existing detailed credit-card packing rows, stable IDs, saved phone data, schema 6 backups, legacy backup import, offline behavior, and production design.
+
+## [10.10.0] - 2026-08-08
 
 ### Changed
 
