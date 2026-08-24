@@ -79,10 +79,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.10.1");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.10.1");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.10.2");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.10.2");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /August 15, 2026/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /August 24, 2026/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -564,9 +564,10 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   const travel=JSON.parse(window.eval("JSON.stringify(SHARED_TRAVEL_ITEMS)"));
   assert.equal(travel.find(item=>item.id==="travel-17").status,"Confirmed");
   assert.equal(travel.find(item=>item.id==="travel-19").status,"Confirmed");
-  assert.equal(travel.find(item=>item.id==="travel-13").itemType,"Hotel / Check-in");
+  assert.equal(travel.find(item=>item.id==="travel-13").itemType,"Event");
   assert.equal(travel.find(item=>item.id==="travel-27").itemType,"Meal");
-  assert.equal(travel.find(item=>item.id==="travel-42").itemType,"Hotel / Check-in");
+  assert.equal(travel.find(item=>item.id==="travel-27").transportation,"Walk");
+  assert.equal(travel.find(item=>item.id==="travel-42").itemType,"Event");
 
   const packing=window.getPackingItems();
   assert.equal(packing.find(item=>item._id==="packing-0019").qty,2);
@@ -576,7 +577,13 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   assert.equal(packing.some(item=>item.item==="T-shirts" && item.qty===5),true);
   assert.equal(packing.some(item=>item.item==="Tracker cards" && item.qty===2),true);
   assert.equal(packing.some(item=>item.item==="Sunglasses case"),true);
-  assert.equal(packing.filter(item=>/credit card/i.test(item.item)).length,3);
+  assert.equal(packing.filter(item=>/credit card/i.test(item.item)).length,4);
+  assert.equal(packing.some(item=>item._id==="packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b" && item.bag==="Sling bag"),true);
+  assert.equal(packing.some(item=>item._id==="packing-custom-222f6ddd-49f0-4f25-870f-0e54ebc226ae" && item.qty===2),true);
+  const phrases=window.getPhraseItems();
+  assert.equal(phrases.some(item=>item.id==="phrase-custom-a106f552-7b58-4333-a8a5-32c187ba162f" && item.it==="Può aiutarmi?"),true);
+  assert.equal(phrases.some(item=>item.id==="phrase-custom-da366552-4415-4bbf-9781-fa032d9078ce" && item.it==="Formaggio"),true);
+  assert.equal(phrases.some(item=>item.id==="phrase-custom-9fa31b65-9c66-41f4-a233-9247772dde99" && item.it==="Estathé"),true);
 
   const expenses=window.getExpenses();
   assert.equal(expenses.some(item=>item.desc==="Alibaba backpacks" && item.amt===25),true);
@@ -585,6 +592,61 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   assert.equal(window.eval('OPEN_ITEMS.find(item=>item.id==="open-0007").status'),"Done");
   assert.equal(window.eval('PRETRIP.flatMap(group=>group.items).find(item=>item.id==="h7").done'),true);
   assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("10.10.2 normalizes promoted August 24 phone data into clean schema 6 exports", async t => {
+  const promotedNote={id:"note_1787450342393",title:"ATM IN ROME",category:"Miscellaneous",body:"Walk toward the Anantara Palazzo Naiadi.\n\nStop at the UniCredit ATM on Via Vittorio Emanuele Orlando 70",pinned:false,createdAt:"2026-08-23T01:59:02.393Z",updatedAt:"2026-08-23T01:59:02.393Z"};
+  const app = await bootApp({
+    italy2026_live:{sharedTravel:{
+      "travel-13":{itemType:"Event",transportation:"None / Not applicable",transportationDetails:"Event"},
+      "travel-27":{itemType:"Meal",transportation:"Walk",transportationDetails:"Breakfast / excursion preparation"},
+      "travel-42":{itemType:"Event",transportation:"None / Not applicable",transportationDetails:"Event"}
+    }},
+    italy2026_notes:[promotedNote],
+    italy2026_customrestaurants:[{id:"restaurant_1785930925395",name:"Caffe Florian",city:"Venice"}],
+    italy2026_restlog:{restaurant_1785930925395:{favorite:true,notes:""}},
+    italy2026_routeedits:{route_2:{from:"TPA Economy Parking",to:"TPA Main Terminal",dateISO:"2026-10-04",start:"08:00",end:"08:15",mode:"Train",duration:"10-20 min",status:"Confirmed",note:"Elevator to Level 1, then SkyConnect to Main Terminal.",secondaryNote:"Keep luggage together."}},
+    italy2026_packcatalog:{
+      edits:{"packing-0005":{traveler:"David",cat:"Electronics",item:"Laptop charger",qty:1,bag:"Backpack",pri:"Critical",updatedAt:"2026-08-15T13:14:18.058Z"}},
+      custom:{
+        "pack_1785453779362":{_id:"pack_1785453779362",traveler:"David",cat:"Travel Gear",item:"Cell phone stand",qty:1,bag:"Checked",pri:"Medium"},
+        "packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b":{_id:"packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b",traveler:"Shared",cat:"Documents",item:"Credit cards",qty:1,bag:"Sling bag",pri:"Critical"},
+        "packing-custom-222f6ddd-49f0-4f25-870f-0e54ebc226ae":{_id:"packing-custom-222f6ddd-49f0-4f25-870f-0e54ebc226ae",traveler:"Shared",cat:"Health",item:"Toilet Paper or wipes",qty:2,bag:"Checked",pri:"High"}
+      },deleted:{"packing-0031":{updatedAt:"2026-08-15T13:09:10.926Z"}}
+    },
+    italy2026_phrasecatalog:{edits:{},custom:{
+      "phrase-custom-6870f416-fbb7-411b-8df2-461bfa0d7d22":{id:"phrase-custom-6870f416-fbb7-411b-8df2-461bfa0d7d22",category:"Greetings",en:"Good Night",it:"buonanotte",pr:""},
+      "phrase-custom-a106f552-7b58-4333-a8a5-32c187ba162f":{id:"phrase-custom-a106f552-7b58-4333-a8a5-32c187ba162f",category:"Questions",en:"Can you help me?",it:"Può aiutarmi?",pr:"Può-“pwoh” aiutarmi- “ah-yoo-TAR-mee” Stress is on TAR."}
+    },deleted:{}}
+  });
+  t.after(() => app.dom.window.close());
+  const {window}=app;
+
+  assert.deepEqual(JSON.parse(JSON.stringify(window.getLive())),{});
+  assert.deepEqual(JSON.parse(JSON.stringify(window.getCustomRestaurants())),[]);
+  assert.deepEqual(JSON.parse(JSON.stringify(window.getRouteEdits())),{});
+  assert.deepEqual(JSON.parse(JSON.stringify(window.getPackCatalogData())),{edits:{},custom:{},deleted:{}});
+  assert.deepEqual(JSON.parse(JSON.stringify(window.getPhraseCatalogData())),{edits:{},custom:{},deleted:{}});
+  assert.equal(window.getRestLog()["restaurant-0064"].favorite,true);
+
+  window.exportData();
+  const payload=await blobJson(window,app.exportedBlob());
+  assert.equal(payload.version,6);
+  assert.equal(payload.appVersion,"10.10.2");
+  assert.equal(payload.referenceNotesMode,"delta");
+  assert.deepEqual(payload.live,{});
+  assert.deepEqual(payload.customrestaurants,[]);
+  assert.deepEqual(payload.routeedits,{});
+  assert.deepEqual(payload.packcatalog,{edits:{},custom:{},deleted:{}});
+  assert.deepEqual(payload.phrasecatalog,{edits:{},custom:{},deleted:{}});
+  assert.deepEqual(payload.expenses,[]);
+  assert.deepEqual(payload.notes,[]);
+
+  window.performImport(payload,"replace");
+  assert.equal(window.getNotes().some(note=>note.id==="note_1787450342393"),true);
+  assert.equal(window.getExpenses().length>=2,true);
+  assert.equal(window.getPackingItems().some(item=>item._id==="packing-custom-222f6ddd-49f0-4f25-870f-0e54ebc226ae"),true);
+  assert.deepEqual(app.runtimeErrors,[]);
 });
 
 test("schema 6 backups use Timeline IDs and Version 4 backups remain importable", async t => {
@@ -608,7 +670,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.10.1");
+  assert.equal(payload.appVersion, "10.10.2");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -627,11 +689,11 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.10.1");
-  assert.match(manifest.description,/Version 10\.10\.1/);
-  assert.match(worker,/v10-10-1/);
+  assert.equal(packageData.version,"10.10.2");
+  assert.match(manifest.description,/Version 10\.10\.2/);
+  assert.match(worker,/v10-10-2/);
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
-    timeline:49,restaurants:65,attractions:15,reservations:10,budget:18,packing:68,open:13
+    timeline:49,restaurants:65,attractions:15,reservations:10,budget:18,packing:70,open:13
   });
   Object.values(counts).forEach(ids=>{
     assert.equal(ids.every(Boolean),true);
@@ -697,7 +759,7 @@ test("retired planning notes are removed without deleting reference notes", asyn
   });
   t.after(() => app.dom.window.close());
   const notes = JSON.parse(JSON.stringify(app.dom.window.getNotes()));
-  assert.deepEqual(notes.map(note => note.id), ["note_sweet_drinks_italy", "note_keep_me"]);
+  assert.deepEqual(notes.map(note => note.id), ["note_sweet_drinks_italy", "note_1787450342393", "note_1787518112130", "note_1787519592195", "note_keep_me"]);
   assert.equal(notes[0].pinned, false);
   assert.match(notes[0].body, /Estathé: \(ess-tah-tay\)/);
   assert.deepEqual(app.runtimeErrors, []);

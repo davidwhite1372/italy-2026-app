@@ -1,6 +1,24 @@
 # Changelog
 
-## [10.10.1 DEV] - 2026-08-15
+## [10.10.2 DEV] - 2026-08-24
+
+### Changed
+
+- Promoted the reviewed August 24 phone changes into permanent master data while retaining backup schema 6.
+- Made the matching phone classifications authoritative for the Rome hotel arrival, JW Venice breakfast transportation, and Hotel Antiche Figure check-in.
+- Added the shared sling-bag credit-card packing record, toilet paper/wipes, and the new “Can you help me?”, “Cheese”, and Estathé phrases using their existing stable phone IDs.
+- Added the Rome ATM, Florence laundry, and Euro coins/bills notes as permanent reference notes.
+- Normalized previously promoted packing and phrase records so historical custom copies no longer reappear as duplicates.
+- Mapped the historical phone Caffe Florian custom ID to the existing permanent Caffè Florian restaurant while preserving favorite state.
+- Changed schema 6 exports to omit reference notes, base expenses, travel overrides, and other reviewed records when they are identical to permanent master data.
+- Added backward-compatible import handling so older schema 6 backups normalize promoted records instead of recreating duplicates.
+- Retired the known redundant August 24 Work Cell SkyConnect route override without using fuzzy matching.
+
+### Preserved
+
+- Stable IDs, existing user state, local-only photos, offline behavior, schema 6 compatibility, and legacy backup import support.
+
+## [10.10.1] - 2026-08-15
 
 ### Changed
 

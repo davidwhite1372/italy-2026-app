@@ -173,7 +173,7 @@
       "tl-0010": {itemType:"Transfer",transportation:"Walk"},
       "tl-0011": {itemType:"Transfer",transportation:"Train"},
       "tl-0012": {itemType:"Transfer",transportation:"Walk"},
-      "tl-0013": {itemType:"Hotel / Check-in",transportation:"None / Not applicable"},
+      "tl-0013": {itemType:"Event",transportation:"None / Not applicable"},
       "tl-0014": {itemType:"Event",transportation:"Walk"},
       "tl-0015": {itemType:"Tour",transportation:"Bus / Coach"},
       "tl-0016": {itemType:"Event",transportation:"Bus / Coach"},
@@ -187,7 +187,7 @@
       "tl-0024": {itemType:"Transfer",transportation:"Boat / Ferry"},
       "tl-0025": {itemType:"Tour",transportation:"Boat / Ferry"},
       "tl-0026": {itemType:"Event",transportation:"Walk"},
-      "tl-0027": {itemType:"Meal",transportation:"None / Not applicable",title:"JW Venice breakfast on own"},
+      "tl-0027": {itemType:"Meal",transportation:"Walk",title:"JW Venice breakfast on own"},
       "tl-0028": {itemType:"Tour",transportation:"Mixed / Multiple"},
       "tl-0029": {itemType:"Event",transportation:"Walk"},
       "tl-0030": {itemType:"Event",transportation:"Boat / Ferry"},
@@ -202,7 +202,7 @@
       "tl-0039": {itemType:"Transfer",transportation:"Train"},
       "tl-0040": {itemType:"Transfer",transportation:"Car"},
       "tl-0041": {itemType:"Transfer",transportation:"Walk"},
-      "tl-0042": {itemType:"Hotel / Check-in",transportation:"None / Not applicable",title:"Hotel Antiche Figure Check In"},
+      "tl-0042": {itemType:"Event",transportation:"None / Not applicable",title:"Hotel Antiche Figure Check In"},
       "tl-0043": {itemType:"Transfer",transportation:"Walk"},
       "tl-0045": {itemType:"Event",transportation:"Boat / Ferry"},
       "tl-0046": {itemType:"Event",transportation:"Walk"},
@@ -489,7 +489,9 @@
       {"id":"packing-0066","cat":"Work/Conference","traveler":"David","item":"Pen and notebook","qty":1,"bag":"Backpack","pri":"Medium","notes":""},
       {"id":"packing-0067","cat":"Clothing","traveler":"David","item":"T-shirts","qty":5,"bag":"Checked","pri":"Medium","notes":""},
       {"id":"packing-0068","cat":"Electronics","traveler":"Shared","item":"Tracker cards","qty":2,"bag":"Checked","pri":"High","notes":""},
-      {"id":"packing-0069","cat":"Personal Care","traveler":"David","item":"Sunglasses case","qty":1,"bag":"Backpack","pri":"Medium","notes":""}
+      {"id":"packing-0069","cat":"Personal Care","traveler":"David","item":"Sunglasses case","qty":1,"bag":"Backpack","pri":"Medium","notes":""},
+      {"id":"packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b","cat":"Documents","traveler":"Shared","item":"Credit cards","qty":1,"bag":"Sling bag","pri":"Critical","notes":""},
+      {"id":"packing-custom-222f6ddd-49f0-4f25-870f-0e54ebc226ae","cat":"Health","traveler":"Shared","item":"Toilet Paper or wipes","qty":2,"bag":"Checked","pri":"High","notes":""}
     ];
 
     const PHRASES = {
@@ -517,7 +519,9 @@
         {en:"The bill, please",it:"Il conto, per favore",pr:"eel KON-to"},
         {en:"Water",it:"Acqua",pr:"AH-kwah"},
         {en:"Coffee",it:"Caffè",pr:"kahf-FEH"},
-        {en:"A table for two, please",it:"Un tavolo per due, per favore",pr:""}
+        {en:"A table for two, please",it:"Un tavolo per due, per favore",pr:""},
+        {id:"phrase-custom-da366552-4415-4bbf-9781-fa032d9078ce",en:"Cheese",it:"Formaggio",pr:"TBD"},
+        {id:"phrase-custom-9fa31b65-9c66-41f4-a233-9247772dde99",en:"Tea (Brand of teas)",it:"Estathé",pr:"ess-tah-tay"}
       ],
       "Shopping": [
         {en:"How much?",it:"Quanto costa?",pr:"KWAN-to KOS-ta"},
@@ -530,7 +534,8 @@
         {en:"When?",it:"Quando?",pr:"KWAHN-doh"},
         {en:"Why?",it:"Perché?",pr:"pair-KEH"},
         {en:"Who?",it:"Chi?",pr:"kee"},
-        {en:"What?",it:"Che cosa?",pr:"keh KOH-zah"}
+        {en:"What?",it:"Che cosa?",pr:"keh KOH-zah"},
+        {id:"phrase-custom-a106f552-7b58-4333-a8a5-32c187ba162f",en:"Can you help me?",it:"Può aiutarmi?",pr:"Può-“pwoh” aiutarmi- “ah-yoo-TAR-mee” Stress is on TAR."}
       ],
       "Medical / Emergency": [
         {en:"I need a doctor",it:"Ho bisogno di un medico",pr:"oh bee-ZON-yo"},
@@ -565,7 +570,7 @@
       ]
     };
     Object.entries(PHRASES).forEach(([category,items]) => items.forEach(item => {
-      item.id = `phrase-${category}-${item.en}`.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+      item.id = item.id || `phrase-${category}-${item.en}`.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
       item.category = category;
     }));
 
