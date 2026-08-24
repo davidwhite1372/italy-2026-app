@@ -1,5 +1,5 @@
 ITALY 2026 TRAVEL APP - GITHUB PAGES DEPLOYMENT
-Current development line: Version 10.10.1
+Current development line: Version 10.10.2
 
 GitHub Pages publishes the main branch from the repository root.
 Make and test changes on develop, then merge an approved release into main.

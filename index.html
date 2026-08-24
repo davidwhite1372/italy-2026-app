@@ -1358,10 +1358,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.10.1",
-      build: "10.10.1",
+      version: "10.10.2",
+      build: "10.10.2",
       backupSchema: 6,
-      lastEdited: "August 15, 2026"
+      lastEdited: "August 24, 2026"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1677,27 +1677,44 @@
       return byLegacy ? byLegacy.id : raw;
     }
     const PACKING_CATEGORY_OPTIONS = Object.freeze(["Clothing","Documents","Electronics","Health","Money","Personal Care","Travel Gear","Work/Conference","Other"]);
-    const PACKING_BAG_OPTIONS = Object.freeze(["Backpack","Backpack/personal item","Checked","Crossbody","Home only","Personal item","Separate secure location","Split between travelers","Wallet","Wear","Not assigned"]);
+    const PACKING_BAG_OPTIONS = Object.freeze(["Backpack","Backpack/personal item","Checked","Crossbody","Home only","Personal item","Separate secure location","Sling bag","Split between travelers","Wallet","Wear","Not assigned"]);
     function normalizePackingBag(value) {
       const bag=String(value||"").trim();
       return /^Checked(?: roller)?s?$/i.test(bag) ? "Checked" : (bag||"Not assigned");
     }
+    const RETIRED_PACKING_BASE_IDS = new Set(["packing-0031"]);
+    const PROMOTED_PACKING_CUSTOM_IDS = new Set([
+      "pack_1785453779362",
+      "packing-custom-5bfad943-411c-4a47-9dc8-2b2cf2d3180e",
+      "packing-custom-dff51069-7420-448f-aaed-b3942b0e5fc4",
+      "packing-custom-68db545f-f51b-4dcb-ae13-f9b9fa3f4b82",
+      "packing-custom-844937da-3c9b-4b2c-ba67-81c6f3c4adb3"
+    ]);
     function normalizePackCatalogData(obj) {
       const source=obj && typeof obj==="object" ? obj : {};
       const out={edits:{},custom:{},deleted:{}};
       Object.entries(source.edits||{}).forEach(([key,value])=>{
         const record=value&&typeof value==="object" ? value : {};
-        out.edits[packingIdForStoredKey(key)]={...record,...(record.bag!==undefined?{bag:normalizePackingBag(record.bag)}:{})};
+        const id=packingIdForStoredKey(key);
+        const normalized={...record,...(record.bag!==undefined?{bag:normalizePackingBag(record.bag)}:{})};
+        const base=PACKING.find(item=>item.id===id);
+        if(base) Object.keys(normalized).forEach(field=>{
+          if(field!=="updatedAt" && normalized[field]===base[field]) delete normalized[field];
+        });
+        if(Object.keys(normalized).some(field=>field!=="updatedAt")) out.edits[id]=normalized;
       });
       const customIds={};
       Object.entries(source.custom||{}).forEach(([key,value])=>{
         const record=value && typeof value==="object" ? value : {};
         const id=record._id || key || createRecordId("packing-custom");
         customIds[key]=id;
+        if(PACKING.some(item=>item.id===id) || PROMOTED_PACKING_CUSTOM_IDS.has(id)) return;
         out.custom[id]={...record,bag:normalizePackingBag(record.bag),_id:id};
       });
       Object.entries(source.deleted||{}).forEach(([key,value])=>{
-        out.deleted[customIds[key] || packingIdForStoredKey(key)]=value;
+        const id=customIds[key] || packingIdForStoredKey(key);
+        if(RETIRED_PACKING_BASE_IDS.has(id) || PROMOTED_PACKING_CUSTOM_IDS.has(id)) return;
+        out.deleted[id]=value;
       });
       return out;
     }
@@ -1762,6 +1779,11 @@
     }
 
     const PHRASE_CATEGORY_OPTIONS = Object.freeze(Object.keys(PHRASES));
+    const RETIRED_PROMOTED_PHRASE_IDS = new Set([
+      "phrase-custom-6870f416-fbb7-411b-8df2-461bfa0d7d22",
+      "phrase-custom-3f36de23-aab2-406b-adfb-ed1ea70f7e5a"
+    ]);
+    function phraseBaseById(id) { return Object.values(PHRASES).flat().find(item=>item.id===id); }
     function normalizePhraseCatalogData(obj) {
       const source=obj && typeof obj==="object" ? obj : {};
       const out={edits:{},custom:{},deleted:{}};
@@ -1769,9 +1791,13 @@
       Object.entries(source.custom||{}).forEach(([key,value])=>{
         const record=value && typeof value==="object" ? value : {};
         const id=record.id || key || createRecordId("phrase-custom");
+        if(phraseBaseById(id) || RETIRED_PROMOTED_PHRASE_IDS.has(id)) return;
         out.custom[id]={...record,id};
       });
-      Object.entries(source.deleted||{}).forEach(([id,value])=>{ out.deleted[id]=value; });
+      Object.entries(source.deleted||{}).forEach(([id,value])=>{
+        if(RETIRED_PROMOTED_PHRASE_IDS.has(id)) return;
+        out.deleted[id]=value;
+      });
       return out;
     }
     function getPhraseCatalogData() {
@@ -1928,14 +1954,61 @@ Caffè Ginseng: A popular hot coffee drink at Italian bars that is creamy, smoot
 Caffè Freddo: A sweet, refrigerated cold coffee drink served in many cafés.
 
 Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and foamy.`
+    },{
+      id: "note_1787450342393",
+      title: "ATM IN ROME",
+      category: "Miscellaneous",
+      body: `Walk toward the Anantara Palazzo Naiadi.
+
+Stop at the UniCredit ATM on Via Vittorio Emanuele Orlando 70`,
+      pinned: false,
+      createdAt: "2026-08-23T01:59:02.393Z",
+      updatedAt: "2026-08-23T01:59:02.393Z"
+    },{
+      id: "note_1787518112130",
+      title: "Laundry - Florence",
+      category: "Travel Tips",
+      body: `Laundry King in Florence offers a full wash, dry, and fold drop-off service with hotel delivery.
+
+You drop off your clothes in the morning, and they deliver them back clean and neatly folded to your hotel later that same day.
+
+Location and Contact address:
+Via della Scala 52-54/r, 50123 Florence
+
+Italy hours: Monday through Sunday, 8:00 AM – 9:30 PM
+
+ (Note: Full-service and delivery hours may end earlier than self-service hours, typically around 1:00 PM to 5:00 PM for drop-offs/deliveries)Service
+
+ Details pricing structure: Charged by basket/bin size rather than exact weight, with tiers roughly around €13, €18, and €25 depending on the volume of clothing.Delivery fee:
+
+Around an extra €5 to deliver straight to your hotel front desk anywhere in central Florence.
+
+Turnaround: Drop off in the morning, and receive your clothes back folded and bagged by late afternoon (around 5:00 PM).
+
+https://www.laundryking.it/`,
+      pinned: false,
+      createdAt: "2026-08-23T20:48:32.130Z",
+      updatedAt: "2026-08-23T20:50:13.389Z"
+    },{
+      id: "note_1787519592195",
+      title: "Euro Coins And Bills",
+      category: "Shopping",
+      body: `Here is the full Euro lineup.  Includes Italian specific coins and all notes through the €500 note, in order.
+
+Coins: 1¢, 2¢, 5¢, 10¢, 20¢, 50¢, €1, €2
+Banknotes: €5, €10, €20, €50, €100, €200, €500`,
+      pinned: true,
+      createdAt: "2026-08-23T21:13:12.194Z",
+      updatedAt: "2026-08-23T21:22:35.215Z"
     }];
     const RETIRED_REFERENCE_NOTE_IDS = new Set([
       "note_1786799240417",
       "note_1786799292126"
     ]);
     function normalizeNotes(arr) {
+      const deleted=(getDeletedRecords().notes||{});
       return (Array.isArray(arr) ? arr : [])
-        .filter(note => note && !RETIRED_REFERENCE_NOTE_IDS.has(note.id))
+        .filter(note => note && !RETIRED_REFERENCE_NOTE_IDS.has(note.id) && !(note.id in deleted))
         .map(note => {
         if (!note || note.id !== "note_sweet_drinks_italy") return note;
         const body = String(note.body || "").includes("Estathé: (ess-tah-tay)")
@@ -1947,12 +2020,26 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function getNotes() {
       try {
         const raw = localStorage.getItem("italy2026_notes");
-        const notes = normalizeNotes(raw === null ? DEFAULT_REFERENCE_NOTES.map(n => ({...n})) : JSON.parse(raw || "[]"));
+        const stored=raw===null ? [] : JSON.parse(raw || "[]");
+        const notes = normalizeNotes(applyReferenceNoteDeltas(stored));
         if (raw !== null) localStorage.setItem("italy2026_notes", JSON.stringify(notes));
         return notes;
       } catch(e) { return normalizeNotes(DEFAULT_REFERENCE_NOTES.map(n => ({...n}))); }
     }
     function setNotes(arr) { localStorage.setItem("italy2026_notes", JSON.stringify(normalizeNotes(arr))); }
+    function referenceNoteById(id) { return DEFAULT_REFERENCE_NOTES.find(note => note.id === id); }
+    function applyReferenceNoteDeltas(deltas) {
+      const byId=new Map(DEFAULT_REFERENCE_NOTES.map(note=>[note.id,{...note}]));
+      (Array.isArray(deltas)?deltas:[]).forEach(note=>{ if(note&&note.id) byId.set(note.id,note); });
+      return [...byId.values()];
+    }
+    function getExportNotes() {
+      const meaningful=note=>({id:note&&note.id,title:note&&note.title,category:note&&note.category,body:String((note&&note.body)||"").replace(/[ \t]+$/gm,""),pinned:!!(note&&note.pinned)});
+      return getNotes().filter(note => {
+        const base=referenceNoteById(note&&note.id);
+        return !base || JSON.stringify(meaningful(note))!==JSON.stringify(meaningful(base));
+      });
+    }
 
     // ---- Live overrides (timeline notes, train times, transfer notes, reservation notes) ----
     function reservationIdForStoredKey(key) {
@@ -2005,6 +2092,7 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       if(/walk|passport|security|airport connection/.test(text)) return "Walk";
       return fallback||"None / Not applicable";
     }
+    const PROMOTED_SHARED_TRAVEL_IDS = new Set(["travel-13","travel-27","travel-42"]);
     function normalizeSharedTravelEdits(obj) {
       return Object.entries(obj&&typeof obj==="object"?obj:{}).reduce((out,[id,value])=>{
         if(!value||typeof value!=="object"||Array.isArray(value)) return out;
@@ -2021,7 +2109,12 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         if(!TRANSPORTATION_OPTIONS.includes(next.transportation)) next.transportation=(base&&base.transportation)||"Other";
         if(next.transportationDetails===undefined) next.transportationDetails=next.mode||((base&&base.transportationDetails)||"");
         delete next.mode;
-        out[id]=next;
+        // Only retire exact travel overrides explicitly reviewed and promoted into
+        // 10.10.2 master data. Other legacy/current overrides remain intact.
+        if(base&&PROMOTED_SHARED_TRAVEL_IDS.has(id)) {
+          Object.keys(next).forEach(key=>{ if(next[key]===base[key]) delete next[key]; });
+        }
+        if(Object.keys(next).length) out[id]=next;
         return out;
       },{});
     }
@@ -2058,7 +2151,10 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         transportationDetails:old.mode||current.transportationDetails,duration:old.time||current.duration,status:old.status||current.status,
         instructions:old.steps||current.instructions,notes:[old.backup,old.mistake].filter(Boolean).join(" · ")||current.notes
       }));
-      if(normalized.sharedTravel) normalized.sharedTravel=normalizeSharedTravelEdits(normalized.sharedTravel);
+      if(normalized.sharedTravel) {
+        normalized.sharedTravel=normalizeSharedTravelEdits(normalized.sharedTravel);
+        if(!Object.keys(normalized.sharedTravel).length) delete normalized.sharedTravel;
+      }
       return normalized;
     }
     function getLive() {
@@ -2092,6 +2188,12 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     }
     function setExpenses(arr) {
       localStorage.setItem("italy2026_expenses", JSON.stringify(arr));
+    }
+    function getExportExpenses() {
+      return getExpenses().filter(item=>{
+        const base=BASE_EXPENSES.find(baseItem=>String(baseItem.id)===String(item&&item.id));
+        return !base || JSON.stringify(item)!==JSON.stringify(base);
+      });
     }
     function getPlannedEdits() {
       let raw = {};
@@ -2189,6 +2291,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       showToast("Step restored to timeline");
       return true;
     }
+    const PROMOTED_RESTAURANT_ID_MAP = Object.freeze({
+      "restaurant_1785930925395":"restaurant-0064"
+    });
     function getCustomRestaurants() {
       let raw = [];
       try { raw = JSON.parse(localStorage.getItem("italy2026_customrestaurants") || "[]"); } catch(e) { raw = []; }
@@ -2197,12 +2302,15 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
         if (item && item.id) return item;
         changed = true;
         return { ...item, id:createRecordId("restaurant-custom") };
+      }).filter(item=>{
+        if(item && PROMOTED_RESTAURANT_ID_MAP[item.id]) { changed=true; return false; }
+        return true;
       });
       if (changed) localStorage.setItem("italy2026_customrestaurants", JSON.stringify(normalized));
       return normalized;
     }
     function setCustomRestaurants(arr) {
-      localStorage.setItem("italy2026_customrestaurants", JSON.stringify(arr || []));
+      localStorage.setItem("italy2026_customrestaurants", JSON.stringify((arr || []).filter(item=>!(item&&PROMOTED_RESTAURANT_ID_MAP[item.id]))));
     }
     function getRestaurantEdits() {
       return readRestaurantRecordMap("italy2026_restaurantedits");
@@ -2222,6 +2330,8 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     }
     function restaurantIdForStoredKey(key) {
       const raw = String(key);
+      const promoted=PROMOTED_RESTAURANT_ID_MAP[raw];
+      if(promoted) return promoted;
       const builtIn = RESTAURANTS.find(item => item.id === raw || legacyRestaurantKey(item) === raw || `builtin:${legacyRestaurantKey(item)}` === raw);
       if (builtIn) return builtIn.id;
       const custom = getCustomRestaurants().find(item => restaurantId(item) === raw || legacyRestaurantKey(item) === raw);
@@ -2505,11 +2615,24 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
     function setCustomLegs(arr) {
       localStorage.setItem("italy2026_customlegs", JSON.stringify(arr));
     }
+    const RETIRED_ROUTE_EDIT_FINGERPRINTS = Object.freeze({
+      route_2: JSON.stringify({from:"TPA Economy Parking",to:"TPA Main Terminal",dateISO:"2026-10-04",start:"08:00",end:"08:15",mode:"Train",duration:"10-20 min",status:"Confirmed",note:"Elevator to Level 1, then SkyConnect to Main Terminal.",secondaryNote:"Keep luggage together."})
+    });
+    function normalizeRouteEdits(obj) {
+      return Object.entries(obj&&typeof obj==="object"?obj:{}).reduce((out,[id,value])=>{
+        if(RETIRED_ROUTE_EDIT_FINGERPRINTS[id]===JSON.stringify(value)) return out;
+        out[id]=value; return out;
+      },{});
+    }
     function getRouteEdits() {
-      try { return JSON.parse(localStorage.getItem("italy2026_routeedits") || "{}"); } catch(e) { return {}; }
+      let raw={};
+      try { raw=JSON.parse(localStorage.getItem("italy2026_routeedits") || "{}"); } catch(e) { raw={}; }
+      const normalized=normalizeRouteEdits(raw);
+      if(JSON.stringify(normalized)!==JSON.stringify(raw)) localStorage.setItem("italy2026_routeedits",JSON.stringify(normalized));
+      return normalized;
     }
     function setRouteEdits(obj) {
-      localStorage.setItem("italy2026_routeedits", JSON.stringify(obj));
+      localStorage.setItem("italy2026_routeedits", JSON.stringify(normalizeRouteEdits(obj)));
     }
     function baseRouteId(r) {
       return "route_" + String(r.order || ((r.from || "") + "_" + (r.to || ""))).replace(/[^a-zA-Z0-9_-]/g, "_");
@@ -3177,7 +3300,8 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       const payload = {
         version: BACKUP_SCHEMA_VERSION, appVersion: APP_VERSION, exported: now,
         exportedBy: getBackupOwner(),
-        live: getLive(), expenses: getExpenses(), pack: getPackState(), open: getOpenState(), journal: getJournal(), notes: getNotes(),
+        referenceNotesMode: "delta",
+        live: getLive(), expenses: getExportExpenses(), pack: getPackState(), open: getOpenState(), journal: getJournal(), notes: getExportNotes(),
         tldone: getTimelineDone(), tlhidden: getTimelineHidden(), restlog: getRestLog(), attrlog: getAttrLog(),
         pretrip: getPretripState(), customlegs: getCustomLegs(), customrestaurants: getCustomRestaurants(), restaurantedits: getRestaurantEdits(), routeedits: getRouteEdits(), plannededits: getPlannedEdits(), deleted: getDeletedRecords(), packcatalog: getPackCatalogData(), phrasecatalog: getPhraseCatalogData()
       };
@@ -3206,7 +3330,9 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       if (mode === "replace") {
         clearAllSupportedSavedData();
         setLive(data.live||{}); setExpenses(data.expenses||[]); setPackState(data.pack||{}); setOpenState(data.open||{});
-        setJournal(data.journal||[]); setNotes(Array.isArray(data.notes) ? data.notes : DEFAULT_REFERENCE_NOTES.map(n=>({...n})));
+        setJournal(data.journal||[]);
+        if(data.referenceNotesMode==="delta") setNotes(applyReferenceNoteDeltas(data.notes));
+        else setNotes(Array.isArray(data.notes) ? data.notes : DEFAULT_REFERENCE_NOTES.map(n=>({...n})));
         setRestLog(data.restlog||{}); setAttrLog(data.attrlog||{}); setPretripState(data.pretrip||{});
         setCustomLegs(data.customlegs||[]); setTimelineDone(data.tldone||{}); setTimelineHidden(data.tlhidden||{});
         setCustomRestaurants(data.customrestaurants||[]); setRestaurantEdits(data.restaurantedits||{}); setRouteEdits(data.routeedits||{}); setPlannedEdits(data.plannededits||{});
