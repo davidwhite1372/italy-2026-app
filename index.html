@@ -3295,13 +3295,27 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       });
       return {value:out,added,updated,skipped};
     }
+    function getExportLive() {
+      const live=JSON.parse(JSON.stringify(getLive()));
+      if(live.sharedTravel&&typeof live.sharedTravel==="object") {
+        Object.entries(live.sharedTravel).forEach(([id,value])=>{
+          if(!value||typeof value!=="object"||Array.isArray(value)) return;
+          const base=SHARED_TRAVEL_ITEMS.find(item=>item.id===id);
+          if(!base) return;
+          Object.keys(value).forEach(key=>{ if(value[key]===base[key]) delete value[key]; });
+          if(!Object.keys(value).length) delete live.sharedTravel[id];
+        });
+        if(!Object.keys(live.sharedTravel).length) delete live.sharedTravel;
+      }
+      return live;
+    }
     function exportData() {
       const now = new Date().toISOString();
       const payload = {
         version: BACKUP_SCHEMA_VERSION, appVersion: APP_VERSION, exported: now,
         exportedBy: getBackupOwner(),
         referenceNotesMode: "delta",
-        live: getLive(), expenses: getExportExpenses(), pack: getPackState(), open: getOpenState(), journal: getJournal(), notes: getExportNotes(),
+        live: getExportLive(), expenses: getExportExpenses(), pack: getPackState(), open: getOpenState(), journal: getJournal(), notes: getExportNotes(),
         tldone: getTimelineDone(), tlhidden: getTimelineHidden(), restlog: getRestLog(), attrlog: getAttrLog(),
         pretrip: getPretripState(), customlegs: getCustomLegs(), customrestaurants: getCustomRestaurants(), restaurantedits: getRestaurantEdits(), routeedits: getRouteEdits(), plannededits: getPlannedEdits(), deleted: getDeletedRecords(), packcatalog: getPackCatalogData(), phrasecatalog: getPhraseCatalogData()
       };
