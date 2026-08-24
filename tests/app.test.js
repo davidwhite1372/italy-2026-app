@@ -751,6 +751,10 @@ test("offline application shell lists every required local asset", () => {
     "./assets/tides/santa-lucia.png"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
+  assert.match(worker, /clean-backups-2/);
+  assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
+  assert.match(worker, /fetch\(event\.request\)/);
+  assert.match(worker, /Cached copies remain the offline fallback/);
 });
 
 test("retired planning notes are removed without deleting reference notes", async t => {

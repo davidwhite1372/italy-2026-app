@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-10-2-clean-backups-1';
+const CACHE = 'italy-2026-github-v10-10-2-clean-backups-2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -30,33 +30,54 @@ self.addEventListener('activate', event => {
   );
 });
 
+function cacheNetworkResponse(request, response) {
+  if (response && response.status === 200 && response.type !== 'opaque') {
+    const copy = response.clone();
+    caches.open(CACHE).then(cache => cache.put(request, copy));
+  }
+  return response;
+}
+
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
+  const url = new URL(event.request.url);
+
   // Weather must always try the network; the app maintains its own last-known offline cache.
-  if (new URL(event.request.url).hostname === 'api.open-meteo.com') {
+  if (url.hostname === 'api.open-meteo.com') {
     event.respondWith(fetch(event.request));
     return;
   }
 
+  const isSameOrigin = url.origin === self.location.origin;
+  const isMutableAppFile = isSameOrigin && /\/(?:index\.html|data\.js|manifest\.json)$/.test(url.pathname);
+
+  // Navigations and mutable app data/code are network-first so a GitHub Pages
+  // deployment reaches installed PWAs without requiring a cache-name bump for
+  // every index/data edit. Cached copies remain the offline fallback.
+  if (event.request.mode === 'navigate' || isMutableAppFile) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => cacheNetworkResponse(event.request, response))
+        .catch(() =>
+          caches.match(event.request).then(cached => {
+            if (cached) return cached;
+            if (event.request.mode === 'navigate') return caches.match('./index.html');
+            return undefined;
+          })
+        )
+    );
+    return;
+  }
+
+  // Static local assets remain cache-first for fast, reliable offline use.
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;
 
-      return fetch(event.request).then(response => {
-        if (!response || response.status !== 200 || response.type === 'opaque') {
-          return response;
-        }
-
-        const copy = response.clone();
-        caches.open(CACHE).then(cache => cache.put(event.request, copy));
-        return response;
-      }).catch(() => {
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html');
-        }
-        return caches.match(event.request);
-      });
+      return fetch(event.request)
+        .then(response => cacheNetworkResponse(event.request, response))
+        .catch(() => caches.match(event.request));
     })
   );
 });
