@@ -2092,6 +2092,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       if(/walk|passport|security|airport connection/.test(text)) return "Walk";
       return fallback||"None / Not applicable";
     }
+    const PROMOTED_SHARED_TRAVEL_IDS = new Set(["travel-13","travel-27","travel-42"]);
     function normalizeSharedTravelEdits(obj) {
       return Object.entries(obj&&typeof obj==="object"?obj:{}).reduce((out,[id,value])=>{
         if(!value||typeof value!=="object"||Array.isArray(value)) return out;
@@ -2108,7 +2109,11 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         if(!TRANSPORTATION_OPTIONS.includes(next.transportation)) next.transportation=(base&&base.transportation)||"Other";
         if(next.transportationDetails===undefined) next.transportationDetails=next.mode||((base&&base.transportationDetails)||"");
         delete next.mode;
-        if(base) Object.keys(next).forEach(key=>{ if(next[key]===base[key]) delete next[key]; });
+        // Only retire exact travel overrides explicitly reviewed and promoted into
+        // 10.10.2 master data. Other legacy/current overrides remain intact.
+        if(base&&PROMOTED_SHARED_TRAVEL_IDS.has(id)) {
+          Object.keys(next).forEach(key=>{ if(next[key]===base[key]) delete next[key]; });
+        }
         if(Object.keys(next).length) out[id]=next;
         return out;
       },{});
@@ -2146,7 +2151,10 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         transportationDetails:old.mode||current.transportationDetails,duration:old.time||current.duration,status:old.status||current.status,
         instructions:old.steps||current.instructions,notes:[old.backup,old.mistake].filter(Boolean).join(" · ")||current.notes
       }));
-      if(normalized.sharedTravel) normalized.sharedTravel=normalizeSharedTravelEdits(normalized.sharedTravel);
+      if(normalized.sharedTravel) {
+        normalized.sharedTravel=normalizeSharedTravelEdits(normalized.sharedTravel);
+        if(!Object.keys(normalized.sharedTravel).length) delete normalized.sharedTravel;
+      }
       return normalized;
     }
     function getLive() {
