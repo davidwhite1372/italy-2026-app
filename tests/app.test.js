@@ -598,6 +598,8 @@ test("10.10.2 normalizes promoted August 24 phone data into clean schema 6 expor
   const promotedNote={id:"note_1787450342393",title:"ATM IN ROME",category:"Miscellaneous",body:"Walk toward the Anantara Palazzo Naiadi.\n\nStop at the UniCredit ATM on Via Vittorio Emanuele Orlando 70",pinned:false,createdAt:"2026-08-23T01:59:02.393Z",updatedAt:"2026-08-23T01:59:02.393Z"};
   const app = await bootApp({
     italy2026_live:{sharedTravel:{
+      "travel-8":{itemType:"Transfer",transportation:"Walk",transportationDetails:"Airport connection / passport control"},
+      "travel-18":{itemType:"Transfer",transportation:"Train",transportationDetails:"Train",notes:"Phone-only note"},
       "travel-13":{itemType:"Event",transportation:"None / Not applicable",transportationDetails:"Event"},
       "travel-27":{itemType:"Meal",transportation:"Walk",transportationDetails:"Breakfast / excursion preparation"},
       "travel-42":{itemType:"Event",transportation:"None / Not applicable",transportationDetails:"Event"}
@@ -622,7 +624,10 @@ test("10.10.2 normalizes promoted August 24 phone data into clean schema 6 expor
   t.after(() => app.dom.window.close());
   const {window}=app;
 
-  assert.deepEqual(JSON.parse(JSON.stringify(window.getLive())),{});
+  assert.deepEqual(JSON.parse(JSON.stringify(window.getLive())),{sharedTravel:{
+    "travel-8":{itemType:"Transfer",transportation:"Walk",transportationDetails:"Airport connection / passport control"},
+    "travel-18":{itemType:"Transfer",transportation:"Train",transportationDetails:"Train",notes:"Phone-only note"}
+  }});
   assert.deepEqual(JSON.parse(JSON.stringify(window.getCustomRestaurants())),[]);
   assert.deepEqual(JSON.parse(JSON.stringify(window.getRouteEdits())),{});
   assert.deepEqual(JSON.parse(JSON.stringify(window.getPackCatalogData())),{edits:{},custom:{},deleted:{}});
@@ -634,7 +639,7 @@ test("10.10.2 normalizes promoted August 24 phone data into clean schema 6 expor
   assert.equal(payload.version,6);
   assert.equal(payload.appVersion,"10.10.2");
   assert.equal(payload.referenceNotesMode,"delta");
-  assert.deepEqual(payload.live,{});
+  assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
   assert.deepEqual(payload.routeedits,{});
   assert.deepEqual(payload.packcatalog,{edits:{},custom:{},deleted:{}});
