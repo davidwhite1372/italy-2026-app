@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-10-2-clean-backups-2';
+const CACHE = 'italy-2026-github-v10-10-3-guides-zoom-maps-1';
 const APP_SHELL = [
   './',
   './index.html',
@@ -12,6 +12,13 @@ const APP_SHELL = [
   './assets/tides/san-marco.png',
   './assets/tides/rialto.png',
   './assets/tides/santa-lucia.png'
+  ,'./assets/guides/fco-arrival-to-train-1.png'
+  ,'./assets/guides/fco-arrival-to-train-2.png'
+  ,'./assets/guides/venice-station-to-jw-marriott.png'
+  ,'./assets/guides/venice-departure-day.png'
+  ,'./assets/guides/italy-bathroom-survival.jpg'
+  ,'./assets/guides/luggage-lock-instructions.jpg'
+  ,'./assets/guides/venice-october-2026-tide-chart.png'
 ];
 
 self.addEventListener('install', event => {

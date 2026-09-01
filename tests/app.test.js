@@ -79,8 +79,8 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.10.2");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.10.2");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.10.3");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.10.3");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
   assert.match(document.querySelector("#aboutLastEdited").textContent, /August 24, 2026/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
@@ -579,11 +579,16 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   assert.equal(packing.some(item=>item.item==="Sunglasses case"),true);
   assert.equal(packing.filter(item=>/credit card/i.test(item.item)).length,4);
   assert.equal(packing.some(item=>item._id==="packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b" && item.bag==="Sling bag"),true);
+  assert.equal(packing.some(item=>item._id==="packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b" && item.item==="Credit Cards - Work/Carnival/USAA Debit"),true);
+  assert.equal(packing.some(item=>item._id==="packing-custom-098dfc93-369b-4043-812d-03cde6945cda" && item.item==="Luggage/Bag Security Clips"),true);
   assert.equal(packing.some(item=>item._id==="packing-custom-222f6ddd-49f0-4f25-870f-0e54ebc226ae" && item.qty===2),true);
   const phrases=window.getPhraseItems();
   assert.equal(phrases.some(item=>item.id==="phrase-custom-a106f552-7b58-4333-a8a5-32c187ba162f" && item.it==="Può aiutarmi?"),true);
   assert.equal(phrases.some(item=>item.id==="phrase-custom-da366552-4415-4bbf-9781-fa032d9078ce" && item.it==="Formaggio"),true);
   assert.equal(phrases.some(item=>item.id==="phrase-custom-9fa31b65-9c66-41f4-a233-9247772dde99" && item.it==="Estathé"),true);
+  assert.equal(phrases.some(item=>item.id==="phrase-0201" && item.it==="Patatine fritte"),true);
+  assert.equal(phrases.some(item=>item.id==="phrase-0105" && item.it==="Mi chiamo David"),true);
+  assert.equal(window.eval('RESTAURANTS.filter(item=>["Corte Sconta","Osteria alla Frasca"].includes(item.name)).length'),2);
 
   const expenses=window.getExpenses();
   assert.equal(expenses.some(item=>item.desc==="Alibaba backpacks" && item.amt===25),true);
@@ -594,7 +599,7 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("10.10.2 normalizes promoted August 24 phone data into clean schema 6 exports", async t => {
+test("10.10.3 normalizes promoted phone data into clean schema 6 exports", async t => {
   const promotedNote={id:"note_1787450342393",title:"ATM IN ROME",category:"Miscellaneous",body:"Walk toward the Anantara Palazzo Naiadi.\n\nStop at the UniCredit ATM on Via Vittorio Emanuele Orlando 70",pinned:false,createdAt:"2026-08-23T01:59:02.393Z",updatedAt:"2026-08-23T01:59:02.393Z"};
   const app = await bootApp({
     italy2026_live:{sharedTravel:{
@@ -604,7 +609,7 @@ test("10.10.2 normalizes promoted August 24 phone data into clean schema 6 expor
       "travel-27":{itemType:"Meal",transportation:"Walk",transportationDetails:"Breakfast / excursion preparation"},
       "travel-42":{itemType:"Event",transportation:"None / Not applicable",transportationDetails:"Event"}
     }},
-    italy2026_notes:[promotedNote],
+    italy2026_notes:[promotedNote,{id:"note_1788029996450",title:"FRENCH FRIES (Fried Potatoes)",category:"Food & Drink",body:"Patatine Fritte"},{id:"note_1787702157588",title:"FIXES",category:"General",body:"Make photo in notes able to open"}],
     italy2026_customrestaurants:[{id:"restaurant_1785930925395",name:"Caffe Florian",city:"Venice"}],
     italy2026_restlog:{restaurant_1785930925395:{favorite:true,notes:""}},
     italy2026_routeedits:{route_2:{from:"TPA Economy Parking",to:"TPA Main Terminal",dateISO:"2026-10-04",start:"08:00",end:"08:15",mode:"Train",duration:"10-20 min",status:"Confirmed",note:"Elevator to Level 1, then SkyConnect to Main Terminal.",secondaryNote:"Keep luggage together."}},
@@ -613,7 +618,10 @@ test("10.10.2 normalizes promoted August 24 phone data into clean schema 6 expor
       custom:{
         "pack_1785453779362":{_id:"pack_1785453779362",traveler:"David",cat:"Travel Gear",item:"Cell phone stand",qty:1,bag:"Checked",pri:"Medium"},
         "packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b":{_id:"packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b",traveler:"Shared",cat:"Documents",item:"Credit cards",qty:1,bag:"Sling bag",pri:"Critical"},
-        "packing-custom-222f6ddd-49f0-4f25-870f-0e54ebc226ae":{_id:"packing-custom-222f6ddd-49f0-4f25-870f-0e54ebc226ae",traveler:"Shared",cat:"Health",item:"Toilet Paper or wipes",qty:2,bag:"Checked",pri:"High"}
+        "packing-custom-222f6ddd-49f0-4f25-870f-0e54ebc226ae":{_id:"packing-custom-222f6ddd-49f0-4f25-870f-0e54ebc226ae",traveler:"Shared",cat:"Health",item:"Toilet Paper or wipes",qty:2,bag:"Checked",pri:"High"},
+        "packing-custom-018902e0-0328-42d7-b3c7-dfadd3b1bcba":{_id:"packing-custom-018902e0-0328-42d7-b3c7-dfadd3b1bcba",traveler:"David",cat:"Travel Gear",item:"Luggage Lock",qty:1,bag:"Checked",pri:"Critical"},
+        "packing-custom-098dfc93-369b-4043-812d-03cde6945cda":{_id:"packing-custom-098dfc93-369b-4043-812d-03cde6945cda",traveler:"David",cat:"Travel Gear",item:"Bag Clips",qty:1,bag:"Backpack",pri:"Medium"},
+        "packing-custom-4f397362-8025-404b-8270-d730d1aff4c4":{_id:"packing-custom-4f397362-8025-404b-8270-d730d1aff4c4",traveler:"David",cat:"Money",item:"Alternate Wallet",qty:1,bag:"Checked",pri:"Medium"}
       },deleted:{"packing-0031":{updatedAt:"2026-08-15T13:09:10.926Z"}}
     },
     italy2026_phrasecatalog:{edits:{},custom:{
@@ -637,7 +645,7 @@ test("10.10.2 normalizes promoted August 24 phone data into clean schema 6 expor
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"10.10.2");
+  assert.equal(payload.appVersion,"10.10.3");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -646,6 +654,8 @@ test("10.10.2 normalizes promoted August 24 phone data into clean schema 6 expor
   assert.deepEqual(payload.phrasecatalog,{edits:{},custom:{},deleted:{}});
   assert.deepEqual(payload.expenses,[]);
   assert.deepEqual(payload.notes,[]);
+  assert.deepEqual(payload.restlog,{"restaurant-0064":{favorite:true,notes:""}});
+  assert.equal(window.getNotes().some(note=>["note_1788029996450","note_1787702157588"].includes(note.id)),false);
 
   window.performImport(payload,"replace");
   assert.equal(window.getNotes().some(note=>note.id==="note_1787450342393"),true);
@@ -675,7 +685,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.10.2");
+  assert.equal(payload.appVersion, "10.10.3");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -694,11 +704,15 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.10.2");
-  assert.match(manifest.description,/Version 10\.10\.2/);
-  assert.match(worker,/v10-10-2/);
+  assert.equal(packageData.version,"10.10.3");
+  assert.match(manifest.description,/Version 10\.10\.3/);
+  assert.match(worker,/v10-10-3/);
+  ["fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png"].forEach(name=>{
+    assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
+    assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
+  });
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
-    timeline:49,restaurants:65,attractions:15,reservations:10,budget:18,packing:70,open:13
+    timeline:49,restaurants:67,attractions:15,reservations:10,budget:18,packing:73,open:13
   });
   Object.values(counts).forEach(ids=>{
     assert.equal(ids.every(Boolean),true);
