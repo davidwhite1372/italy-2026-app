@@ -46,6 +46,7 @@ async function bootApp(initialStorage = {}) {
       window.prompt = () => null;
       window.open = () => null;
       window.scrollTo = () => {};
+      window.HTMLElement.prototype.scrollIntoView = function scrollIntoView() {};
       window.URL.createObjectURL = blob => {
         exportedBlob = blob;
         return "blob:regression-test";
@@ -79,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.10.3");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.10.3");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.11.0");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.11.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /August 31, 2026 at 9:45 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 1, 2026 at 7:41 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -323,6 +324,60 @@ test("Timeline details toggle in place and a second Timeline-nav tap goes to the
   assert.equal(renderCalls, 0);
   assert.equal(topCalls, 1);
   window.renderTimeline = originalRender;
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("Timeline and Travel Details deep-link and Back restore the exact FCO card", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+  const document = window.document;
+
+  window.showPage("timeline");
+  const timelineCard = document.querySelector('[data-timeline-id="tl-0010"]');
+  assert.ok(timelineCard);
+  assert.match(timelineCard.textContent, /Open travel details/);
+  assert.match(timelineCard.textContent, /Edit details/);
+  const source = fs.readFileSync(path.join(projectRoot, "index.html"), "utf8");
+  assert.match(source, /\.tl-detail-link-row button\.link-btn\s*\{[^}]*color:#fff !important;[^}]*background:var\(--primary\);/);
+
+  window.openTravelDetailsFromTimeline("tl-0010", false);
+  await new Promise(resolve => setTimeout(resolve, 50));
+  const travelCard = document.querySelector('.travel-card[data-travel-id="travel-10"]');
+  assert.ok(travelCard, "FCO Travel Details card should exist");
+  assert.equal(travelCard.querySelector("details.travel-card-details").open, true);
+  assert.equal(travelCard.classList.contains("search-highlight"), true);
+  assert.match(travelCard.textContent, /See in Timeline/);
+  assert.match(travelCard.textContent, /FCO Arrival.*Train Station/s);
+  assert.equal(document.querySelector("#travelDetailsBackButton").hidden, false);
+
+  window.history.back();
+  await new Promise(resolve => setTimeout(resolve, 100));
+  assert.equal(document.querySelector("#page-timeline").classList.contains("active"), true);
+  assert.equal(document.querySelector('[data-timeline-id="tl-0010"] .tl-expanded').hidden, false);
+  assert.equal(document.querySelector('[data-timeline-id="tl-0010"]').classList.contains("search-highlight"), true);
+
+  window.showPage("transport");
+  assert.equal(document.querySelector("#travelDetailsBackButton").hidden, true);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("10.11.0 promotes reviewed budget, packing, and official alert changes", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+  const master = JSON.parse(window.eval(`JSON.stringify({packing:PACKING,expenses:BASE_EXPENSES,alerts:SAFETY.alerts})`));
+
+  assert.equal(master.packing.some(item => item.id === "packing-0012"), false);
+  const suitcase = master.expenses.find(item => item.id === 1788280000000);
+  assert.equal(suitcase.amt, 407.36);
+  assert.equal(suitcase.payment, "Credit Card");
+  assert.match(suitcase.desc, /Travelpro Platinum Elite/);
+  assert.equal(master.alerts.every(item => /^https:\/\//.test(item.url)), true);
+
+  window.openPrepTab("safety");
+  assert.equal(window.document.querySelectorAll('#prepContent a[href^="https://"]').length >= 4, true);
+  assert.match(window.document.querySelector("#prepContent").textContent, /Italian Civil Protection/);
   assert.deepEqual(app.runtimeErrors, []);
 });
 
@@ -577,7 +632,7 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   assert.equal(packing.some(item=>item.item==="T-shirts" && item.qty===5),true);
   assert.equal(packing.some(item=>item.item==="Tracker cards" && item.qty===2),true);
   assert.equal(packing.some(item=>item.item==="Sunglasses case"),true);
-  assert.equal(packing.filter(item=>/credit card/i.test(item.item)).length,4);
+  assert.equal(packing.filter(item=>/credit card/i.test(item.item)).length,3);
   assert.equal(packing.some(item=>item._id==="packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b" && item.bag==="Sling bag"),true);
   assert.equal(packing.some(item=>item._id==="packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b" && item.item==="Credit Cards - Work/Carnival/USAA Debit"),true);
   assert.equal(packing.some(item=>item._id==="packing-custom-098dfc93-369b-4043-812d-03cde6945cda" && item.item==="Luggage/Bag Security Clips"),true);
@@ -599,7 +654,7 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("10.10.3 normalizes promoted phone data into clean schema 6 exports", async t => {
+test("10.11.0 normalizes promoted phone data into clean schema 6 exports", async t => {
   const promotedNote={id:"note_1787450342393",title:"ATM IN ROME",category:"Miscellaneous",body:"Walk toward the Anantara Palazzo Naiadi.\n\nStop at the UniCredit ATM on Via Vittorio Emanuele Orlando 70",pinned:false,createdAt:"2026-08-23T01:59:02.393Z",updatedAt:"2026-08-23T01:59:02.393Z"};
   const app = await bootApp({
     italy2026_live:{sharedTravel:{
@@ -645,7 +700,7 @@ test("10.10.3 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"10.10.3");
+  assert.equal(payload.appVersion,"10.11.0");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -685,7 +740,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.10.3");
+  assert.equal(payload.appVersion, "10.11.0");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -704,15 +759,15 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.10.3");
-  assert.match(manifest.description,/Version 10\.10\.3/);
-  assert.match(worker,/v10-10-3/);
+  assert.equal(packageData.version,"10.11.0");
+  assert.match(manifest.description,/Version 10\.11\.0/);
+  assert.match(worker,/v10-11-0/);
   ["fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
   });
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
-    timeline:49,restaurants:67,attractions:15,reservations:10,budget:18,packing:73,open:13
+    timeline:49,restaurants:67,attractions:15,reservations:10,budget:18,packing:72,open:13
   });
   Object.values(counts).forEach(ids=>{
     assert.equal(ids.every(Boolean),true);
@@ -765,7 +820,7 @@ test("offline application shell lists every required local asset", () => {
     "./assets/tides/santa-lucia.png"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v10-10-3-guides-zoom-maps-1/);
+  assert.match(worker, /italy-2026-github-v10-11-0-travel-details-1/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);

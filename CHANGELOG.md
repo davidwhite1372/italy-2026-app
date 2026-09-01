@@ -1,5 +1,23 @@
 # Changelog
 
+## [10.11.0 DEV] - 2026-09-01
+
+### Changed
+
+- Renamed Travel to Travel Details and made Timeline the clearly labeled live trip-day guide.
+- Added two-way deep links between linked Timeline and Travel Details cards, including exact-card scrolling, expansion, highlighting, and direct edit mode.
+- Made browser/Android Back and the visible Back to Timeline button restore the exact originating Timeline card instead of losing the user's place.
+- Made the restored Timeline card highlight immediately before smooth centering so the return location is unmistakable.
+- Fixed the Timeline Open travel details button to retain high-contrast white text in day and night modes.
+- Added official Italian Civil Protection, U.S. State Department, Delta, and SAS alert/status links under Safety and Emergency.
+- Added the $407.36 Travelpro Platinum Elite Medium Check-In Spinner purchase with the military discount, taxes, free shipping, and generic Credit Card payment.
+- Promoted the reviewed deletion of the redundant David Primary credit card packing item.
+- Excluded September 1 Technical Notes from permanent data and kept the private luggage-lock code out of source control.
+
+### Preserved
+
+- Stable IDs, user-entered data, local-only photos, offline behavior, backup schema 6, and older supported backup imports.
+
 ## [10.10.3 DEV] - 2026-08-31
 
 ### Changed

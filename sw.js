@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-10-3-guides-zoom-maps-1';
+const CACHE = 'italy-2026-github-v10-11-0-travel-details-1';
 const APP_SHELL = [
   './',
   './index.html',
