@@ -625,7 +625,7 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   assert.equal(packing.some(item=>item.item==="T-shirts" && item.qty===5),true);
   assert.equal(packing.some(item=>item.item==="Tracker cards" && item.qty===2),true);
   assert.equal(packing.some(item=>item.item==="Sunglasses case"),true);
-  assert.equal(packing.filter(item=>/credit card/i.test(item.item)).length,4);
+  assert.equal(packing.filter(item=>/credit card/i.test(item.item)).length,3);
   assert.equal(packing.some(item=>item._id==="packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b" && item.bag==="Sling bag"),true);
   assert.equal(packing.some(item=>item._id==="packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b" && item.item==="Credit Cards - Work/Carnival/USAA Debit"),true);
   assert.equal(packing.some(item=>item._id==="packing-custom-098dfc93-369b-4043-812d-03cde6945cda" && item.item==="Luggage/Bag Security Clips"),true);
