@@ -605,6 +605,18 @@
     .venice-tide-threshold { padding:8px 9px; font-size:.74rem; line-height:1.35; font-weight:750; }
     .venice-tide-links { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
     .venice-tide-links .link-btn { margin:0; }
+    .guide-thumb { display:block; width:100%; height:auto; border:1px solid var(--border); border-radius:10px; background:#fff; cursor:zoom-in; }
+    .guide-gallery { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:9px; margin-top:10px; }
+    .guide-open { width:100%; border:0; padding:0; background:none; color:inherit; text-align:left; }
+    .image-viewer { position:fixed; inset:0; z-index:12000; display:none; flex-direction:column; background:rgba(0,0,0,.96); color:#fff; touch-action:none; }
+    .image-viewer.open { display:flex; }
+    .image-viewer-bar { flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px; background:rgba(0,0,0,.78); }
+    .image-viewer-title { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:.86rem; font-weight:800; }
+    .image-viewer-controls { display:flex; gap:7px; }
+    .image-viewer-controls button { min-width:42px; padding:8px 10px; background:#fff; color:#111; }
+    .image-viewer-stage { position:relative; flex:1 1 auto; overflow:hidden; display:grid; place-items:center; }
+    .image-viewer-stage img { max-width:100%; max-height:100%; object-fit:contain; transform-origin:center; will-change:transform; user-select:none; -webkit-user-drag:none; }
+    .image-viewer-help { flex:0 0 auto; padding:7px 12px calc(7px + env(safe-area-inset-bottom,0px)); text-align:center; color:#ddd; font-size:.72rem; background:rgba(0,0,0,.78); }
     @media (max-width:650px) { .venice-tide-grid { grid-template-columns:1fr; } }
     .comfort-city-card{margin-bottom:14px;overflow:hidden;}
     .comfort-map{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin:10px 0;}
@@ -993,6 +1005,7 @@
     <!-- FOOD -->
     <section id="page-food" class="page">
       <div class="owner-banner"><span class="owner-icon">✏️</span><div><strong>Manage restaurants here.</strong> Add, edit, or delete any restaurant, and track favorites, ratings, visits, and notes.</div></div>
+      <div id="foodOrderingQuick"></div>
       <button style="width:100%;margin:0 0 12px;" onclick="addRestaurant()">＋ Add Restaurant</button>
       <input type="search" class="search-box" id="restSearch" placeholder="Search name, neighborhood, food, dish, price..." />
       <div class="text-xs text-muted" style="margin:-4px 2px 10px;">Use this when you pass a restaurant—search any part of its name, neighborhood, cuisine, recommended dish, priority, or price.</div>
@@ -1355,13 +1368,27 @@
     </div>
   </div>
 
+  <div id="imageViewer" class="image-viewer" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <div class="image-viewer-bar">
+      <div id="imageViewerTitle" class="image-viewer-title">Image</div>
+      <div class="image-viewer-controls">
+        <button type="button" onclick="adjustImageViewerZoom(-0.5)" aria-label="Zoom out">−</button>
+        <button type="button" onclick="resetImageViewer()" aria-label="Reset zoom">1×</button>
+        <button type="button" onclick="adjustImageViewerZoom(0.5)" aria-label="Zoom in">+</button>
+        <button type="button" onclick="closeImageViewer()" aria-label="Close image">✕</button>
+      </div>
+    </div>
+    <div id="imageViewerStage" class="image-viewer-stage"><img id="imageViewerImage" alt="" /></div>
+    <div class="image-viewer-help">Pinch or double-tap to zoom · drag to move · Android Back closes</div>
+  </div>
+
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.10.2",
-      build: "10.10.2",
+      version: "10.10.3",
+      build: "10.10.3",
       backupSchema: 6,
-      lastEdited: "August 24, 2026"
+      lastEdited: "August 31, 2026"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1369,6 +1396,36 @@
     const LAST_EDITED = APP_METADATA.lastEdited;
     const BUILD_LABEL = `Italy App v${APP_VERSION} ⓘ`;
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
+
+    const imageViewerState = {scale:1,x:0,y:0,pointers:new Map(),startDistance:0,startScale:1,lastTap:0,history:false};
+    function applyImageViewerTransform(){
+      const img=document.getElementById("imageViewerImage");
+      if(img)img.style.transform=`translate(${imageViewerState.x}px,${imageViewerState.y}px) scale(${imageViewerState.scale})`;
+    }
+    function resetImageViewer(){imageViewerState.scale=1;imageViewerState.x=0;imageViewerState.y=0;applyImageViewerTransform();}
+    function adjustImageViewerZoom(delta){imageViewerState.scale=Math.max(1,Math.min(6,imageViewerState.scale+delta));if(imageViewerState.scale===1){imageViewerState.x=0;imageViewerState.y=0;}applyImageViewerTransform();}
+    function openImageViewer(src,title="Image"){
+      const viewer=document.getElementById("imageViewer"),img=document.getElementById("imageViewerImage");
+      if(!viewer||!img||!src)return;
+      img.src=src;img.alt=title;document.getElementById("imageViewerTitle").textContent=title;
+      resetImageViewer();viewer.classList.add("open");document.body.style.overflow="hidden";
+      if(!imageViewerState.history){history.pushState({imageViewer:true},"");imageViewerState.history=true;}
+    }
+    function closeImageViewer(fromHistory=false){
+      const viewer=document.getElementById("imageViewer");if(!viewer||!viewer.classList.contains("open"))return;
+      viewer.classList.remove("open");document.body.style.overflow="";imageViewerState.pointers.clear();
+      if(imageViewerState.history&&!fromHistory){imageViewerState.history=false;history.back();}else imageViewerState.history=false;
+    }
+    function imageViewerDistance(){const p=[...imageViewerState.pointers.values()];return p.length<2?0:Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);}
+    window.addEventListener("popstate",()=>{if(document.getElementById("imageViewer")?.classList.contains("open"))closeImageViewer(true);});
+    document.addEventListener("keydown",e=>{if(e.key==="Escape")closeImageViewer();});
+    document.addEventListener("DOMContentLoaded",()=>{
+      const stage=document.getElementById("imageViewerStage");if(!stage)return;
+      stage.addEventListener("pointerdown",e=>{stage.setPointerCapture(e.pointerId);imageViewerState.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY,px:e.clientX,py:e.clientY});if(imageViewerState.pointers.size===2){imageViewerState.startDistance=imageViewerDistance();imageViewerState.startScale=imageViewerState.scale;}});
+      stage.addEventListener("pointermove",e=>{const p=imageViewerState.pointers.get(e.pointerId);if(!p)return;p.px=p.x;p.py=p.y;p.x=e.clientX;p.y=e.clientY;if(imageViewerState.pointers.size===2&&imageViewerState.startDistance){imageViewerState.scale=Math.max(1,Math.min(6,imageViewerState.startScale*imageViewerDistance()/imageViewerState.startDistance));}else if(imageViewerState.scale>1){imageViewerState.x+=p.x-p.px;imageViewerState.y+=p.y-p.py;}applyImageViewerTransform();});
+      const end=e=>{imageViewerState.pointers.delete(e.pointerId);if(imageViewerState.scale===1)resetImageViewer();};stage.addEventListener("pointerup",end);stage.addEventListener("pointercancel",end);
+      stage.addEventListener("dblclick",()=>{imageViewerState.scale=imageViewerState.scale>1?1:2.5;if(imageViewerState.scale===1){imageViewerState.x=0;imageViewerState.y=0;}applyImageViewerTransform();});
+    });
 
     const expandedTimelineItems = new Set();
     let timelineAutoScrollPending = false;
@@ -1688,7 +1745,10 @@
       "packing-custom-5bfad943-411c-4a47-9dc8-2b2cf2d3180e",
       "packing-custom-dff51069-7420-448f-aaed-b3942b0e5fc4",
       "packing-custom-68db545f-f51b-4dcb-ae13-f9b9fa3f4b82",
-      "packing-custom-844937da-3c9b-4b2c-ba67-81c6f3c4adb3"
+      "packing-custom-844937da-3c9b-4b2c-ba67-81c6f3c4adb3",
+      "packing-custom-018902e0-0328-42d7-b3c7-dfadd3b1bcba",
+      "packing-custom-098dfc93-369b-4043-812d-03cde6945cda",
+      "packing-custom-4f397362-8025-404b-8270-d730d1aff4c4"
     ]);
     function normalizePackCatalogData(obj) {
       const source=obj && typeof obj==="object" ? obj : {};
@@ -1698,6 +1758,9 @@
         const id=packingIdForStoredKey(key);
         const normalized={...record,...(record.bag!==undefined?{bag:normalizePackingBag(record.bag)}:{})};
         const base=PACKING.find(item=>item.id===id);
+        if(base && id==="packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b"){
+          normalized.cat=base.cat; normalized.item=base.item;
+        }
         if(base) Object.keys(normalized).forEach(field=>{
           if(field!=="updatedAt" && normalized[field]===base[field]) delete normalized[field];
         });
@@ -2003,7 +2066,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     }];
     const RETIRED_REFERENCE_NOTE_IDS = new Set([
       "note_1786799240417",
-      "note_1786799292126"
+      "note_1786799292126",
+      "note_1788029996450",
+      "note_1787702157588"
     ]);
     function normalizeNotes(arr) {
       const deleted=(getDeletedRecords().notes||{});
@@ -2437,6 +2502,12 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     }
     function setRestLog(obj) {
       localStorage.setItem("italy2026_restlog", JSON.stringify(normalizeRestaurantRecordMap(obj)));
+    }
+    function getExportRestLog() {
+      return Object.fromEntries(Object.entries(getRestLog()).filter(([,record])=>{
+        if(!record||typeof record!=="object")return !!record;
+        return record.ate===true || record.favorite===true || !!record.rating || !!String(record.notes||"").trim();
+      }));
     }
     function restKey(r) {
       return restaurantId(r);
@@ -3250,6 +3321,13 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       renderBackupStatus();
     }
     function countKeys(obj) { return obj && typeof obj === "object" ? Object.keys(obj).length : 0; }
+    function meaningfulRecordCount(obj) {
+      return Object.values(obj&&typeof obj==="object"?obj:{}).filter(record=>{
+        if(record===true)return true;
+        if(!record||typeof record!=="object")return !!record;
+        return Object.values(record).some(value=>value===true || (value!==false && value!=="" && value!=null));
+      }).length;
+    }
     function backupCounts(src) {
       return {
         journal: Array.isArray(src.journal) ? src.journal.length : 0,
@@ -3257,9 +3335,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         expenses: Array.isArray(src.expenses) ? src.expenses.length : 0,
         customlegs: Array.isArray(src.customlegs) ? src.customlegs.length : 0,
         timeline: countKeys(src.tldone),
-        restaurants: countKeys(src.restlog) + (Array.isArray(src.customrestaurants) ? src.customrestaurants.length : 0),
-        attractions: countKeys(src.attrlog),
-        packing: countKeys(src.pack),
+        restaurants: meaningfulRecordCount(src.restlog) + (Array.isArray(src.customrestaurants) ? src.customrestaurants.length : 0),
+        attractions: meaningfulRecordCount(src.attrlog),
+        packing: meaningfulRecordCount(src.pack) + countKeys(src.packcatalog?.edits) + countKeys(src.packcatalog?.custom),
         phrases: countKeys(src.phrasecatalog?.edits) + countKeys(src.phrasecatalog?.custom)
       };
     }
@@ -3267,7 +3345,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       const el = document.getElementById("backupStatus");
       if (!el) return;
       const meta = getBackupMeta();
-      const current = backupCounts({journal:getJournal(),notes:getNotes(),expenses:getExpenses(),customlegs:getCustomLegs(),customrestaurants:getCustomRestaurants(),tldone:getTimelineDone(),restlog:getRestLog(),attrlog:getAttrLog(),pack:getPackState(),phrasecatalog:getPhraseCatalogData()});
+      const current = backupCounts({journal:getJournal(),notes:getExportNotes(),expenses:getExportExpenses(),customlegs:getCustomLegs(),customrestaurants:getCustomRestaurants(),tldone:getTimelineDone(),restlog:getExportRestLog(),attrlog:getAttrLog(),pack:getPackState(),packcatalog:getPackCatalogData(),phrasecatalog:getPhraseCatalogData()});
       const fmt = iso => iso ? new Date(iso).toLocaleString("en-US", {dateStyle:"medium",timeStyle:"short"}) : "Never";
       el.innerHTML = `<div style="line-height:1.8;"><strong>Device:</strong> ${getBackupOwner()}<br><strong>Last export:</strong> ${fmt(meta.lastExport)}<br><strong>Last import:</strong> ${fmt(meta.lastImport)}${meta.lastImportFrom ? ` · from ${meta.lastImportFrom}` : ""}<br><strong>Current saved data:</strong> ${current.journal} journal · ${current.notes} notes · ${current.expenses} expenses · ${current.customlegs} custom legs · ${current.restaurants} restaurant records · ${current.packing} packing records · ${current.phrases} phrase changes</div>`;
     }
@@ -3316,7 +3394,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         exportedBy: getBackupOwner(),
         referenceNotesMode: "delta",
         live: getExportLive(), expenses: getExportExpenses(), pack: getPackState(), open: getOpenState(), journal: getJournal(), notes: getExportNotes(),
-        tldone: getTimelineDone(), tlhidden: getTimelineHidden(), restlog: getRestLog(), attrlog: getAttrLog(),
+        tldone: getTimelineDone(), tlhidden: getTimelineHidden(), restlog: getExportRestLog(), attrlog: getAttrLog(),
         pretrip: getPretripState(), customlegs: getCustomLegs(), customrestaurants: getCustomRestaurants(), restaurantedits: getRestaurantEdits(), routeedits: getRouteEdits(), plannededits: getPlannedEdits(), deleted: getDeletedRecords(), packcatalog: getPackCatalogData(), phrasecatalog: getPhraseCatalogData()
       };
       const meta=getBackupMeta(); meta.lastExport=now; setBackupMeta(meta); renderBackupStatus();
@@ -4189,6 +4267,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     }
 
     function renderFood() {
+      const foodOrdering=getPhraseItems().filter(item=>item.category==="Food & Ordering");
+      const foodQuick=document.getElementById("foodOrderingQuick");
+      if(foodQuick)foodQuick.innerHTML=`<details class="card"><summary class="fw-700" style="cursor:pointer;">🍟 Food & Ordering Quick Guide</summary><div class="text-xs text-muted mt-8">Editable foods, drinks, and useful ordering words—not tied to a restaurant.</div><div class="guide-gallery">${foodOrdering.map(item=>`<div class="travel-guide-card"><div class="fw-600">${escapeHtml(item.en)}</div><div style="color:var(--primary);font-weight:700;">${escapeHtml(item.it)}</div>${item.pr?`<div class="text-xs text-muted">${escapeHtml(item.pr)}</div>`:""}</div>`).join("")}</div><button type="button" class="btn-outline mt-8" style="width:100%;" onclick="openPrepTab('phrases')">Edit Food & Ordering Entries</button></details>`;
       const log = getRestLog();
       let list = allRestaurants().map((r, i) => ({ ...r, _i: i, _key: restKey(r) }));
       if (restCityFilter !== "all") list = list.filter(r => r.city === restCityFilter);
@@ -4236,7 +4317,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
             <div class="row" style="gap:8px;align-items:center;">
               <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="toggleRestFavorite(decodeURIComponent(this.dataset.rk))" aria-label="Toggle favorite">${favorite ? "❤️ Saved" : "♡ Favorite"}</button>
               ${r.website ? `<a class="link-btn" href="${escapeHtml(r.website)}" target="_blank" rel="noopener">Website</a>` : ""}
-              ${r.maps ? `<a class="link-btn" href="${escapeHtml(r.maps)}" target="_blank" rel="noopener">Maps</a>` : ""}
+              <a class="link-btn" href="${googleMapSearchUrl(r.name+' '+r.city)}" target="_blank" rel="noopener">Google</a>
+              <a class="link-btn" href="${appleMapSearchUrl(r.name+' '+r.city)}" target="_blank" rel="noopener">Apple</a>
+              <a class="link-btn" href="${mapsLinkFor('',r.name+' '+r.city)}" target="_blank" rel="noopener">Directions</a>
               <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="editRestaurant(decodeURIComponent(this.dataset.rk))">Edit</button>
               <button class="edit-btn" data-rid="${encodeURIComponent(r._restaurantId)}" data-rk="${encodeURIComponent(r._key)}" onclick="deleteRestaurant(decodeURIComponent(this.dataset.rid), decodeURIComponent(this.dataset.rk))">Delete</button>
             </div>
@@ -4338,12 +4421,21 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
 
     function travelMapActions(from, to) {
       if (!from && !to) return "";
-      const g = (from && to) ? mapsLinkFor(from, to) : googleMapSearchUrl(from || to);
-      const a = (from && to)
-        ? `https://maps.apple.com/?saddr=${encodeURIComponent(from)}&daddr=${encodeURIComponent(to)}`
-        : appleMapSearchUrl(from || to);
-      const routeWord = (from && to) ? "Route" : "Open";
-      return `<a class="link-btn travel-map-btn" href="${g}" target="_blank" rel="noopener">🗺️ ${routeWord} in Google</a><a class="link-btn travel-map-btn" href="${a}" target="_blank" rel="noopener">📍 ${routeWord} in Apple</a>`;
+      const destination=to||from;
+      return `<a class="link-btn travel-map-btn" href="${googleMapSearchUrl(destination)}" target="_blank" rel="noopener">🗺️ Google Place</a><a class="link-btn travel-map-btn" href="${appleMapSearchUrl(destination)}" target="_blank" rel="noopener">📍 Apple Place</a><a class="link-btn travel-map-btn" href="${mapsLinkFor(from&&to?from:"",destination)}" target="_blank" rel="noopener">➡️ Directions</a>`;
+    }
+
+    const TRAVEL_GUIDES_BY_ID = Object.freeze({
+      "travel-10":[
+        {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1"},
+        {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2"}
+      ],
+      "travel-24":[{src:"assets/guides/venice-station-to-jw-marriott.png",title:"Venezia Santa Lucia → JW Marriott"}],
+      "travel-34":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide"}],
+      "travel-50":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide"}]
+    });
+    function guideActionsForTravel(id){
+      return (TRAVEL_GUIDES_BY_ID[id]||[]).map((guide,index)=>`<button type="button" class="link-btn" onclick='openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>🖼️ ${index?`Guide Page ${index+1}`:"Open Illustrated Guide"}</button>`).join("");
     }
 
     function travelRouteBlock(from, start, to, end) {
@@ -4428,16 +4520,16 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         <div class="card travel-card flight-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">✈️ ${escapeHtml(f.flight)} · ${escapeHtml(f.op)}</div><div class="travel-date-label">${fmtDate(f.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(f.from,f.dep,f.to,f.arr)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(f.dur || "Duration TBD")}</span><span class="travel-chip">${escapeHtml(f.cabin || "Cabin TBD")}</span>${statusBadge(f.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(airConfirmationText(), f.status || "Confirmed")}${travelDetailPanel("Seats", f.seats || "Not assigned — verify in airline app")}${travelDetailPanel("Travel note", f.notes)}`, `<button class="edit-btn" onclick="copyText('${String(airConfirmationText()).replace(/'/g,"\\'")}','Air confirmation copied')">Copy Confirmation</button>${travelMapActions(f.from,f.to)}<button class="edit-btn" onclick="editFlightById('${f.id}')">Edit Flight</button>`)}</div></div>`, f.flight));
 
       trains.forEach(t => addRecord("transfer", "Train", t.date, t.start, [t.transportationDetails,t.mode,t.title,t.from,t.to,t.start,t.end,t.duration,t.status,t.instructions,t.notes,trainConfirmation(t)].join(" "), `
-        <div class="card travel-card train-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🚆 ${escapeHtml(t.transportationDetails || t.title || "Train")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">🚆 Train</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(trainConfirmation(t), t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Train</button>`)}</div></div>`, t.transportationDetails || t.title));
+        <div class="card travel-card train-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🚆 ${escapeHtml(t.transportationDetails || t.title || "Train")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">🚆 Train</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(trainConfirmation(t), t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Train</button>`)}</div></div>`, t.transportationDetails || t.title));
 
       transfers.forEach(t => addRecord("transfer", timelineTransportation(t), t.date, t.start, [t.title,t.from,t.to,t.mode,t.itemType,t.transportation,t.transportationDetails,t.duration,t.status,t.instructions,t.notes].join(" "), `
-        <div class="card travel-card transfer-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Steps", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button>`)}</div></div>`, t.title || t.from));
+        <div class="card travel-card transfer-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Steps", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button>`)}</div></div>`, t.title || t.from));
 
       hotels.forEach(h => addRecord("hotel", "None / Not applicable", h.checkIn, "15:00", [h.name,h.city,h.address,h.dates,h.conf,h.status,h.room,h.payment,h.tax,h.breakfast,h.notes].join(" "), `
         <div class="card travel-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🏨 ${escapeHtml(h.name)}</div><div class="travel-date-label">${escapeHtml(h.dates || fmtDate(h.checkIn))}</div></div></div><div class="travel-card-main"><div class="travel-chip-row"><span class="travel-chip">${escapeHtml(h.city)}</span><span class="travel-chip">Check-in ${fmtDate(h.checkIn)}</span><span class="travel-chip">Check-out ${fmtDate(h.checkOut)}</span>${statusBadge(h.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(h.conf, h.status || "Confirmed")}${travelDetailPanel("Address", h.address)}${travelDetailPanel("Room", h.room)}${travelDetailPanel("Payment", [h.payment,h.tax].filter(Boolean).join(" · "))}${travelDetailPanel("Hotel note", [h.breakfast,h.notes].filter(Boolean).join(" · "))}`, `${travelMapActions(h.address || h.name,"")}<button class="edit-btn" onclick="editHotelById('${h.id}')">Edit Hotel</button>`)}</div></div>`, h.name));
 
       activities.forEach(t => addRecord(activityTravelCategory(t), timelineTransportation(t), t.date, t.start, [t.title,t.itemType,t.transportation,t.transportationDetails,t.from,t.to,t.start,t.end,t.status,t.instructions,t.notes].join(" "), `
-        <div class="card travel-card activity-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button>`)}</div></div>`, t.title || t.itemType));
+        <div class="card travel-card activity-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button>`)}</div></div>`, t.title || t.itemType));
 
 
       let filtered = records.filter(r => travelTypeFilter === "all" || r.category === travelTypeFilter);
@@ -4536,6 +4628,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
                 <div style="flex:1;">
                   <div class="fw-600">${p.item} ${p.pri === 'Critical' ? '<span class="badge badge-high">Critical</span>' : ''}</div>
                   <div class="text-xs text-muted">${p.owner} · ${p.bag} · qty ${p.qty}${checked && rec.by ? ` · Packed by ${rec.by}` : ""}</div>
+                  ${p._id==="packing-custom-018902e0-0328-42d7-b3c7-dfadd3b1bcba"?`<button type="button" class="btn-sm btn-outline mt-8" onclick="event.preventDefault();event.stopPropagation();openImageViewer('assets/guides/luggage-lock-instructions.jpg','Luggage Lock Instructions')">Open Instructions</button>`:""}
                 </div>
                 <button class="edit-btn" onclick="event.preventDefault();event.stopPropagation();openPackingItemEditor('${p._id}')">Edit</button>
               </div>
@@ -4666,7 +4759,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
               <span class="text-sm fw-600">Visited</span>
             </label>
             <div class="row" style="gap:10px;align-items:center;">
-              <a class="link-btn" href="${a.maps}" target="_blank" rel="noopener">Maps</a>
+              <a class="link-btn" href="${googleMapSearchUrl(a.name+' '+a.city)}" target="_blank" rel="noopener">Google</a>
+              <a class="link-btn" href="${appleMapSearchUrl(a.name+' '+a.city)}" target="_blank" rel="noopener">Apple</a>
+              <a class="link-btn" href="${mapsLinkFor('',a.name+' '+a.city)}" target="_blank" rel="noopener">Directions</a>
               <button class="edit-btn" data-ak="${encodeURIComponent(a._key)}" onclick="editAttraction(decodeURIComponent(this.dataset.ak))">${visited || notes || photos.length ? "Edit visit" : "Log visit"}</button>
             </div>
           </div>
@@ -4814,7 +4909,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     function mapsLinkFor(from, to) {
       const o = encodeURIComponent(from || "");
       const d = encodeURIComponent(to || "");
-      return `https://www.google.com/maps/dir/?api=1&origin=${o}&destination=${d}`;
+      return `https://www.google.com/maps/dir/?api=1${o?`&origin=${o}`:""}&destination=${d}`;
     }
 
     function editBaseRoute(id) {
@@ -5052,9 +5147,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           ${r.secondaryNote ? `<div class="text-sm text-muted mt-8"><strong>Secondary:</strong> ${r.secondaryNote}</div>` : ""}
           <div class="row space-between mt-8" style="align-items:center;flex-wrap:wrap;">
             <div class="row" style="gap:12px;flex-wrap:wrap;">
-              ${r.link ? `<a class="link-btn" href="${normalizedLink(r.link)}" target="_blank" rel="noopener">${linkLabel(r.link, false)} →</a>` : ""}
-              ${r.to ? `<a class="link-btn" href="${googleMapSearchUrl(r.to)}" target="_blank" rel="noopener">Google Maps</a><a class="link-btn" href="${appleMapSearchUrl(r.to)}" target="_blank" rel="noopener">Apple Maps</a>` : ""}
-              ${r.backupLink ? `<a class="link-btn" href="${normalizedLink(r.backupLink)}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(r.backupLink, true)} →</a>` : ""}
+              ${r.to ? `<a class="link-btn" href="${googleMapSearchUrl(r.to)}" target="_blank" rel="noopener">Google Place</a><a class="link-btn" href="${appleMapSearchUrl(r.to)}" target="_blank" rel="noopener">Apple Place</a><a class="link-btn" href="${mapsLinkFor(r.from,r.to)}" target="_blank" rel="noopener">Directions</a>` : ""}
+              ${r.link && !/google\.com\/maps|maps\.app\.goo\.gl|maps\.apple\.com/i.test(r.link) ? `<a class="link-btn" href="${normalizedLink(r.link)}" target="_blank" rel="noopener">Official / Travel Site →</a>` : ""}
+              ${r.backupLink && !/google\.com\/maps|maps\.app\.goo\.gl|maps\.apple\.com/i.test(r.backupLink) ? `<a class="link-btn" href="${normalizedLink(r.backupLink)}" target="_blank" rel="noopener" style="color:var(--accent);">Backup / Alternate →</a>` : ""}
             </div>
             <div class="row" style="gap:8px;">
               ${r._isCustom
@@ -5086,7 +5181,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           ${h.address ? `<div class="text-sm mt-8"><strong>Address:</strong> ${h.address}</div>` : ""}
           ${h.access ? `<div class="text-sm mt-8"><strong>Access:</strong> ${h.access}</div>` : ""}
           ${h.note ? `<div class="text-sm text-muted mt-8"><strong>Note:</strong> ${h.note}</div>` : ""}
-          <div class="quick-action-row">${h.link ? `<a class="link-btn" href="${normalizedLink(h.link)}" target="_blank" rel="noopener">Saved Map</a>` : ""}${h.address || h.name ? `<a class="link-btn" href="${googleMapSearchUrl(h.address || h.name)}" target="_blank" rel="noopener">Google Maps</a><a class="link-btn" href="${appleMapSearchUrl(h.address || h.name)}" target="_blank" rel="noopener">Apple Maps</a>` : ""}</div>
+          <div class="quick-action-row">${h.address || h.name ? `<a class="link-btn" href="${googleMapSearchUrl(h.address || h.name)}" target="_blank" rel="noopener">Google Place</a><a class="link-btn" href="${appleMapSearchUrl(h.address || h.name)}" target="_blank" rel="noopener">Apple Place</a><a class="link-btn" href="${mapsLinkFor('',h.address || h.name)}" target="_blank" rel="noopener">Directions</a>` : ""}</div>
         </div>`).join("");
 
       document.getElementById("mapsVenues").innerHTML = MAP_VENUES_EVENTS.map(v => `
@@ -5098,7 +5193,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           ${v.address ? `<div class="text-sm mt-8"><strong>Address:</strong> ${escapeHtml(v.address)}</div>` : ""}
           ${v.access ? `<div class="text-sm mt-8"><strong>Access:</strong> ${escapeHtml(v.access)}</div>` : ""}
           ${v.note ? `<div class="text-sm text-muted mt-8"><strong>Note:</strong> ${escapeHtml(v.note)}</div>` : ""}
-          <div class="quick-action-row">${v.link ? `<a class="link-btn" href="${normalizedLink(v.link)}" target="_blank" rel="noopener">Saved Map</a>` : ""}${v.address || v.name ? `<a class="link-btn" href="${googleMapSearchUrl(v.address || v.name)}" target="_blank" rel="noopener">Google Maps</a><a class="link-btn" href="${appleMapSearchUrl(v.address || v.name)}" target="_blank" rel="noopener">Apple Maps</a>` : ""}</div>
+          <div class="quick-action-row">${v.address || v.name ? `<a class="link-btn" href="${googleMapSearchUrl(v.address || v.name)}" target="_blank" rel="noopener">Google Place</a><a class="link-btn" href="${appleMapSearchUrl(v.address || v.name)}" target="_blank" rel="noopener">Apple Place</a><a class="link-btn" href="${mapsLinkFor('',v.address || v.name)}" target="_blank" rel="noopener">Directions</a>` : ""}</div>
         </div>`).join("");
 
       document.getElementById("mapsOfficial").innerHTML = MAP_OFFICIAL_SITES.map(s => `
@@ -5137,6 +5232,11 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
                 <div class="venice-tide-threshold">135 cm — Santa Lucia station: water may reach the station forecourt.</div>
               </div>
             </div>
+            <div class="travel-guide-card" style="margin-top:10px;">
+              <div class="fw-700">Full October 2026 Tide Chart</div>
+              <div class="text-xs text-muted mt-8">Astronomical forecast reference. Use the live City forecast for weather-driven acqua alta.</div>
+              <button type="button" class="guide-open mt-8" onclick="openImageViewer('assets/guides/venice-october-2026-tide-chart.png','Venice Tide Chart · October 2026')"><img class="guide-thumb" src="assets/guides/venice-october-2026-tide-chart.png" alt="Open full Venice October 2026 tide chart" loading="lazy"></button>
+            </div>
             <div class="venice-tide-links">
               <a class="link-btn" href="https://www.comune.venezia.it/maree" target="_blank" rel="noopener">Check live tide forecast →</a>
               <a class="link-btn" href="https://www.comune.venezia.it/en/content/venice-and-high-water" target="_blank" rel="noopener">How to read the levels →</a>
@@ -5162,13 +5262,18 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           note:"Veritas municipal toilets are generally paid and staffed. Cafés and museums are useful backups when public facilities are closed."
         }
       ];
-      document.getElementById("mapsComfortEssentials").innerHTML = comfortCities.map(c => `
+      document.getElementById("mapsComfortEssentials").innerHTML = `
+        <div class="card comfort-city-card">
+          <div class="fw-700">🚻 Toilets in Italy · Survival Guide</div>
+          <div class="text-sm text-muted mt-8">Open the high-resolution guide for phrases, paid toilets, reliable locations, and what to expect.</div>
+          <button type="button" class="guide-open mt-8" onclick="openImageViewer('assets/guides/italy-bathroom-survival.jpg','Toilets in Italy · Survival Guide')"><img class="guide-thumb" src="assets/guides/italy-bathroom-survival.jpg" alt="Open Toilets in Italy survival guide" loading="lazy"></button>
+        </div>` + comfortCities.map(c => `
         <div class="card comfort-city-card">
           <div class="row space-between" style="align-items:center;">
             <div class="fw-700">🚻 ${escapeHtml(c.city)}</div>
             <a class="link-btn" href="${googleMapSearchUrl('public toilets '+c.city+' Italy')}" target="_blank" rel="noopener">Search nearby</a>
           </div>
-          <img class="comfort-map" src="${c.image}" alt="${escapeHtml(c.city)} public restroom reference map" loading="lazy">
+          <button type="button" class="guide-open" onclick='openImageViewer(${JSON.stringify(c.image)},${JSON.stringify(c.city+" Public Restroom Map")})'><img class="comfort-map" src="${c.image}" alt="Open ${escapeHtml(c.city)} public restroom reference map" loading="lazy"></button>
           <div class="fw-600">Reliable options</div>
           <ul class="comfort-list text-sm">${c.picks.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>
           <div class="comfort-tip"><strong>Practical tip:</strong> ${escapeHtml(c.note)}</div>
@@ -5181,7 +5286,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           <div class="text-sm mt-8"><strong>Address:</strong> ${escapeHtml(h.address)}</div>
           <div class="text-sm"><strong>Access:</strong> ${escapeHtml(h.access)}</div>
           <div class="text-sm text-muted mt-8"><strong>Note:</strong> ${escapeHtml(h.note)}</div>
-          <div class="quick-action-row"><a class="link-btn" href="${normalizedLink(h.link)}" target="_blank" rel="noopener">Saved Map</a><a class="link-btn" href="${googleMapSearchUrl(h.address)}" target="_blank" rel="noopener">Google Maps</a><a class="link-btn" href="${appleMapSearchUrl(h.address)}" target="_blank" rel="noopener">Apple Maps</a></div>
+          <div class="quick-action-row"><a class="link-btn" href="${googleMapSearchUrl(h.address)}" target="_blank" rel="noopener">Google Place</a><a class="link-btn" href="${appleMapSearchUrl(h.address)}" target="_blank" rel="noopener">Apple Place</a><a class="link-btn" href="${mapsLinkFor('',h.address)}" target="_blank" rel="noopener">Directions</a></div>
         </div>`).join("");
 
       document.getElementById("mapsTravelHelp").innerHTML = CONTINGENCIES.map(c => `
@@ -5319,7 +5424,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
             </div>
           </div>
           <div class="text-sm mt-8" style="white-space:pre-wrap;line-height:1.55;">${escapeHtml(n.body||"")}</div>
-          ${photos.length ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">${photos.map(photo=>`<img src="${photo}" alt="Note photo" style="width:72px;height:72px;object-fit:cover;border-radius:8px;" />`).join("")}</div>` : ""}
+          ${photos.length ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">${photos.map((photo,index)=>`<button type="button" class="guide-open" style="width:72px;" onclick='openImageViewer(${JSON.stringify(photo)},${JSON.stringify((n.title||"Note")+" · Photo "+(index+1))})'><img src="${photo}" alt="Open note photo ${index+1}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;" /></button>`).join("")}</div>` : ""}
           <div class="row space-between mt-8" style="align-items:center;gap:10px;">
             <div class="text-xs text-muted">${photos.length ? `${photos.length} of 3 photos` : "Photos saved only on this phone"}</div>
             <button class="btn-sm btn-outline" data-photo-id="${encodeURIComponent(n.id)}" onclick='openEntryPhotos("note",decodeURIComponent(this.dataset.photoId))'>${photos.length ? "Manage Photos" : "+ Add Photos"}</button>
@@ -5368,7 +5473,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           <h2>${escapeHtml(title)}</h2>
           <div class="alert alert-info text-sm"><strong>Saved on this phone.</strong> Add up to 3 compressed copies from your Photos/Gallery. They stay out of JSON backups; use Save / Share when you want a separate copy.</div>
           <div id="entryPhotoGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:14px 0;">
-            ${photos.map((photo,index)=>`<div style="border:1px solid var(--border);border-radius:10px;padding:7px;"><img src="${photo}" alt="Attached photo ${index+1}" style="width:100%;height:110px;object-fit:cover;border-radius:7px;" /><div class="row" style="gap:6px;margin-top:7px;"><button type="button" class="btn-sm btn-outline entry-photo-export" data-index="${index}" style="flex:1;">Save / Share</button><button type="button" class="btn-sm btn-danger entry-photo-delete" data-index="${index}" aria-label="Delete photo">Delete</button></div></div>`).join("")}
+            ${photos.map((photo,index)=>`<div style="border:1px solid var(--border);border-radius:10px;padding:7px;"><button type="button" class="guide-open" onclick='openImageViewer(${JSON.stringify(photo)},${JSON.stringify(title+" · Photo "+(index+1))})'><img src="${photo}" alt="Open attached photo ${index+1}" style="width:100%;height:110px;object-fit:cover;border-radius:7px;" /></button><div class="row" style="gap:6px;margin-top:7px;"><button type="button" class="btn-sm btn-outline entry-photo-export" data-index="${index}" style="flex:1;">Save / Share</button><button type="button" class="btn-sm btn-danger entry-photo-delete" data-index="${index}" aria-label="Delete photo">Delete</button></div></div>`).join("")}
           </div>
           ${photos.length<3?`<div class="form-group"><label>Add photos (${photos.length} of 3 used)</label><input type="file" id="entryPhotoInput" accept="image/*" multiple /><div class="text-xs text-muted mt-8">Choose existing originals from your phone’s Photos or Gallery.</div></div>`:`<div class="text-sm text-muted mb-8">Maximum 3 photos attached.</div>`}
           <button type="button" style="width:100%;" id="entryPhotosDone">Done</button>`;

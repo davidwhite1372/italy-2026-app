@@ -366,7 +366,9 @@
       {id:"restaurant-0062",city:"Venice",name:"Venissa Osteria Contemporanea",neigh:"Mazzorbo",style:"Lagoon cuisine",price:"€€€€",order:"Island produce and fish",best:"Lunch / Dinner",res:"Yes",access:"Boat trip",why:"Destination meal in the northern lagoon",priority:"Good Option",maps:"https://www.google.com/maps/search/?api=1&query=Venissa+Osteria+Contemporanea+Venice+Italy"},
       {id:"restaurant-0063",city:"Venice",name:"Rosticceria Gislon",neigh:"San Marco / Rialto",style:"Venetian quick service",price:"€",order:"Mozzarella in carrozza, fried seafood",best:"Lunch / Snack",res:"No",access:"Hotel shuttle + walk",why:"Fast, inexpensive local comfort food",priority:"Good Option",maps:"https://www.google.com/maps/search/?api=1&query=Rosticceria+Gislon+Venice+Italy"},
       {id:"restaurant-0064",city:"Venice",name:"Caffè Florian",neigh:"Piazza San Marco 57",style:"Historic Venetian café / coffee, cocktails and snacks",price:"€€€€",order:"Coffee or decide there",best:"Coffee / Aperitivo",res:"No",access:"Vaporetto Lines 1 or 2 to San Marco + walk",why:"Iconic Italian coffeehouse in Piazza San Marco, open since 1720",priority:"Good Option",website:"https://caffeflorian.com",hours:"Daily 9:00 AM–11:00 PM",maps:"https://www.google.com/maps/search/?api=1&query=Caff%C3%A8+Florian+Piazza+San+Marco+57+Venice+Italy"},
-      {id:"restaurant-0065",city:"Venice",name:"Bacareto da Lele",neigh:"Santa Croce",style:"Bacaro / panini",price:"€",order:"Tiny panini and ombre",best:"Lunch / Aperitivo",res:"No",access:"Near Piazzale Roma / Antiche Figure",why:"Budget local favorite near Piazzale Roma",priority:"Good Option",maps:"https://www.google.com/maps/search/?api=1&query=Bacareto+da+Lele+Venice+Italy"}
+      {id:"restaurant-0065",city:"Venice",name:"Bacareto da Lele",neigh:"Santa Croce",style:"Bacaro / panini",price:"€",order:"Tiny panini and ombre",best:"Lunch / Aperitivo",res:"No",access:"Near Piazzale Roma / Antiche Figure",why:"Budget local favorite near Piazzale Roma",priority:"Good Option",maps:"https://www.google.com/maps/search/?api=1&query=Bacareto+da+Lele+Venice+Italy"},
+      {id:"restaurant-0066",city:"Venice",name:"Corte Sconta",neigh:"Castello",style:"Contemporary Venetian seafood",price:"€€€€",order:"Seasonal lagoon seafood, house-made pasta",best:"Lunch / Dinner",res:"Yes",access:"JW shuttle + walk",why:"Hidden courtyard and seasonal Venetian cooking; Tripadvisor reference 4.1/5 from 1,300+ reviews (Aug 2026)",priority:"Good Option",website:"https://www.cortescontave.com/",hours:"Verify current seasonal hours",maps:"https://www.google.com/maps/search/?api=1&query=Corte+Sconta+Calle+del+Pestrin+3886+Venice+Italy"},
+      {id:"restaurant-0067",city:"Venice",name:"Osteria alla Frasca",neigh:"Cannaregio",style:"Traditional Venetian seafood",price:"€€€",order:"Fresh fish, pasta, seasonal specials",best:"Lunch / Dinner",res:"Recommended",access:"Near Fondamente Nove; JW shuttle + walk/vaporetto",why:"Quiet vine-covered courtyard; Tripadvisor reference 4.4/5 from 850+ reviews (Aug 2026)",priority:"High",hours:"Verify current seasonal hours",maps:"https://www.google.com/maps/search/?api=1&query=Osteria+Alla+Frasca+Corte+de+la+Carita+5176+Venice+Italy"}
     ];
 
     // Master air booking and flight records. All flight views read from these records.
@@ -490,18 +492,26 @@
       {"id":"packing-0067","cat":"Clothing","traveler":"David","item":"T-shirts","qty":5,"bag":"Checked","pri":"Medium","notes":""},
       {"id":"packing-0068","cat":"Electronics","traveler":"Shared","item":"Tracker cards","qty":2,"bag":"Checked","pri":"High","notes":""},
       {"id":"packing-0069","cat":"Personal Care","traveler":"David","item":"Sunglasses case","qty":1,"bag":"Backpack","pri":"Medium","notes":""},
-      {"id":"packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b","cat":"Documents","traveler":"Shared","item":"Credit cards","qty":1,"bag":"Sling bag","pri":"Critical","notes":""},
-      {"id":"packing-custom-222f6ddd-49f0-4f25-870f-0e54ebc226ae","cat":"Health","traveler":"Shared","item":"Toilet Paper or wipes","qty":2,"bag":"Checked","pri":"High","notes":""}
+      {"id":"packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b","cat":"Money","traveler":"Shared","item":"Credit Cards - Work/Carnival/USAA Debit","qty":1,"bag":"Sling bag","pri":"Critical","notes":"Keep backup card separately"},
+      {"id":"packing-custom-222f6ddd-49f0-4f25-870f-0e54ebc226ae","cat":"Health","traveler":"Shared","item":"Toilet Paper or wipes","qty":2,"bag":"Checked","pri":"High","notes":""},
+      {"id":"packing-custom-018902e0-0328-42d7-b3c7-dfadd3b1bcba","cat":"Travel Gear","traveler":"David","item":"Luggage Lock","qty":1,"bag":"Checked","pri":"Critical","notes":"Instructions available offline in the app"},
+      {"id":"packing-custom-098dfc93-369b-4043-812d-03cde6945cda","cat":"Travel Gear","traveler":"David","item":"Luggage/Bag Security Clips","qty":1,"bag":"Backpack","pri":"Medium","notes":""},
+      {"id":"packing-custom-4f397362-8025-404b-8270-d730d1aff4c4","cat":"Money","traveler":"David","item":"Alternate Wallet","qty":1,"bag":"Checked","pri":"Medium","notes":"Keep separate from daily wallet"}
     ];
 
     const PHRASES = {
       "Greetings": [
+        {id:"phrase-0101",en:"Hello / goodbye (informal)",it:"Ciao",pr:"CHOW"},
         {en:"Hello (day)",it:"Buongiorno",pr:"bwon-jor-NO"},
         {en:"Good evening",it:"Buonasera",pr:"bwoh-nah-SEH-rah"},
         {en:"Good night",it:"Buonanotte",pr:"bwoh-nah-NOT-teh"},
         {en:"Goodbye",it:"Arrivederci",pr:"ah-ree-veh-DER-chee"},
         {en:"Please",it:"Per favore",pr:"pair fah-VOH-ray"},
         {en:"Thank you",it:"Grazie",pr:"GRAHT-see-eh"},
+        {id:"phrase-0102",en:"Thank you very much",it:"Grazie mille",pr:"GRAHT-see-eh MEEL-leh"},
+        {id:"phrase-0103",en:"How are you?",it:"Come stai?",pr:"KOH-meh STAI"},
+        {id:"phrase-0104",en:"I am fine",it:"Sto bene",pr:"stoh BEH-neh"},
+        {id:"phrase-0105",en:"My name is David",it:"Mi chiamo David",pr:"mee KYAH-moh David"},
         {en:"You're welcome",it:"Prego",pr:"PRAY-go"}
       ],
       "Transportation": [
@@ -522,6 +532,19 @@
         {en:"A table for two, please",it:"Un tavolo per due, per favore",pr:""},
         {id:"phrase-custom-da366552-4415-4bbf-9781-fa032d9078ce",en:"Cheese",it:"Formaggio",pr:"TBD"},
         {id:"phrase-custom-9fa31b65-9c66-41f4-a233-9247772dde99",en:"Tea (Brand of teas)",it:"Estathé",pr:"ess-tah-tay"}
+      ],
+      "Food & Ordering": [
+        {id:"phrase-0201",en:"French fries",it:"Patatine fritte",pr:"pah-tah-TEE-neh FREET-teh"},
+        {id:"phrase-0202",en:"Lemonade",it:"Limonata",pr:"lee-moh-NAH-tah"},
+        {id:"phrase-0203",en:"Hot chocolate",it:"Cioccolata calda",pr:"choh-koh-LAH-tah KAHL-dah"},
+        {id:"phrase-0204",en:"Mineral water",it:"Acqua minerale",pr:"AH-kwah mee-neh-RAH-leh"},
+        {id:"phrase-0205",en:"Soft drink",it:"Bibita",pr:"BEE-bee-tah"},
+        {id:"phrase-0206",en:"Orange juice",it:"Succo d'arancia",pr:"SOOK-koh dah-RAHN-chah"},
+        {id:"phrase-0207",en:"Apple juice",it:"Succo di mela",pr:"SOOK-koh dee MEH-lah"},
+        {id:"phrase-0208",en:"Herbal tea",it:"Tisana",pr:"tee-ZAH-nah"},
+        {id:"phrase-0209",en:"Espresso",it:"Espresso",pr:"eh-SPRES-soh"},
+        {id:"phrase-0210",en:"Cappuccino",it:"Cappuccino",pr:"kahp-poo-CHEE-noh"},
+        {id:"phrase-0211",en:"Smoothie",it:"Frullato",pr:"froo-LAH-toh"}
       ],
       "Shopping": [
         {en:"How much?",it:"Quanto costa?",pr:"KWAN-to KOS-ta"},

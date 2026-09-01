@@ -1,5 +1,22 @@
 # Changelog
 
+## [10.10.3 DEV] - 2026-08-31
+
+### Changed
+
+- Added a full-screen offline image viewer with pinch, double-tap, button zoom, panning, and Android Back support for saved note photos and reference graphics.
+- Added the two-page FCO arrival guide, Santa Lucia-to-JW guide, Venice departure guide, bathroom guide, luggage-lock instructions, and full October tide chart in their relevant app locations.
+- Promoted Luggage Lock, Luggage/Bag Security Clips, Alternate Wallet, and Credit Cards - Work/Carnival/USAA Debit using their existing stable phone IDs.
+- Added a deduplicated editable Food & Ordering phrase group plus new beginner Italian phrases.
+- Retired the replaced French-fries and photo-viewer reminder notes while preserving the private luggage-lock-code note.
+- Added only the two missing restaurants from the Venice hidden-restaurants article: Corte Sconta and Osteria alla Frasca.
+- Standardized place links as Google Place, Apple Place, and Google Directions, while retaining separate official-site links.
+- Changed Current saved data and new exports to exclude redundant default notes, base expenses, promoted catalog entries, and empty restaurant flags.
+
+### Preserved
+
+- Stable IDs, user-entered data, local-only photos, offline behavior, backup schema 6, and older supported backup imports.
+
 ## [10.10.2 DEV] - 2026-08-24
 
 ### Changed
