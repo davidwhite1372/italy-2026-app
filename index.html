@@ -354,6 +354,9 @@
     .rest-card .neigh { font-size: 0.8rem; color: var(--muted); }
     .rest-card .order { font-size: 0.85rem; margin-top: 4px; }
     .rest-card .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .rest-card .restaurant-footer { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px; }
+    .rest-card .restaurant-actions { display:flex; flex:1 1 100%; flex-wrap:wrap; gap:8px; min-width:0; }
+    .rest-card .restaurant-actions > * { flex:1 1 92px; min-width:0; text-align:center; }
     .tag { font-size: 0.7rem; padding: 2px 8px; border-radius: 12px; background: #f5f0e8; color: #5d4e37; font-weight: 600; }
     .tag.price { background: #e8f5e9; color: var(--success); }
     .tag.top { background: #fce4ec; color: #c2185b; }
@@ -577,6 +580,7 @@
     .travel-card-details-body { padding-top:2px; }
     .travel-card-details .travel-actions { margin:10px -14px -12px; }
     .travel-actions button,.travel-actions a { flex:1 1 auto; min-width:92px; text-align:center; }
+    .travel-actions button.link-btn { color:#fff; }
     .travel-filter-panel { position:sticky; top:58px; z-index:12; margin:0 0 12px; padding:9px; border:1px solid var(--border); border-radius:13px; background:var(--bg); backdrop-filter:blur(10px); box-shadow:0 5px 16px rgba(0,0,0,.06); }
     .travel-filter-nav { display:flex; gap:7px; overflow-x:auto; padding:0 0 8px; scrollbar-width:none; }
     .travel-filter-nav::-webkit-scrollbar { display:none; }
@@ -3566,8 +3570,14 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       if(mins>=-60) return "now / recently started";
       return "";
     }
-    function googleMapSearchUrl(place){ return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place||"")}`; }
-    function appleMapSearchUrl(place){ return `https://maps.apple.com/?q=${encodeURIComponent(place||"")}`; }
+    function preciseMapPlace(place){
+      const value=String(place||"").trim();
+      if (/^W Florence(?: Hotel)?$/i.test(value)) return "W Florence, Via del Melarancio 1, Florence, Italy";
+      if (/^Firenze (?:S\.M\.N\.|Santa Maria Novella)(?: Train Station)?$/i.test(value)) return "Firenze Santa Maria Novella Train Station, Florence, Italy";
+      return value;
+    }
+    function googleMapSearchUrl(place){ return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(preciseMapPlace(place))}`; }
+    function appleMapSearchUrl(place){ return `https://maps.apple.com/?q=${encodeURIComponent(preciseMapPlace(place))}`; }
     function copyTextValue(value,label="Copied") {
       const text=String(value||"");
       const done=()=>showToast(label);
@@ -4309,12 +4319,12 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
             ${stars ? `<span class="tag" style="background:#fff8e1;color:#f57f17;">${stars}</span>` : ""}
           </div>
           ${notes ? `<div class="text-xs text-muted mt-8" style="font-style:italic;">“${escapeHtml(notes.length > 80 ? notes.slice(0,80) + "…" : notes)}”</div>` : ""}
-          <div class="row space-between mt-8" style="align-items:center;">
+          <div class="restaurant-footer mt-8">
             <label class="check-row" style="padding:0;border:none;margin:0;">
               <input type="checkbox" ${ate ? "checked" : ""} data-rk="${encodeURIComponent(r._key)}" onchange="toggleRestAte(decodeURIComponent(this.dataset.rk), this.checked)">
               <span class="text-sm fw-600">Ate here</span>
             </label>
-            <div class="row" style="gap:8px;align-items:center;">
+            <div class="restaurant-actions">
               <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="toggleRestFavorite(decodeURIComponent(this.dataset.rk))" aria-label="Toggle favorite">${favorite ? "❤️ Saved" : "♡ Favorite"}</button>
               ${r.website ? `<a class="link-btn" href="${escapeHtml(r.website)}" target="_blank" rel="noopener">Website</a>` : ""}
               <a class="link-btn" href="${googleMapSearchUrl(r.name+' '+r.city)}" target="_blank" rel="noopener">Google</a>
@@ -4435,7 +4445,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       "travel-50":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide"}]
     });
     function guideActionsForTravel(id){
-      return (TRAVEL_GUIDES_BY_ID[id]||[]).map((guide,index)=>`<button type="button" class="link-btn" onclick='openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>🖼️ ${index?`Guide Page ${index+1}`:"Open Illustrated Guide"}</button>`).join("");
+      return (TRAVEL_GUIDES_BY_ID[id]||[]).map(guide=>`<button type="button" class="link-btn" onclick='openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>🖼️ Open ${escapeHtml(guide.title)}</button>`).join("");
     }
 
     function travelRouteBlock(from, start, to, end) {
@@ -4907,8 +4917,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     }
 
     function mapsLinkFor(from, to) {
-      const o = encodeURIComponent(from || "");
-      const d = encodeURIComponent(to || "");
+      const o = encodeURIComponent(preciseMapPlace(from));
+      const d = encodeURIComponent(preciseMapPlace(to));
       return `https://www.google.com/maps/dir/?api=1${o?`&origin=${o}`:""}&destination=${d}`;
     }
 

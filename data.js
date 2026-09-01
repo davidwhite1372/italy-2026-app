@@ -531,7 +531,7 @@
         {en:"Coffee",it:"Caffè",pr:"kahf-FEH"},
         {en:"A table for two, please",it:"Un tavolo per due, per favore",pr:""},
         {id:"phrase-custom-da366552-4415-4bbf-9781-fa032d9078ce",en:"Cheese",it:"Formaggio",pr:"TBD"},
-        {id:"phrase-custom-9fa31b65-9c66-41f4-a233-9247772dde99",en:"Tea (Brand of teas)",it:"Estathé",pr:"ess-tah-tay"}
+        {id:"phrase-custom-9fa31b65-9c66-41f4-a233-9247772dde99",en:"Bottled tea",it:"Estathé",pr:"ess-tah-tay"}
       ],
       "Food & Ordering": [
         {id:"phrase-0201",en:"French fries",it:"Patatine fritte",pr:"pah-tah-TEE-neh FREET-teh"},
@@ -864,7 +864,7 @@ const MAP_DOOR_ROUTES = [
     "to": "W Florence Hotel",
     "mode": "Walk / group transfer",
     "duration": "5–10 min",
-    "link": "https://www.google.com/maps/dir/?api=1&origin=Firenze+Santa+Maria+Novella&destination=W+Florence&travelmode=walking",
+    "link": "https://www.google.com/maps/dir/?api=1&origin=Firenze+Santa+Maria+Novella+Train+Station,+Florence,+Italy&destination=W+Florence,+Via+del+Melarancio+1,+Florence,+Italy&travelmode=walking",
     "backupLink": "",
     "status": "Pending station",
     "note": "Stay with group until released",
@@ -879,7 +879,7 @@ const MAP_DOOR_ROUTES = [
     "to": "Firenze S.M.N. Train Station",
     "mode": "Walk",
     "duration": "5–10 min",
-    "link": "https://www.google.com/maps/dir/?api=1&origin=W+Florence&destination=Firenze+Santa+Maria+Novella&travelmode=walking",
+    "link": "https://www.google.com/maps/dir/?api=1&origin=W+Florence,+Via+del+Melarancio+1,+Florence,+Italy&destination=Firenze+Santa+Maria+Novella+Train+Station,+Florence,+Italy&travelmode=walking",
     "backupLink": "",
     "status": "Ready",
     "note": "Inside station by TBD",
