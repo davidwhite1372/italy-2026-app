@@ -1397,7 +1397,7 @@
       version: "10.11.0",
       build: "10.11.0",
       backupSchema: 6,
-      lastEdited: "September 1, 2026 at 7:20 PM EDT"
+      lastEdited: "September 1, 2026 at 7:41 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -4244,14 +4244,14 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       tlModeFilter = "all";
       tlSearch = "";
       expandedTimelineItems.add(timelineId);
+      const safeId = String(timelineId).replace(/["\\]/g, "\\$&");
+      const card = document.querySelector(`#timelineList .tl-step[data-timeline-id="${safeId}"]`);
+      if (!card) { showToast("Matching Timeline card not found"); return; }
+      card.classList.add("search-highlight");
       requestAnimationFrame(() => {
-        const safeId = String(timelineId).replace(/["\\]/g, "\\$&");
-        const card = document.querySelector(`#timelineList .tl-step[data-timeline-id="${safeId}"]`);
-        if (!card) { showToast("Matching Timeline card not found"); return; }
-        card.classList.add("search-highlight");
         card.scrollIntoView({behavior:"smooth",block:"center"});
-        setTimeout(() => card.classList.remove("search-highlight"), 2400);
       });
+      setTimeout(() => card.classList.remove("search-highlight"), 2400);
     }
 
     function openTimelineItem(timelineId) {
