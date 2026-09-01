@@ -46,6 +46,7 @@ async function bootApp(initialStorage = {}) {
       window.prompt = () => null;
       window.open = () => null;
       window.scrollTo = () => {};
+      window.HTMLElement.prototype.scrollIntoView = function scrollIntoView() {};
       window.URL.createObjectURL = blob => {
         exportedBlob = blob;
         return "blob:regression-test";
@@ -79,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.10.3");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.10.3");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.11.0");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.11.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /August 31, 2026 at 9:45 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 1, 2026 at 6:52 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -594,7 +595,7 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("10.10.3 normalizes promoted phone data into clean schema 6 exports", async t => {
+test("10.11.0 normalizes promoted phone data into clean schema 6 exports", async t => {
   const promotedNote={id:"note_1787450342393",title:"ATM IN ROME",category:"Miscellaneous",body:"Walk toward the Anantara Palazzo Naiadi.\n\nStop at the UniCredit ATM on Via Vittorio Emanuele Orlando 70",pinned:false,createdAt:"2026-08-23T01:59:02.393Z",updatedAt:"2026-08-23T01:59:02.393Z"};
   const app = await bootApp({
     italy2026_live:{sharedTravel:{
@@ -637,7 +638,7 @@ test("10.10.3 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"10.10.3");
+  assert.equal(payload.appVersion,"10.11.0");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -675,7 +676,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.10.3");
+  assert.equal(payload.appVersion, "10.11.0");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -694,11 +695,11 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.10.3");
-  assert.match(manifest.description,/Version 10\.10\.3/);
-  assert.match(worker,/v10-10-3/);
+  assert.equal(packageData.version,"10.11.0");
+  assert.match(manifest.description,/Version 10\.11\.0/);
+  assert.match(worker,/v10-11-0/);
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
-    timeline:49,restaurants:67,attractions:15,reservations:10,budget:18,packing:73,open:13
+    timeline:49,restaurants:67,attractions:15,reservations:10,budget:18,packing:72,open:13
   });
   Object.values(counts).forEach(ids=>{
     assert.equal(ids.every(Boolean),true);

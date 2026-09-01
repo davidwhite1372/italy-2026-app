@@ -4,11 +4,11 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 
 ## Current development build
 
-**Version 10.10.3 DEV — Offline Guides, Image Zoom and Map Links**
+**Version 10.11.0 DEV - Timeline and Travel Details**
 
-Version 10.10.3 adds zoomable offline travel guides, reconciles the August 31 phone changes, expands editable phrases and food-ordering help, and standardizes Google, Apple and directions links while retaining schema 6 compatibility.
+Version 10.11.0 makes Timeline the live trip-day guide and renames Travel to Travel Details. Two-way links open the exact matching card for instructions, guides, maps, and editing. It also adds official alert links, records the Travelpro suitcase purchase, and promotes the reviewed September 1 phone-data deletion while retaining schema 6 compatibility.
 
-Version 10.10.2 is the stable production release until 10.10.3 is tested on `develop`, merged to `main`, and verified live/offline.
+Version 10.10.2 is the stable production release until 10.11.0 is tested on `develop`, merged to `main`, and verified live/offline.
 
 Production remains on the stable `main` branch. New work is developed and tested on `develop` before release.
 
@@ -18,7 +18,7 @@ User-entered information is currently stored locally in each browser or installe
 
 - Export a fresh backup before changing devices, clearing browser data, or reinstalling the app.
 - Backup schema numbers describe file compatibility; they are separate from the app version.
-- Version 10.10.3 creates schema 6 backups and continues to import schema 5, schema 4, and older supported backups automatically.
+- Version 10.11.0 creates schema 6 backups and continues to import schema 5, schema 4, and older supported backups automatically.
 - Version 11 will evaluate authorized shared cloud data while retaining offline support and manual backups.
 
 ## Publishing

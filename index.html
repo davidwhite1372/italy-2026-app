@@ -533,6 +533,8 @@
     }
     .tl-expanded { margin-top:9px; padding-top:9px; border-top:1px dashed var(--border); }
     .tl-action-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:9px; }
+    .tl-detail-link-row { margin-top:9px; }
+    .tl-detail-link-row .link-btn { width:100%; justify-content:center; font-size:.86rem; }
     .tl-current-marker {
       font-size:.68rem; font-weight:800; color:var(--primary); text-transform:uppercase;
       letter-spacing:.07em; margin-bottom:5px;
@@ -579,6 +581,7 @@
     .travel-card-details[open] summary::after { content:"Hide details ▴"; }
     .travel-card-details-body { padding-top:2px; }
     .travel-card-details .travel-actions { margin:10px -14px -12px; }
+    .travel-card.search-highlight { outline:3px solid var(--accent); box-shadow:0 0 0 5px rgba(245,124,0,.18),var(--shadow); }
     .travel-actions button,.travel-actions a { flex:1 1 auto; min-width:92px; text-align:center; }
     .travel-actions button.link-btn { color:#fff; }
     .travel-filter-panel { position:sticky; top:58px; z-index:12; margin:0 0 12px; padding:9px; border:1px solid var(--border); border-radius:13px; background:var(--bg); backdrop-filter:blur(10px); box-shadow:0 5px 16px rgba(0,0,0,.06); }
@@ -965,7 +968,7 @@
     <!-- TIMELINE -->
     <section id="page-timeline" class="page">
       <div class="section-title">Master Timeline</div>
-      <div class="text-xs text-muted" style="margin:0 2px 10px;">Timeline is your trip guide. Use Complete, Hide Event, Item Type, and Details here. Add or change itinerary content on Travel or Reservations.</div>
+      <div class="text-xs text-muted" style="margin:0 2px 10px;">Timeline is your live trip guide. Open the matching Travel Details card for complete instructions, guides, maps, and editing.</div>
       <input type="search" class="search-box" id="timelineSearch" placeholder="Search train, walk, airport, hotel, flight number..." />
       <div class="filter-bar" id="tlModeFilters">
         <div class="filter-chip active" data-mode="all">All modes</div>
@@ -1033,9 +1036,10 @@
       <div id="restaurantsList"></div>
     </section>
 
-    <!-- TRAVEL -->
+    <!-- TRAVEL DETAILS -->
     <section id="page-transport" class="page">
-      <div class="owner-banner"><span class="owner-icon">✏️</span><div><strong>Make travel changes here.</strong> Flights, trains, transfers, tours, and events automatically update their linked Timeline, Maps, Reservations, Wallet, and Home views.</div></div>
+      <div class="section-title">Travel Details</div>
+      <div class="owner-banner"><span class="owner-icon">✏️</span><div><strong>Complete travel reference and editing.</strong> Flights, trains, transfers, hotels, tours, and events automatically update their linked Timeline, Maps, Reservations, Wallet, and Home views.</div></div>
       <button style="width:100%;margin:0 0 14px;" onclick="addTripItem()">＋ Add Trip Item</button>
       <div id="travelOverview"></div>
       <div class="travel-filter-panel" aria-label="Travel filters">
@@ -1059,7 +1063,7 @@
           </select>
         </div>
         <div class="travel-search-row">
-          <input id="travelSearchInput" type="search" placeholder="Search airline, train, city, hotel, confirmation…" aria-label="Search travel" oninput="setTravelSearch(this.value)">
+          <input id="travelSearchInput" type="search" placeholder="Search airline, train, city, hotel, confirmation…" aria-label="Search travel details" oninput="setTravelSearch(this.value)">
           <span class="travel-result-count" id="travelResultCount"></span>
         </div>
       </div>
@@ -1306,7 +1310,7 @@
     </button>
     <button class="nav-item" data-page="transport" onclick="showPage('transport')">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-5l-8-5V1.5a1.5 1.5 0 0 0-3 0V6l-8 5v5l8-2.5V18l-2 1.5V22l3.5-1 3.5 1v-2.5L13 18v-4.5L21 16z"/></svg>
-      <span>Travel</span>
+      <span>Travel Details</span>
     </button>
     <button class="nav-item" data-page="more" onclick="showPage('more')">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
@@ -1389,10 +1393,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.10.3",
-      build: "10.10.3",
+      version: "10.11.0",
+      build: "10.11.0",
       backupSchema: 6,
-      lastEdited: "August 31, 2026 at 9:45 PM EDT"
+      lastEdited: "September 1, 2026 at 6:52 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -3587,7 +3591,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
 
     // ===================== RENDERERS =====================
     const HOME_QUICK_TIPS = [
-      { icon:"✈️", text:"Need to change a flight, train, transfer, tour, or event? Make the update in Travel.", page:"transport", label:"Open Travel" },
+      { icon:"✈️", text:"Need full instructions or to change a flight, train, transfer, tour, or event? Open Travel Details.", page:"transport", label:"Open Travel Details" },
       { icon:"🏨", text:"Need to update a hotel? Make the change in Reservations.", page:"bookings", label:"Open Reservations" },
       { icon:"🍽️", text:"Restaurant favorites, ratings, and visit notes are edited in Food.", page:"food", label:"Open Food" },
       { icon:"🗺️", text:"Need directions or a saved route? Open Maps, Links & Travel Guide.", page:"maps", label:"Open Maps" },
@@ -4089,10 +4093,13 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         const title = (t.title && t.title.trim()) ? t.title.trim() : `${t.from} → ${t.to}`;
         let actionBtns;
         const ownerAction = timelineOwnerAction(t);
+        const detailsButton = ownerAction.target
+          ? `<button class="edit-btn" onclick="openTravelDetailsFromTimeline('${timelineId}',true)">Edit details</button>`
+          : `<button class="edit-btn" onclick="showPage('${ownerAction.page}')">${ownerAction.label}</button>`;
         if (isHidden) {
-          actionBtns = `<button class="edit-btn" style="color:var(--accent);" onclick="restoreTimelineStep('${timelineId}')">Restore</button><button class="edit-btn" onclick="editTimelineItemType('${timelineId}')">Classification</button><button class="edit-btn" onclick="showPage('${ownerAction.page}')">${ownerAction.label}</button>`;
+          actionBtns = `<button class="edit-btn" style="color:var(--accent);" onclick="restoreTimelineStep('${timelineId}')">Restore</button><button class="edit-btn" onclick="editTimelineItemType('${timelineId}')">Classification</button>${detailsButton}`;
         } else {
-          actionBtns = `<button class="edit-btn" style="color:var(--danger);" onclick="hideTimelineStep('${timelineId}')">Hide Event</button><button class="edit-btn" onclick="editTimelineItemType('${timelineId}')">Classification</button><button class="edit-btn" onclick="showPage('${ownerAction.page}')">${ownerAction.label}</button>`;
+          actionBtns = `<button class="edit-btn" style="color:var(--danger);" onclick="hideTimelineStep('${timelineId}')">Hide Event</button><button class="edit-btn" onclick="editTimelineItemType('${timelineId}')">Classification</button>${detailsButton}`;
         }
         const route = t._isCustom && t._customId ? getAllDoorRoutes().find(r => r._isCustom && r._id === t._customId) : routeForTimelineId(timelineId);
         const primary = route ? normalizedLink(route.link) : "";
@@ -4121,6 +4128,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
             </div>
             ${routeSummary}
             <div class="tl-meta-line">${metaBits.map(x => `<span class="tl-meta-chip">${escapeHtml(x)}</span>`).join("")} ${statusBadge(t.status)}${t._isCustom ? ' <span class="badge badge-pending">Custom</span>' : ""}${isHidden ? ' <span class="badge badge-low">Hidden</span>' : ""}</div>
+            ${ownerAction.target ? `<div class="tl-detail-link-row"><button class="link-btn" onclick="openTravelDetailsFromTimeline('${timelineId}',false)">Open travel details →</button></div>` : ""}
             <div class="tl-expanded" ${isExpanded ? "" : "hidden"}>
               <div class="tl-detail-grid">
                 <div class="tl-detail-section"><div class="tl-detail-label">What to do</div><div class="tl-detail-text">${escapeHtml(t.instructions || "No additional instructions.")}</div></div>
@@ -4180,10 +4188,83 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     }
 
     function timelineOwnerAction(t) {
-      if (t.flightId) return { page:"transport", label:"Edit Flight in Travel" };
-      if (t.hotelId) return { page:"bookings", label:"Edit Hotel in Reservations" };
-      if (t.travelId || (t._isCustom && t._customId)) return { page:"transport", label:"Edit in Travel" };
-      return { page:"transport", label:"Review in Travel" };
+      if (t.flightId) return { page:"transport", target:{type:"flight",id:t.flightId}, label:"Open Travel Details" };
+      if (t.hotelId) return { page:"transport", target:{type:"hotel",id:t.hotelId}, label:"Open Travel Details" };
+      if (t.travelId) return { page:"transport", target:{type:"travel",id:t.travelId}, label:"Open Travel Details" };
+      if (t._isCustom && t._customId) return { page:"transport", target:{type:"custom",id:t._customId}, label:"Open Travel Details" };
+      return { page:"transport", target:null, label:"Review Travel Details" };
+    }
+
+    function resetTravelDetailFilters() {
+      travelTypeFilter = "all";
+      travelTransportationFilter = "all";
+      travelSearch = "";
+    }
+
+    function travelTargetSelector(target) {
+      if (!target || !target.type || !target.id) return "";
+      const safeId = String(target.id).replace(/["\\]/g, "\\$&");
+      return `.travel-card[data-${target.type}-id="${safeId}"]`;
+    }
+
+    function editTravelTarget(target) {
+      if (!target) return;
+      if (target.type === "flight") editFlightById(target.id);
+      else if (target.type === "hotel") editHotelById(target.id);
+      else if (target.type === "travel") editSharedTravelById(target.id);
+      else if (target.type === "custom") editCustomLeg(target.id);
+    }
+
+    function focusTravelTarget(target, editMode=false) {
+      const selector = travelTargetSelector(target);
+      const card = selector ? document.querySelector(selector) : null;
+      if (!card) { showToast("Matching Travel Details card not found"); return; }
+      const details = card.querySelector("details.travel-card-details");
+      if (details) details.open = true;
+      card.classList.add("search-highlight");
+      card.scrollIntoView({behavior:"smooth",block:"center"});
+      setTimeout(() => card.classList.remove("search-highlight"), 2400);
+      if (editMode) setTimeout(() => editTravelTarget(target), 350);
+    }
+
+    function openTravelDetailsFromTimeline(timelineId, editMode=false) {
+      const item = liveTimeline().find(t => timelineStateId(t) === timelineId);
+      const target = item ? timelineOwnerAction(item).target : null;
+      if (!target) { showPage("transport"); return; }
+      resetTravelDetailFilters();
+      showPage("transport");
+      requestAnimationFrame(() => focusTravelTarget(target, editMode));
+    }
+
+    function openTimelineItem(timelineId) {
+      tlFilter = "all";
+      tlModeFilter = "all";
+      tlSearch = "";
+      expandedTimelineItems.add(timelineId);
+      showPage("timeline");
+      requestAnimationFrame(() => {
+        const safeId = String(timelineId).replace(/["\\]/g, "\\$&");
+        const card = document.querySelector(`#timelineList .tl-step[data-timeline-id="${safeId}"]`);
+        if (!card) { showToast("Matching Timeline card not found"); return; }
+        card.classList.add("search-highlight");
+        card.scrollIntoView({behavior:"smooth",block:"center"});
+        setTimeout(() => card.classList.remove("search-highlight"), 2400);
+      });
+    }
+
+    function timelineIdForTravelTarget(type, id) {
+      const item = liveTimeline().find(t =>
+        (type === "flight" && t.flightId === id) ||
+        (type === "hotel" && t.hotelId === id) ||
+        (type === "travel" && t.travelId === id) ||
+        (type === "custom" && t._isCustom && t._customId === id)
+      );
+      return item ? timelineStateId(item) : "";
+    }
+
+    function seeInTimelineButton(type, id) {
+      const timelineId = timelineIdForTravelTarget(type, id);
+      return timelineId ? `<button class="edit-btn" onclick="openTimelineItem('${timelineId}')">← See in Timeline</button>` : "";
     }
 
     function renderBookings() {
@@ -4521,25 +4602,25 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       const addRecord = (category, transportation, date, time, searchText, html, sortExtra="") => records.push({category,transportation,date,time,searchText:String(searchText||"").toLowerCase(),html,sortKey:travelDateTimeKey(date,time)+"|"+sortExtra});
 
       customTripItems.forEach(t => addRecord(activityTravelCategory(t), timelineTransportation(t), t.date, t.start, [t.title,t.from,t.to,t.itemType,t.transportation,t.transportationDetails,t.duration,t.status,t.confirmation,t.note].join(" "), `
-        <div class="card travel-card transfer-card">
+        <div class="card travel-card transfer-card" data-custom-id="${escapeHtml(t.id)}">
           <div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t)} ${escapeHtml(t.title || [t.from,t.to].filter(Boolean).join(" → ") || "Trip Item")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div>
-          <div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType || "Information")}</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(t.confirmation || "", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Travel notes", t.note)}${travelDetailPanel("Connected views", `Added Trip Item · linked to Timeline${(t.from && t.to) ? " and Maps" : ""}`)}`, `${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editCustomLeg('${t.id}')">Edit Trip Item</button>`)}</div>
+          <div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType || "Information")}</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(t.confirmation || "", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Travel notes", t.note)}${travelDetailPanel("Connected views", `Added Trip Item · linked to Timeline${(t.from && t.to) ? " and Maps" : ""}`)}`, `${seeInTimelineButton("custom",t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editCustomLeg('${t.id}')">Edit Trip Item</button>`)}</div>
         </div>`, t.title || ""));
 
       flights.forEach(f => addRecord("flight", "Plane", f.date, f.dep, [f.flight,f.op,f.from,f.to,f.dep,f.arr,f.dur,f.cabin,f.status,f.seats,f.notes,airConfirmationText()].join(" "), `
-        <div class="card travel-card flight-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">✈️ ${escapeHtml(f.flight)} · ${escapeHtml(f.op)}</div><div class="travel-date-label">${fmtDate(f.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(f.from,f.dep,f.to,f.arr)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(f.dur || "Duration TBD")}</span><span class="travel-chip">${escapeHtml(f.cabin || "Cabin TBD")}</span>${statusBadge(f.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(airConfirmationText(), f.status || "Confirmed")}${travelDetailPanel("Seats", f.seats || "Not assigned — verify in airline app")}${travelDetailPanel("Travel note", f.notes)}`, `<button class="edit-btn" onclick="copyText('${String(airConfirmationText()).replace(/'/g,"\\'")}','Air confirmation copied')">Copy Confirmation</button>${travelMapActions(f.from,f.to)}<button class="edit-btn" onclick="editFlightById('${f.id}')">Edit Flight</button>`)}</div></div>`, f.flight));
+        <div class="card travel-card flight-card" data-flight-id="${escapeHtml(f.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">✈️ ${escapeHtml(f.flight)} · ${escapeHtml(f.op)}</div><div class="travel-date-label">${fmtDate(f.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(f.from,f.dep,f.to,f.arr)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(f.dur || "Duration TBD")}</span><span class="travel-chip">${escapeHtml(f.cabin || "Cabin TBD")}</span>${statusBadge(f.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(airConfirmationText(), f.status || "Confirmed")}${travelDetailPanel("Seats", f.seats || "Not assigned — verify in airline app")}${travelDetailPanel("Travel note", f.notes)}`, `${seeInTimelineButton("flight",f.id)}<button class="edit-btn" onclick="copyText('${String(airConfirmationText()).replace(/'/g,"\\'")}','Air confirmation copied')">Copy Confirmation</button>${travelMapActions(f.from,f.to)}<button class="edit-btn" onclick="editFlightById('${f.id}')">Edit Flight</button>`)}</div></div>`, f.flight));
 
       trains.forEach(t => addRecord("transfer", "Train", t.date, t.start, [t.transportationDetails,t.mode,t.title,t.from,t.to,t.start,t.end,t.duration,t.status,t.instructions,t.notes,trainConfirmation(t)].join(" "), `
-        <div class="card travel-card train-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🚆 ${escapeHtml(t.transportationDetails || t.title || "Train")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">🚆 Train</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(trainConfirmation(t), t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Train</button>`)}</div></div>`, t.transportationDetails || t.title));
+        <div class="card travel-card train-card" data-travel-id="${escapeHtml(t.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🚆 ${escapeHtml(t.transportationDetails || t.title || "Train")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">🚆 Train</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(trainConfirmation(t), t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${seeInTimelineButton("travel",t.id)}${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Train</button>`)}</div></div>`, t.transportationDetails || t.title));
 
       transfers.forEach(t => addRecord("transfer", timelineTransportation(t), t.date, t.start, [t.title,t.from,t.to,t.mode,t.itemType,t.transportation,t.transportationDetails,t.duration,t.status,t.instructions,t.notes].join(" "), `
-        <div class="card travel-card transfer-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Steps", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button>`)}</div></div>`, t.title || t.from));
+        <div class="card travel-card transfer-card" data-travel-id="${escapeHtml(t.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Steps", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${seeInTimelineButton("travel",t.id)}${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button>`)}</div></div>`, t.title || t.from));
 
       hotels.forEach(h => addRecord("hotel", "None / Not applicable", h.checkIn, "15:00", [h.name,h.city,h.address,h.dates,h.conf,h.status,h.room,h.payment,h.tax,h.breakfast,h.notes].join(" "), `
-        <div class="card travel-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🏨 ${escapeHtml(h.name)}</div><div class="travel-date-label">${escapeHtml(h.dates || fmtDate(h.checkIn))}</div></div></div><div class="travel-card-main"><div class="travel-chip-row"><span class="travel-chip">${escapeHtml(h.city)}</span><span class="travel-chip">Check-in ${fmtDate(h.checkIn)}</span><span class="travel-chip">Check-out ${fmtDate(h.checkOut)}</span>${statusBadge(h.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(h.conf, h.status || "Confirmed")}${travelDetailPanel("Address", h.address)}${travelDetailPanel("Room", h.room)}${travelDetailPanel("Payment", [h.payment,h.tax].filter(Boolean).join(" · "))}${travelDetailPanel("Hotel note", [h.breakfast,h.notes].filter(Boolean).join(" · "))}`, `${travelMapActions(h.address || h.name,"")}<button class="edit-btn" onclick="editHotelById('${h.id}')">Edit Hotel</button>`)}</div></div>`, h.name));
+        <div class="card travel-card" data-hotel-id="${escapeHtml(h.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🏨 ${escapeHtml(h.name)}</div><div class="travel-date-label">${escapeHtml(h.dates || fmtDate(h.checkIn))}</div></div></div><div class="travel-card-main"><div class="travel-chip-row"><span class="travel-chip">${escapeHtml(h.city)}</span><span class="travel-chip">Check-in ${fmtDate(h.checkIn)}</span><span class="travel-chip">Check-out ${fmtDate(h.checkOut)}</span>${statusBadge(h.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(h.conf, h.status || "Confirmed")}${travelDetailPanel("Address", h.address)}${travelDetailPanel("Room", h.room)}${travelDetailPanel("Payment", [h.payment,h.tax].filter(Boolean).join(" · "))}${travelDetailPanel("Hotel note", [h.breakfast,h.notes].filter(Boolean).join(" · "))}`, `${seeInTimelineButton("hotel",h.id)}${travelMapActions(h.address || h.name,"")}<button class="edit-btn" onclick="editHotelById('${h.id}')">Edit Hotel</button>`)}</div></div>`, h.name));
 
       activities.forEach(t => addRecord(activityTravelCategory(t), timelineTransportation(t), t.date, t.start, [t.title,t.itemType,t.transportation,t.transportationDetails,t.from,t.to,t.start,t.end,t.status,t.instructions,t.notes].join(" "), `
-        <div class="card travel-card activity-card"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button>`)}</div></div>`, t.title || t.itemType));
+        <div class="card travel-card activity-card" data-travel-id="${escapeHtml(t.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${seeInTimelineButton("travel",t.id)}${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button>`)}</div></div>`, t.title || t.itemType));
 
 
       let filtered = records.filter(r => travelTypeFilter === "all" || r.category === travelTypeFilter);
@@ -4684,8 +4765,11 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         SAFETY.tips.forEach(t => { html += `<div class="text-sm" style="padding:6px 0;border-bottom:1px solid var(--border);">• ${t}</div>`; });
         html += `</div><div class="card"><div class="card-title">🔎 Lost & Found</div>`;
         SAFETY.lost.forEach(l => { html += `<div class="text-sm" style="padding:8px 0;border-bottom:1px solid var(--border);"><strong>${l.item}:</strong> ${l.action}</div>`; });
-        html += `</div><div class="card"><div class="card-title">📡 Weather & Alerts</div>`;
-        SAFETY.alerts.forEach(t => { html += `<div class="text-sm" style="padding:6px 0;border-bottom:1px solid var(--border);">• ${t}</div>`; });
+        html += `</div><div class="card"><div class="card-title">📡 Weather & Alerts</div><div class="text-sm text-muted mb-8">Live official information requires an internet connection.</div>`;
+        SAFETY.alerts.forEach(alert => {
+          const item = typeof alert === "string" ? {label:alert,url:"",note:""} : alert;
+          html += `<div style="padding:9px 0;border-bottom:1px solid var(--border);"><div class="fw-600">${escapeHtml(item.label || "Alert source")}</div>${item.note ? `<div class="text-sm text-muted mt-8">${escapeHtml(item.note)}</div>` : ""}${item.url ? `<a class="link-btn mt-8" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Open official alerts →</a>` : ""}</div>`;
+        });
         html += `</div>`;
         document.getElementById("prepContent").innerHTML = html;
       }
@@ -4891,7 +4975,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
             from:linked.from, to:linked.to, mode:linked.mode, duration:linked.time,
             note:linked.instructions, secondaryNote:linked.notes,
             _linkedMaster:true, _linkedPage:"transport",
-            _linkedLabel:linked.flightId ? "Edit Flight in Travel" : "Edit in Travel" };
+            _linkedLabel:linked.flightId ? "Edit Flight in Travel Details" : "Edit in Travel Details" };
         }
         return merged;
       });
@@ -5051,7 +5135,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         try { renderMaps(); } catch (e) {}
         try { renderTimeline(); } catch (e) {}
         try { renderTransport(); } catch (e) {}
-        showToast("Trip item added — Timeline and Travel updated");
+        showToast("Trip item added - Timeline and Travel Details updated");
       });
     }
 

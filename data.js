@@ -435,7 +435,6 @@
       {"id":"packing-0009","cat":"Electronics","traveler":"Melody","item":"Personal cellphone","qty":1,"bag":"Crossbody","pri":"Critical","notes":""},
       {"id":"packing-0010","cat":"Health","traveler":"David","item":"Prescription medications","qty":1,"bag":"Backpack","pri":"Critical","notes":"Original containers"},
       {"id":"packing-0011","cat":"Health","traveler":"Melody","item":"Prescription medications","qty":1,"bag":"Personal item","pri":"Critical","notes":"Original containers"},
-      {"id":"packing-0012","cat":"Money","traveler":"David","item":"Primary credit card","qty":1,"bag":"Crossbody","pri":"Critical","notes":"No foreign transaction fee"},
       {"id":"packing-0013","cat":"Money","traveler":"Melody","item":"Primary credit card","qty":1,"bag":"Crossbody","pri":"Critical","notes":"No foreign transaction fee"},
       {"id":"packing-0014","cat":"Personal Care","traveler":"David","item":"Reading glasses","qty":1,"bag":"Backpack","pri":"Critical","notes":""},
       {"id":"packing-0015","cat":"Travel Gear","traveler":"David","item":"Checked roller suitcase","qty":1,"bag":"Checked","pri":"Critical","notes":""},
@@ -629,9 +628,10 @@
         {item:"Phone",action:"Use Find My / Android Find; contact carrier if needed."}
       ],
       alerts: [
-        "Italian Civil Protection – weather alerts",
-        "U.S. State Department – travel advisories",
-        "Airline apps (Delta / SAS) – operational notifications"
+        {label:"Italian Civil Protection - national weather alerts",url:"https://mappe.protezionecivile.gov.it/en/risks-maps/criticality-bulletin/",note:"Official color-coded weather and flood-risk bulletin for today and tomorrow."},
+        {label:"U.S. State Department - Italy advisory and embassy alerts",url:"https://travel.state.gov/en/international-travel/travel-advisories/italy.html",note:"Official security advisory, emergency guidance, and U.S. Embassy updates."},
+        {label:"Delta - live flight status",url:"https://www.delta.com/flightstatus/search",note:"Check gates, delays, and cancellations for Delta-operated flights."},
+        {label:"SAS - live flight status",url:"https://www.flysas.com/en/flight-status",note:"Check gates, delays, and cancellations for SAS flights."}
       ]
     };
 
@@ -686,7 +686,8 @@
     // phone backups merge instead of creating duplicate expenses.
     const BASE_EXPENSES = [
       {id:1785675607375,date:"2026-08-02",city:"Other",cat:"Shopping",desc:"Alibaba backpacks",amt:25,cur:"USD",fx:1,statementUsd:25,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:""},
-      {id:1785675679218,date:"2026-08-04",city:"Home",cat:"Miscellaneous",desc:"Amazon - tracker cards",amt:80,cur:"USD",fx:1,statementUsd:null,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:""}
+      {id:1785675679218,date:"2026-08-04",city:"Home",cat:"Miscellaneous",desc:"Amazon - tracker cards",amt:80,cur:"USD",fx:1,statementUsd:null,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:""},
+      {id:1788280000000,date:"2026-09-01",city:"Home",cat:"Shopping",desc:"Travelpro Platinum Elite Medium Check-In Spinner - True Navy",amt:407.36,cur:"USD",fx:1,statementUsd:407.36,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:"$450.00 retail; $67.50 Military ID.me discount; $382.50 subtotal; free shipping; $22.95 Florida tax; $1.91 Hernando County tax; $407.36 total."}
     ];
 
 // ===================== MAPS & LINKS DATA (spreadsheet-aligned) =====================
