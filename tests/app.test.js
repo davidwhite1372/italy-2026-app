@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.11.0");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.11.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 1, 2026 at 7:12 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 1, 2026 at 7:20 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -327,7 +327,7 @@ test("Timeline details toggle in place and a second Timeline-nav tap goes to the
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("Timeline and Travel Details deep-link to the exact FCO cards in both directions", async t => {
+test("Timeline and Travel Details deep-link and Back restore the exact FCO card", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
   const { window } = app;
@@ -349,11 +349,16 @@ test("Timeline and Travel Details deep-link to the exact FCO cards in both direc
   assert.equal(travelCard.classList.contains("search-highlight"), true);
   assert.match(travelCard.textContent, /See in Timeline/);
   assert.match(travelCard.textContent, /FCO Arrival.*Train Station/s);
+  assert.equal(document.querySelector("#travelDetailsBackButton").hidden, false);
 
-  window.openTimelineItem("tl-0010");
-  await new Promise(resolve => setTimeout(resolve, 50));
+  window.history.back();
+  await new Promise(resolve => setTimeout(resolve, 100));
+  assert.equal(document.querySelector("#page-timeline").classList.contains("active"), true);
   assert.equal(document.querySelector('[data-timeline-id="tl-0010"] .tl-expanded').hidden, false);
   assert.equal(document.querySelector('[data-timeline-id="tl-0010"]').classList.contains("search-highlight"), true);
+
+  window.showPage("transport");
+  assert.equal(document.querySelector("#travelDetailsBackButton").hidden, true);
   assert.deepEqual(app.runtimeErrors, []);
 });
 

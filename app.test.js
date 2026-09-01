@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.11.0");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.11.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 1, 2026 at 7:12 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 1, 2026 at 7:20 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });

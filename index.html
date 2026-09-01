@@ -1039,6 +1039,7 @@
     <!-- TRAVEL DETAILS -->
     <section id="page-transport" class="page">
       <div class="section-title">Travel Details</div>
+      <button id="travelDetailsBackButton" class="btn-outline mb-8" hidden onclick="returnFromTravelDetails()">← Back to Timeline</button>
       <div class="owner-banner"><span class="owner-icon">✏️</span><div><strong>Complete travel reference and editing.</strong> Flights, trains, transfers, hotels, tours, and events automatically update their linked Timeline, Maps, Reservations, Wallet, and Home views.</div></div>
       <button style="width:100%;margin:0 0 14px;" onclick="addTripItem()">＋ Add Trip Item</button>
       <div id="travelOverview"></div>
@@ -1396,7 +1397,7 @@
       version: "10.11.0",
       build: "10.11.0",
       backupSchema: 6,
-      lastEdited: "September 1, 2026 at 7:12 PM EDT"
+      lastEdited: "September 1, 2026 at 7:20 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -4232,16 +4233,17 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       const target = item ? timelineOwnerAction(item).target : null;
       if (!target) { showPage("transport"); return; }
       resetTravelDetailFilters();
-      showPage("transport");
+      try { history.replaceState({ ...(history.state || {}), page:"timeline", timelineId }, "", "#timeline"); } catch (e) {}
+      showPage("transport", false, { fromTimelineId:timelineId });
       requestAnimationFrame(() => focusTravelTarget(target, editMode));
     }
 
-    function openTimelineItem(timelineId) {
+    function focusTimelineCard(timelineId) {
+      if (!timelineId) return;
       tlFilter = "all";
       tlModeFilter = "all";
       tlSearch = "";
       expandedTimelineItems.add(timelineId);
-      showPage("timeline");
       requestAnimationFrame(() => {
         const safeId = String(timelineId).replace(/["\\]/g, "\\$&");
         const card = document.querySelector(`#timelineList .tl-step[data-timeline-id="${safeId}"]`);
@@ -4250,6 +4252,23 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         card.scrollIntoView({behavior:"smooth",block:"center"});
         setTimeout(() => card.classList.remove("search-highlight"), 2400);
       });
+    }
+
+    function openTimelineItem(timelineId) {
+      showPage("timeline", false, { timelineId });
+    }
+
+    let travelDetailsOriginTimelineId = "";
+
+    function updateTravelDetailsBackButton() {
+      const button = document.getElementById("travelDetailsBackButton");
+      if (!button) return;
+      button.hidden = !travelDetailsOriginTimelineId;
+    }
+
+    function returnFromTravelDetails() {
+      if (!travelDetailsOriginTimelineId) { showPage("timeline"); return; }
+      try { history.back(); } catch (e) { openTimelineItem(travelDetailsOriginTimelineId); }
     }
 
     function timelineIdForTravelTarget(type, id) {
@@ -5726,7 +5745,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       showPage("timeline");
     }
 
-    function showPage(id, fromHistory) {
+    function showPage(id, fromHistory, navigationState={}) {
       if (!document.getElementById("page-" + id)) id = "home";
 
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
@@ -5744,11 +5763,27 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
 
       if (id === "home") { renderHome(); renderDualClocks(); }
       if (id === "today") renderToday();
-      if (id === "timeline") { requestTimelineAutoScroll(); renderTimeline(); }
+      if (id === "timeline") {
+        if (navigationState.timelineId) {
+          tlFilter = "all";
+          tlModeFilter = "all";
+          tlSearch = "";
+          expandedTimelineItems.add(navigationState.timelineId);
+          renderTimeline();
+          focusTimelineCard(navigationState.timelineId);
+        } else {
+          requestTimelineAutoScroll();
+          renderTimeline();
+        }
+      }
       if (id === "bookings") renderBookings();
       if (id === "cities") renderCities();
       if (id === "food") renderFood();
-      if (id === "transport") renderTransport();
+      if (id === "transport") {
+        travelDetailsOriginTimelineId = navigationState.fromTimelineId || "";
+        renderTransport();
+        updateTravelDetailsBackButton();
+      }
       if (id === "prep") renderPrep();
       if (id === "money") renderMoney();
       if (id === "more") renderMore();
@@ -5764,7 +5799,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       // Each page visit becomes a real history entry. The phone Back button
       // therefore returns to the page that was actually viewed previously.
       if (!fromHistory) {
-        try { history.pushState({ page: id }, "", "#" + id); } catch (e) {}
+        try { history.pushState({ page: id, ...navigationState }, "", "#" + id); } catch (e) {}
       }
     }
 
@@ -5783,7 +5818,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
 
       const targetPage = event.state && event.state.page;
       if (targetPage && document.getElementById("page-" + targetPage)) {
-        showPage(targetPage, true);
+        showPage(targetPage, true, event.state || {});
         return;
       }
 
