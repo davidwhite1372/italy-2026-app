@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.11.0");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.11.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 1, 2026 at 6:52 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 1, 2026 at 7:12 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -338,6 +338,8 @@ test("Timeline and Travel Details deep-link to the exact FCO cards in both direc
   assert.ok(timelineCard);
   assert.match(timelineCard.textContent, /Open travel details/);
   assert.match(timelineCard.textContent, /Edit details/);
+  const source = fs.readFileSync(path.join(projectRoot, "index.html"), "utf8");
+  assert.match(source, /\.tl-detail-link-row button\.link-btn\s*\{[^}]*color:#fff !important;[^}]*background:var\(--primary\);/);
 
   window.openTravelDetailsFromTimeline("tl-0010", false);
   await new Promise(resolve => setTimeout(resolve, 50));

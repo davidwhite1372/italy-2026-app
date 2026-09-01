@@ -6,6 +6,7 @@
 
 - Renamed Travel to Travel Details and made Timeline the clearly labeled live trip-day guide.
 - Added two-way deep links between linked Timeline and Travel Details cards, including exact-card scrolling, expansion, highlighting, and direct edit mode.
+- Fixed the Timeline Open travel details button to retain high-contrast white text in day and night modes.
 - Added official Italian Civil Protection, U.S. State Department, Delta, and SAS alert/status links under Safety and Emergency.
 - Added the $407.36 Travelpro Platinum Elite Medium Check-In Spinner purchase with the military discount, taxes, free shipping, and generic Credit Card payment.
 - Promoted the reviewed deletion of the redundant David Primary credit card packing item.
