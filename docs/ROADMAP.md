@@ -40,7 +40,7 @@ Status: Completed and included in later releases
 - Correct stale maps and travel references, and prepare a readable import-ready workbook.
 
 ## Version 10.12.0 — Full Feature Release
-Status: Release candidate on `develop`
+Status: Released on `main`
 
 - Reconcile reviewed phone exports and preserve schema 6 backup compatibility.
 - Correct the CPH outbound timeline, travel-detail sticky headers, and Timeline date anchoring.
@@ -49,6 +49,13 @@ Status: Release candidate on `develop`
 - Add separate Favorite and Want to try restaurant states.
 - Add receipt-sourced expenses, required company-paid tracking, weekly report status, and online-only scan messaging.
 - Improve notes, Trip Tools ordering, and offline asset coverage.
+
+## Version 10.12.1 — Guide Usability Patch
+Status: In progress on `develop`
+
+- Open the CPH and Vaporetto guides as phone-friendly PNGs, while retaining PDF print copies.
+- Fix Quick Guides button contrast so every label remains readable.
+- Reorganize the Maps, Links & Travel Guide page again soon; the current task-based separation is intentionally retained for now as a follow-up item.
 
 ## Version 11.0.0 — Shared Cloud Data
 Status: Evaluation planned

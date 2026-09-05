@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.12.0");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.12.0");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.12.1");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.12.1");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 5, 2026 at 3:30 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 5, 2026 at 6:45 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -638,7 +638,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"10.12.0");
+  assert.equal(payload.appVersion,"10.12.1");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -676,7 +676,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.12.0");
+  assert.equal(payload.appVersion, "10.12.1");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -695,9 +695,9 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.12.0");
-  assert.match(manifest.description,/Version 10\.12\.0/);
-  assert.match(worker,/v10-12-0-full-release-2/);
+  assert.equal(packageData.version,"10.12.1");
+  assert.match(manifest.description,/Version 10\.12\.1/);
+  assert.match(worker,/v10-12-1-guide-usability/);
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
     timeline:49,restaurants:67,attractions:15,reservations:10,budget:18,packing:72,open:13
   });

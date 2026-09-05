@@ -1,5 +1,14 @@
 # Changelog
 
+## [10.12.1] - 2026-09-05
+
+### Changed
+
+- Added high-resolution PNG versions of the CPH connection guide and 2026 ACTV Vaporetto map for direct in-app viewing, while retaining the PDF versions as secondary print options.
+- Fixed unreadable Quick Guides & Maps feature buttons by separating button background and label colors.
+- Noted that the current Maps, Links & Travel Guide separation needs another reorganization pass soon; no further structural change is made in this patch.
+- Updated the in-app version, build, service-worker cache, package metadata, and last-edited timestamp.
+
 ## [10.12.0] - 2026-09-05
 
 ### Added
