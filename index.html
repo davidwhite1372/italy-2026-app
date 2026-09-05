@@ -641,6 +641,16 @@
     .comfort-tip{padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:.82rem;line-height:1.45;margin-top:10px;}
     .travel-help-card { border-left:4px solid var(--warning); }
     .travel-empty { padding:22px 14px; text-align:center; color:var(--muted); border:1px dashed var(--border); border-radius:12px; }
+    .maps-page-intro { margin:-3px 2px 12px; line-height:1.45; }
+    .maps-quick-nav { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-bottom:16px; }
+    .maps-quick-nav button { min-height:46px; padding:9px 10px; border:1px solid var(--border); border-radius:12px; background:var(--card); color:var(--primary); font-size:.78rem; font-weight:800; line-height:1.15; }
+    .maps-quick-nav button.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+    .maps-feature-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+    .maps-feature-card { display:flex; flex-direction:column; min-height:148px; padding:12px; border:1px solid var(--border); border-radius:12px; background:var(--card); box-shadow:var(--shadow); }
+    .maps-feature-card h3 { font-size:.9rem; line-height:1.25; color:var(--primary); }
+    .maps-feature-card p { flex:1; margin-top:5px; font-size:.74rem; line-height:1.4; color:var(--muted); }
+    .maps-feature-card button { width:100%; margin-top:9px; padding:8px 9px; font-size:.76rem; }
+    @media (max-width:420px) { .maps-feature-grid { grid-template-columns:1fr; } }
     .travel-section-label { margin:18px 2px 8px; font-size:.78rem; font-weight:850; color:var(--primary); text-transform:uppercase; letter-spacing:.06em; }
     .travel-confirmation { margin-top:10px; padding:10px 11px; border:1px solid rgba(46,125,50,.28); border-radius:11px; background:rgba(46,125,50,.07); }
     .travel-confirmation.pending { border-color:rgba(239,108,0,.34); background:rgba(239,108,0,.08); }
@@ -1208,34 +1218,29 @@
     <!-- MAPS, LINKS & TRAVEL GUIDE (sub) -->
     <section id="page-maps" class="page">
       <button class="btn-outline btn-sm mb-8" onclick="showPage('more')">← Back</button>
-      <div class="section-title" style="font-size:1.15rem;">Maps, Links &amp; Travel Guide</div>
-      <div class="filter-bar" id="mapsGuideFilters" aria-label="Maps, links and travel guide filters">
-        <div class="filter-chip active" data-maps-filter="all" onclick="setMapsGuideFilter('all')">All</div>
-        <div class="filter-chip" data-maps-filter="routes" onclick="setMapsGuideFilter('routes')">🗺️ Routes</div>
-        <div class="filter-chip" data-maps-filter="airports" onclick="setMapsGuideFilter('airports')">✈️ Airports</div>
-        <div class="filter-chip" data-maps-filter="hotels" onclick="setMapsGuideFilter('hotels')">🏨 Hotels</div>
-        <div class="filter-chip" data-maps-filter="venues" onclick="setMapsGuideFilter('venues')">🍽️ Venues &amp; Events</div>
-        <div class="filter-chip" data-maps-filter="official" onclick="setMapsGuideFilter('official')">🔗 Official Links</div>
-        <div class="filter-chip" data-maps-filter="local" onclick="setMapsGuideFilter('local')">🚕 Local Guide</div>
-<div class="filter-chip" data-maps-filter="comfort" onclick="setMapsGuideFilter('comfort')">🚻 Comfort &amp; Essentials</div>
-        <div class="filter-chip" data-maps-filter="help" onclick="setMapsGuideFilter('help')">🆘 Travel Help</div>
-        <div class="filter-chip" data-maps-filter="saved" onclick="setMapsGuideFilter('saved')">📌 Saved</div>
+      <div class="section-title" style="font-size:1.15rem;">Quick Guides &amp; Maps</div>
+      <div class="text-sm text-muted maps-page-intro">Open the guide you need. Trip-specific details remain in Timeline and Travel Details; this page is for quick references, maps, and official links.</div>
+      <div class="maps-quick-nav" id="mapsGuideFilters" aria-label="Quick guide sections">
+        <button class="active" data-maps-filter="featured" onclick="setMapsGuideFilter('featured')">⭐ Start here</button>
+        <button data-maps-filter="routes" onclick="setMapsGuideFilter('routes')">🗺️ City routes</button>
+        <button data-maps-filter="airports" onclick="setMapsGuideFilter('airports')">✈️ Airports</button>
+        <button data-maps-filter="local" onclick="setMapsGuideFilter('local')">🚤 City transport</button>
+        <button data-maps-filter="comfort" onclick="setMapsGuideFilter('comfort')">🚻 Practical guides</button>
+        <button data-maps-filter="help" onclick="setMapsGuideFilter('help')">🆘 What if?</button>
+        <button data-maps-filter="official" onclick="setMapsGuideFilter('official')">🔗 Official links</button>
+      </div>
+      <div class="maps-guide-group" data-maps-group="featured">
+        <div class="section-title">Start here</div>
+        <div id="mapsFeaturedGuides" class="maps-feature-grid"></div>
       </div>
       <div class="maps-guide-group" data-maps-group="routes">
-        <div class="section-title">Door-to-Door Routes</div>
+        <div class="section-title">City Routes</div>
+        <div class="text-sm text-muted mb-8">Walking and local route references. Scheduled flights, trains, and transfers are shown in Travel Details.</div>
         <div id="mapsRoutes"></div>
       </div>
       <div class="maps-guide-group" data-maps-group="airports">
         <div class="section-title">Airports &amp; Terminals</div>
         <div id="mapsAirports"></div>
-      </div>
-      <div class="maps-guide-group" data-maps-group="hotels">
-        <div class="section-title">Hotels</div>
-        <div id="mapsHotels"></div>
-      </div>
-      <div class="maps-guide-group" data-maps-group="venues">
-        <div class="section-title">Venues &amp; Events</div>
-        <div id="mapsVenues"></div>
       </div>
       <div class="maps-guide-group" data-maps-group="official">
         <div class="section-title">Official Transport Sites</div>
@@ -1253,13 +1258,8 @@
       </div>
       <div class="maps-guide-group" data-maps-group="help">
         <div class="section-title">Travel Help / What If?</div>
-        <div class="text-sm text-muted mb-8">Prepared backup instructions for delays, missed connections, baggage problems, and disruptions.</div>
-        <div id="mapsTravelHelpLocations"></div>
+        <div class="text-sm text-muted mb-8">Prepared backup instructions for delays, missed connections, baggage problems, and disruptions. Emergency contacts remain under Safety &amp; Emergency.</div>
         <div id="mapsTravelHelp"></div>
-      </div>
-      <div class="maps-guide-group" data-maps-group="saved">
-        <div class="section-title">Saved Links &amp; Pending</div>
-        <div id="mapsPending"></div>
       </div>
     </section>
 
@@ -5084,6 +5084,11 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       return MAP_DOOR_ROUTES.concat(MAP_CITY_ROUTES).map(r => ({ ...r }));
     }
 
+    function setMapsSection(id, html) {
+      const element = document.getElementById(id);
+      if (element) element.innerHTML = html;
+    }
+
     function routeSortKey(r) {
       if (Number.isFinite(r.order)) return String(r.order).padStart(5, "0");
       const date = r.dateISO || r.date || "9999-99-99";
@@ -5107,7 +5112,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           merged = { ...merged, dateISO:linked.date, date:shortDateLabel(linked.date), start:linked.start, end:linked.end,
             from:linked.from, to:linked.to, mode:linked.mode, duration:linked.time,
             note:linked.instructions, secondaryNote:linked.notes,
-            _linkedMaster:true, _linkedPage:"transport",
+            _linkedMaster:true, _linkedPage:"transport", _linkedTimelineId:timelineStateId(linked),
             _linkedLabel:linked.flightId ? "Edit Flight in Travel Details" : "Edit in Travel Details" };
         }
         return merged;
@@ -5343,7 +5348,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       return true;
     }
 
-    let mapsGuideFilter = "all";
+    let mapsGuideFilter = "featured";
 
     function setMapsGuideFilter(filter) {
       mapsGuideFilter = filter || "all";
@@ -5357,9 +5362,29 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     }
 
     function renderMaps() {
-      const routes = getAllDoorRoutes();
+      setMapsSection("mapsFeaturedGuides", `
+        <div class="maps-feature-card">
+          <h3>🚤 Venice Vaporetto map</h3>
+          <p>Current 2026 ACTV public water-bus routes. The JW Marriott shuttle is a separate private service.</p>
+          <button type="button" class="link-btn" onclick='openPdfViewer("assets/guides/venice-vaporetto-map-2026.pdf","ACTV Vaporetto Route Map · 2026")'>Open map →</button>
+        </div>
+        <div class="maps-feature-card">
+          <h3>✈️ Copenhagen connection</h3>
+          <p>Outbound CPH transfer steps, passport control, and the short connection plan.</p>
+          <button type="button" class="link-btn" onclick='openPdfViewer("assets/guides/cph-connection-guide-outbound.pdf","CPH Outbound Connection Guide")'>Open guide →</button>
+        </div>
+        <div class="maps-feature-card">
+          <h3>🚆 FCO arrival → train</h3>
+          <p>Follow the airport signs from the aircraft to baggage claim and the Leonardo Express.</p>
+          <button type="button" class="link-btn" onclick='openImageViewer("assets/guides/fco-arrival-to-train-1.png","FCO Arrival → Train Station · Page 1")'>Open guide →</button>
+        </div>
+      `);
 
-      document.getElementById("mapsRoutes").innerHTML = routes.map(r => {
+      // Scheduled trip routes already appear in Timeline and Travel Details.
+      // Keep this page focused on reusable city-route references and custom legs.
+      const routes = getAllDoorRoutes().filter(r => r._isCustom || Number(r.order) >= 100);
+
+      setMapsSection("mapsRoutes", routes.map(r => {
         const title = (r.title && r.title.trim()) ? r.title.trim() : `${r.from} → ${r.to}`;
         const timeBits = [r.start, r.end].filter(Boolean).join("–");
         const dateShow = r.date || (r.dateISO ? shortDateLabel(r.dateISO) : "");
@@ -5382,14 +5407,14 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
               ${r._isCustom
                 ? `<button class="edit-btn" onclick="editCustomLeg('${r._id}')">Edit</button><button class="edit-btn" style="color:var(--danger);" onclick="deleteCustomLeg('${r._id}')">Delete</button>`
                 : r._linkedMaster
-                  ? `<button class="edit-btn" onclick="showPage('${r._linkedPage}')">${r._linkedLabel}</button>`
+                  ? `<button class="edit-btn" onclick="openTravelDetailsFromTimeline('${r._linkedTimelineId}',true)">${r._linkedLabel}</button>`
                   : `<button class="edit-btn" onclick="editBaseRoute('${r._id}')">Edit Route Note</button>${getRouteEdits()[r._id] ? `<button class="edit-btn" style="color:var(--accent);" onclick="restoreBaseRoute('${r._id}')">Restore</button>` : ""}`}
             </div>
           </div>
         </div>`;
-      }).join("");
+      }).join(""));
 
-      document.getElementById("mapsAirports").innerHTML = MAP_AIRPORTS.map(a => `
+      setMapsSection("mapsAirports", MAP_AIRPORTS.map(a => `
         <div class="card">
           <div class="row space-between"><div class="fw-600">${a.name} (${a.code})</div>${statusBadge(a.status)}</div>
           <div class="text-sm text-muted mt-8">${a.tripUse}</div>
@@ -5399,9 +5424,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
             <a class="link-btn" href="${normalizedLink(a.official)}" target="_blank" rel="noopener">Official site →</a>
             ${a.secondary ? `<a class="link-btn" href="${normalizedLink(a.secondary)}" target="_blank" rel="noopener" style="color:var(--accent);">Terminal / transfer link →</a>` : ""}
           </div>
-        </div>`).join("");
+        </div>`).join(""));
 
-      document.getElementById("mapsHotels").innerHTML = MAP_HOTELS.map(h => `
+      setMapsSection("mapsHotels", MAP_HOTELS.map(h => `
         <div class="card">
           <div class="row space-between"><div class="fw-600">${h.name}</div>${statusBadge(h.status)}</div>
           <div class="text-xs text-muted">${h.city} · ${h.purpose}</div>
@@ -5409,9 +5434,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           ${h.access ? `<div class="text-sm mt-8"><strong>Access:</strong> ${h.access}</div>` : ""}
           ${h.note ? `<div class="text-sm text-muted mt-8"><strong>Note:</strong> ${h.note}</div>` : ""}
           <div class="quick-action-row">${h.address || h.name ? `<a class="link-btn" href="${googleMapSearchUrl(h.address || h.name)}" target="_blank" rel="noopener">Google Place</a><a class="link-btn" href="${appleMapSearchUrl(h.address || h.name)}" target="_blank" rel="noopener">Apple Place</a><a class="link-btn" href="${mapsLinkFor('',h.address || h.name)}" target="_blank" rel="noopener">Directions</a>` : ""}</div>
-        </div>`).join("");
+        </div>`).join(""));
 
-      document.getElementById("mapsVenues").innerHTML = MAP_VENUES_EVENTS.map(v => `
+      setMapsSection("mapsVenues", MAP_VENUES_EVENTS.map(v => `
         <div class="card">
           <div class="row space-between"><div class="fw-600">${escapeHtml(v.name)}</div>${statusBadge(v.status)}</div>
           <div class="text-xs text-muted">${escapeHtml(v.city)} · ${escapeHtml(v.kind)}</div>
@@ -5421,19 +5446,19 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           ${v.access ? `<div class="text-sm mt-8"><strong>Access:</strong> ${escapeHtml(v.access)}</div>` : ""}
           ${v.note ? `<div class="text-sm text-muted mt-8"><strong>Note:</strong> ${escapeHtml(v.note)}</div>` : ""}
           <div class="quick-action-row">${v.address || v.name ? `<a class="link-btn" href="${googleMapSearchUrl(v.address || v.name)}" target="_blank" rel="noopener">Google Place</a><a class="link-btn" href="${appleMapSearchUrl(v.address || v.name)}" target="_blank" rel="noopener">Apple Place</a><a class="link-btn" href="${mapsLinkFor('',v.address || v.name)}" target="_blank" rel="noopener">Directions</a>` : ""}</div>
-        </div>`).join("");
+        </div>`).join(""));
 
-      document.getElementById("mapsOfficial").innerHTML = MAP_OFFICIAL_SITES.map(s => `
+      setMapsSection("mapsOfficial", MAP_OFFICIAL_SITES.map(s => `
         <div class="card">
           <div class="fw-600">${s.name}</div>
           <div class="text-xs text-muted">${s.area} · Verify: ${s.verify}</div>
           <div class="text-sm mt-8"><strong>Use:</strong> ${s.use}</div>
           <div class="text-sm text-muted"><strong>Note:</strong> ${s.note}</div>
           <a class="link-btn" href="${normalizedLink(s.link)}" target="_blank" rel="noopener">Open official site →</a>
-        </div>`).join("");
+        </div>`).join(""));
 
       const guideCities = [...new Set(GROUND.map(g => g.city))];
-      document.getElementById("mapsLocalGuide").innerHTML = guideCities.map(city => {
+      setMapsSection("mapsLocalGuide", guideCities.map(city => {
         const cards = GROUND.filter(g => g.city === city).map(g => `
           <div class="travel-guide-card">
             <div class="fw-700">${escapeHtml(g.mode)}</div>
@@ -5445,11 +5470,6 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           <div class="venice-tide-card">
             <div class="venice-tide-title">Venice High Water Guide</div>
             <div class="venice-tide-intro">Check the forecast before heading out. Flooding begins at different heights around the city.</div>
-            <div class="travel-guide-card" style="margin:0 0 10px;">
-              <div class="fw-700">ACTV Vaporetto Route Map · 2026</div>
-              <div class="text-xs text-muted mt-8">Current public water-bus routes for Venice. Use this map for ACTV routes; the JW Marriott shuttle is a separate private service.</div>
-              <button type="button" class="link-btn mt-8" onclick='openPdfViewer("assets/guides/venice-vaporetto-map-2026.pdf","ACTV Vaporetto Route Map · 2026")'>📄 Open Vaporetto map →</button>
-            </div>
             <div class="venice-tide-grid">
               <div class="venice-tide-item">
                 <img src="assets/tides/san-marco.png" alt="High-water walking levels at Piazza San Marco" loading="lazy">
@@ -5475,7 +5495,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
             </div>
           </div>` : "";
         return `<div class="travel-reference-city">${escapeHtml(city)}</div>${cards}${tideGuide}`;
-      }).join("");
+      }).join(""));
 
       const comfortCities = [
         {
@@ -5494,7 +5514,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           note:"Veritas municipal toilets are generally paid and staffed. Cafés and museums are useful backups when public facilities are closed."
         }
       ];
-      document.getElementById("mapsComfortEssentials").innerHTML = `
+      setMapsSection("mapsComfortEssentials", `
         <div class="card comfort-city-card">
           <div class="fw-700">🚻 Toilets in Italy · Survival Guide</div>
           <div class="text-sm text-muted mt-8">Open the high-resolution guide for phrases, paid toilets, reliable locations, and what to expect.</div>
@@ -5509,9 +5529,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           <div class="fw-600">Reliable options</div>
           <ul class="comfort-list text-sm">${c.picks.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>
           <div class="comfort-tip"><strong>Practical tip:</strong> ${escapeHtml(c.note)}</div>
-        </div>`).join("");
+        </div>`).join(""));
 
-      document.getElementById("mapsTravelHelpLocations").innerHTML = MAP_TRAVEL_HELP_LOCATIONS.map(h => `
+      setMapsSection("mapsTravelHelpLocations", MAP_TRAVEL_HELP_LOCATIONS.map(h => `
         <div class="card">
           <div class="row space-between"><div class="fw-600">${escapeHtml(h.name)}</div>${statusBadge(h.status)}</div>
           <div class="text-xs text-muted">${escapeHtml(h.city)} · ${escapeHtml(h.purpose)}</div>
@@ -5519,25 +5539,25 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           <div class="text-sm"><strong>Access:</strong> ${escapeHtml(h.access)}</div>
           <div class="text-sm text-muted mt-8"><strong>Note:</strong> ${escapeHtml(h.note)}</div>
           <div class="quick-action-row"><a class="link-btn" href="${googleMapSearchUrl(h.address)}" target="_blank" rel="noopener">Google Place</a><a class="link-btn" href="${appleMapSearchUrl(h.address)}" target="_blank" rel="noopener">Apple Place</a><a class="link-btn" href="${mapsLinkFor('',h.address)}" target="_blank" rel="noopener">Directions</a></div>
-        </div>`).join("");
+        </div>`).join(""));
 
-      document.getElementById("mapsTravelHelp").innerHTML = CONTINGENCIES.map(c => `
+      setMapsSection("mapsTravelHelp", CONTINGENCIES.map(c => `
         <div class="travel-guide-card travel-help-card">
           <div class="row space-between"><div class="fw-700" style="color:var(--danger);">${escapeHtml(c.scenario)}</div>${c.priority ? urgencyBadge(c.priority) : ""}</div>
           <div class="text-sm mt-8"><strong>Do:</strong> ${escapeHtml(c.action)}</div>
           <div class="text-sm"><strong>Contact:</strong> ${escapeHtml(c.contact)}</div>
           <div class="text-sm text-muted"><strong>Avoid:</strong> ${escapeHtml(c.avoid)}</div>
           ${c.docs ? `<div class="text-xs text-muted mt-8"><strong>Keep:</strong> ${escapeHtml(c.docs)}</div>` : ""}
-        </div>`).join("");
+        </div>`).join(""));
 
-      document.getElementById("mapsPending").innerHTML = MAP_SAVED_PENDING.map(p => `
+      setMapsSection("mapsPending", MAP_SAVED_PENDING.map(p => `
         <div class="card">
           <div class="row space-between"><div class="fw-600">${p.item}</div>${statusBadge(p.status)}</div>
           <div class="text-xs text-muted">${p.priority} priority · Owner: ${p.owner} · Due: ${p.due}</div>
           <div class="text-sm mt-8"><strong>Dependency:</strong> ${p.dependency}</div>
           <div class="text-sm text-muted"><strong>Note:</strong> ${p.note}</div>
           ${p.link ? `<a class="link-btn" href="${normalizedLink(p.link)}" target="_blank" rel="noopener">Open saved link →</a>` : ""}
-        </div>`).join("");
+        </div>`).join(""));
       setMapsGuideFilter(mapsGuideFilter);
     }
 
@@ -5765,11 +5785,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       getPackingItems().forEach(x=>add("Packing",x.item,[x.traveler,x.cat,x.bag].filter(Boolean).join(" · "),"prep",x.item,x,{prepTab:"packing"}));
       getPhraseItems().forEach(x=>add("Italian Phrase",x.en,[x.it,x.pr,x.category].filter(Boolean).join(" · "),"prep",x.en,x,{prepTab:"phrases"}));
       Object.entries(SAFETY||{}).forEach(([k,v])=>add("Safety",k.replace(/([A-Z])/g," $1"),searchableText(v).slice(0,160),"prep",k,{[k]:v},{safety:true,prepTab:"safety"}));
-      getAllDoorRoutes().forEach(x=>add("Maps · Route",x.title||`${x.from||""} → ${x.to||""}`,[x.date,x.mode,x.note].filter(Boolean).join(" · "),"maps",x.title||x.from||x.to,x,{mapsFilter:"routes"}));
+      getAllDoorRoutes().filter(x=>x._isCustom || Number(x.order)>=100).forEach(x=>add("Maps · City Route",x.title||`${x.from||""} → ${x.to||""}`,[x.date,x.mode,x.note].filter(Boolean).join(" · "),"maps",x.title||x.from||x.to,x,{mapsFilter:"routes"}));
       (MAP_AIRPORTS||[]).forEach(x=>add("Maps · Airport",`${x.name} (${x.code})`,x.tripUse,"maps",x.name,x,{mapsFilter:"airports"}));
-      (MAP_HOTELS||[]).forEach(x=>add("Maps · Hotel",x.name,[x.city,x.purpose,x.address].filter(Boolean).join(" · "),"maps",x.name,x,{mapsFilter:"hotels"}));
-      (MAP_VENUES_EVENTS||[]).forEach(x=>add("Maps · Venue/Event",x.name,[x.city,x.kind,x.event,x.transportation,x.address].filter(Boolean).join(" · "),"maps",x.name,x,{mapsFilter:"venues"}));
-      (MAP_TRAVEL_HELP_LOCATIONS||[]).forEach(x=>add("Travel Help",x.name,[x.city,x.purpose,x.address].filter(Boolean).join(" · "),"maps",x.name,x,{mapsFilter:"help"}));
       (MAP_OFFICIAL_SITES||[]).forEach(x=>add("Official Link",x.name,[x.area,x.use].filter(Boolean).join(" · "),"maps",x.name,x,{mapsFilter:"official"}));
       (GROUND||[]).forEach(x=>add("Local Travel Guide",`${x.city} · ${x.mode}`,x.best,"maps",x.mode,x,{mapsFilter:"local"}));
       [
@@ -5778,7 +5795,6 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         {city:"Venice", terms:"bathroom restroom toilet Diurno San Marco Giardini Reali Accademia Rialto Piazzale Roma Santa Lucia Veritas"}
       ].forEach(x=>add("Comfort & Essentials",`${x.city} restrooms`,"Public toilets and reliable comfort stops","maps",x.city,x,{mapsFilter:"comfort"}));
       (CONTINGENCIES||[]).forEach(x=>add("Travel Help",x.scenario||x.title||"What If?",x.action||x.plan||searchableText(x).slice(0,160),"maps",x.scenario||x.title||searchableText(x).slice(0,40),x,{mapsFilter:"help"}));
-      (MAP_SAVED_PENDING||[]).forEach(x=>add("Saved Link",x.name||x.title||x.item,searchableText(x).slice(0,160),"maps",x.name||x.title||x.item,x,{mapsFilter:"saved"}));
       return entries;
     }
 

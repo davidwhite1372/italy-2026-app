@@ -12,6 +12,7 @@
 
 ### Changed
 
+- Reorganized Maps, Links & Travel Guide into task-based quick sections with a prominent Venice Vaporetto map and no duplicate hotel, venue, saved-item, or consular displays.
 - Repaired mobile sticky behavior so Timeline date headers and Travel Details filters stay below the app header without overlaying content.
 - Replaced direct PDF download links with an in-app PDF viewer and fixed phrase playback for Italian entries containing apostrophes.
 - Wrapped restaurant and expense filters so every option remains visible on narrow phone screens.
