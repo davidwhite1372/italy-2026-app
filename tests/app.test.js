@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.11.0");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.11.0");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.12.0");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.12.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 1, 2026 at 7:41 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 5, 2026 at 3:30 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -362,7 +362,7 @@ test("Timeline and Travel Details deep-link and Back restore the exact FCO card"
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("10.11.0 promotes reviewed budget, packing, and official alert changes", async t => {
+test("10.12.0 promotes reviewed budget, packing, and official alert changes", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
   const { window } = app;
@@ -654,7 +654,7 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("10.11.0 normalizes promoted phone data into clean schema 6 exports", async t => {
+test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async t => {
   const promotedNote={id:"note_1787450342393",title:"ATM IN ROME",category:"Miscellaneous",body:"Walk toward the Anantara Palazzo Naiadi.\n\nStop at the UniCredit ATM on Via Vittorio Emanuele Orlando 70",pinned:false,createdAt:"2026-08-23T01:59:02.393Z",updatedAt:"2026-08-23T01:59:02.393Z"};
   const app = await bootApp({
     italy2026_live:{sharedTravel:{
@@ -695,12 +695,12 @@ test("10.11.0 normalizes promoted phone data into clean schema 6 exports", async
   assert.deepEqual(JSON.parse(JSON.stringify(window.getRouteEdits())),{});
   assert.deepEqual(JSON.parse(JSON.stringify(window.getPackCatalogData())),{edits:{},custom:{},deleted:{}});
   assert.deepEqual(JSON.parse(JSON.stringify(window.getPhraseCatalogData())),{edits:{},custom:{},deleted:{}});
-  assert.equal(window.getRestLog()["restaurant-0064"].favorite,true);
+  assert.equal(window.getRestLog()["restaurant-0064"].wantToTry,true);
 
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"10.11.0");
+  assert.equal(payload.appVersion,"10.12.0");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -709,7 +709,7 @@ test("10.11.0 normalizes promoted phone data into clean schema 6 exports", async
   assert.deepEqual(payload.phrasecatalog,{edits:{},custom:{},deleted:{}});
   assert.deepEqual(payload.expenses,[]);
   assert.deepEqual(payload.notes,[]);
-  assert.deepEqual(payload.restlog,{"restaurant-0064":{favorite:true,notes:""}});
+  assert.deepEqual(payload.restlog,{"restaurant-0064":{favorite:false,wantToTry:true,notes:""}});
   assert.equal(window.getNotes().some(note=>["note_1788029996450","note_1787702157588"].includes(note.id)),false);
 
   window.performImport(payload,"replace");
@@ -740,7 +740,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.11.0");
+  assert.equal(payload.appVersion, "10.12.0");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -759,10 +759,10 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.11.0");
-  assert.match(manifest.description,/Version 10\.11\.0/);
-  assert.match(worker,/v10-11-0/);
-  ["fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png"].forEach(name=>{
+  assert.equal(packageData.version,"10.12.0");
+  assert.match(manifest.description,/Version 10\.12\.0/);
+  assert.match(worker,/v10-12-0-full-release-2/);
+  ["fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
   });
@@ -773,6 +773,19 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     assert.equal(ids.every(Boolean),true);
     assert.equal(new Set(ids).size,ids.length);
   });
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("mobile sticky controls, PDF viewer, and apostrophe phrases are wired safely", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const source = fs.readFileSync(path.join(projectRoot, "index.html"), "utf8");
+  assert.match(source, /overflow-x:\s*clip/);
+  assert.match(source, /\.filter-bar\s*\{[^}]*flex-wrap:\s*wrap/);
+  assert.match(source, /id="pdfViewerFrame"/);
+  assert.match(source, /function openPdfViewer\(/);
+  assert.match(source, /data-phrase="\$\{escapeHtml\(p\.it\)\}"/);
+  assert.match(source, /this\.closest\('\.phrase-row'\)\.dataset\.phrase/);
   assert.deepEqual(app.runtimeErrors, []);
 });
 
@@ -820,7 +833,7 @@ test("offline application shell lists every required local asset", () => {
     "./assets/tides/santa-lucia.png"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v10-11-0-travel-details-1/);
+  assert.match(worker, /italy-2026-github-v10-12-0-full-release-2/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);

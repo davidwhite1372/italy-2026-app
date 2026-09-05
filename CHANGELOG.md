@@ -1,5 +1,32 @@
 # Changelog
 
+## [10.12.0] - 2026-09-05
+
+### Added
+
+- Added the CPH outbound connection guide and current 2026 ACTV Vaporetto route map as offline app guides.
+- Added offline Italian phrase playback with normal-speed and slow practice controls.
+- Added a Google Translate face-to-face shortcut with browser fallback.
+- Added separate Favorite and Want to try restaurant states and filters.
+- Added persistent work expense report status, submitted/unsubmitted filters, and receipt-scan network messaging.
+
+### Changed
+
+- Repaired mobile sticky behavior so Timeline date headers and Travel Details filters stay below the app header without overlaying content.
+- Replaced direct PDF download links with an in-app PDF viewer and fixed phrase playback for Italian entries containing apostrophes.
+- Wrapped restaurant and expense filters so every option remains visible on narrow phone screens.
+- Corrected the Oct 4 departure to 06:00 and the outbound CPH connection to a 90-minute scheduled connection with an 08:10 gate target.
+- Corrected phrase spelling and pronunciation, promoted Coperto and the reviewed phrase additions, and placed menu terms under Restaurants.
+- Added receipt-authoritative expenses: $6.35 carabiners, $21.97 wallet and cable lock order, and $83.07 Moto Tag order dated September 3.
+- Anchored Timeline dates and Travel Details filters beneath the measured app header, including phone safe-area space.
+- Enlarged the reference-note editor and kept its Save/Cancel controls accessible while scrolling.
+- Moved Journal & Notes directly below Italian Phrases in Trip Tools.
+
+### Preserved
+
+- Stable IDs, local-only photos, offline behavior, backup schema 6, and older supported backup imports.
+- Private luggage-lock information remains phone-only and outside source control.
+
 ## [10.11.0 DEV] - 2026-09-01
 
 ### Changed

@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-11-0-travel-details-1';
+const CACHE = 'italy-2026-github-v10-12-0-full-release-2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -19,6 +19,8 @@ const APP_SHELL = [
   ,'./assets/guides/italy-bathroom-survival.jpg'
   ,'./assets/guides/luggage-lock-instructions.jpg'
   ,'./assets/guides/venice-october-2026-tide-chart.png'
+  ,'./assets/guides/cph-connection-guide-outbound.pdf'
+  ,'./assets/guides/venice-vaporetto-map-2026.pdf'
 ];
 
 self.addEventListener('install', event => {

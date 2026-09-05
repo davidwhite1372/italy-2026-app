@@ -19,7 +19,7 @@
 
     const DAYS = [
       { date: "2026-10-04", theme: "Departure Day", city: "Tampa → Boston → Copenhagen", hotel: "Overnight in flight",
-        schedule: "6:45 AM leave Spring Hill; park at TPA; check bags to FCO; DL2706 to Boston; transfer to Terminal E; SK928 overnight to Copenhagen.",
+        schedule: "6:00 AM leave Spring Hill; park at TPA; check bags to FCO; DL2706 to Boston; transfer to Terminal E; SK928 overnight to Copenhagen.",
         transport: "Personal vehicle, SkyConnect, Delta DL2706, terminal transfer, SAS SK928.",
         dining: "Eat before the overnight flight; hydrate and sleep after the main meal.",
         tip: "Photograph the parking location and baggage tags. Keep passports, medication and power bank in the carry-on.",
@@ -105,14 +105,14 @@
     ];
 
     const TIMELINE = [
-      { id:"tl-0001", travelId:"travel-1", date:"2026-10-04", start:"06:45", end:"07:00", itemType:"Car / Drive", title:"Drive to TPA Economy Parking", from:"Spring Hill, FL", to:"TPA Economy Parking", mode:"Drive", time:"75-105 min", status:"Confirmed", instructions:"Drive via FL-589 / Veterans Expressway. Photograph parking location.", notes:"Leave extra time for traffic and parking." },
+      { id:"tl-0001", travelId:"travel-1", date:"2026-10-04", start:"06:00", end:"07:45", itemType:"Car / Drive", title:"Drive to TPA Economy Parking", from:"Spring Hill, FL", to:"TPA Economy Parking", mode:"Drive", time:"75-105 min", status:"Confirmed", instructions:"Leave Spring Hill at 06:00. Drive via FL-589 / Veterans Expressway. Photograph parking location.", notes:"Estimated parking arrival is 07:15–07:45; leave extra time for traffic and parking." },
       { id:"tl-0002", travelId:"travel-2", date:"2026-10-04", start:"08:00", end:"08:15", itemType:"Train", title:"Take SkyConnect to the Main Terminal", from:"TPA Economy Parking", to:"TPA Main Terminal", mode:"Train", time:"10-20 min", status:"Confirmed", instructions:"Elevator to Level 1, then SkyConnect to Main Terminal.", notes:"Keep luggage together." },
       { id:"tl-0003", travelId:"travel-3", date:"2026-10-04", start:"08:40", end:"09:05", itemType:"Information", title:"TPA Main Terminal → Delta check-in / bag drop", from:"TPA Main Terminal", to:"Delta check-in / bag drop", mode:"Walk", time:"15-25 min", status:"Confirmed", instructions:"Check bags through to FCO. Photograph baggage tags.", notes:"Verify final destination reads FCO." },
       { id:"tl-0004", travelId:"travel-4", date:"2026-10-04", start:"09:05", end:"09:35", itemType:"Information", title:"Delta check-in → TPA departure gate", from:"Delta check-in", to:"TPA departure gate", mode:"Walk", time:"20-30 min", status:"Confirmed", instructions:"Clear TSA and proceed to gate.", notes:"Boarding pass and passports accessible." },
       { id:"tl-0005", date:"2026-10-04", start:"11:39", end:"14:55", itemType:"Flight", flightId:"flight-dl2706", title:"TPA Airport → BOS - Boston Logan Airport Terminal A", from:"TPA Airport", to:"BOS - Boston Logan Airport Terminal A", mode:"Flight DL2706", time:"3h 16m", status:"Confirmed", instructions:"Economy.", notes:"" },
       { id:"tl-0006", travelId:"travel-6", date:"2026-10-04", start:"14:55", end:"16:55", itemType:"Walk", title:"Walk from Boston Terminal A to Terminal E / SAS gate", from:"BOS - Boston Logan Airport Terminal A", to:"BOS - Boston Logan Airport Terminal E / SAS gate", mode:"Walk", time:"45-90 min", status:"Verify Day-Of", instructions:"Confirm SK928 gate; follow the signed terminal route; re-clear TSA if required.", notes:"Gate target about 4:55 PM." },
       { id:"tl-0007", date:"2026-10-04", start:"17:40", end:"07:00+1", itemType:"Flight", flightId:"flight-sk928", title:"BOS - Boston Logan Airport Terminal E → CPH - Copenhagen Airport", from:"BOS - Boston Logan Airport Terminal E", to:"CPH - Copenhagen Airport", mode:"Flight SK928", time:"7h 20m", status:"Confirmed", instructions:"Premium Economy; set devices to Rome time, hydrate, sleep after meal.", notes:"Arrival is Oct 5." },
-      { id:"tl-0008", travelId:"travel-8", date:"2026-10-05", start:"07:00", end:"08:15", itemType:"Walk", title:"CPH - Copenhagen Airport arrival gate → CPH - Copenhagen Airport Rome departure gate", from:"CPH - Copenhagen Airport arrival gate", to:"CPH - Copenhagen Airport Rome departure gate", mode:"Airport connection / passport control", time:"60-75 min", status:"Confirmed", instructions:"Follow Transfer signs; enter Schengen; proceed to SK681 gate.", notes:"Tight 90-minute connection." },
+      { id:"tl-0008", travelId:"travel-8", date:"2026-10-05", start:"07:00", end:"08:30", itemType:"Walk", title:"CPH - Copenhagen Airport arrival gate → CPH - Copenhagen Airport Rome departure gate", from:"CPH - Copenhagen Airport arrival gate", to:"CPH - Copenhagen Airport Rome departure gate", mode:"Airport connection / passport control", time:"90 min scheduled connection", status:"Confirmed", instructions:"Stay airside. Follow Transfer / Omstigning signs; complete EES only if directed, then passport control; check the live screen for SK681 and proceed directly to its assigned gate.", notes:"SK928 arrives 07:00; SK681 departs 08:30. Aim to reach the gate by 08:10; boarding may close before departure." },
       { id:"tl-0009", date:"2026-10-05", start:"08:30", end:"11:05", itemType:"Flight", flightId:"flight-sk681", title:"CPH - Copenhagen Airport → FCO - Rome Fiumicino Airport Terminal 1", from:"CPH - Copenhagen Airport", to:"FCO - Rome Fiumicino Airport Terminal 1", mode:"Flight SK681", time:"2h 35m", status:"Confirmed", instructions:"Premium Economy.", notes:"" },
       { id:"tl-0010", travelId:"travel-10", date:"2026-10-05", start:"11:05", end:"12:15", itemType:"Information", title:"FCO - Rome Fiumicino Airport aircraft → FCO Airport baggage claim / train station", from:"FCO - Rome Fiumicino Airport aircraft", to:"FCO Airport baggage claim / train station", mode:"Walk", time:"45-70 min", status:"Confirmed", instructions:"Collect both bags, follow train icons to railway station.", notes:"No passport control expected after Schengen entry at CPH." },
       { id:"tl-0011", travelId:"travel-11", date:"2026-10-05", start:"12:15", end:"13:00", itemType:"Train", title:"Fiumicino Aeroporto Train Station → Roma Termini Train Station", from:"Fiumicino Aeroporto Train Station", to:"Roma Termini Train Station", mode:"Leonardo Express", time:"32 min + wait", status:"Confirmed", instructions:"Buy tickets from official Trenitalia. Nonstop to Termini.", notes:"Do not take FL1." },
@@ -365,7 +365,7 @@
       {id:"restaurant-0061",city:"Venice",name:"Trattoria da'a Marisa",neigh:"Cannaregio",style:"Home-style Venetian",price:"€€",order:"Fixed daily menu",best:"Lunch",res:"Required",access:"Hotel shuttle + walk",why:"No-frills workers' trattoria; very local",priority:"Good Option",maps:"https://www.google.com/maps/search/?api=1&query=Trattoria+da%E2%80%99a+Marisa+Venice+Italy"},
       {id:"restaurant-0062",city:"Venice",name:"Venissa Osteria Contemporanea",neigh:"Mazzorbo",style:"Lagoon cuisine",price:"€€€€",order:"Island produce and fish",best:"Lunch / Dinner",res:"Yes",access:"Boat trip",why:"Destination meal in the northern lagoon",priority:"Good Option",maps:"https://www.google.com/maps/search/?api=1&query=Venissa+Osteria+Contemporanea+Venice+Italy"},
       {id:"restaurant-0063",city:"Venice",name:"Rosticceria Gislon",neigh:"San Marco / Rialto",style:"Venetian quick service",price:"€",order:"Mozzarella in carrozza, fried seafood",best:"Lunch / Snack",res:"No",access:"Hotel shuttle + walk",why:"Fast, inexpensive local comfort food",priority:"Good Option",maps:"https://www.google.com/maps/search/?api=1&query=Rosticceria+Gislon+Venice+Italy"},
-      {id:"restaurant-0064",city:"Venice",name:"Caffè Florian",neigh:"Piazza San Marco 57",style:"Historic Venetian café / coffee, cocktails and snacks",price:"€€€€",order:"Coffee or decide there",best:"Coffee / Aperitivo",res:"No",access:"Vaporetto Lines 1 or 2 to San Marco + walk",why:"Iconic Italian coffeehouse in Piazza San Marco, open since 1720",priority:"Good Option",website:"https://caffeflorian.com",hours:"Daily 9:00 AM–11:00 PM",maps:"https://www.google.com/maps/search/?api=1&query=Caff%C3%A8+Florian+Piazza+San+Marco+57+Venice+Italy"},
+      {id:"restaurant-0064",city:"Venice",name:"Caffè Florian",neigh:"Piazza San Marco 57",style:"Historic Venetian café / coffee, cocktails and snacks",price:"€€€€",order:"Coffee or decide there",best:"Coffee / Aperitivo",res:"No",access:"Vaporetto Lines 1 or 2 to San Marco + walk",why:"Iconic Italian coffeehouse in Piazza San Marco, open since 1720",priority:"Good Option",defaultWantToTry:true,website:"https://caffeflorian.com",hours:"Daily 9:00 AM–11:00 PM",maps:"https://www.google.com/maps/search/?api=1&query=Caff%C3%A8+Florian+Piazza+San+Marco+57+Venice+Italy"},
       {id:"restaurant-0065",city:"Venice",name:"Bacareto da Lele",neigh:"Santa Croce",style:"Bacaro / panini",price:"€",order:"Tiny panini and ombre",best:"Lunch / Aperitivo",res:"No",access:"Near Piazzale Roma / Antiche Figure",why:"Budget local favorite near Piazzale Roma",priority:"Good Option",maps:"https://www.google.com/maps/search/?api=1&query=Bacareto+da+Lele+Venice+Italy"},
       {id:"restaurant-0066",city:"Venice",name:"Corte Sconta",neigh:"Castello",style:"Contemporary Venetian seafood",price:"€€€€",order:"Seasonal lagoon seafood, house-made pasta",best:"Lunch / Dinner",res:"Yes",access:"JW shuttle + walk",why:"Hidden courtyard and seasonal Venetian cooking; Tripadvisor reference 4.1/5 from 1,300+ reviews (Aug 2026)",priority:"Good Option",website:"https://www.cortescontave.com/",hours:"Verify current seasonal hours",maps:"https://www.google.com/maps/search/?api=1&query=Corte+Sconta+Calle+del+Pestrin+3886+Venice+Italy"},
       {id:"restaurant-0067",city:"Venice",name:"Osteria alla Frasca",neigh:"Cannaregio",style:"Traditional Venetian seafood",price:"€€€",order:"Fresh fish, pasta, seasonal specials",best:"Lunch / Dinner",res:"Recommended",access:"Near Fondamente Nove; JW shuttle + walk/vaporetto",why:"Quiet vine-covered courtyard; Tripadvisor reference 4.4/5 from 850+ reviews (Aug 2026)",priority:"High",hours:"Verify current seasonal hours",maps:"https://www.google.com/maps/search/?api=1&query=Osteria+Alla+Frasca+Corte+de+la+Carita+5176+Venice+Italy"}
@@ -506,7 +506,7 @@
         {en:"Good night",it:"Buonanotte",pr:"bwoh-nah-NOT-teh"},
         {en:"Goodbye",it:"Arrivederci",pr:"ah-ree-veh-DER-chee"},
         {en:"Please",it:"Per favore",pr:"pair fah-VOH-ray"},
-        {en:"Thank you",it:"Grazie",pr:"GRAHT-see-eh"},
+        {en:"Thank you",it:"Grazie",pr:"GRAHT-tsyeh"},
         {id:"phrase-0102",en:"Thank you very much",it:"Grazie mille",pr:"GRAHT-see-eh MEEL-leh"},
         {id:"phrase-0103",en:"How are you?",it:"Come stai?",pr:"KOH-meh STAI"},
         {id:"phrase-0104",en:"I am fine",it:"Sto bene",pr:"stoh BEH-neh"},
@@ -517,8 +517,8 @@
         {en:"Where is the train station?",it:"Dov'è la stazione?",pr:"doh-VEH la staht-see-OH-neh"},
         {en:"Two tickets, please",it:"Due biglietti, per favore",pr:"DOO-eh bee-lyet-TEE"},
         {en:"Which platform?",it:"Quale binario?",pr:"KWAH-leh bee-NAH-ree-oh"},
-        {en:"Where is the gate?",it:"Dov'è il gate?",pr:""},
-        {en:"I would like a taxi, please",it:"Vorrei un taxi, per favore",pr:""}
+        {en:"Where is the gate?",it:"Dov'è il gate?",pr:"doh-VEH eel gayt"},
+        {en:"I would like a taxi, please",it:"Vorrei un taxi, per favore",pr:"voh-RRAY oon TAHK-see, pair fah-VOH-ray"}
       ],
       "Hotels": [
         {en:"I have a reservation",it:"Ho una prenotazione",pr:"oh OO-na pray-noh-tah-TSYOH-neh"},
@@ -528,9 +528,15 @@
         {en:"The bill, please",it:"Il conto, per favore",pr:"eel KON-to"},
         {en:"Water",it:"Acqua",pr:"AH-kwah"},
         {en:"Coffee",it:"Caffè",pr:"kahf-FEH"},
-        {en:"A table for two, please",it:"Un tavolo per due, per favore",pr:""},
-        {id:"phrase-custom-da366552-4415-4bbf-9781-fa032d9078ce",en:"Cheese",it:"Formaggio",pr:"TBD"},
-        {id:"phrase-custom-9fa31b65-9c66-41f4-a233-9247772dde99",en:"Bottled tea",it:"Estathé",pr:"ess-tah-tay"}
+        {en:"A table for two, please",it:"Un tavolo per due, per favore",pr:"oon TAH-voh-loh pair DOO-eh, pair fah-VOH-ray"},
+        {id:"phrase-custom-da366552-4415-4bbf-9781-fa032d9078ce",en:"Cheese",it:"Formaggio",pr:"for-MAHD-joh"},
+        {id:"phrase-custom-9fa31b65-9c66-41f4-a233-9247772dde99",en:"Bottled tea",it:"Estathé",pr:"ess-tah-TAY"},
+        {id:"phrase-custom-f2a149a9-38eb-412a-8052-9ee4a9081d99",en:"Cover charge",it:"Coperto",pr:"koh-PEHR-toh"},
+        {id:"phrase-menu-antipasti",en:"Starters",it:"Antipasti",pr:"ahn-tee-PAHS-tee"},
+        {id:"phrase-menu-primi",en:"Pasta, risotto or soup",it:"Primi",pr:"PREE-mee"},
+        {id:"phrase-menu-secondi",en:"Meat or fish",it:"Secondi",pr:"seh-KOHN-dee"},
+        {id:"phrase-menu-contorni",en:"Vegetable or potato sides",it:"Contorni",pr:"kohn-TOR-nee"},
+        {id:"phrase-menu-dolci",en:"Desserts",it:"Dolci",pr:"DOHL-chee"}
       ],
       "Food & Ordering": [
         {id:"phrase-0201",en:"French fries",it:"Patatine fritte",pr:"pah-tah-TEE-neh FREET-teh"},
@@ -557,7 +563,7 @@
         {en:"Why?",it:"Perché?",pr:"pair-KEH"},
         {en:"Who?",it:"Chi?",pr:"kee"},
         {en:"What?",it:"Che cosa?",pr:"keh KOH-zah"},
-        {id:"phrase-custom-a106f552-7b58-4333-a8a5-32c187ba162f",en:"Can you help me?",it:"Può aiutarmi?",pr:"Può-“pwoh” aiutarmi- “ah-yoo-TAR-mee” Stress is on TAR."}
+        {id:"phrase-custom-a106f552-7b58-4333-a8a5-32c187ba162f",en:"Can you help me?",it:"Può aiutarmi?",pr:"pwoh ah-yoo-TAR-mee"}
       ],
       "Medical / Emergency": [
         {en:"I need a doctor",it:"Ho bisogno di un medico",pr:"oh bee-ZON-yo"},
@@ -585,10 +591,12 @@
         {en:"1000",it:"mille",pr:""}
       ],
       "Quick Reference": [
-        {en:"Excuse me",it:"Mi scusi",pr:""},
-        {en:"Do you speak English?",it:"Parla inglese?",pr:""},
+        {en:"Excuse me",it:"Mi scusi",pr:"mee SKOO-zee"},
+        {en:"Do you speak English?",it:"Parla inglese?",pr:"PAR-lah een-GLAY-zeh"},
         {en:"Watch out, pickpocket!",it:"Attenzione, borseggiatore!",pr:"aht-tehn-TSYOH-neh, bor-sej-jah-TOH-reh"},
-        {en:"Thank you",it:"Grazie",pr:"Most used"}
+        {id:"phrase-quick-reference-thank-you",en:"Thank you",it:"Grazie",pr:"GRAHT-tsyeh"},
+        {id:"phrase-custom-841aad4e-0337-4a1d-a251-ae9794e1b4e4",en:"I'm sorry",it:"Mi dispiace",pr:"mee dee-SPYAH-cheh"},
+        {id:"phrase-custom-d34e56e6-a7fd-4887-8d88-c234ed0aca21",en:"Nice to meet you. I'm David",it:"Piacere, sono David",pr:"pya-CHEH-reh, SOH-noh DAH-veed"}
       ]
     };
     Object.entries(PHRASES).forEach(([category,items]) => items.forEach(item => {
@@ -681,13 +689,16 @@
       {id:"budget-0018",cat:"Miscellaneous",sub:"Contingency",amt:0,cur:"USD",company:false,status:"Planned",notes:"Buffer for unexpected costs"}
     ];
 
-    // Confirmed pre-trip purchases imported from the two August 15 phone exports.
+    // Confirmed pre-trip purchases imported from the September 5 phone export and receipts.
     // These are defaults for a fresh install and retain their original IDs so future
     // phone backups merge instead of creating duplicate expenses.
     const BASE_EXPENSES = [
       {id:1785675607375,date:"2026-08-02",city:"Other",cat:"Shopping",desc:"Alibaba backpacks",amt:25,cur:"USD",fx:1,statementUsd:25,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:""},
       {id:1785675679218,date:"2026-08-04",city:"Home",cat:"Miscellaneous",desc:"Amazon - tracker cards",amt:80,cur:"USD",fx:1,statementUsd:null,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:""},
-      {id:1788280000000,date:"2026-09-01",city:"Home",cat:"Shopping",desc:"Travelpro Platinum Elite Medium Check-In Spinner - True Navy",amt:407.36,cur:"USD",fx:1,statementUsd:407.36,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:"$450.00 retail; $67.50 Military ID.me discount; $382.50 subtotal; free shipping; $22.95 Florida tax; $1.91 Hernando County tax; $407.36 total."}
+      {id:1788280000000,date:"2026-09-01",city:"Home",cat:"Shopping",desc:"Travelpro Platinum Elite Medium Check-In Spinner - True Navy",amt:407.36,cur:"USD",fx:1,statementUsd:407.36,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:"$450.00 retail; $67.50 Military ID.me discount; $382.50 subtotal; free shipping; $22.95 Florida tax; $1.91 Hernando County tax; $407.36 total."},
+      {id:1786810000001,date:"2026-08-15",city:"Other",cat:"Shopping",desc:"Small carabiner clips (24-piece pack)",amt:6.35,cur:"USD",fx:1,statementUsd:6.35,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:"Receipt total including tax; order placed August 15, 2026."},
+      {id:1787940000001,date:"2026-08-28",city:"Other",cat:"Shopping",desc:"Espera slim wallet and Lewis N. Clark cable luggage lock",amt:21.97,cur:"USD",fx:1,statementUsd:21.97,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:"Receipt total including tax; wallet $7.59 and cable lock $13.04 before combined tax."},
+      {id:1788636409472,date:"2026-09-03",city:"Other",cat:"Miscellaneous",desc:"Motorola Moto Tag 2 (4-pack)",amt:83.07,cur:"USD",fx:1,statementUsd:83.07,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:"Receipt total including tax; shipping charge and free-shipping credit cancel out."}
     ];
 
 // ===================== MAPS & LINKS DATA (spreadsheet-aligned) =====================
@@ -695,7 +706,7 @@ const MAP_DOOR_ROUTES = [
   {
     "order": 1,
     "dateISO": "2026-10-04",
-    "start": "06:45",
+    "start": "06:00",
     "date": "Oct 4",
     "to": "TPA Economy Parking",
     "mode": "Drive",
