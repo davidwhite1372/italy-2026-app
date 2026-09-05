@@ -6,7 +6,7 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 
 **Version 10.12.0 - Full feature release**
 
-Version 10.12.0 includes the Timeline and Travel Details corrections, receipt sourced expenses, work expense report tracking, CPH and Venice offline guides, Italian phrase playback, Google Translate access, separate Favorite and Want to try restaurant states, corrected sticky headers, expanded note editing, and the reviewed phone-data reconciliation while retaining schema 6 compatibility.
+Version 10.12.0 includes the Timeline and Travel Details corrections, receipt sourced expenses, work expense report tracking, CPH and Venice offline guides, a reorganized Quick Guides & Maps page, Italian phrase playback, Google Translate access, separate Favorite and Want to try restaurant states, corrected sticky headers, expanded note editing, and the reviewed phone-data reconciliation while retaining schema 6 compatibility.
 
 Version 10.11.0 is the previous production release until 10.12.0 is tested on `develop`, merged to `main`, and verified live/offline.
 

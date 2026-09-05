@@ -489,7 +489,7 @@ test("dark-mode converter styling and controlled Checked packing location are pr
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("Maps separates hotels, dinner venues, and consular help", async t => {
+test("Maps page prioritizes quick guides and avoids duplicate itinerary sections", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
   const { window } = app;
@@ -514,10 +514,12 @@ test("Maps separates hotels, dinner venues, and consular help", async t => {
   assert.deepEqual(mapData.help.map(item => item.name), ["U.S. Embassy Rome"]);
 
   window.showPage("maps");
-  assert.equal(document.querySelectorAll("#mapsHotels .card").length, 4);
-  assert.equal(document.querySelectorAll("#mapsVenues .card").length, 3);
-  assert.match(document.querySelector("#mapsVenues").textContent, /Villa Miani[\s\S]*Awards Dinner[\s\S]*Bus \/ Coach/);
-  assert.match(document.querySelector("#mapsTravelHelpLocations").textContent, /U\.S\. Embassy Rome/);
+  assert.equal(document.querySelectorAll("#mapsGuideFilters [data-maps-filter]").length, 7);
+  assert.match(document.querySelector("#mapsFeaturedGuides").textContent, /Venice Vaporetto map[\s\S]*Copenhagen connection[\s\S]*FCO arrival/);
+  assert.equal(document.querySelector("#mapsHotels"), null);
+  assert.equal(document.querySelector("#mapsVenues"), null);
+  assert.equal(document.querySelector("#mapsTravelHelpLocations"), null);
+  assert.equal(document.querySelector("#mapsPending"), null);
   assert.match(document.querySelector("#mapsLocalGuide").textContent, /Venice High Water Guide[\s\S]*82 cm[\s\S]*105 cm[\s\S]*135 cm/);
   assert.deepEqual(
     [...document.querySelectorAll("#mapsLocalGuide .venice-tide-item img")].map(image => image.getAttribute("src")),
@@ -525,10 +527,10 @@ test("Maps separates hotels, dinner venues, and consular help", async t => {
   );
   assert.equal(document.querySelector('#mapsLocalGuide a[href="https://www.comune.venezia.it/maree"]')?.textContent.trim(), "Check live tide forecast →");
 
-  const seenSearch = window.globalSearchEntries().find(item => item.title === "SEEN by Olivier");
-  const embassySearch = window.globalSearchEntries().find(item => item.title === "U.S. Embassy Rome" && item.mapsFilter);
-  assert.equal(seenSearch.mapsFilter, "venues");
-  assert.equal(embassySearch.mapsFilter, "help");
+  const oldVenueSearch = window.globalSearchEntries().find(item => item.title === "SEEN by Olivier" && item.mapsFilter === "venues");
+  const oldEmbassySearch = window.globalSearchEntries().find(item => item.title === "U.S. Embassy Rome" && item.mapsFilter === "help");
+  assert.equal(oldVenueSearch, undefined);
+  assert.equal(oldEmbassySearch, undefined);
   assert.deepEqual(app.runtimeErrors, []);
 });
 
