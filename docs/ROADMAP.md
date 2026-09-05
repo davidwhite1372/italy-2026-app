@@ -31,13 +31,24 @@ Status: Released
 - Complete automated metadata, stable-ID, migration, backup round-trip, dependency, and offline-shell audits before release.
 
 ## Version 10.10.0 — Travel Data Refinement
-Status: In development on `develop`
+Status: Completed and included in later releases
 
 - Separate itinerary purpose from transportation with controlled, filterable values.
 - Promote confirmed phone edits into permanent master trip data.
 - Improve Timeline responsiveness and preserve the user’s position after details and edits.
 - Make phrases editable and reorganize Packing, Phrases, and Safety.
 - Correct stale maps and travel references, and prepare a readable import-ready workbook.
+
+## Version 10.12.0 — Full Feature Release
+Status: Release candidate on `develop`
+
+- Reconcile reviewed phone exports and preserve schema 6 backup compatibility.
+- Correct the CPH outbound timeline, travel-detail sticky headers, and Timeline date anchoring.
+- Add offline CPH connection and Venice Vaporetto guides.
+- Add Italian phrase corrections, pronunciation playback, and Google Translate face-to-face access.
+- Add separate Favorite and Want to try restaurant states.
+- Add receipt-sourced expenses, required company-paid tracking, weekly report status, and online-only scan messaging.
+- Improve notes, Trip Tools ordering, and offline asset coverage.
 
 ## Version 11.0.0 — Shared Cloud Data
 Status: Evaluation planned

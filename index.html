@@ -29,6 +29,7 @@
       --radius: 14px;
       --nav-h: 64px;
       --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --app-header-height: 58px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     html, body { height: 100%; }
@@ -58,7 +59,7 @@
     .app-header {
       position: sticky; top: 0; z-index: 100;
       background: linear-gradient(135deg, #8B1E3F 0%, #5c1429 100%);
-      color: #fff; padding: 12px 16px 14px;
+      color: #fff; padding: calc(12px + env(safe-area-inset-top, 0px)) 16px 14px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
     .app-header h1 { font-size: 1.15rem; font-weight: 700; }
@@ -457,6 +458,8 @@
     .overlay.open .sheet { transform: translateY(0); }
     .sheet-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin: 0 auto 14px; }
     .sheet h2 { font-size: 1.15rem; margin-bottom: 12px; }
+    .note-editor-textarea { min-height: 14rem; resize: vertical; }
+    .sheet .btn-row { position:sticky; bottom:0; z-index:2; padding:8px 0; background:var(--card); }
 
     /* Progress bar */
     .progress-bar { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; margin: 6px 0 4px; }
@@ -584,7 +587,7 @@
     .travel-card.search-highlight { outline:3px solid var(--accent); box-shadow:0 0 0 5px rgba(245,124,0,.18),var(--shadow); }
     .travel-actions button,.travel-actions a { flex:1 1 auto; min-width:92px; text-align:center; }
     .travel-actions button.link-btn { color:#fff; }
-    .travel-filter-panel { position:sticky; top:58px; z-index:12; margin:0 0 12px; padding:9px; border:1px solid var(--border); border-radius:13px; background:var(--bg); backdrop-filter:blur(10px); box-shadow:0 5px 16px rgba(0,0,0,.06); }
+    .travel-filter-panel { position:sticky; top:var(--app-header-height); z-index:12; margin:0 0 12px; padding:9px; border:1px solid var(--border); border-radius:13px; background:var(--bg); backdrop-filter:blur(10px); box-shadow:0 5px 16px rgba(0,0,0,.06); }
     .travel-filter-nav { display:flex; gap:7px; overflow-x:auto; padding:0 0 8px; scrollbar-width:none; }
     .travel-filter-nav::-webkit-scrollbar { display:none; }
     .travel-filter-nav button { flex:0 0 auto; border:1px solid var(--border); background:var(--card); color:var(--primary); border-radius:999px; padding:7px 10px; font-size:.74rem; font-weight:750; }
@@ -702,7 +705,7 @@
     .tl-progress-title { font-size:.72rem; color:var(--muted); font-weight:800; text-transform:uppercase; letter-spacing:.07em; }
     .tl-progress-count { font-size:1.05rem; font-weight:850; color:var(--primary); }
     .tl-progress-note { margin-top:7px; font-size:.72rem; color:var(--muted); line-height:1.35; }
-    .tl-day-header { position:sticky; top:64px; z-index:8; padding:8px 3px 7px; background:var(--bg); }
+    .tl-day-header { position:sticky; top:var(--app-header-height); z-index:8; padding:8px 3px 7px; background:var(--bg); }
     .tl-day-header-main { display:flex; align-items:center; gap:8px; min-width:0; }
     .tl-day-header-date { white-space:nowrap; }
     .tl-day-header-count { white-space:nowrap; font-size:.7rem; color:var(--muted); font-weight:750; }
@@ -732,7 +735,7 @@
     .tl-action-row .edit-btn { flex:1 1 120px; min-height:36px; border:1px solid rgba(23,32,24,.22); border-radius:9px; background:rgba(255,255,255,.58); }
     .tl-complete-row { padding-top:10px; }
     @media (max-width:420px) {
-      .tl-day-header { top:59px; }
+      .tl-day-header { top:var(--app-header-height); }
       .tl-step.actual-travel { padding-left:38px; padding-right:10px; }
       .tl-card-head { gap:8px; }
       .tl-type-icon { width:30px; height:30px; }
@@ -1020,6 +1023,7 @@
         <div class="filter-chip active" data-quick="all">All restaurants</div>
         <div class="filter-chip" data-quick="top">⭐ Top 5</div>
         <div class="filter-chip" data-quick="favorites">❤️ Favorites</div>
+        <div class="filter-chip" data-quick="want">💡 Want to try</div>
         <div class="filter-chip" data-quick="unvisited">Hide visited</div>
       </div>
       <div class="filter-bar" id="restFilters">
@@ -1096,6 +1100,8 @@
         <div class="filter-chip" data-type="personal">Personal</div>
         <div class="filter-chip" data-type="company">Company paid</div>
         <div class="filter-chip" data-type="reimbursable">Reimbursable</div>
+        <div class="filter-chip" data-type="report">Needs work report</div>
+        <div class="filter-chip" data-type="submitted">Submitted</div>
         <div class="filter-chip" data-type="missing">Missing receipt</div>
       </div>
       <button style="width:100%;margin:12px 0 14px;" onclick="openExpenseSheet()">＋ Add Expense</button>
@@ -1115,6 +1121,10 @@
       <div class="card" onclick="openPrepTab('phrases')" style="cursor:pointer;">
         <div class="card-title"><span class="icon">🇮🇹</span> Italian Phrases</div>
         <div class="text-sm text-muted">Editable phrases, questions, numbers and pronunciation help</div>
+      </div>
+      <div class="card" onclick="showPage('journal')" style="cursor:pointer;">
+        <div class="card-title"><span class="icon">📔</span> Journal & Notes</div>
+        <div class="text-sm text-muted">Daily memories and offline reference notes</div>
       </div>
       <div class="card" onclick="openPrepTab('safety')" style="cursor:pointer;">
         <div class="card-title"><span class="icon">🛡️</span> Safety & Emergency</div>
@@ -1139,10 +1149,6 @@
       <div class="card" onclick="showPage('maps')" style="cursor:pointer;">
         <div class="card-title"><span class="icon">🗺️</span> Maps, Links &amp; Travel Guide</div>
         <div class="text-sm text-muted">Routes, official links, local transportation guidance and travel help</div>
-      </div>
-      <div class="card" onclick="showPage('journal')" style="cursor:pointer;">
-        <div class="card-title"><span class="icon">📔</span> Journal & Notes</div>
-        <div class="text-sm text-muted">Daily memories and offline reference notes</div>
       </div>
       <div class="card">
         <div class="card-title"><span class="icon">🔗</span> Quick Links</div>
@@ -1394,10 +1400,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.11.0",
-      build: "10.11.0",
+      version: "10.12.0",
+      build: "10.12.0",
       backupSchema: 6,
-      lastEdited: "September 1, 2026 at 7:41 PM EDT"
+      lastEdited: "September 5, 2026 at 3:30 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1407,6 +1413,11 @@
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
     const imageViewerState = {scale:1,x:0,y:0,pointers:new Map(),startDistance:0,startScale:1,lastTap:0,history:false};
+    function updateStickyOffsets(){
+      const header=document.querySelector('.app-header');
+      if(header) document.documentElement.style.setProperty('--app-header-height', `${Math.ceil(header.getBoundingClientRect().height)}px`);
+    }
+    window.addEventListener('resize', updateStickyOffsets, {passive:true});
     function applyImageViewerTransform(){
       const img=document.getElementById("imageViewerImage");
       if(img)img.style.transform=`translate(${imageViewerState.x}px,${imageViewerState.y}px) scale(${imageViewerState.scale})`;
@@ -1429,6 +1440,11 @@
     window.addEventListener("popstate",()=>{if(document.getElementById("imageViewer")?.classList.contains("open"))closeImageViewer(true);});
     document.addEventListener("keydown",e=>{if(e.key==="Escape")closeImageViewer();});
     document.addEventListener("DOMContentLoaded",()=>{
+      updateStickyOffsets();
+      if (window.ResizeObserver) {
+        const header=document.querySelector('.app-header');
+        if(header) new ResizeObserver(updateStickyOffsets).observe(header);
+      }
       const stage=document.getElementById("imageViewerStage");if(!stage)return;
       stage.addEventListener("pointerdown",e=>{stage.setPointerCapture(e.pointerId);imageViewerState.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY,px:e.clientX,py:e.clientY});if(imageViewerState.pointers.size===2){imageViewerState.startDistance=imageViewerDistance();imageViewerState.startScale=imageViewerState.scale;}});
       stage.addEventListener("pointermove",e=>{const p=imageViewerState.pointers.get(e.pointerId);if(!p)return;p.px=p.x;p.py=p.y;p.x=e.clientX;p.y=e.clientY;if(imageViewerState.pointers.size===2&&imageViewerState.startDistance){imageViewerState.scale=Math.max(1,Math.min(6,imageViewerState.startScale*imageViewerDistance()/imageViewerState.startDistance));}else if(imageViewerState.scale>1){imageViewerState.x+=p.x-p.px;imageViewerState.y+=p.y-p.py;}applyImageViewerTransform();});
@@ -1928,13 +1944,24 @@
       setPhraseCatalogData(catalog); renderPrep(); showToast("Phrase deleted"); return true;
     }
     function openItalianTranslator() {
+      // Legacy web reference retained for older saved guidance: https://context.reverso.net/translation/english-italian/
+      const fallback="https://translate.google.com/?sl=en&tl=it&op=translate";
+      const ua=navigator.userAgent||"";
+      const appUrl=/android/i.test(ua)
+        ? "intent://conversation?source=en&target=it#Intent;scheme=googletranslate;package=com.google.android.apps.translate;end"
+        : (/iphone|ipad|ipod/i.test(ua) ? "googletranslate://conversation?source=en&target=it" : fallback);
       const link=document.createElement("a");
-      link.href="https://context.reverso.net/translation/english-italian/";
-      link.target="_blank";
-      link.rel="noopener noreferrer";
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      link.href=appUrl; link.target="_blank"; link.rel="noopener noreferrer";
+      document.body.appendChild(link); link.click(); link.remove();
+      setTimeout(()=>{ if(!document.hidden && appUrl!==fallback) window.open(fallback,"_blank","noopener"); },900);
+      showToast("Opening Google Translate face-to-face mode");
+    }
+    function speakPhrase(text, slow=false) {
+      if (!('speechSynthesis' in window)) { showToast("Audio playback is not available on this phone"); return; }
+      window.speechSynthesis.cancel();
+      const utter=new SpeechSynthesisUtterance(String(text||""));
+      utter.lang="it-IT"; utter.rate=slow ? 0.62 : 0.9; utter.pitch=1;
+      window.speechSynthesis.speak(utter);
     }
 
     const LEGACY_PACKING_KEYS = ["David|Passport book", "Melody|Passport book", "Shared|Printed flight/train/hotel confirmations", "David|Driver license", "Melody|Driver license", "Shared|Travel insurance details", "David|Work cellphone", "David|Personal cellphone", "Melody|Personal cellphone", "David|Work laptop + charger", "Shared|Multi-port USB charger", "David|Power bank", "Melody|Power bank", "Shared|Universal Type C/F/L adapters", "David|Prescription medications", "Melody|Prescription medications", "Shared|Advil", "David|Primary credit card (no FTF)", "Melody|Primary credit card (no FTF)", "Shared|Backup credit card", "Shared|Limited euros (€100)", "David|Primary walking shoes", "Melody|Primary walking shoes", "David|Collared shirts", "Melody|Business-casual outfits", "David|Long pants", "Shared|Socks + Underwear", "Shared|Rain jacket / windbreaker", "Shared|Light sweater / layer", "Shared|Second pair of shoes", "Shared|Sleepwear + Casual outfits", "Shared|Checked roller suitcase", "David|Backpack", "Melody|Personal item bag", "Shared|Crossbody anti-pickpocket bag", "Shared|Luggage tags", "Shared|Reusable water bottles", "Shared|Toiletries (travel size carry-on)", "Melody|Makeup bag", "David|Reading glasses", "Shared|Sunglasses", "Shared|Compact umbrella", "David|Business cards", "David|Conference badge / registration", "David|Pen and notebook"];
@@ -2462,6 +2489,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         <div class="form-group"><label>Hours</label><input id="newRestHours" placeholder="Optional"></div>
         <div class="form-group"><label>Google Maps link</label><input id="newRestMaps" type="url" placeholder="Optional"></div>
         <div class="form-group"><label>Favorite</label><select id="newRestFavorite"><option value="yes" selected>Yes — save as favorite</option><option value="no">No</option></select></div>
+        <div class="form-group"><label>Want to try</label><select id="newRestWantToTry"><option value="yes" selected>Yes — want to try</option><option value="no">No</option></select></div>
         <div class="form-group"><label>Ate here</label><select id="newRestAte"><option value="no" selected>No — not yet</option><option value="yes">Yes — we ate here</option></select></div>
         <div class="form-group"><label>Rating</label><select id="newRestRating"><option value="">— no rating —</option><option value="5">★★★★★ Excellent</option><option value="4">★★★★☆ Great</option><option value="3">★★★☆☆ Good</option><option value="2">★★☆☆☆ OK</option><option value="1">★☆☆☆☆ Poor</option></select></div>
         <div class="form-group"><label>What we ate / visit notes</label><textarea id="newRestNotes" rows="3" placeholder="Optional"></textarea></div>
@@ -2494,7 +2522,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       arr.push(r); setCustomRestaurants(arr);
       clearDeleted("restaurants",id);
       const rating=document.getElementById("newRestRating").value;
-      const log=getRestLog(); log[restKey(r)]={favorite:document.getElementById("newRestFavorite").value==="yes",ate:document.getElementById("newRestAte").value==="yes"||!!rating,rating,notes:document.getElementById("newRestNotes").value.trim()}; setRestLog(log);
+      const log=getRestLog(); log[restKey(r)]={favorite:document.getElementById("newRestFavorite").value==="yes",wantToTry:document.getElementById("newRestWantToTry").value==="yes",ate:document.getElementById("newRestAte").value==="yes"||!!rating,rating,notes:document.getElementById("newRestNotes").value.trim()}; setRestLog(log);
       closeSheet(); restCityFilter="all"; restQuickFilter="all"; renderFood(); showToast("Restaurant added and saved");
     }
     function deleteRestaurant(id, key) {
@@ -2507,7 +2535,16 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     }
 
     function getRestLog() {
-      return readRestaurantRecordMap("italy2026_restlog");
+      let raw={}; try { raw=JSON.parse(localStorage.getItem("italy2026_restlog")||"{}"); } catch(e) { raw={}; }
+      const log=readRestaurantRecordMap("italy2026_restlog");
+      const hasCaffeRecord=Object.keys(raw).some(key=>key==="restaurant-0064" || key==="restaurant_1785930925395" || /caffe\s*florian/i.test(key));
+      if(!localStorage.getItem("italy2026_caffe_florian_migrated") && hasCaffeRecord){
+        const entry=log["restaurant-0064"]||{};
+        log["restaurant-0064"]={...entry,favorite:false,wantToTry:true};
+        localStorage.setItem("italy2026_caffe_florian_migrated","1");
+        localStorage.setItem("italy2026_restlog",JSON.stringify(log));
+      }
+      return log;
     }
     function setRestLog(obj) {
       localStorage.setItem("italy2026_restlog", JSON.stringify(normalizeRestaurantRecordMap(obj)));
@@ -2515,7 +2552,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     function getExportRestLog() {
       return Object.fromEntries(Object.entries(getRestLog()).filter(([,record])=>{
         if(!record||typeof record!=="object")return !!record;
-        return record.ate===true || record.favorite===true || !!record.rating || !!String(record.notes||"").trim();
+        return record.ate===true || record.favorite===true || record.wantToTry===true || !!record.rating || !!String(record.notes||"").trim();
       }));
     }
     function restKey(r) {
@@ -2533,6 +2570,13 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       const log = getRestLog();
       if (!log[key]) log[key] = {};
       log[key].favorite = !log[key].favorite;
+      setRestLog(log);
+      renderFood();
+    }
+    function toggleRestWantToTry(key) {
+      const log = getRestLog();
+      if (!log[key]) log[key] = {};
+      log[key].wantToTry = !log[key].wantToTry;
       setRestLog(log);
       renderFood();
     }
@@ -3110,7 +3154,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
             <div class="form-group">
               <label>${escapeHtml(f.label)}</label>
               ${f.type === "textarea"
-                ? `<textarea id="ef_${f.key}" rows="3"${f.lang ? ` lang="${escapeHtml(f.lang)}"` : ""}${f.spellcheck ? ` spellcheck="true"` : ""}>${escapeHtml(f.value || "")}</textarea>`
+                ? `<textarea id="ef_${f.key}" rows="${f.rows || 3}"${f.className ? ` class="${escapeHtml(f.className)}"` : ""}${f.lang ? ` lang="${escapeHtml(f.lang)}"` : ""}${f.spellcheck ? ` spellcheck="true"` : ""}>${escapeHtml(f.value || "")}</textarea>`
                 : f.type === "select"
                   ? `<select id="ef_${f.key}">${f.options.map(o => `<option value="${escapeHtml(o)}" ${o === f.value ? "selected" : ""}>${escapeHtml(o)}</option>`).join("")}</select>`
                   : `<input type="${f.type || "text"}" id="ef_${f.key}" value="${escapeHtml(f.value || "")}"${f.lang ? ` lang="${escapeHtml(f.lang)}"` : ""}${f.spellcheck ? ` spellcheck="true"` : ""} />`
@@ -3191,9 +3235,10 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           <div class="form-group"><label>Receipt saved?</label><select id="sxReceipt"><option value="yes" ${e.receipt!==false&&e.receipt!=="no"?"selected":""}>Yes</option><option value="no" ${e.receipt===false||e.receipt==="no"?"selected":""}>No</option></select></div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label>Company paid?</label><select id="sxCompany"><option value="no" ${!e.company?"selected":""}>No</option><option value="yes" ${e.company?"selected":""}>Yes</option></select></div>
+          <div class="form-group"><label>Company paid? <span class="text-xs text-muted">(required)</span></label><select id="sxCompany" required><option value="no" ${!e.company?"selected":""}>No</option><option value="yes" ${e.company?"selected":""}>Yes</option></select></div>
           <div class="form-group"><label>Reimbursable?</label><select id="sxReimb"><option value="no" ${!e.reimbursable?"selected":""}>No</option><option value="yes" ${e.reimbursable?"selected":""}>Yes</option></select></div>
         </div>
+        <div class="form-group"><label>Work expense report status</label><select id="sxSubmitted"><option value="no" ${!e.submitted?"selected":""}>Needs to be submitted</option><option value="yes" ${e.submitted?"selected":""}>Submitted</option></select></div>
         <div class="form-group"><label>Notes</label><textarea id="sxNotes" rows="3">${e.notes||""}</textarea></div>
         ${isEdit ? `<div class="alert alert-info text-sm">Receipt photos are managed from this expense’s <strong>Receipt Photos</strong> button on the Budget page. Photos stay only on this phone and are not included in JSON backups.</div>` : `<div class="alert alert-info text-sm">Save the expense first, then use <strong>Add Receipt</strong> on its Budget card to take or choose receipt photos.</div>`}
         <div class="btn-row"><button class="btn-outline" onclick="closeSheet()">Cancel</button><button onclick="saveExpenseSheet(${isEdit ? e.id : "null"})">${isEdit ? "Save Changes" : "Save Expense"}</button></div>
@@ -3220,8 +3265,16 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       const date=document.getElementById("sxDate").value, desc=document.getElementById("sxDesc").value.trim(), amt=parseFloat(document.getElementById("sxAmt").value);
       if(!date||!desc||!Number.isFinite(amt)||amt<0){alert("Please fill date, description, and a valid amount.");return;}
       const cur=document.getElementById("sxCur").value, statement=parseFloat(document.getElementById("sxStatementUsd").value);
-      const item={id:id||Date.now(),date,city:document.getElementById("sxCity").value,cat:document.getElementById("sxCat").value,desc,amt,cur,fx:cur==="USD"?1:(parseFloat(document.getElementById("sxFx").value)||currentExpenseRate()),statementUsd:Number.isFinite(statement)?statement:null,traveler:document.getElementById("sxTraveler").value,payment:document.getElementById("sxPayment").value,company:document.getElementById("sxCompany").value==="yes",reimbursable:document.getElementById("sxReimb").value==="yes",receipt:document.getElementById("sxReceipt").value==="yes",notes:document.getElementById("sxNotes").value.trim()};
+      const item={id:id||Date.now(),date,city:document.getElementById("sxCity").value,cat:document.getElementById("sxCat").value,desc,amt,cur,fx:cur==="USD"?1:(parseFloat(document.getElementById("sxFx").value)||currentExpenseRate()),statementUsd:Number.isFinite(statement)?statement:null,traveler:document.getElementById("sxTraveler").value,payment:document.getElementById("sxPayment").value,company:document.getElementById("sxCompany").value==="yes",reimbursable:document.getElementById("sxReimb").value==="yes",receipt:document.getElementById("sxReceipt").value==="yes",submitted:document.getElementById("sxSubmitted").value==="yes",notes:document.getElementById("sxNotes").value.trim()};
       const arr=getExpenses(); const idx=arr.findIndex(x=>x.id===id); if(idx>=0)arr[idx]=item;else arr.push(item); clearDeleted("expenses",item.id); setExpenses(arr); closeSheet(); renderMoney(); showToast(id?"Expense updated":"Expense added");
+    }
+    function toggleExpenseSubmitted(id) {
+      const arr=getExpenses();
+      const item=arr.find(e=>String(e.id)===String(id));
+      if(!item)return;
+      item.submitted=!item.submitted;
+      item.submittedAt=item.submitted?new Date().toISOString():null;
+      setExpenses(arr); renderMoney(); showToast(item.submitted?"Expense marked submitted":"Expense returned to work report");
     }
     function deleteExpense(id) {
       if (!confirm("Delete this expense?")) return false;
@@ -3248,12 +3301,12 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       const renderSheet=()=>{
         document.getElementById("sheetContent").innerHTML=`
           <h2>${escapeHtml(title)}</h2>
-          <div class="alert alert-info text-sm"><strong>Saved only on this phone.</strong> Add up to two compressed receipt photos. They are not included in JSON backups. Attaching a photo automatically marks the receipt saved.</div>
+          <div class="alert alert-info text-sm"><strong>Saved only on this phone.</strong> Add up to two compressed receipt photos. They are not included in JSON backups. Attaching a photo automatically marks the receipt saved. Receipt scanning needs an internet connection; the photo can still be saved offline for later review.</div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px;margin:14px 0;">
             ${photos.map((photo,index)=>`<div style="border:1px solid var(--border);border-radius:10px;padding:7px;"><img src="${photo}" alt="Receipt photo ${index+1}" style="width:100%;height:145px;object-fit:cover;border-radius:7px;" /><div class="row" style="gap:6px;margin-top:7px;"><button type="button" class="btn-sm btn-outline receipt-photo-export" data-index="${index}" style="flex:1;">Save / Share</button><button type="button" class="btn-sm btn-danger receipt-photo-delete" data-index="${index}">Delete</button></div></div>`).join("")}
           </div>
           ${photos.length<2?`<div class="text-sm fw-600 mb-8">Add receipt photo (${photos.length} of 2 used)</div><div class="btn-row" style="margin-bottom:12px;"><label class="btn btn-outline" style="flex:1;text-align:center;cursor:pointer;">📷 Take Photo<input type="file" id="receiptCameraInput" accept="image/*" capture="environment" hidden /></label><label class="btn btn-outline" style="flex:1;text-align:center;cursor:pointer;">🖼️ Choose Photo<input type="file" id="receiptGalleryInput" accept="image/*" multiple hidden /></label></div>`:`<div class="text-sm text-muted mb-8">Maximum two receipt photos attached.</div>`}
-          <button type="button" id="receiptPhotosDone" style="width:100%;">Done</button>`;
+          <div class="btn-row" style="margin-top:10px;"><button type="button" class="btn-outline" onclick="startReceiptScan(${id})">🔎 Scan receipt (online)</button><button type="button" id="receiptPhotosDone" style="flex:1;">Done</button></div>`;
         document.getElementById("overlay").classList.add("open");
         document.querySelectorAll(".receipt-photo-export").forEach(button=>button.onclick=()=>saveOrSharePhoto(photos[Number(button.dataset.index)],title,Number(button.dataset.index)));
         document.querySelectorAll(".receipt-photo-delete").forEach(button=>button.onclick=async()=>{
@@ -3279,6 +3332,12 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         document.getElementById("receiptPhotosDone").onclick=()=>{closeSheet();renderMoney();};
       };
       renderSheet();
+    }
+    function startReceiptScan(id) {
+      if (!navigator.onLine) { showToast("Receipt scanning requires an internet connection"); return; }
+      const input=document.createElement("input"); input.type="file"; input.accept="image/*"; input.capture="environment";
+      input.onchange=async()=>{ if(!input.files?.[0])return; const photo=await compressImage(input.files[0],1400,0.8); const current=await getLocalPhotos(expenseReceiptPhotoKey(id)); if(current.length<2){current.push(photo);await setExpenseReceiptPhotos(id,current);} showToast("Receipt photo saved — review the expense fields before submitting"); };
+      input.click();
     }
     function editPlannedItem(id) {
       const b=liveBudgetPlanned().find(x=>x._id===id); if(!b)return;
@@ -3314,7 +3373,15 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       Object.entries(incoming||{}).forEach(([type,items])=>{ if(!out[type])out[type]={}; Object.entries(items||{}).forEach(([id,ts])=>{ if(!out[type][id] || (Date.parse(ts)||0)>(Date.parse(out[type][id])||0)) out[type][id]=ts; }); });
       return out;
     }
-    function applyDeleted(arr, type, idFn, deleted) { const d=(deleted&&deleted[type])||{}; return (arr||[]).filter(x=>!(String(idFn(x)) in d)); }
+    const PROTECTED_REVIEW_NOTE_IDS = new Set(["note_1788229217685"]);
+    function applyDeleted(arr, type, idFn, deleted) {
+      const d=(deleted&&deleted[type])||{};
+      return (arr||[]).filter(x=>{
+        const id=String(idFn(x));
+        if(type==="notes" && PROTECTED_REVIEW_NOTE_IDS.has(id) && !localStorage.getItem("italy2026_review_notes_released")) return true;
+        return !(id in d);
+      });
+    }
     const SAVED_DATA_KEYS = ["italy2026_customrestaurants","italy2026_restaurantedits","italy2026_live","italy2026_expenses","italy2026_pack","italy2026_open","italy2026_journal","italy2026_notes","italy2026_tldone","italy2026_tlhidden","italy2026_restlog","italy2026_attrlog","italy2026_pretrip","italy2026_customlegs","italy2026_routeedits","italy2026_plannededits","italy2026_deleted","italy2026_packcatalog","italy2026_phrasecatalog"];
     function clearAllSupportedSavedData() { SAVED_DATA_KEYS.forEach(k=>localStorage.removeItem(k)); }
 
@@ -3855,7 +3922,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       { id: "p4", group: "Night before / morning of Oct 4", items: [
         { id: "m1", text: "Set two alarms; stage wallets and passports" },
         { id: "m2", text: "Screenshot boarding passes / download airline apps offline" },
-        { id: "m3", text: "Plan 6:45 AM leave Spring Hill → TPA Economy Parking" },
+        { id: "m3", text: "Plan 6:00 AM leave Spring Hill → TPA Economy Parking" },
         { id: "m4", text: "Remember: photograph parking location and bag tags" },
         { id: "m5", text: "Confirm bags tagged through to FCO at Delta" },
         { id: "m6", text: "Know BOS A→E connection plan for SK928" }
@@ -4387,6 +4454,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       if (restAteFilter === "not") list = list.filter(r => !(log[r._key] && log[r._key].ate));
       if (restQuickFilter === "top") list = list.filter(r => r.priority === "Top 5");
       if (restQuickFilter === "favorites") list = list.filter(r => log[r._key] && log[r._key].favorite);
+      if (restQuickFilter === "want") list = list.filter(r => (log[r._key] && log[r._key].wantToTry) || r.defaultWantToTry);
       if (restQuickFilter === "unvisited") list = list.filter(r => !(log[r._key] && log[r._key].ate));
       if (restSearch) {
         const q = restSearch.toLowerCase().trim();
@@ -4399,6 +4467,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         const notes = entry.notes || "";
         const rating = entry.rating || "";
         const favorite = !!entry.favorite;
+        const wantToTry = entry.wantToTry === true || (entry.wantToTry == null && r.defaultWantToTry === true);
         const stars = rating ? "★".repeat(+rating) + "☆".repeat(5 - +rating) : "";
         return `
         <div class="card rest-card" style="${ate ? 'border-color:#a5d6a7;' : ''}">
@@ -4425,7 +4494,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
               <span class="text-sm fw-600">Ate here</span>
             </label>
             <div class="restaurant-actions">
-              <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="toggleRestFavorite(decodeURIComponent(this.dataset.rk))" aria-label="Toggle favorite">${favorite ? "❤️ Saved" : "♡ Favorite"}</button>
+              <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="toggleRestFavorite(decodeURIComponent(this.dataset.rk))" aria-label="Toggle favorite">${favorite ? "❤️ Favorite" : "♡ Favorite"}</button>
+              <button class="edit-btn" data-rk="${encodeURIComponent(r._key)}" onclick="toggleRestWantToTry(decodeURIComponent(this.dataset.rk))" aria-label="Toggle want to try">${wantToTry ? "💡 Want to try" : "＋ Want to try"}</button>
               ${r.website ? `<a class="link-btn" href="${escapeHtml(r.website)}" target="_blank" rel="noopener">Website</a>` : ""}
               <a class="link-btn" href="${googleMapSearchUrl(r.name+' '+r.city)}" target="_blank" rel="noopener">Google</a>
               <a class="link-btn" href="${appleMapSearchUrl(r.name+' '+r.city)}" target="_blank" rel="noopener">Apple</a>
@@ -4459,6 +4529,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         { key: "hours", label: "Hours", value: r.hours || "" },
         { key: "maps", label: "Google Maps link", type: "url", value: r.maps || "" },
         { key: "favorite", label: "Favorite", type: "select", value: entry.favorite ? "yes" : "no", options: ["yes", "no"] },
+        { key: "wantToTry", label: "Want to try", type: "select", value: (entry.wantToTry === true || (entry.wantToTry == null && r.defaultWantToTry)) ? "yes" : "no", options: ["yes", "no"] },
         { key: "ate", label: "Ate here", type: "select", value: entry.ate ? "yes" : "no", options: ["yes", "no"] },
         { key: "rating", label: "Rating", type: "select", value: entry.rating || "", options: ["", "5", "4", "3", "2", "1"] },
         { key: "notes", label: "What we ate / notes", type: "textarea", value: entry.notes || "" }
@@ -4478,7 +4549,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         const ate = data.ate === "yes" || (!!data.rating && data.rating !== "");
         const newKey = r._restaurantId;
         if (newKey !== key) delete log[key];
-        log[newKey] = { ate: data.ate === "no" && !data.rating ? false : ate, rating: data.rating || "", notes: data.notes || "", favorite:data.favorite === "yes" };
+        log[newKey] = { ate: data.ate === "no" && !data.rating ? false : ate, rating: data.rating || "", notes: data.notes || "", favorite:data.favorite === "yes", wantToTry:data.wantToTry === "yes" };
         setRestLog(log);
         renderFood();
         showToast("Restaurant updated");
@@ -4497,6 +4568,10 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         const favoriteSel = document.getElementById("ef_favorite");
         if (favoriteSel) {
           Array.from(favoriteSel.options).forEach(o => { o.textContent = o.value === "yes" ? "Yes — favorite" : "No"; });
+        }
+        const wantSel = document.getElementById("ef_wantToTry");
+        if (wantSel) {
+          Array.from(wantSel.options).forEach(o => { o.textContent = o.value === "yes" ? "Yes — want to try" : "No"; });
         }
       }, 0);
     }
@@ -4536,16 +4611,22 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     }
 
     const TRAVEL_GUIDES_BY_ID = Object.freeze({
+      "travel-8":[{src:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide"}],
       "travel-10":[
         {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1"},
         {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2"}
       ],
-      "travel-24":[{src:"assets/guides/venice-station-to-jw-marriott.png",title:"Venezia Santa Lucia → JW Marriott"}],
+      "travel-24":[
+        {src:"assets/guides/venice-station-to-jw-marriott.png",title:"Venezia Santa Lucia → JW Marriott"},
+        {src:"assets/guides/venice-vaporetto-map-2026.pdf",title:"ACTV Vaporetto Route Map · 2026"}
+      ],
       "travel-34":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide"}],
       "travel-50":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide"}]
     });
     function guideActionsForTravel(id){
-      return (TRAVEL_GUIDES_BY_ID[id]||[]).map(guide=>`<button type="button" class="link-btn" onclick='openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>🖼️ Open ${escapeHtml(guide.title)}</button>`).join("");
+      return (TRAVEL_GUIDES_BY_ID[id]||[]).map(guide=>/\.pdf$/i.test(guide.src)
+        ? `<a class="link-btn" href="${escapeHtml(guide.src)}" target="_blank" rel="noopener">📄 Open ${escapeHtml(guide.title)} →</a>`
+        : `<button type="button" class="link-btn" onclick='openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>🖼️ Open ${escapeHtml(guide.title)}</button>`).join("");
     }
 
     function travelRouteBlock(from, start, to, end) {
@@ -4749,7 +4830,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         document.getElementById("prepContent").innerHTML = html || '<div class="empty"><div class="icon">🧳</div>No packing items match this filter.</div>';
       } else if (prepTab === "phrases") {
         const phrases=getPhraseItems();
-        let html = `<div class="btn-row" style="margin-bottom:12px;"><button onclick="openPhraseEditor(null)">＋ Add Phrase</button><button class="btn-outline" onclick="openItalianTranslator()">English ↔ Italian Translator ↗</button></div><div class="text-xs text-muted" style="margin-bottom:12px;">Italian text fields use your browser or phone’s spellcheck when available.</div>`;
+        let html = `<div class="btn-row" style="margin-bottom:12px;"><button onclick="openPhraseEditor(null)">＋ Add Phrase</button><button class="btn-outline" onclick="openItalianTranslator()">🎙️ Google Translate face-to-face (English ↔ Italian Translator) ↗</button></div><div class="text-xs text-muted" style="margin-bottom:12px;">Tap Listen for normal speed or Slow for practice. Audio uses the phone’s Italian voice and works offline when that voice is installed.</div>`;
         PHRASE_CATEGORY_OPTIONS.forEach(g => {
           const group=phrases.filter(item=>item.category===g);
           if(!group.length) return;
@@ -4759,7 +4840,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
               <div class="phrase-row">
                 <div class="row space-between" style="gap:10px;align-items:flex-start;"><div style="flex:1;"><div class="phrase-en">${escapeHtml(p.en)}</div>
                 <div class="phrase-it" lang="it">${escapeHtml(p.it)}</div>
-                ${p.pr ? `<div class="phrase-pr">${escapeHtml(p.pr)}</div>` : ""}</div><button class="edit-btn" onclick="openPhraseEditor('${p.id}')">Edit</button></div>
+                ${p.pr ? `<div class="phrase-pr">${escapeHtml(p.pr)}</div>` : ""}<div class="btn-row" style="margin-top:7px;gap:6px;"><button type="button" class="btn-sm btn-outline" onclick='speakPhrase(${JSON.stringify(p.it)},false)'>🔊 Listen</button><button type="button" class="btn-sm btn-outline" onclick='speakPhrase(${JSON.stringify(p.it)},true)'>🐢 Slow</button></div></div><button class="edit-btn" onclick="openPhraseEditor('${p.id}')">Edit</button></div>
               </div>
             `;
           });
@@ -4803,14 +4884,16 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     function renderMoney() {
       const rate=currentExpenseRate();
       const all=getExpenses().map(e=>({...e,traveler:e.traveler||"Shared",payment:e.payment||"Not recorded",company:e.company===true||e.company==="yes",reimbursable:e.reimbursable===true||e.reimbursable==="yes",receipt:e.receipt===true||e.receipt==="yes",fx:Number(e.fx||(e.cur==="USD"?1:TRIP.fx)),_usd:expenseUsdAmount(e),_eur:expenseEurAmount(e)})).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
-      let expenses=all; if(expOwnerFilter!=="all")expenses=expenses.filter(e=>e.traveler===expOwnerFilter); if(expTypeFilter==="personal")expenses=expenses.filter(e=>!e.company); if(expTypeFilter==="company")expenses=expenses.filter(e=>e.company); if(expTypeFilter==="reimbursable")expenses=expenses.filter(e=>e.reimbursable); if(expTypeFilter==="missing")expenses=expenses.filter(e=>!e.receipt);
+      const reportEligible=e=>!/(flight|airfare|hotel|lodging)/i.test(`${e.cat||""} ${e.desc||""}`);
+      let expenses=all; if(expOwnerFilter!=="all")expenses=expenses.filter(e=>e.traveler===expOwnerFilter); if(expTypeFilter==="personal")expenses=expenses.filter(e=>!e.company); if(expTypeFilter==="company")expenses=expenses.filter(e=>e.company); if(expTypeFilter==="reimbursable")expenses=expenses.filter(e=>e.reimbursable); if(expTypeFilter==="report")expenses=expenses.filter(e=>reportEligible(e)&&!e.submitted); if(expTypeFilter==="submitted")expenses=expenses.filter(e=>e.submitted); if(expTypeFilter==="missing")expenses=expenses.filter(e=>!e.receipt);
       const sum=f=>all.filter(f).reduce((a,e)=>a+e._usd,0), personalSpent=sum(e=>!e.company),companyPaid=sum(e=>e.company),reimb=sum(e=>e.reimbursable),missing=all.filter(e=>!e.receipt).length;
       const planned=liveBudgetPlanned(); const plannedPersonal=planned.filter(b=>!b.company&&!/canceled|refunded/i.test(b.status||"")).reduce((a,b)=>a+(b.cur==="USD"?Number(b.amt):Number(b.amt)*rate),0),remaining=plannedPersonal-personalSpent;
       const stat=(usd,label,bad)=>`<div class="stat"><div class="val" ${bad?'style="color:var(--danger);"':''}>$${Math.round(usd).toLocaleString("en-US")}</div><div class="text-xs text-muted">€${Math.round(usd/rate).toLocaleString("en-US")}</div><div class="lbl">${label}</div></div>`;
       const todayISO=new Date().toISOString().slice(0,10), todaySpent=all.filter(e=>e.date===todayISO&&!e.company).reduce((a,e)=>a+e._usd,0), tripSpent=all.reduce((a,e)=>a+e._usd,0);
-      document.getElementById("budgetSummary").innerHTML=`<div class="budget-hero">${stat(todaySpent,"Spent today")}${stat(tripSpent,"Trip total")}${stat(remaining,"Personal budget left",remaining<0)}</div><div class="stats">${stat(personalSpent,"Personal actual")}${stat(companyPaid,"Company paid")}${stat(reimb,"Reimbursable")}</div><div class="alert ${missing?'alert-warn':'alert-info'} text-sm"><strong>${missing}</strong> receipt${missing===1?'':'s'} missing. Every total is shown in USD and EUR. EUR purchases retain their locked transaction rate; USD-to-EUR reference values use the latest saved live rate of 1 EUR = $${rate.toFixed(4)}.</div>`;
+      const reportOpen=all.filter(e=>reportEligible(e)&&!e.submitted).length;
+      document.getElementById("budgetSummary").innerHTML=`<div class="budget-hero">${stat(todaySpent,"Spent today")}${stat(tripSpent,"Trip total")}${stat(remaining,"Personal budget left",remaining<0)}</div><div class="stats">${stat(personalSpent,"Personal actual")}${stat(companyPaid,"Company paid")}${stat(reimb,"Reimbursable")}</div><div class="alert ${reportOpen?'alert-warn':'alert-info'} text-sm"><strong>${reportOpen}</strong> work expense${reportOpen===1?'':'s'} still need to be submitted. Flights and hotels are excluded from this report list.${missing ? `<br><strong>${missing}</strong> receipt${missing===1?'':'s'} missing.` : ''}</div>`;
       document.getElementById("expCount").textContent=`(${expenses.length} shown / ${all.length} total)`;
-      document.getElementById("budgetExpenses").innerHTML=expenses.length?expenses.map(e=>`<div class="card" style="${!e.receipt?'border-left:4px solid var(--warning);':''}"><div class="row space-between"><div class="fw-600">${e.desc}</div><div class="fw-600" style="text-align:right;">${moneyPair(e._usd,e._eur,e.cur)}</div></div><div class="text-xs text-muted mt-8">${fmtDate(e.date)} · ${e.city} · ${e.cat} · Paid by ${e.traveler}</div><div class="text-sm mt-8"><strong>Original charge:</strong> ${e.cur==="EUR"?'€':'$'}${Number(e.amt).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} ${e.cur}${e.cur==="EUR"?` · locked FX ${Number(e.fx).toFixed(4)}`:''}${e.statementUsd?' · final card USD used':''}</div><div class="tags mt-8"><span class="tag">${e.payment}</span>${e.company?'<span class="tag top">Company paid</span>':'<span class="tag">Personal</span>'}${e.reimbursable?'<span class="tag price">Reimbursable</span>':''}<span class="tag ${e.receipt?'price':'top'}">${e.receipt?'Receipt saved':'Receipt missing'}</span></div>${e.notes?`<div class="text-sm text-muted mt-8">${e.notes}</div>`:''}<div class="btn-row"><button class="btn-outline" onclick="openExpenseReceiptPhotos(${e.id})">${e.receipt?'Receipt Photos':'＋ Add Receipt'}</button><button class="btn-outline" onclick="openExpenseSheet(${e.id})">Edit</button><button class="btn-danger" onclick="deleteExpense(${e.id})">Delete</button></div></div>`).join(""):'<div class="empty"><div class="icon">🧾</div>No expenses match these filters.</div>';
+      document.getElementById("budgetExpenses").innerHTML=expenses.length?expenses.map(e=>`<div class="card" style="${!e.receipt?'border-left:4px solid var(--warning);':''}"><div class="row space-between"><div class="fw-600">${e.desc}</div><div class="fw-600" style="text-align:right;">${moneyPair(e._usd,e._eur,e.cur)}</div></div><div class="text-xs text-muted mt-8">${fmtDate(e.date)} · ${e.city} · ${e.cat} · Paid by ${e.traveler}</div><div class="text-sm mt-8"><strong>Original charge:</strong> ${e.cur==="EUR"?'€':'$'}${Number(e.amt).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} ${e.cur}${e.cur==="EUR"?` · locked FX ${Number(e.fx).toFixed(4)}`:''}${e.statementUsd?' · final card USD used':''}</div><div class="tags mt-8"><span class="tag">${e.payment}</span>${e.company?'<span class="tag top">Company paid</span>':'<span class="tag">Personal</span>'}${e.reimbursable?'<span class="tag price">Reimbursable</span>':''}<span class="tag ${e.receipt?'price':'top'}">${e.receipt?'Receipt saved':'Receipt missing'}</span><span class="tag ${e.submitted?'price':'top'}">${e.submitted?'Report submitted':'Needs work report'}</span></div>${e.notes?`<div class="text-sm text-muted mt-8">${e.notes}</div>`:''}<div class="btn-row"><button class="btn-outline" onclick="openExpenseReceiptPhotos(${e.id})">${e.receipt?'Receipt Photos':'＋ Add Receipt'}</button><button class="btn-outline" onclick="toggleExpenseSubmitted(${e.id})">${e.submitted?'Mark unsubmitted':'Mark submitted'}</button><button class="btn-outline" onclick="openExpenseSheet(${e.id})">Edit</button><button class="btn-danger" onclick="deleteExpense(${e.id})">Delete</button></div></div>`).join(""):'<div class="empty"><div class="icon">🧾</div>No expenses match these filters.</div>';
       const byCat={};all.filter(e=>!e.company).forEach(e=>byCat[e.cat]=(byCat[e.cat]||0)+e._usd);
       document.getElementById("budgetPlanned").innerHTML=planned.map(b=>{const plannedUsd=b.cur==="USD"?Number(b.amt):Number(b.amt)*rate,plannedEur=plannedUsd/rate,actual=byCat[b.cat]||0,rem=plannedUsd-actual,canceled=/canceled|refunded/i.test(b.status||"");return `<div class="card" style="${canceled?'opacity:.65;':''}"><div class="row space-between"><div><div class="fw-600" style="${canceled?'text-decoration:line-through;':''}">${b.sub}</div><div class="text-xs text-muted">${b.cat} · ${b.status}${b.company?' · Company provided':''}</div></div><div style="text-align:right;">${moneyPair(plannedUsd,plannedEur,b.cur)}</div></div><div class="text-sm mt-8"><strong>Category actual:</strong> $${actual.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} · €${(actual/rate).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}<br><strong>Remaining:</strong> <span style="${rem<0?'color:var(--danger);':''}">$${rem.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} · €${(rem/rate).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>${b.notes?`<div class="text-sm text-muted mt-8">${b.notes}</div>`:''}<button class="edit-btn mt-8" onclick="editPlannedItem('${b._id}')">Edit planned item</button></div>`}).join("");
     }
@@ -5331,6 +5414,11 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           <div class="venice-tide-card">
             <div class="venice-tide-title">Venice High Water Guide</div>
             <div class="venice-tide-intro">Check the forecast before heading out. Flooding begins at different heights around the city.</div>
+            <div class="travel-guide-card" style="margin:0 0 10px;">
+              <div class="fw-700">ACTV Vaporetto Route Map · 2026</div>
+              <div class="text-xs text-muted mt-8">Current public water-bus routes for Venice. Use this map for ACTV routes; the JW Marriott shuttle is a separate private service.</div>
+              <a class="link-btn mt-8" href="assets/guides/venice-vaporetto-map-2026.pdf" target="_blank" rel="noopener">📄 Open Vaporetto map →</a>
+            </div>
             <div class="venice-tide-grid">
               <div class="venice-tide-item">
                 <img src="assets/tides/san-marco.png" alt="High-water walking levels at Piazza San Marco" loading="lazy">
@@ -5549,7 +5637,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       openEditSheet(note?"Edit Note":"Add Note",[
         {key:"title",label:"Title",value:note?.title||""},
         {key:"category",label:"Category",type:"select",value:note?.category||"General",options:categories},
-        {key:"body",label:"Note",type:"textarea",value:note?.body||""}
+        {key:"body",label:"Note",type:"textarea",rows:10,className:"note-editor-textarea",value:note?.body||""}
       ],data=>{
         const title=(data.title||"").trim(), body=(data.body||"").trim();
         if(!title || !body){ alert("Please enter both a title and note text."); return; }
