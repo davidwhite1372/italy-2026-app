@@ -587,6 +587,7 @@
     .travel-card.search-highlight { outline:3px solid var(--accent); box-shadow:0 0 0 5px rgba(245,124,0,.18),var(--shadow); }
     .travel-actions button,.travel-actions a { flex:1 1 auto; min-width:92px; text-align:center; }
     .travel-actions button.link-btn { color:#fff; }
+    .travel-actions button.guide-secondary { color:var(--primary); background:transparent; border:1px solid var(--primary); }
     .travel-filter-panel { position:sticky; top:var(--app-header-height); z-index:12; margin:0 0 12px; padding:9px; border:1px solid var(--border); border-radius:13px; background:var(--bg); backdrop-filter:blur(10px); box-shadow:0 5px 16px rgba(0,0,0,.06); }
     .travel-filter-nav { display:flex; gap:7px; overflow-x:auto; padding:0 0 8px; scrollbar-width:none; }
     .travel-filter-nav::-webkit-scrollbar { display:none; }
@@ -650,6 +651,10 @@
     .maps-feature-card h3 { font-size:.9rem; line-height:1.25; color:var(--primary); }
     .maps-feature-card p { flex:1; margin-top:5px; font-size:.74rem; line-height:1.4; color:var(--muted); }
     .maps-feature-card button { width:100%; margin-top:9px; padding:8px 9px; font-size:.76rem; }
+    /* Feature-card buttons inherit the global burgundy background. Keep their
+       labels high-contrast, and make the optional PDF action visibly secondary. */
+    .maps-feature-card button.link-btn { color:#fff; background:var(--primary); border:1px solid var(--primary); }
+    .maps-feature-card button.map-secondary-btn { color:var(--primary); background:transparent; border:1px solid var(--primary); }
     @media (max-width:420px) { .maps-feature-grid { grid-template-columns:1fr; } }
     .travel-section-label { margin:18px 2px 8px; font-size:.78rem; font-weight:850; color:var(--primary); text-transform:uppercase; letter-spacing:.06em; }
     .travel-confirmation { margin-top:10px; padding:10px 11px; border:1px solid rgba(46,125,50,.28); border-radius:11px; background:rgba(46,125,50,.07); }
@@ -1414,10 +1419,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.12.0",
-      build: "10.12.0",
+      version: "10.12.1",
+      build: "10.12.1",
       backupSchema: 6,
-      lastEdited: "September 5, 2026 at 3:30 PM EDT"
+      lastEdited: "September 5, 2026 at 6:45 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -4642,21 +4647,25 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     }
 
     const TRAVEL_GUIDES_BY_ID = Object.freeze({
-      "travel-8":[{src:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide"}],
+      "travel-8":[
+        {src:"assets/guides/cph-connection-guide-outbound.png",title:"CPH Outbound Connection Guide"},
+        {src:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide · PDF",secondary:true}
+      ],
       "travel-10":[
         {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1"},
         {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2"}
       ],
       "travel-24":[
         {src:"assets/guides/venice-station-to-jw-marriott.png",title:"Venezia Santa Lucia → JW Marriott"},
-        {src:"assets/guides/venice-vaporetto-map-2026.pdf",title:"ACTV Vaporetto Route Map · 2026"}
+        {src:"assets/guides/venice-vaporetto-map-2026.png",title:"ACTV Vaporetto Route Map · 2026"},
+        {src:"assets/guides/venice-vaporetto-map-2026.pdf",title:"ACTV Vaporetto Route Map · 2026 · PDF",secondary:true}
       ],
       "travel-34":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide"}],
       "travel-50":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide"}]
     });
     function guideActionsForTravel(id){
-      return (TRAVEL_GUIDES_BY_ID[id]||[]).map(guide=>/\.pdf$/i.test(guide.src)
-        ? `<button type="button" class="link-btn" onclick='openPdfViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>📄 Open ${escapeHtml(guide.title)} →</button>`
+      return (TRAVEL_GUIDES_BY_ID[id]||[]).map(guide=>guide.secondary
+        ? `<button type="button" class="link-btn guide-secondary" onclick='openPdfViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>📄 Open PDF version →</button>`
         : `<button type="button" class="link-btn" onclick='openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>🖼️ Open ${escapeHtml(guide.title)}</button>`).join("");
     }
 
@@ -5366,12 +5375,14 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         <div class="maps-feature-card">
           <h3>🚤 Venice Vaporetto map</h3>
           <p>Current 2026 ACTV public water-bus routes. The JW Marriott shuttle is a separate private service.</p>
-          <button type="button" class="link-btn" onclick='openPdfViewer("assets/guides/venice-vaporetto-map-2026.pdf","ACTV Vaporetto Route Map · 2026")'>Open map →</button>
+          <button type="button" class="link-btn" onclick='openImageViewer("assets/guides/venice-vaporetto-map-2026.png","ACTV Vaporetto Route Map · 2026")'>Open map →</button>
+          <button type="button" class="link-btn map-secondary-btn" onclick='openPdfViewer("assets/guides/venice-vaporetto-map-2026.pdf","ACTV Vaporetto Route Map · 2026 · PDF")'>PDF / print version</button>
         </div>
         <div class="maps-feature-card">
           <h3>✈️ Copenhagen connection</h3>
           <p>Outbound CPH transfer steps, passport control, and the short connection plan.</p>
-          <button type="button" class="link-btn" onclick='openPdfViewer("assets/guides/cph-connection-guide-outbound.pdf","CPH Outbound Connection Guide")'>Open guide →</button>
+          <button type="button" class="link-btn" onclick='openImageViewer("assets/guides/cph-connection-guide-outbound.png","CPH Outbound Connection Guide")'>Open guide →</button>
+          <button type="button" class="link-btn map-secondary-btn" onclick='openPdfViewer("assets/guides/cph-connection-guide-outbound.pdf","CPH Outbound Connection Guide · PDF")'>PDF / print version</button>
         </div>
         <div class="maps-feature-card">
           <h3>🚆 FCO arrival → train</h3>

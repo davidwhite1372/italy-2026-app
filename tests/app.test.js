@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.12.0");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.12.0");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.12.1");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.12.1");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 5, 2026 at 3:30 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 5, 2026 at 6:45 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -516,6 +516,10 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
   window.showPage("maps");
   assert.equal(document.querySelectorAll("#mapsGuideFilters [data-maps-filter]").length, 7);
   assert.match(document.querySelector("#mapsFeaturedGuides").textContent, /Venice Vaporetto map[\s\S]*Copenhagen connection[\s\S]*FCO arrival/);
+  assert.equal(document.querySelectorAll("#mapsFeaturedGuides button").length, 5);
+  assert.match(document.querySelector("#mapsFeaturedGuides").innerHTML, /venice-vaporetto-map-2026\.png/);
+  assert.match(document.querySelector("#mapsFeaturedGuides").innerHTML, /cph-connection-guide-outbound\.png/);
+  assert.match(document.querySelector("style").textContent, /maps-feature-card button\.link-btn \{ color:#fff; background:var\(--primary\)/);
   assert.equal(document.querySelector("#mapsHotels"), null);
   assert.equal(document.querySelector("#mapsVenues"), null);
   assert.equal(document.querySelector("#mapsTravelHelpLocations"), null);
@@ -702,7 +706,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"10.12.0");
+  assert.equal(payload.appVersion,"10.12.1");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -742,7 +746,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.12.0");
+  assert.equal(payload.appVersion, "10.12.1");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -761,10 +765,10 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.12.0");
-  assert.match(manifest.description,/Version 10\.12\.0/);
-  assert.match(worker,/v10-12-0-full-release-2/);
-  ["fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf"].forEach(name=>{
+  assert.equal(packageData.version,"10.12.1");
+  assert.match(manifest.description,/Version 10\.12\.1/);
+  assert.match(worker,/v10-12-1-guide-usability/);
+  ["fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
   });
@@ -835,7 +839,7 @@ test("offline application shell lists every required local asset", () => {
     "./assets/tides/santa-lucia.png"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v10-12-0-full-release-2/);
+  assert.match(worker, /italy-2026-github-v10-12-1-guide-usability/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);
