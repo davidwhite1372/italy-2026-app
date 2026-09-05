@@ -697,7 +697,7 @@ test("release metadata and stable-ID collections stay consistent", async t => {
 
   assert.equal(packageData.version,"10.12.0");
   assert.match(manifest.description,/Version 10\.12\.0/);
-  assert.match(worker,/v10-12-0/);
+  assert.match(worker,/v10-12-0-full-release-2/);
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
     timeline:49,restaurants:67,attractions:15,reservations:10,budget:18,packing:72,open:13
   });

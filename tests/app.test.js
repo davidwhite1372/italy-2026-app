@@ -761,7 +761,7 @@ test("release metadata and stable-ID collections stay consistent", async t => {
 
   assert.equal(packageData.version,"10.12.0");
   assert.match(manifest.description,/Version 10\.12\.0/);
-  assert.match(worker,/v10-12-0/);
+  assert.match(worker,/v10-12-0-full-release-2/);
   ["fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
@@ -773,6 +773,19 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     assert.equal(ids.every(Boolean),true);
     assert.equal(new Set(ids).size,ids.length);
   });
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("mobile sticky controls, PDF viewer, and apostrophe phrases are wired safely", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const source = fs.readFileSync(path.join(projectRoot, "index.html"), "utf8");
+  assert.match(source, /overflow-x:\s*clip/);
+  assert.match(source, /\.filter-bar\s*\{[^}]*flex-wrap:\s*wrap/);
+  assert.match(source, /id="pdfViewerFrame"/);
+  assert.match(source, /function openPdfViewer\(/);
+  assert.match(source, /data-phrase="\$\{escapeHtml\(p\.it\)\}"/);
+  assert.match(source, /this\.closest\('\.phrase-row'\)\.dataset\.phrase/);
   assert.deepEqual(app.runtimeErrors, []);
 });
 
@@ -820,7 +833,7 @@ test("offline application shell lists every required local asset", () => {
     "./assets/tides/santa-lucia.png"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v10-12-0-full-release-1/);
+  assert.match(worker, /italy-2026-github-v10-12-0-full-release-2/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);

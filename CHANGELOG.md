@@ -12,6 +12,9 @@
 
 ### Changed
 
+- Repaired mobile sticky behavior so Timeline date headers and Travel Details filters stay below the app header without overlaying content.
+- Replaced direct PDF download links with an in-app PDF viewer and fixed phrase playback for Italian entries containing apostrophes.
+- Wrapped restaurant and expense filters so every option remains visible on narrow phone screens.
 - Corrected the Oct 4 departure to 06:00 and the outbound CPH connection to a 90-minute scheduled connection with an 08:10 gate target.
 - Corrected phrase spelling and pronunciation, promoted Coperto and the reviewed phrase additions, and placed menu terms under Restaurants.
 - Added receipt-authoritative expenses: $6.35 carabiners, $21.97 wallet and cable lock order, and $83.07 Moto Tag order dated September 3.
