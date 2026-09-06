@@ -6,7 +6,7 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 
 **Version 10.13.0 - Maps, links, guides, and usability release**
 
-Version 10.13.0 keeps the complete 10.12.1 guide library and adds the Florence laundry flyer, readable vector comfort maps, both Copenhagen passport wait links, prep-tab refresh persistence, the still-water restaurant phrase, and the reviewed Google Translate fallback sequence.
+Version 10.13.0 keeps the complete 10.12.1 guide library and adds the Florence laundry flyer, the original Rome, Florence, and Venice bathroom maps, both Copenhagen passport wait links, prep-tab refresh persistence, the still-water restaurant phrase, and the reviewed Google Translate fallback sequence.
 
 Version 10.12.0 included the Timeline and Travel Details corrections, receipt sourced expenses, work expense report tracking, CPH and Venice offline guides, the Quick Guides & Maps page, Italian phrase playback, Google Translate access, separate Favorite and Want to try restaurant states, corrected sticky headers, expanded note editing, and the reviewed phone-data reconciliation while retaining schema 6 compatibility.
 

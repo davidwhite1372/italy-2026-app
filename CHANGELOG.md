@@ -12,7 +12,7 @@
 - Preserved prep-tab selection in the URL so refreshing Phrases or Safety returns to that tab.
 - Added the reviewed Google Translate direct-component test path with app, Play Store, and web fallbacks.
 - Added the permanent restaurant phrase “Vorrei un'acqua naturale, per favore” with syllable-by-syllable pronunciation.
-- Replaced the low-resolution Rome, Florence, and Venice comfort maps with readable vector reference maps while retaining live Google Maps links.
+- Restored the original Rome, Florence, and Venice bathroom maps in the Comfort section while retaining live Google Maps links.
 
 ## [10.12.1] - 2026-09-05
 
