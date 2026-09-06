@@ -514,11 +514,15 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
   assert.deepEqual(mapData.help.map(item => item.name), ["U.S. Embassy Rome"]);
 
   window.showPage("maps");
-  assert.equal(document.querySelectorAll("#mapsGuideFilters [data-maps-filter]").length, 7);
+  assert.equal(document.querySelectorAll("#mapsGuideFilters [data-maps-filter]").length, 8);
   assert.match(document.querySelector("#mapsFeaturedGuides").textContent, /Venice Vaporetto map[\s\S]*Copenhagen connection[\s\S]*FCO arrival/);
   assert.equal(document.querySelectorAll("#mapsFeaturedGuides button").length, 5);
   assert.match(document.querySelector("#mapsFeaturedGuides").innerHTML, /venice-vaporetto-map-2026\.png/);
   assert.match(document.querySelector("#mapsFeaturedGuides").innerHTML, /cph-connection-guide-outbound\.png/);
+  assert.equal(document.querySelectorAll("#mapsGuideLibrary .maps-feature-card").length, 11);
+  assert.match(document.querySelector("#mapsGuideLibrary").textContent, /Luggage Lock Instructions/);
+  assert.match(document.querySelector("#mapsGuideLibrary").textContent, /Toilets in Italy/);
+  assert.match(document.querySelector("#mapsGuideLibrary").innerHTML, /venice-vaporetto-map-2026\.pdf/);
   assert.match(document.querySelector("style").textContent, /maps-feature-card button\.link-btn \{ color:#fff; background:var\(--primary\)/);
   assert.equal(document.querySelector("#mapsHotels"), null);
   assert.equal(document.querySelector("#mapsVenues"), null);

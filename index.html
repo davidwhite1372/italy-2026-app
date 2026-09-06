@@ -1227,6 +1227,7 @@
       <div class="text-sm text-muted maps-page-intro">Open the guide you need. Trip-specific details remain in Timeline and Travel Details; this page is for quick references, maps, and official links.</div>
       <div class="maps-quick-nav" id="mapsGuideFilters" aria-label="Quick guide sections">
         <button class="active" data-maps-filter="featured" onclick="setMapsGuideFilter('featured')">⭐ Start here</button>
+        <button data-maps-filter="guides" onclick="setMapsGuideFilter('guides')">📚 All guides</button>
         <button data-maps-filter="routes" onclick="setMapsGuideFilter('routes')">🗺️ City routes</button>
         <button data-maps-filter="airports" onclick="setMapsGuideFilter('airports')">✈️ Airports</button>
         <button data-maps-filter="local" onclick="setMapsGuideFilter('local')">🚤 City transport</button>
@@ -1237,6 +1238,11 @@
       <div class="maps-guide-group" data-maps-group="featured">
         <div class="section-title">Start here</div>
         <div id="mapsFeaturedGuides" class="maps-feature-grid"></div>
+      </div>
+      <div class="maps-guide-group" data-maps-group="guides">
+        <div class="section-title">All Guides &amp; Maps</div>
+        <div class="text-sm text-muted mb-8">A fail-safe library of every offline guide and map, including duplicate copies and PDF print versions.</div>
+        <div id="mapsGuideLibrary" class="maps-feature-grid"></div>
       </div>
       <div class="maps-guide-group" data-maps-group="routes">
         <div class="section-title">City Routes</div>
@@ -4663,6 +4669,19 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       "travel-34":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide"}],
       "travel-50":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide"}]
     });
+    const MAP_GUIDE_LIBRARY = Object.freeze([
+      {src:"assets/guides/cph-connection-guide-outbound.png",title:"CPH Outbound Connection Guide",category:"Airport connection"},
+      {src:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide · PDF",category:"Airport connection",pdf:true},
+      {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1",category:"Airport arrival"},
+      {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2",category:"Airport arrival"},
+      {src:"assets/guides/venice-station-to-jw-marriott.png",title:"Venezia Santa Lucia → JW Marriott",category:"Venice transfer"},
+      {src:"assets/guides/venice-vaporetto-map-2026.png",title:"ACTV Vaporetto Route Map · 2026",category:"Venice transport"},
+      {src:"assets/guides/venice-vaporetto-map-2026.pdf",title:"ACTV Vaporetto Route Map · 2026 · PDF",category:"Venice transport",pdf:true},
+      {src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide",category:"Airport departure"},
+      {src:"assets/guides/venice-october-2026-tide-chart.png",title:"Venice Tide Chart · October 2026",category:"Venice practical guide"},
+      {src:"assets/guides/italy-bathroom-survival.jpg",title:"Toilets in Italy · Survival Guide",category:"Practical guide"},
+      {src:"assets/guides/luggage-lock-instructions.jpg",title:"Luggage Lock Instructions",category:"Packing reference"}
+    ]);
     function guideActionsForTravel(id){
       return (TRAVEL_GUIDES_BY_ID[id]||[]).map(guide=>guide.secondary
         ? `<button type="button" class="link-btn guide-secondary" onclick='openPdfViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>📄 Open PDF version →</button>`
@@ -5390,6 +5409,13 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           <button type="button" class="link-btn" onclick='openImageViewer("assets/guides/fco-arrival-to-train-1.png","FCO Arrival → Train Station · Page 1")'>Open guide →</button>
         </div>
       `);
+
+      setMapsSection("mapsGuideLibrary", MAP_GUIDE_LIBRARY.map(guide => `
+        <div class="maps-feature-card">
+          <div class="text-xs text-muted">${escapeHtml(guide.category)}</div>
+          <h3>${escapeHtml(guide.title)}</h3>
+          <button type="button" class="link-btn${guide.pdf ? ' map-secondary-btn' : ''}" onclick='${guide.pdf ? `openPdfViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})` : `openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})`}'>${guide.pdf ? '📄 Open PDF version →' : '🖼️ Open guide →'}</button>
+        </div>`).join(""));
 
       // Scheduled trip routes already appear in Timeline and Travel Details.
       // Keep this page focused on reusable city-route references and custom legs.
