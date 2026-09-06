@@ -1231,7 +1231,7 @@
         <button data-maps-filter="routes" onclick="setMapsGuideFilter('routes')">🗺️ City routes</button>
         <button data-maps-filter="airports" onclick="setMapsGuideFilter('airports')">✈️ Airports</button>
         <button data-maps-filter="local" onclick="setMapsGuideFilter('local')">🚤 City transport</button>
-        <button data-maps-filter="comfort" onclick="setMapsGuideFilter('comfort')">🚻 Practical guides</button>
+        <button data-maps-filter="comfort" onclick="setMapsGuideFilter('comfort')">🚻 Comfort</button>
         <button data-maps-filter="help" onclick="setMapsGuideFilter('help')">🆘 What if?</button>
         <button data-maps-filter="official" onclick="setMapsGuideFilter('official')">🔗 Official links</button>
       </div>
@@ -1425,10 +1425,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.12.1",
-      build: "10.12.1",
+      version: "10.13.0",
+      build: "10.13.0",
       backupSchema: 6,
-      lastEdited: "September 5, 2026 at 6:45 PM EDT"
+      lastEdited: "September 6, 2026 at 6:03 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1985,18 +1985,36 @@
       catalog.deleted[id]={updatedAt:new Date().toISOString(),by:getBackupOwner()};
       setPhraseCatalogData(catalog); renderPrep(); showToast("Phrase deleted"); return true;
     }
-    function openItalianTranslator() {
-      // Legacy web reference retained for older saved guidance: https://context.reverso.net/translation/english-italian/
-      const fallback="https://translate.google.com/?sl=en&tl=it&op=translate";
-      const ua=navigator.userAgent||"";
-      const appUrl=/android/i.test(ua)
-        ? "intent://conversation?source=en&target=it#Intent;scheme=googletranslate;package=com.google.android.apps.translate;end"
-        : (/iphone|ipad|ipod/i.test(ua) ? "googletranslate://conversation?source=en&target=it" : fallback);
+    const GOOGLE_TRANSLATE_WEB_URL="https://translate.google.com/?sl=en&tl=it&op=translate";
+    const GOOGLE_TRANSLATE_PLAY_URL="https://play.google.com/store/apps/details?id=com.google.android.apps.translate";
+    const GOOGLE_TRANSLATE_DIRECT_COMPONENT="com.google.android.apps.translate/com.google.android.apps.translate.copresence.CopresenceActivity";
+    function openExternalUrl(url) {
       const link=document.createElement("a");
-      link.href=appUrl; link.target="_blank"; link.rel="noopener noreferrer";
+      link.href=url; link.target="_blank"; link.rel="noopener noreferrer";
       document.body.appendChild(link); link.click(); link.remove();
-      setTimeout(()=>{ if(!document.hidden && appUrl!==fallback) window.open(fallback,"_blank","noopener"); },900);
-      showToast("Opening Google Translate face-to-face mode");
+    }
+    function openItalianTranslator() {
+      // The direct Android Conversation activity is undocumented. Try it first on
+      // develop, then open the normal Translate app, Play Store, and web fallbacks.
+      const ua=navigator.userAgent||"";
+      if (/android/i.test(ua)) {
+        const direct=`intent://#Intent;scheme=googletranslate;package=com.google.android.apps.translate;component=${GOOGLE_TRANSLATE_DIRECT_COMPONENT};end`;
+        const app=`intent://#Intent;scheme=googletranslate;package=com.google.android.apps.translate;end`;
+        openExternalUrl(direct);
+        setTimeout(()=>{ if(!document.hidden) openExternalUrl(app); },800);
+        setTimeout(()=>{ if(!document.hidden) openExternalUrl(GOOGLE_TRANSLATE_PLAY_URL); },1600);
+        setTimeout(()=>{ if(!document.hidden) openExternalUrl(GOOGLE_TRANSLATE_WEB_URL); },2400);
+        showToast("Trying Google Translate Conversation; if it opens normally, tap Conversation");
+        return;
+      }
+      if (/iphone|ipad|ipod/i.test(ua)) {
+        openExternalUrl("googletranslate://conversation?source=en&target=it");
+        setTimeout(()=>{ if(!document.hidden) openExternalUrl(GOOGLE_TRANSLATE_WEB_URL); },900);
+        showToast("Trying Google Translate Conversation mode");
+        return;
+      }
+      openExternalUrl(GOOGLE_TRANSLATE_WEB_URL);
+      showToast("Opening Google Translate");
     }
     function speakPhrase(text, slow=false) {
       if (!('speechSynthesis' in window)) { showToast("Audio playback is not available on this phone"); return; }
@@ -2146,7 +2164,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       "note_1786799240417",
       "note_1786799292126",
       "note_1788029996450",
-      "note_1787702157588"
+      "note_1787702157588",
+      "note_1788367411611"
     ]);
     function normalizeNotes(arr) {
       const deleted=(getDeletedRecords().notes||{});
@@ -4243,7 +4262,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
               <div class="tl-detail-grid">
                 <div class="tl-detail-section"><div class="tl-detail-label">What to do</div><div class="tl-detail-text">${escapeHtml(t.instructions || "No additional instructions.")}</div></div>
                 ${t.notes ? `<div class="tl-detail-section"><div class="tl-detail-label">Notes</div><div class="tl-detail-text">${escapeHtml(t.notes)}</div></div>` : ""}
-                ${(primary || backup) ? `<div class="tl-detail-section"><div class="tl-detail-label">Maps & links</div><div class="tl-map-row">${primary ? `<a class="link-btn" href="${primary}" target="_blank" rel="noopener">${linkLabel(route.link, false)} →</a>` : ""}${backup ? `<a class="link-btn" href="${backup}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(route.backupLink, true)} →</a>` : ""}</div></div>` : ""}
+                ${(primary || backup || cphPassportWaitTracker(t.travelId)) ? `<div class="tl-detail-section"><div class="tl-detail-label">Maps & links</div><div class="tl-map-row">${primary ? `<a class="link-btn" href="${primary}" target="_blank" rel="noopener">${linkLabel(route.link, false)} →</a>` : ""}${backup ? `<a class="link-btn" href="${backup}" target="_blank" rel="noopener" style="color:var(--accent);">${linkLabel(route.backupLink, true)} →</a>` : ""}${cphPassportWaitTracker(t.travelId) ? `<a class="link-btn" href="${CPH_PASSPORT_WAIT_URL}" target="_blank" rel="noopener">CPH passport wait tracker →</a>` : ""}</div></div>` : ""}
               </div>
               <div class="tl-action-row">${actionBtns}</div>
             </div>
@@ -4679,7 +4698,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       {src:"assets/guides/venice-vaporetto-map-2026.pdf",title:"ACTV Vaporetto Route Map · 2026 · PDF",category:"Venice transport",pdf:true},
       {src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide",category:"Airport departure"},
       {src:"assets/guides/venice-october-2026-tide-chart.png",title:"Venice Tide Chart · October 2026",category:"Venice practical guide"},
-      {src:"assets/guides/italy-bathroom-survival.jpg",title:"Toilets in Italy · Survival Guide",category:"Practical guide"},
+      {src:"assets/guides/italy-bathroom-survival.jpg",title:"Toilets in Italy · Survival Guide",category:"Comfort"},
+      {src:"assets/guides/laundry-king-florence.png",title:"Laundry King Florence Guide",category:"Comfort"},
       {src:"assets/guides/luggage-lock-instructions.jpg",title:"Luggage Lock Instructions",category:"Packing reference"}
     ]);
     function guideActionsForTravel(id){
@@ -4694,6 +4714,12 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         <div class="travel-route-arrow">→</div>
         <div class="travel-route-point to"><span class="travel-route-label">To</span><div class="travel-route-place">${escapeHtml(to || "Destination")}</div>${end ? `<div class="travel-route-time">${escapeHtml(end)}</div>` : ""}</div>
       </div>`;
+    }
+
+    const CPH_PASSPORT_WAIT_URL="https://cphsecuritywait.dk/en/passport-control";
+    function cphPassportWaitTracker(travelId) {
+      if (!["travel-8","travel-43"].includes(String(travelId || ""))) return "";
+      return `<div class="travel-detail-panel"><div class="travel-detail-label">Live Copenhagen passport wait tracker</div><div class="travel-detail-text"><a class="link-btn" href="${CPH_PASSPORT_WAIT_URL}" target="_blank" rel="noopener">Open CPH passport-control wait times →</a></div></div>`;
     }
 
     function travelDetailPanel(label, text) {
@@ -4773,13 +4799,13 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         <div class="card travel-card train-card" data-travel-id="${escapeHtml(t.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🚆 ${escapeHtml(t.transportationDetails || t.title || "Train")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">🚆 Train</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(trainConfirmation(t), t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${seeInTimelineButton("travel",t.id)}${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Train</button>`)}</div></div>`, t.transportationDetails || t.title));
 
       transfers.forEach(t => addRecord("transfer", timelineTransportation(t), t.date, t.start, [t.title,t.from,t.to,t.mode,t.itemType,t.transportation,t.transportationDetails,t.duration,t.status,t.instructions,t.notes].join(" "), `
-        <div class="card travel-card transfer-card" data-travel-id="${escapeHtml(t.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Steps", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${seeInTimelineButton("travel",t.id)}${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button>`)}</div></div>`, t.title || t.from));
+        <div class="card travel-card transfer-card" data-travel-id="${escapeHtml(t.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Steps", t.instructions)}${travelDetailPanel("Travel note", t.notes)}${cphPassportWaitTracker(t.id)}`, `${seeInTimelineButton("travel",t.id)}${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button>`)}</div></div>`, t.title || t.from));
 
       hotels.forEach(h => addRecord("hotel", "None / Not applicable", h.checkIn, "15:00", [h.name,h.city,h.address,h.dates,h.conf,h.status,h.room,h.payment,h.tax,h.breakfast,h.notes].join(" "), `
         <div class="card travel-card" data-hotel-id="${escapeHtml(h.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🏨 ${escapeHtml(h.name)}</div><div class="travel-date-label">${escapeHtml(h.dates || fmtDate(h.checkIn))}</div></div></div><div class="travel-card-main"><div class="travel-chip-row"><span class="travel-chip">${escapeHtml(h.city)}</span><span class="travel-chip">Check-in ${fmtDate(h.checkIn)}</span><span class="travel-chip">Check-out ${fmtDate(h.checkOut)}</span>${statusBadge(h.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(h.conf, h.status || "Confirmed")}${travelDetailPanel("Address", h.address)}${travelDetailPanel("Room", h.room)}${travelDetailPanel("Payment", [h.payment,h.tax].filter(Boolean).join(" · "))}${travelDetailPanel("Hotel note", [h.breakfast,h.notes].filter(Boolean).join(" · "))}`, `${seeInTimelineButton("hotel",h.id)}${travelMapActions(h.address || h.name,"")}<button class="edit-btn" onclick="editHotelById('${h.id}')">Edit Hotel</button>`)}</div></div>`, h.name));
 
       activities.forEach(t => addRecord(activityTravelCategory(t), timelineTransportation(t), t.date, t.start, [t.title,t.itemType,t.transportation,t.transportationDetails,t.from,t.to,t.start,t.end,t.status,t.instructions,t.notes].join(" "), `
-        <div class="card travel-card activity-card" data-travel-id="${escapeHtml(t.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${seeInTimelineButton("travel",t.id)}${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button>`)}</div></div>`, t.title || t.itemType));
+        <div class="card travel-card activity-card" data-travel-id="${escapeHtml(t.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}${cphPassportWaitTracker(t.id)}`, `${seeInTimelineButton("travel",t.id)}${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button>`)}</div></div>`, t.title || t.itemType));
 
 
       let filtered = records.filter(r => travelTypeFilter === "all" || r.category === travelTypeFilter);
@@ -4803,7 +4829,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
 
     function openPrepTab(tab) {
       prepTab=["packing","phrases","safety"].includes(tab) ? tab : "packing";
-      showPage("prep");
+      showPage("prep", false, {prepTab});
     }
 
     function setPackingTravelerFilter(owner) {
@@ -5536,17 +5562,17 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
 
       const comfortCities = [
         {
-          city:"Rome", image:"assets/comfort/rome-restrooms.jpg",
+          city:"Rome", image:"assets/comfort/rome-restrooms-clean.svg",
           picks:["P.Stop Piazza di Spagna","P.Stop Piazza Sidney Sonnino (Trastevere)","P.Stop Piazza della Città Leonina (Vatican area)","La Rinascente Via del Tritone","Termini Station paid toilets"],
           note:"Best bets are staffed/paid facilities, major museums, and department stores. Carry small change, tissues, and sanitizer."
         },
         {
-          city:"Florence", image:"assets/comfort/florence-restrooms.jpg",
+          city:"Florence", image:"assets/comfort/florence-restrooms-clean.svg",
           picks:["Coin on Via dei Calzaiuoli","Rinascente at Piazza della Repubblica","Piazza San Giovanni / Baptistry area","Uffizi or Accademia with admission","Santa Maria Novella station paid toilets"],
           note:"Department stores and museums are usually the most dependable central options. Public facilities may have limited daytime hours."
         },
         {
-          city:"Venice", image:"assets/comfort/venice-restrooms.jpg",
+          city:"Venice", image:"assets/comfort/venice-restrooms-clean.svg",
           picks:["Diurno San Marco","Giardini Reali San Marco","Accademia","Rialto Novo","Piazzale Roma","Santa Lucia station toilets"],
           note:"Veritas municipal toilets are generally paid and staffed. Cafés and museums are useful backups when public facilities are closed."
         }
@@ -5578,7 +5604,16 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           <div class="quick-action-row"><a class="link-btn" href="${googleMapSearchUrl(h.address)}" target="_blank" rel="noopener">Google Place</a><a class="link-btn" href="${appleMapSearchUrl(h.address)}" target="_blank" rel="noopener">Apple Place</a><a class="link-btn" href="${mapsLinkFor('',h.address)}" target="_blank" rel="noopener">Directions</a></div>
         </div>`).join(""));
 
-      setMapsSection("mapsTravelHelp", CONTINGENCIES.map(c => `
+      const helpLocationCards = MAP_TRAVEL_HELP_LOCATIONS.map(h => `
+        <div class="card">
+          <div class="row space-between"><div class="fw-600">${escapeHtml(h.name)}</div>${statusBadge(h.status)}</div>
+          <div class="text-xs text-muted">${escapeHtml(h.city)} · ${escapeHtml(h.purpose)}</div>
+          <div class="text-sm mt-8"><strong>Address:</strong> ${escapeHtml(h.address)}</div>
+          <div class="text-sm"><strong>Access:</strong> ${escapeHtml(h.access)}</div>
+          <div class="text-sm text-muted mt-8"><strong>Note:</strong> ${escapeHtml(h.note)}</div>
+          <div class="quick-action-row"><a class="link-btn" href="${googleMapSearchUrl(h.address)}" target="_blank" rel="noopener">Google Place</a><a class="link-btn" href="${appleMapSearchUrl(h.address)}" target="_blank" rel="noopener">Apple Place</a><a class="link-btn" href="${mapsLinkFor('',h.address)}" target="_blank" rel="noopener">Directions</a></div>
+        </div>`).join("");
+      setMapsSection("mapsTravelHelp", helpLocationCards + CONTINGENCIES.map(c => `
         <div class="travel-guide-card travel-help-card">
           <div class="row space-between"><div class="fw-700" style="color:var(--danger);">${escapeHtml(c.scenario)}</div>${c.priority ? urgencyBadge(c.priority) : ""}</div>
           <div class="text-sm mt-8"><strong>Do:</strong> ${escapeHtml(c.action)}</div>
@@ -5917,8 +5952,18 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       showPage("timeline");
     }
 
+    function pageHash(id, navigationState={}) {
+      if (id === "prep" && ["packing","phrases","safety"].includes(navigationState.prepTab || prepTab)) {
+        return `#prep-${navigationState.prepTab || prepTab}`;
+      }
+      return "#" + id;
+    }
+
     function showPage(id, fromHistory, navigationState={}) {
       if (!document.getElementById("page-" + id)) id = "home";
+      if (id === "prep" && navigationState.prepTab) {
+        prepTab=["packing","phrases","safety"].includes(navigationState.prepTab) ? navigationState.prepTab : "packing";
+      }
 
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
       const page = document.getElementById("page-" + id);
@@ -5971,7 +6016,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       // Each page visit becomes a real history entry. The phone Back button
       // therefore returns to the page that was actually viewed previously.
       if (!fromHistory) {
-        try { history.pushState({ page: id, ...navigationState }, "", "#" + id); } catch (e) {}
+        const state={ page:id, ...(id === "prep" ? {prepTab} : {}), ...navigationState };
+        try { history.pushState(state, "", pageHash(id,state)); } catch (e) {}
       }
     }
 
@@ -5984,7 +6030,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       const overlay = document.getElementById("overlay");
       if (overlay && overlay.classList.contains("open")) {
         closeSheet();
-        try { history.pushState({ page: currentPage }, "", "#" + currentPage); } catch (e) {}
+        const state={page:currentPage,...(currentPage === "prep" ? {prepTab} : {})};
+        try { history.pushState(state, "", pageHash(currentPage,state)); } catch (e) {}
         return;
       }
 
@@ -6059,11 +6106,13 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       // Create a guarded Home entry, then open a deep-linked page if one was requested.
       try {
         const hashPage = (location.hash || "").replace(/^#/, "");
-        const startPage = hashPage && document.getElementById("page-" + hashPage) ? hashPage : "home";
+        const prepHash = hashPage.match(/^prep-(packing|phrases|safety)$/);
+        const startPage = prepHash ? "prep" : (hashPage && document.getElementById("page-" + hashPage) ? hashPage : "home");
+        if (prepHash) prepTab=prepHash[1];
         history.replaceState({ page: "home", root: true }, "", "#home");
         history.pushState({ page: "home" }, "", "#home");
         if (startPage !== "home") {
-          showPage(startPage, false);
+          showPage(startPage, false, prepHash ? {prepTab} : {});
         }
       } catch (e) {}
 

@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.12.1");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.12.1");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.13.0");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.13.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 5, 2026 at 6:45 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 6, 2026 at 6:03 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -396,6 +396,8 @@ test("Packing, phrases, and safety are separate tools and phrase changes survive
 
   window.openPrepTab("phrases");
   assert.equal(document.querySelector("#prepPageTitle").textContent, "Italian Phrases");
+  assert.equal(window.location.hash, "#prep-phrases");
+  assert.equal(window.history.state.prepTab, "phrases");
   const builtIns = window.getPhraseItems();
   assert.equal(builtIns.some(item => item.en === "What?" && item.it === "Che cosa?"), true);
   assert.equal(builtIns.filter(item => item.en === "What?").length, 1);
@@ -404,9 +406,14 @@ test("Packing, phrases, and safety are separate tools and phrase changes survive
   assert.equal(builtIns.some(item => item.en === "Good night" && item.it === "Buonanotte" && item.pr), true);
   assert.equal(builtIns.some(item => item.en === "Where is the bathroom?" && item.it === "Dov'è il bagno?" && item.pr), true);
   assert.equal(builtIns.some(item => item.en === "Watch out, pickpocket!" && item.it === "Attenzione, borseggiatore!" && item.pr), true);
+  assert.equal(builtIns.some(item => item.id === "phrase-water-still" && item.it === "Vorrei un'acqua naturale, per favore" && item.pr === "voh-RAY oon-AHK-wah nah-too-RAH-lay, pair fah-VOH-ray"), true);
   assert.match(document.querySelector(".phrase-group h3").textContent, /Greetings/);
   assert.match(document.querySelector("#prepContent").textContent, /English ↔ Italian Translator/);
-  assert.match(window.openItalianTranslator.toString(), /context\.reverso\.net\/translation\/english-italian/);
+  assert.match(window.openItalianTranslator.toString(), /GOOGLE_TRANSLATE_DIRECT_COMPONENT/);
+  assert.match(window.openItalianTranslator.toString(), /GOOGLE_TRANSLATE_PLAY_URL/);
+
+  window.dispatchEvent(new window.PopStateEvent("popstate", {state:{page:"prep",prepTab:"safety"}}));
+  assert.equal(document.querySelector("#prepPageTitle").textContent, "Safety & Emergency");
 
   window.openPhraseEditor(null);
   assert.equal(document.querySelector("#ef_it").getAttribute("lang"), "it");
@@ -519,16 +526,23 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
   assert.equal(document.querySelectorAll("#mapsFeaturedGuides button").length, 5);
   assert.match(document.querySelector("#mapsFeaturedGuides").innerHTML, /venice-vaporetto-map-2026\.png/);
   assert.match(document.querySelector("#mapsFeaturedGuides").innerHTML, /cph-connection-guide-outbound\.png/);
-  assert.equal(document.querySelectorAll("#mapsGuideLibrary .maps-feature-card").length, 11);
+  assert.equal(document.querySelectorAll("#mapsGuideLibrary .maps-feature-card").length, 12);
   assert.match(document.querySelector("#mapsGuideLibrary").textContent, /Luggage Lock Instructions/);
   assert.match(document.querySelector("#mapsGuideLibrary").textContent, /Toilets in Italy/);
+  assert.match(document.querySelector("#mapsGuideLibrary").textContent, /Laundry King Florence Guide/);
   assert.match(document.querySelector("#mapsGuideLibrary").innerHTML, /venice-vaporetto-map-2026\.pdf/);
+  assert.match(document.querySelector("#mapsGuideFilters").textContent, /Comfort/);
   assert.match(document.querySelector("style").textContent, /maps-feature-card button\.link-btn \{ color:#fff; background:var\(--primary\)/);
   assert.equal(document.querySelector("#mapsHotels"), null);
   assert.equal(document.querySelector("#mapsVenues"), null);
   assert.equal(document.querySelector("#mapsTravelHelpLocations"), null);
   assert.equal(document.querySelector("#mapsPending"), null);
+  assert.match(document.querySelector("#mapsTravelHelp").textContent, /U\.S\. Embassy Rome/);
   assert.match(document.querySelector("#mapsLocalGuide").textContent, /Venice High Water Guide[\s\S]*82 cm[\s\S]*105 cm[\s\S]*135 cm/);
+  assert.deepEqual(
+    [...document.querySelectorAll("#mapsComfortEssentials .comfort-map")].map(image => image.getAttribute("src")),
+    ["assets/comfort/rome-restrooms-clean.svg","assets/comfort/florence-restrooms-clean.svg","assets/comfort/venice-restrooms-clean.svg"]
+  );
   assert.deepEqual(
     [...document.querySelectorAll("#mapsLocalGuide .venice-tide-item img")].map(image => image.getAttribute("src")),
     ["assets/tides/san-marco.png", "assets/tides/rialto.png", "assets/tides/santa-lucia.png"]
@@ -539,6 +553,35 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
   const oldEmbassySearch = window.globalSearchEntries().find(item => item.title === "U.S. Embassy Rome" && item.mapsFilter === "help");
   assert.equal(oldVenueSearch, undefined);
   assert.equal(oldEmbassySearch, undefined);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("CPH passport wait tracker appears on both Copenhagen layovers and reviewed note retirement is narrow", async t => {
+  const app = await bootApp({
+    italy2026_notes: [
+      {id:"note_1788367411611",title:"Word adds for restaurant pharsing",category:"Food & Drink",body:"Antipasti Primi Secondi Contorni Dolci",pinned:false},
+      {id:"luggage-note",title:"Luggage Note",category:"Packing",body:"Cable Lock Code 710\nSuitcase Lock Code 710",pinned:false}
+    ]
+  });
+  t.after(() => app.dom.window.close());
+  const {window} = app;
+  const document = window.document;
+
+  assert.equal(window.getNotes().some(note => note.id === "note_1788367411611"), false);
+  assert.equal(window.getNotes().some(note => note.id === "luggage-note"), true);
+
+  window.showPage("transport");
+  ["travel-8","travel-43"].forEach(id => {
+    const card = document.querySelector(`[data-travel-id="${id}"]`);
+    assert.ok(card, `${id} should be present in Travel Details`);
+    assert.equal(card.querySelectorAll(`a[href="https://cphsecuritywait.dk/en/passport-control"]`).length, 1);
+  });
+  window.showPage("timeline");
+  ["tl-0008","tl-0043"].forEach(id => {
+    const card = document.querySelector(`[data-timeline-id="${id}"]`);
+    assert.ok(card, `${id} should be present in Timeline`);
+    assert.equal(card.querySelectorAll(`a[href="https://cphsecuritywait.dk/en/passport-control"]`).length, 1);
+  });
   assert.deepEqual(app.runtimeErrors, []);
 });
 
@@ -710,7 +753,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"10.12.1");
+  assert.equal(payload.appVersion,"10.13.0");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -750,7 +793,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.12.1");
+  assert.equal(payload.appVersion, "10.13.0");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -769,10 +812,10 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.12.1");
-  assert.match(manifest.description,/Version 10\.12\.1/);
-  assert.match(worker,/v10-12-1-guide-usability/);
-  ["fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png"].forEach(name=>{
+  assert.equal(packageData.version,"10.13.0");
+  assert.match(manifest.description,/Version 10\.13\.0/);
+  assert.match(worker,/v10-13-0-maps-guides/);
+  ["fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
   });
@@ -835,15 +878,15 @@ test("offline application shell lists every required local asset", () => {
     "./manifest.json",
     "./icon-192.png",
     "./icon-512.png",
-    "./assets/comfort/rome-restrooms.jpg",
-    "./assets/comfort/florence-restrooms.jpg",
-    "./assets/comfort/venice-restrooms.jpg",
+    "./assets/comfort/rome-restrooms-clean.svg",
+    "./assets/comfort/florence-restrooms-clean.svg",
+    "./assets/comfort/venice-restrooms-clean.svg",
     "./assets/tides/san-marco.png",
     "./assets/tides/rialto.png",
     "./assets/tides/santa-lucia.png"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v10-12-1-guide-usability/);
+  assert.match(worker, /italy-2026-github-v10-13-0-maps-guides/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);
