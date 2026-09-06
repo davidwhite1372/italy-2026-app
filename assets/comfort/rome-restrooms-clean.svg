@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <rect width="1200" height="900" fill="#f7f1e6"/>
+  <rect width="1200" height="92" fill="#8b1e3f"/>
+  <text x="54" y="42" fill="#fff" font-family="Arial,sans-serif" font-size="34" font-weight="800">ROME · COMFORT STOPS</text>
+  <text x="54" y="73" fill="#f9d9df" font-family="Arial,sans-serif" font-size="20">Readable reference map · not to scale · verify hours on arrival</text>
+  <path d="M0 250 C190 210 310 300 470 250 S760 230 910 285 S1080 350 1200 300 L1200 410 C1040 455 920 390 760 425 S470 420 310 390 S120 380 0 420Z" fill="#b9dce6"/>
+  <text x="980" y="346" fill="#367184" font-family="Arial,sans-serif" font-size="24" font-weight="700">Tiber River</text>
+  <path d="M70 620 L1120 160 M60 760 L1130 360 M170 160 L1030 760 M260 110 L720 800 M80 430 L1150 610" stroke="#d5c9bb" stroke-width="18" opacity=".9"/>
+  <path d="M70 620 L1120 160 M60 760 L1130 360 M170 160 L1030 760 M260 110 L720 800 M80 430 L1150 610" stroke="#fff" stroke-width="5" opacity=".95"/>
+  <text x="78" y="575" fill="#665e59" font-family="Arial,sans-serif" font-size="22" font-weight="700">TRASTEVERE</text>
+  <text x="190" y="390" fill="#665e59" font-family="Arial,sans-serif" font-size="22" font-weight="700">VATICAN</text>
+  <text x="425" y="475" fill="#665e59" font-family="Arial,sans-serif" font-size="22" font-weight="700">CENTRO STORICO</text>
+  <text x="825" y="575" fill="#665e59" font-family="Arial,sans-serif" font-size="22" font-weight="700">TERMINI</text>
+  <g fill="#238b57" stroke="#fff" stroke-width="5">
+    <circle cx="475" cy="300" r="27"/><circle cx="170" cy="650" r="27"/><circle cx="285" cy="270" r="27"/><circle cx="620" cy="250" r="27"/><circle cx="900" cy="510" r="27"/>
+  </g>
+  <g fill="#fff" font-family="Arial,sans-serif" font-size="25" font-weight="800" text-anchor="middle">
+    <text x="475" y="309">1</text><text x="170" y="659">2</text><text x="285" y="279">3</text><text x="620" y="259">4</text><text x="900" y="519">5</text>
+  </g>
+  <rect x="45" y="690" width="1110" height="165" rx="22" fill="#fff" stroke="#d7c5a5" stroke-width="3"/>
+  <text x="75" y="727" fill="#8b1e3f" font-family="Arial,sans-serif" font-size="24" font-weight="800">QUICK REFERENCE</text>
+  <g fill="#272322" font-family="Arial,sans-serif" font-size="21">
+    <text x="75" y="765"><tspan font-weight="800">1</tspan> P.Stop Piazza di Spagna</text><text x="75" y="800"><tspan font-weight="800">2</tspan> P.Stop Piazza Sidney Sonnino · Trastevere</text>
+    <text x="585" y="765"><tspan font-weight="800">3</tspan> P.Stop Piazza Città Leonina · Vatican</text><text x="585" y="800"><tspan font-weight="800">4</tspan> La Rinascente · Via del Tritone</text><text x="585" y="835"><tspan font-weight="800">5</tspan> Termini Station paid toilets</text>
+  </g>
+</svg>

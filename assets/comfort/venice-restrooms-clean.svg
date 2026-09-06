@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <rect width="1200" height="900" fill="#f7f1e6"/>
+  <rect width="1200" height="92" fill="#8b1e3f"/>
+  <text x="54" y="42" fill="#fff" font-family="Arial,sans-serif" font-size="34" font-weight="800">VENICE · COMFORT STOPS</text>
+  <text x="54" y="73" fill="#f9d9df" font-family="Arial,sans-serif" font-size="20">Readable reference map · not to scale · verify hours and fees</text>
+  <path d="M0 180 C190 255 280 160 430 255 S720 235 830 330 S1010 300 1200 380 L1200 530 C1010 460 930 535 800 450 S520 455 390 360 S190 380 0 300Z" fill="#9ed5e1"/>
+  <path d="M120 175 L1080 690 M60 470 L1080 180 M300 100 L760 770 M480 120 L1050 560" stroke="#d5c9bb" stroke-width="18" opacity=".9"/>
+  <path d="M120 175 L1080 690 M60 470 L1080 180 M300 100 L760 770 M480 120 L1050 560" stroke="#fff" stroke-width="5" opacity=".95"/>
+  <text x="115" y="580" fill="#367184" font-family="Arial,sans-serif" font-size="24" font-weight="700">GRAND CANAL</text>
+  <text x="120" y="250" fill="#665e59" font-family="Arial,sans-serif" font-size="22" font-weight="700">SANTA LUCIA</text>
+  <text x="435" y="260" fill="#665e59" font-family="Arial,sans-serif" font-size="22" font-weight="700">RIALTO</text>
+  <text x="830" y="270" fill="#665e59" font-family="Arial,sans-serif" font-size="22" font-weight="700">SAN MARCO</text>
+  <text x="760" y="600" fill="#665e59" font-family="Arial,sans-serif" font-size="22" font-weight="700">DORSODURO</text>
+  <g fill="#238b57" stroke="#fff" stroke-width="5">
+    <circle cx="900" cy="330" r="27"/><circle cx="780" cy="250" r="27"/><circle cx="650" cy="470" r="27"/><circle cx="460" cy="330" r="27"/><circle cx="220" cy="610" r="27"/><circle cx="155" cy="245" r="27"/>
+  </g>
+  <g fill="#fff" font-family="Arial,sans-serif" font-size="25" font-weight="800" text-anchor="middle">
+    <text x="900" y="339">1</text><text x="780" y="259">2</text><text x="650" y="479">3</text><text x="460" y="339">4</text><text x="220" y="619">5</text><text x="155" y="254">6</text>
+  </g>
+  <rect x="45" y="690" width="1110" height="165" rx="22" fill="#fff" stroke="#d7c5a5" stroke-width="3"/>
+  <text x="75" y="727" fill="#8b1e3f" font-family="Arial,sans-serif" font-size="24" font-weight="800">QUICK REFERENCE</text>
+  <g fill="#272322" font-family="Arial,sans-serif" font-size="21">
+    <text x="75" y="765"><tspan font-weight="800">1</tspan> Diurno San Marco</text><text x="75" y="800"><tspan font-weight="800">2</tspan> Giardini Reali San Marco</text><text x="75" y="835"><tspan font-weight="800">3</tspan> Accademia</text>
+    <text x="585" y="765"><tspan font-weight="800">4</tspan> Rialto Novo</text><text x="585" y="800"><tspan font-weight="800">5</tspan> Piazzale Roma</text><text x="585" y="835"><tspan font-weight="800">6</tspan> Santa Lucia station toilets</text>
+  </g>
+</svg>

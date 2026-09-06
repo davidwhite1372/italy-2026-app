@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <rect width="1200" height="900" fill="#f7f1e6"/>
+  <rect width="1200" height="92" fill="#8b1e3f"/>
+  <text x="54" y="42" fill="#fff" font-family="Arial,sans-serif" font-size="34" font-weight="800">FLORENCE · COMFORT STOPS</text>
+  <text x="54" y="73" fill="#f9d9df" font-family="Arial,sans-serif" font-size="20">Readable reference map · not to scale · verify hours on arrival</text>
+  <path d="M0 315 C220 265 350 360 520 305 S850 265 1200 340 L1200 470 C970 420 790 485 600 445 S270 420 0 480Z" fill="#b9dce6"/>
+  <text x="970" y="390" fill="#367184" font-family="Arial,sans-serif" font-size="24" font-weight="700">Arno River</text>
+  <path d="M80 650 L1110 160 M70 760 L1120 260 M180 150 L1000 770 M330 100 L690 790 M100 470 L1120 570" stroke="#d5c9bb" stroke-width="18" opacity=".9"/>
+  <path d="M80 650 L1110 160 M70 760 L1120 260 M180 150 L1000 770 M330 100 L690 790 M100 470 L1120 570" stroke="#fff" stroke-width="5" opacity=".95"/>
+  <text x="105" y="585" fill="#665e59" font-family="Arial,sans-serif" font-size="22" font-weight="700">SANTA MARIA NOVELLA</text>
+  <text x="420" y="255" fill="#665e59" font-family="Arial,sans-serif" font-size="22" font-weight="700">SAN GIOVANNI</text>
+  <text x="775" y="575" fill="#665e59" font-family="Arial,sans-serif" font-size="22" font-weight="700">SANTA CROCE</text>
+  <text x="820" y="220" fill="#665e59" font-family="Arial,sans-serif" font-size="22" font-weight="700">UFFIZI / ACCADEMIA</text>
+  <g fill="#238b57" stroke="#fff" stroke-width="5">
+    <circle cx="700" cy="285" r="27"/><circle cx="525" cy="355" r="27"/><circle cx="505" cy="230" r="27"/><circle cx="850" cy="420" r="27"/><circle cx="220" cy="540" r="27"/>
+  </g>
+  <g fill="#fff" font-family="Arial,sans-serif" font-size="25" font-weight="800" text-anchor="middle">
+    <text x="700" y="294">1</text><text x="525" y="364">2</text><text x="505" y="239">3</text><text x="850" y="429">4</text><text x="220" y="549">5</text>
+  </g>
+  <rect x="45" y="690" width="1110" height="165" rx="22" fill="#fff" stroke="#d7c5a5" stroke-width="3"/>
+  <text x="75" y="727" fill="#8b1e3f" font-family="Arial,sans-serif" font-size="24" font-weight="800">QUICK REFERENCE</text>
+  <g fill="#272322" font-family="Arial,sans-serif" font-size="21">
+    <text x="75" y="765"><tspan font-weight="800">1</tspan> Coin · Via dei Calzaiuoli</text><text x="75" y="800"><tspan font-weight="800">2</tspan> Rinascente · Piazza della Repubblica</text><text x="75" y="835"><tspan font-weight="800">3</tspan> Piazza San Giovanni / Baptistry</text>
+    <text x="585" y="765"><tspan font-weight="800">4</tspan> Uffizi or Accademia · admission</text><text x="585" y="800"><tspan font-weight="800">5</tspan> Santa Maria Novella station toilets</text>
+  </g>
+</svg>

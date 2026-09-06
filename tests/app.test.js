@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.12.2");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.12.2");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.13.0");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.13.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 6, 2026 at 4:57 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 6, 2026 at 6:03 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -540,6 +540,10 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
   assert.match(document.querySelector("#mapsTravelHelp").textContent, /U\.S\. Embassy Rome/);
   assert.match(document.querySelector("#mapsLocalGuide").textContent, /Venice High Water Guide[\s\S]*82 cm[\s\S]*105 cm[\s\S]*135 cm/);
   assert.deepEqual(
+    [...document.querySelectorAll("#mapsComfortEssentials .comfort-map")].map(image => image.getAttribute("src")),
+    ["assets/comfort/rome-restrooms-clean.svg","assets/comfort/florence-restrooms-clean.svg","assets/comfort/venice-restrooms-clean.svg"]
+  );
+  assert.deepEqual(
     [...document.querySelectorAll("#mapsLocalGuide .venice-tide-item img")].map(image => image.getAttribute("src")),
     ["assets/tides/san-marco.png", "assets/tides/rialto.png", "assets/tides/santa-lucia.png"]
   );
@@ -749,7 +753,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"10.12.2");
+  assert.equal(payload.appVersion,"10.13.0");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -789,7 +793,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.12.2");
+  assert.equal(payload.appVersion, "10.13.0");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -808,9 +812,9 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.12.2");
-  assert.match(manifest.description,/Version 10\.12\.2/);
-  assert.match(worker,/v10-12-2-maps-links/);
+  assert.equal(packageData.version,"10.13.0");
+  assert.match(manifest.description,/Version 10\.13\.0/);
+  assert.match(worker,/v10-13-0-maps-guides/);
   ["fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
@@ -874,15 +878,15 @@ test("offline application shell lists every required local asset", () => {
     "./manifest.json",
     "./icon-192.png",
     "./icon-512.png",
-    "./assets/comfort/rome-restrooms.jpg",
-    "./assets/comfort/florence-restrooms.jpg",
-    "./assets/comfort/venice-restrooms.jpg",
+    "./assets/comfort/rome-restrooms-clean.svg",
+    "./assets/comfort/florence-restrooms-clean.svg",
+    "./assets/comfort/venice-restrooms-clean.svg",
     "./assets/tides/san-marco.png",
     "./assets/tides/rialto.png",
     "./assets/tides/santa-lucia.png"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v10-12-2-maps-links/);
+  assert.match(worker, /italy-2026-github-v10-13-0-maps-guides/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);
