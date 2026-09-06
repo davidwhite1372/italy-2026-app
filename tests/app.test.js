@@ -406,6 +406,7 @@ test("Packing, phrases, and safety are separate tools and phrase changes survive
   assert.equal(builtIns.some(item => item.en === "Good night" && item.it === "Buonanotte" && item.pr), true);
   assert.equal(builtIns.some(item => item.en === "Where is the bathroom?" && item.it === "Dov'è il bagno?" && item.pr), true);
   assert.equal(builtIns.some(item => item.en === "Watch out, pickpocket!" && item.it === "Attenzione, borseggiatore!" && item.pr), true);
+  assert.equal(builtIns.some(item => item.id === "phrase-water-still" && item.it === "Vorrei un'acqua naturale, per favore" && item.pr === "voh-RAY oon-AHK-wah nah-too-RAH-lay, pair fah-VOH-ray"), true);
   assert.match(document.querySelector(".phrase-group h3").textContent, /Greetings/);
   assert.match(document.querySelector("#prepContent").textContent, /English ↔ Italian Translator/);
   assert.match(window.openItalianTranslator.toString(), /GOOGLE_TRANSLATE_DIRECT_COMPONENT/);

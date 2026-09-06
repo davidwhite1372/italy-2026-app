@@ -11,6 +11,7 @@
 - Preserved luggage notes on both phones without replacing phone data.
 - Preserved prep-tab selection in the URL so refreshing Phrases or Safety returns to that tab.
 - Added the reviewed Google Translate direct-component test path with app, Play Store, and web fallbacks.
+- Added the permanent restaurant phrase “Vorrei un'acqua naturale, per favore” with syllable-by-syllable pronunciation.
 
 ## [10.12.1] - 2026-09-05
 

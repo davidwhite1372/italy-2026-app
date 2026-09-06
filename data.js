@@ -527,6 +527,7 @@
       "Restaurants": [
         {en:"The bill, please",it:"Il conto, per favore",pr:"eel KON-to"},
         {en:"Water",it:"Acqua",pr:"AH-kwah"},
+        {id:"phrase-water-still",en:"I would like still water, please",it:"Vorrei un'acqua naturale, per favore",pr:"voh-RAY oon-AHK-wah nah-too-RAH-lay, pair fah-VOH-ray"},
         {en:"Coffee",it:"Caffè",pr:"kahf-FEH"},
         {en:"A table for two, please",it:"Un tavolo per due, per favore",pr:"oon TAH-voh-loh pair DOO-eh, pair fah-VOH-ray"},
         {id:"phrase-custom-da366552-4415-4bbf-9781-fa032d9078ce",en:"Cheese",it:"Formaggio",pr:"for-MAHD-joh"},
