@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-13-0-original-comfort-maps';
+const CACHE = 'italy-2026-github-v10-14-0-final-release';
 const APP_SHELL = [
   './',
   './index.html',

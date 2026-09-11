@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.13.0");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.13.0");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.14.0");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.14.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 6, 2026 at 6:03 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 11, 2026 at 6:00 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -369,10 +369,12 @@ test("10.12.0 promotes reviewed budget, packing, and official alert changes", as
   const master = JSON.parse(window.eval(`JSON.stringify({packing:PACKING,expenses:BASE_EXPENSES,alerts:SAFETY.alerts})`));
 
   assert.equal(master.packing.some(item => item.id === "packing-0012"), false);
-  const suitcase = master.expenses.find(item => item.id === 1788280000000);
-  assert.equal(suitcase.amt, 407.36);
+  const suitcase = master.expenses.find(item => item.id === 1788990000000);
+  assert.equal(suitcase.amt, 353.05);
   assert.equal(suitcase.payment, "Credit Card");
-  assert.match(suitcase.desc, /Travelpro Platinum Elite/);
+  assert.match(suitcase.desc, /Carry-On Spinner/);
+  assert.equal(master.expenses.some(item => item.id === 1788280000000), false);
+  assert.equal(master.packing.some(item => item.id === "packing-0015" && item.item.includes("Carry-On Spinner") && item.bag === "Carry-on"), true);
   assert.equal(master.alerts.every(item => /^https:\/\//.test(item.url)), true);
 
   window.openPrepTab("safety");
@@ -410,7 +412,8 @@ test("Packing, phrases, and safety are separate tools and phrase changes survive
   assert.match(document.querySelector(".phrase-group h3").textContent, /Greetings/);
   assert.match(document.querySelector("#prepContent").textContent, /English ↔ Italian Translator/);
   assert.match(window.openItalianTranslator.toString(), /GOOGLE_TRANSLATE_DIRECT_COMPONENT/);
-  assert.match(window.openItalianTranslator.toString(), /GOOGLE_TRANSLATE_PLAY_URL/);
+  assert.match(window.openItalianTranslator.toString(), /GOOGLE_TRANSLATE_PACKAGE/);
+  assert.doesNotMatch(window.openItalianTranslator.toString(), /GOOGLE_TRANSLATE_PLAY_URL|play\.google\.com/);
 
   window.dispatchEvent(new window.PopStateEvent("popstate", {state:{page:"prep",prepTab:"safety"}}));
   assert.equal(document.querySelector("#prepPageTitle").textContent, "Safety & Emergency");
@@ -522,15 +525,18 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
 
   window.showPage("maps");
   assert.equal(document.querySelectorAll("#mapsGuideFilters [data-maps-filter]").length, 8);
-  assert.match(document.querySelector("#mapsFeaturedGuides").textContent, /Venice Vaporetto map[\s\S]*Copenhagen connection[\s\S]*FCO arrival/);
+  assert.match(document.querySelector("#mapsGuideFilters").textContent, /Key trip guides/);
+  assert.match(document.querySelector("#page-maps").textContent, /Key Trip Guides/);
+  assert.match(document.querySelector("#mapsFeaturedGuides").textContent, /Copenhagen connection[\s\S]*FCO arrival[\s\S]*Venice Vaporetto map/);
   assert.equal(document.querySelectorAll("#mapsFeaturedGuides button").length, 5);
   assert.match(document.querySelector("#mapsFeaturedGuides").innerHTML, /venice-vaporetto-map-2026\.png/);
   assert.match(document.querySelector("#mapsFeaturedGuides").innerHTML, /cph-connection-guide-outbound\.png/);
-  assert.equal(document.querySelectorAll("#mapsGuideLibrary .maps-feature-card").length, 12);
+  assert.equal(document.querySelectorAll("#mapsGuideLibrary .maps-feature-card").length, 10);
   assert.match(document.querySelector("#mapsGuideLibrary").textContent, /Luggage Lock Instructions/);
   assert.match(document.querySelector("#mapsGuideLibrary").textContent, /Toilets in Italy/);
   assert.match(document.querySelector("#mapsGuideLibrary").textContent, /Laundry King Florence Guide/);
   assert.match(document.querySelector("#mapsGuideLibrary").innerHTML, /venice-vaporetto-map-2026\.pdf/);
+  assert.match(document.querySelector("#mapsGuideLibrary").innerHTML, /cph-connection-guide-outbound\.pdf/);
   assert.match(document.querySelector("#mapsGuideFilters").textContent, /Comfort/);
   assert.match(document.querySelector("style").textContent, /maps-feature-card button\.link-btn \{ color:#fff; background:var\(--primary\)/);
   assert.equal(document.querySelector("#mapsHotels"), null);
@@ -691,6 +697,7 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   assert.equal(packing.some(item=>item._id==="packing-custom-098dfc93-369b-4043-812d-03cde6945cda" && item.item==="Luggage/Bag Security Clips"),true);
   assert.equal(packing.some(item=>item._id==="packing-custom-222f6ddd-49f0-4f25-870f-0e54ebc226ae" && item.qty===2),true);
   const phrases=window.getPhraseItems();
+  assert.equal(phrases.some(item=>item.id==="phrase-custom-0005a4bb-12de-4c6a-985c-cb73fff738ec" && item.en==="I would like…" && item.it==="Vorrei"),true);
   assert.equal(phrases.some(item=>item.id==="phrase-custom-a106f552-7b58-4333-a8a5-32c187ba162f" && item.it==="Può aiutarmi?"),true);
   assert.equal(phrases.some(item=>item.id==="phrase-custom-da366552-4415-4bbf-9781-fa032d9078ce" && item.it==="Formaggio"),true);
   assert.equal(phrases.some(item=>item.id==="phrase-custom-9fa31b65-9c66-41f4-a233-9247772dde99" && item.it==="Estathé"),true);
@@ -708,7 +715,7 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
 });
 
 test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async t => {
-  const promotedNote={id:"note_1787450342393",title:"ATM IN ROME",category:"Miscellaneous",body:"Walk toward the Anantara Palazzo Naiadi.\n\nStop at the UniCredit ATM on Via Vittorio Emanuele Orlando 70",pinned:false,createdAt:"2026-08-23T01:59:02.393Z",updatedAt:"2026-08-23T01:59:02.393Z"};
+  const promotedNote={id:"note_1787450342393",title:"UNICREDIT ATM IN ROME",category:"Miscellaneous",body:"Walk toward and just past the Anantara Palazzo Naiadi. Head to the NW part of the circle in front of the hotel.\n\nStop at the UniCredit ATM on Via Vittorio Emanuele Orlando, 70, 00185 Roma RM, Italy",pinned:false,createdAt:"2026-08-23T01:59:02.393Z",updatedAt:"2026-09-07T00:21:58.594Z"};
   const app = await bootApp({
     italy2026_live:{sharedTravel:{
       "travel-8":{itemType:"Transfer",transportation:"Walk",transportationDetails:"Airport connection / passport control"},
@@ -753,7 +760,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"10.13.0");
+  assert.equal(payload.appVersion,"10.14.0");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -793,7 +800,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.13.0");
+  assert.equal(payload.appVersion, "10.14.0");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -812,7 +819,7 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.13.0");
+  assert.equal(packageData.version,"10.14.0");
   assert.match(manifest.description,/Version 10\.13\.0/);
   assert.match(worker,/v10-13-0-original-comfort-maps/);
   ["fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png"].forEach(name=>{

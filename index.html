@@ -1147,6 +1147,10 @@
         <div class="card-title"><span class="icon">📔</span> Journal & Notes</div>
         <div class="text-sm text-muted">Daily memories and offline reference notes</div>
       </div>
+      <div class="card" onclick="showPage('maps')" style="cursor:pointer;">
+        <div class="card-title"><span class="icon">🗺️</span> Maps, Links &amp; Travel Guide</div>
+        <div class="text-sm text-muted">Routes, official links, local transportation guidance and travel help</div>
+      </div>
       <div class="card" onclick="openPrepTab('safety')" style="cursor:pointer;">
         <div class="card-title"><span class="icon">🛡️</span> Safety & Emergency</div>
         <div class="text-sm text-muted">Emergency contacts, medical guidance and travel safety</div>
@@ -1166,10 +1170,6 @@
       <div class="card" onclick="showPage('attractions')" style="cursor:pointer;">
         <div class="card-title"><span class="icon">🏛️</span> Attractions & Walking Times</div>
         <div class="text-sm text-muted">Hours, tickets, visit times from each hotel</div>
-      </div>
-      <div class="card" onclick="showPage('maps')" style="cursor:pointer;">
-        <div class="card-title"><span class="icon">🗺️</span> Maps, Links &amp; Travel Guide</div>
-        <div class="text-sm text-muted">Routes, official links, local transportation guidance and travel help</div>
       </div>
       <div class="card">
         <div class="card-title"><span class="icon">🔗</span> Quick Links</div>
@@ -1226,7 +1226,7 @@
       <div class="section-title" style="font-size:1.15rem;">Quick Guides &amp; Maps</div>
       <div class="text-sm text-muted maps-page-intro">Open the guide you need. Trip-specific details remain in Timeline and Travel Details; this page is for quick references, maps, and official links.</div>
       <div class="maps-quick-nav" id="mapsGuideFilters" aria-label="Quick guide sections">
-        <button class="active" data-maps-filter="featured" onclick="setMapsGuideFilter('featured')">⭐ Start here</button>
+        <button class="active" data-maps-filter="featured" onclick="setMapsGuideFilter('featured')">⭐ Key trip guides</button>
         <button data-maps-filter="guides" onclick="setMapsGuideFilter('guides')">📚 All guides</button>
         <button data-maps-filter="routes" onclick="setMapsGuideFilter('routes')">🗺️ City routes</button>
         <button data-maps-filter="airports" onclick="setMapsGuideFilter('airports')">✈️ Airports</button>
@@ -1236,12 +1236,13 @@
         <button data-maps-filter="official" onclick="setMapsGuideFilter('official')">🔗 Official links</button>
       </div>
       <div class="maps-guide-group" data-maps-group="featured">
-        <div class="section-title">Start here</div>
+        <div class="section-title">Key Trip Guides</div>
+        <div class="text-sm text-muted mb-8">The three most useful offline references for airport connections, arrival, and getting around Venice.</div>
         <div id="mapsFeaturedGuides" class="maps-feature-grid"></div>
       </div>
       <div class="maps-guide-group" data-maps-group="guides">
         <div class="section-title">All Guides &amp; Maps</div>
-        <div class="text-sm text-muted mb-8">A fail-safe library of every offline guide and map, including duplicate copies and PDF print versions.</div>
+        <div class="text-sm text-muted mb-8">A fail-safe library of every offline guide and map, with graphic and PDF/print links together when both formats are available.</div>
         <div id="mapsGuideLibrary" class="maps-feature-grid"></div>
       </div>
       <div class="maps-guide-group" data-maps-group="routes">
@@ -1425,10 +1426,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.13.0",
-      build: "10.13.0",
+      version: "10.14.0",
+      build: "10.14.0",
       backupSchema: 6,
-      lastEdited: "September 6, 2026 at 6:03 PM EDT"
+      lastEdited: "September 11, 2026 at 6:00 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1801,10 +1802,12 @@
       return byLegacy ? byLegacy.id : raw;
     }
     const PACKING_CATEGORY_OPTIONS = Object.freeze(["Clothing","Documents","Electronics","Health","Money","Personal Care","Travel Gear","Work/Conference","Other"]);
-    const PACKING_BAG_OPTIONS = Object.freeze(["Backpack","Backpack/personal item","Checked","Crossbody","Home only","Personal item","Separate secure location","Sling bag","Split between travelers","Wallet","Wear","Not assigned"]);
+    const PACKING_BAG_OPTIONS = Object.freeze(["Backpack","Backpack/personal item","Carry-on","Checked","Crossbody","Home only","Personal item","Separate secure location","Sling bag","Split between travelers","Wallet","Wear","Not assigned"]);
     function normalizePackingBag(value) {
       const bag=String(value||"").trim();
-      return /^Checked(?: roller)?s?$/i.test(bag) ? "Checked" : (bag||"Not assigned");
+      if (/^Checked(?: roller)?s?$/i.test(bag)) return "Checked";
+      if (/^Carry[ -]?on$/i.test(bag)) return "Carry-on";
+      return bag||"Not assigned";
     }
     const RETIRED_PACKING_BASE_IDS = new Set(["packing-0031"]);
     const PROMOTED_PACKING_CUSTOM_IDS = new Set([
@@ -1917,7 +1920,10 @@
     function normalizePhraseCatalogData(obj) {
       const source=obj && typeof obj==="object" ? obj : {};
       const out={edits:{},custom:{},deleted:{}};
-      Object.entries(source.edits||{}).forEach(([id,value])=>{ out.edits[id]=value; });
+      Object.entries(source.edits||{}).forEach(([id,value])=>{
+        if(id==="phrase-quick-reference-thank-you" && value && typeof value==="object" && String(value.pr||"").trim().toLowerCase()==="most used") return;
+        out.edits[id]=value;
+      });
       Object.entries(source.custom||{}).forEach(([key,value])=>{
         const record=value && typeof value==="object" ? value : {};
         const id=record.id || key || createRecordId("phrase-custom");
@@ -1934,7 +1940,9 @@
       let raw={};
       try { raw=JSON.parse(localStorage.getItem("italy2026_phrasecatalog") || '{"edits":{},"custom":{},"deleted":{}}'); }
       catch(e) { raw={edits:{},custom:{},deleted:{}}; }
-      return normalizePhraseCatalogData(raw);
+      const normalized=normalizePhraseCatalogData(raw);
+      if(JSON.stringify(normalized)!==JSON.stringify(raw)) localStorage.setItem("italy2026_phrasecatalog",JSON.stringify(normalized));
+      return normalized;
     }
     function setPhraseCatalogData(obj) { localStorage.setItem("italy2026_phrasecatalog",JSON.stringify(normalizePhraseCatalogData(obj))); }
     function getPhraseItems() {
@@ -1986,25 +1994,30 @@
       setPhraseCatalogData(catalog); renderPrep(); showToast("Phrase deleted"); return true;
     }
     const GOOGLE_TRANSLATE_WEB_URL="https://translate.google.com/?sl=en&tl=it&op=translate";
-    const GOOGLE_TRANSLATE_PLAY_URL="https://play.google.com/store/apps/details?id=com.google.android.apps.translate";
+    const GOOGLE_TRANSLATE_PACKAGE="com.google.android.apps.translate";
     const GOOGLE_TRANSLATE_DIRECT_COMPONENT="com.google.android.apps.translate/com.google.android.apps.translate.copresence.CopresenceActivity";
     function openExternalUrl(url) {
+      if (/^intent:/i.test(url) || /^googletranslate:/i.test(url)) {
+        window.location.href=url;
+        return;
+      }
       const link=document.createElement("a");
       link.href=url; link.target="_blank"; link.rel="noopener noreferrer";
       document.body.appendChild(link); link.click(); link.remove();
     }
     function openItalianTranslator() {
-      // The direct Android Conversation activity is undocumented. Try it first on
-      // develop, then open the normal Translate app, Play Store, and web fallbacks.
+      // The direct Android Conversation activity is undocumented. Try it first,
+      // then the installed Translate app, and finally the web conversation page.
+      // Never send the user to Google Play automatically: that was the prior
+      // failure mode when Chrome did not resolve the internal activity.
       const ua=navigator.userAgent||"";
       if (/android/i.test(ua)) {
-        const direct=`intent://#Intent;scheme=googletranslate;package=com.google.android.apps.translate;component=${GOOGLE_TRANSLATE_DIRECT_COMPONENT};end`;
-        const app=`intent://#Intent;scheme=googletranslate;package=com.google.android.apps.translate;end`;
+        const direct=`intent://#Intent;scheme=googletranslate;package=${GOOGLE_TRANSLATE_PACKAGE};component=${GOOGLE_TRANSLATE_DIRECT_COMPONENT};end`;
+        const app=`intent://#Intent;scheme=googletranslate;package=${GOOGLE_TRANSLATE_PACKAGE};end`;
         openExternalUrl(direct);
         setTimeout(()=>{ if(!document.hidden) openExternalUrl(app); },800);
-        setTimeout(()=>{ if(!document.hidden) openExternalUrl(GOOGLE_TRANSLATE_PLAY_URL); },1600);
-        setTimeout(()=>{ if(!document.hidden) openExternalUrl(GOOGLE_TRANSLATE_WEB_URL); },2400);
-        showToast("Trying Google Translate Conversation; if it opens normally, tap Conversation");
+        setTimeout(()=>{ if(!document.hidden) openExternalUrl(GOOGLE_TRANSLATE_WEB_URL); },1800);
+        showToast("Trying Google Translate; if it opens normally, tap Conversation");
         return;
       }
       if (/iphone|ipad|ipod/i.test(ua)) {
@@ -2115,14 +2128,14 @@ Caffè Freddo: A sweet, refrigerated cold coffee drink served in many cafés.
 Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and foamy.`
     },{
       id: "note_1787450342393",
-      title: "ATM IN ROME",
+      title: "UNICREDIT ATM IN ROME",
       category: "Miscellaneous",
-      body: `Walk toward the Anantara Palazzo Naiadi.
+      body: `Walk toward and just past the Anantara Palazzo Naiadi. Head to the NW part of the circle in front of the hotel.
 
-Stop at the UniCredit ATM on Via Vittorio Emanuele Orlando 70`,
+Stop at the UniCredit ATM on Via Vittorio Emanuele Orlando, 70, 00185 Roma RM, Italy`,
       pinned: false,
       createdAt: "2026-08-23T01:59:02.393Z",
-      updatedAt: "2026-08-23T01:59:02.393Z"
+      updatedAt: "2026-09-07T00:21:58.594Z"
     },{
       id: "note_1787518112130",
       title: "Laundry - Florence",
@@ -2832,6 +2845,10 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       return (liveAirBooking().recordLocators || []).join(" / ");
     }
 
+    function travelerIdentifierText(value) {
+      return value || "Unknown / not assigned";
+    }
+
     function editAirBooking() {
       const b = liveAirBooking();
       openEditSheet("Edit air booking", [
@@ -3410,9 +3427,14 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       ],data=>{const edits=getPlannedEdits();edits[id]={sub:data.sub,cat:data.cat,amt:Number(data.amt||0),cur:data.cur,status:data.status,company:data.company==="Yes",notes:data.notes};setPlannedEdits(edits);renderMoney();showToast("Planned cost updated");});
     }
 
+    const PROTECTED_REVIEW_NOTE_IDS = new Set(["note_1788229217685"]);
     function normalizeDeletedRecords(obj) {
       const normalized = obj && typeof obj === "object" ? { ...obj } : {};
       if (normalized.restaurants) normalized.restaurants = normalizeRestaurantRecordMap(normalized.restaurants);
+      if (normalized.notes) {
+        PROTECTED_REVIEW_NOTE_IDS.forEach(id => delete normalized.notes[id]);
+        if (!Object.keys(normalized.notes).length) delete normalized.notes;
+      }
       return normalized;
     }
     function getDeletedRecords() {
@@ -3434,12 +3456,13 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       Object.entries(incoming||{}).forEach(([type,items])=>{ if(!out[type])out[type]={}; Object.entries(items||{}).forEach(([id,ts])=>{ if(!out[type][id] || (Date.parse(ts)||0)>(Date.parse(out[type][id])||0)) out[type][id]=ts; }); });
       return out;
     }
-    const PROTECTED_REVIEW_NOTE_IDS = new Set(["note_1788229217685"]);
+    const RETIRED_EXPENSE_IDS = new Set(["1788280000000"]);
     function applyDeleted(arr, type, idFn, deleted) {
       const d=(deleted&&deleted[type])||{};
       return (arr||[]).filter(x=>{
         const id=String(idFn(x));
         if(type==="notes" && PROTECTED_REVIEW_NOTE_IDS.has(id) && !localStorage.getItem("italy2026_review_notes_released")) return true;
+        if(type==="expenses" && RETIRED_EXPENSE_IDS.has(id)) return false;
         return !(id in d);
       });
     }
@@ -4051,14 +4074,17 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           <div class="card-title">🪪 Traveler IDs & airline rewards</div>
           <div class="text-sm" style="line-height:1.9;">
             <strong>TSA Known Traveler Numbers</strong><br>
-            David: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">1383385020</span><br>
-            Melody: <span class="text-muted">Pending</span><br><br>
+            David: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">${travelerIdentifierText(TRAVELER_IDENTIFIERS.David.tsaKtn)}</span><br>
+            Melody: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">${travelerIdentifierText(TRAVELER_IDENTIFIERS.Melody.tsaKtn)}</span><br><br>
             <strong>Delta SkyMiles</strong><br>
-            David: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">9941234776</span><br>
-            Melody: <span class="text-muted">Pending</span><br><br>
+            David: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">${travelerIdentifierText(TRAVELER_IDENTIFIERS.David.deltaSkyMiles)}</span><br>
+            Melody: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">${travelerIdentifierText(TRAVELER_IDENTIFIERS.Melody.deltaSkyMiles)}</span><br><br>
+            <strong>Delta confirmation by traveler</strong><br>
+            David: <span class="text-muted">Shared air booking above</span><br>
+            Melody: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">${travelerIdentifierText(TRAVELER_IDENTIFIERS.Melody.deltaConfirmation)}</span><br><br>
             <strong>SAS EuroBonus</strong><br>
-            David: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">EBB772160933</span><br>
-            Melody: <span class="text-muted">Pending</span>
+            David: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">${travelerIdentifierText(TRAVELER_IDENTIFIERS.David.sasEuroBonus)}</span><br>
+            Melody: <span class="text-muted">${travelerIdentifierText(TRAVELER_IDENTIFIERS.Melody.sasEuroBonus)}</span>
           </div>
         </div>
         <div class="card">
@@ -4092,9 +4118,10 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         `Air: ${airConfirmationText()}`,
         ...flights.map(f => `${f.flight}: ${f.from} ${f.dep} → ${f.to} ${f.arr}`),
         "",
-        "TSA KTN — David: 1383385020 · Melody: Pending",
-        "Delta SkyMiles — David: 9941234776 · Melody: Pending",
-        "SAS EuroBonus — David: EBB772160933 · Melody: Pending",
+        `TSA KTN — David: ${travelerIdentifierText(TRAVELER_IDENTIFIERS.David.tsaKtn)} · Melody: ${travelerIdentifierText(TRAVELER_IDENTIFIERS.Melody.tsaKtn)}`,
+        `Delta SkyMiles — David: ${travelerIdentifierText(TRAVELER_IDENTIFIERS.David.deltaSkyMiles)} · Melody: ${travelerIdentifierText(TRAVELER_IDENTIFIERS.Melody.deltaSkyMiles)}`,
+        `Delta confirmation by traveler — David: Shared air booking above · Melody: ${travelerIdentifierText(TRAVELER_IDENTIFIERS.Melody.deltaConfirmation)}`,
+        `SAS EuroBonus — David: ${travelerIdentifierText(TRAVELER_IDENTIFIERS.David.sasEuroBonus)} · Melody: ${travelerIdentifierText(TRAVELER_IDENTIFIERS.Melody.sasEuroBonus)}`,
         "",
         `Italo 8904: ${TRIP.italo} Coach 1 seats 13 & 16 (9:39–11:55)`,
         ...liveHotels().map(h => `${h.name}: ${h.conf} · ${h.dates} · ${h.address}`),
@@ -4689,13 +4716,11 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       "travel-50":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide"}]
     });
     const MAP_GUIDE_LIBRARY = Object.freeze([
-      {src:"assets/guides/cph-connection-guide-outbound.png",title:"CPH Outbound Connection Guide",category:"Airport connection"},
-      {src:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide · PDF",category:"Airport connection",pdf:true},
+      {src:"assets/guides/cph-connection-guide-outbound.png",pdf:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide",category:"Airport connection"},
       {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1",category:"Airport arrival"},
       {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2",category:"Airport arrival"},
       {src:"assets/guides/venice-station-to-jw-marriott.png",title:"Venezia Santa Lucia → JW Marriott",category:"Venice transfer"},
-      {src:"assets/guides/venice-vaporetto-map-2026.png",title:"ACTV Vaporetto Route Map · 2026",category:"Venice transport"},
-      {src:"assets/guides/venice-vaporetto-map-2026.pdf",title:"ACTV Vaporetto Route Map · 2026 · PDF",category:"Venice transport",pdf:true},
+      {src:"assets/guides/venice-vaporetto-map-2026.png",pdf:"assets/guides/venice-vaporetto-map-2026.pdf",title:"ACTV Vaporetto Route Map · 2026",category:"Venice transport"},
       {src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide",category:"Airport departure"},
       {src:"assets/guides/venice-october-2026-tide-chart.png",title:"Venice Tide Chart · October 2026",category:"Venice practical guide"},
       {src:"assets/guides/italy-bathroom-survival.jpg",title:"Toilets in Italy · Survival Guide",category:"Comfort"},
@@ -5418,12 +5443,6 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     function renderMaps() {
       setMapsSection("mapsFeaturedGuides", `
         <div class="maps-feature-card">
-          <h3>🚤 Venice Vaporetto map</h3>
-          <p>Current 2026 ACTV public water-bus routes. The JW Marriott shuttle is a separate private service.</p>
-          <button type="button" class="link-btn" onclick='openImageViewer("assets/guides/venice-vaporetto-map-2026.png","ACTV Vaporetto Route Map · 2026")'>Open map →</button>
-          <button type="button" class="link-btn map-secondary-btn" onclick='openPdfViewer("assets/guides/venice-vaporetto-map-2026.pdf","ACTV Vaporetto Route Map · 2026 · PDF")'>PDF / print version</button>
-        </div>
-        <div class="maps-feature-card">
           <h3>✈️ Copenhagen connection</h3>
           <p>Outbound CPH transfer steps, passport control, and the short connection plan.</p>
           <button type="button" class="link-btn" onclick='openImageViewer("assets/guides/cph-connection-guide-outbound.png","CPH Outbound Connection Guide")'>Open guide →</button>
@@ -5434,13 +5453,20 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           <p>Follow the airport signs from the aircraft to baggage claim and the Leonardo Express.</p>
           <button type="button" class="link-btn" onclick='openImageViewer("assets/guides/fco-arrival-to-train-1.png","FCO Arrival → Train Station · Page 1")'>Open guide →</button>
         </div>
+        <div class="maps-feature-card">
+          <h3>🚤 Venice Vaporetto map</h3>
+          <p>Current 2026 ACTV public water-bus routes. The JW Marriott shuttle is a separate private service.</p>
+          <button type="button" class="link-btn" onclick='openImageViewer("assets/guides/venice-vaporetto-map-2026.png","ACTV Vaporetto Route Map · 2026")'>Open map →</button>
+          <button type="button" class="link-btn map-secondary-btn" onclick='openPdfViewer("assets/guides/venice-vaporetto-map-2026.pdf","ACTV Vaporetto Route Map · 2026 · PDF")'>PDF / print version</button>
+        </div>
       `);
 
       setMapsSection("mapsGuideLibrary", MAP_GUIDE_LIBRARY.map(guide => `
         <div class="maps-feature-card">
           <div class="text-xs text-muted">${escapeHtml(guide.category)}</div>
           <h3>${escapeHtml(guide.title)}</h3>
-          <button type="button" class="link-btn${guide.pdf ? ' map-secondary-btn' : ''}" onclick='${guide.pdf ? `openPdfViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})` : `openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})`}'>${guide.pdf ? '📄 Open PDF version →' : '🖼️ Open guide →'}</button>
+          <button type="button" class="link-btn" onclick='openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>🖼️ Open guide →</button>
+          ${guide.pdf ? `<button type="button" class="link-btn map-secondary-btn" onclick='openPdfViewer(${JSON.stringify(guide.pdf)},${JSON.stringify(`${guide.title} · PDF`)})'>📄 PDF / print version</button>` : ""}
         </div>`).join(""));
 
       // Scheduled trip routes already appear in Timeline and Travel Details.
@@ -5850,7 +5876,15 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       liveSharedTravelItems().forEach(x=>add(`Travel · ${x.itemType||"Item"}`,x.title||`${x.from||""} → ${x.to||""}`,[x.date,x.start,x.status].filter(Boolean).join(" · "),"transport",x.title||x.from||x.to,x,{travel:true}));
       getCustomLegs().forEach(x=>add("Travel · Added item",x.title||`${x.from||""} → ${x.to||""}`,[x.date,x.start,x.status].filter(Boolean).join(" · "),"transport",x.title||x.from||x.to,x,{travel:true}));
       liveReservations().forEach(x=>add("Reservation",x.item||x.provider,[x.provider,x.conf,x.dates,x.status].filter(Boolean).join(" · "),"bookings",x.conf||x.provider||x.item,x));
-      const walletIds=["1383385020","9941234776","EBB772160933",airConfirmationText(),TRIP.italo,TRIP.confRomeFlo,TRIP.confVen].filter(Boolean);
+      const walletIds=[
+        TRAVELER_IDENTIFIERS.David.tsaKtn,
+        TRAVELER_IDENTIFIERS.David.deltaSkyMiles,
+        TRAVELER_IDENTIFIERS.David.sasEuroBonus,
+        TRAVELER_IDENTIFIERS.Melody.tsaKtn,
+        TRAVELER_IDENTIFIERS.Melody.deltaSkyMiles,
+        TRAVELER_IDENTIFIERS.Melody.deltaConfirmation,
+        airConfirmationText(),TRIP.italo,TRIP.confRomeFlo,TRIP.confVen
+      ].filter(Boolean);
       walletIds.forEach(v=>add("Confirmation Wallet",v,"Traveler ID, rewards, or confirmation number","wallet",v,v));
       allRestaurants().forEach(x=>add("Restaurant",x.name,[x.city,x.neigh,x.style,x.price].filter(Boolean).join(" · "),"food",x.name,x,{restaurant:true}));
       getNotes().forEach(x=>add("Note",x.title,[x.category,x.body].filter(Boolean).join(" · "),"journal",x.title,x,{note:true}));

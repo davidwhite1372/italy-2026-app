@@ -1,5 +1,28 @@
 # Changelog
 
+## [10.14.0] - 2026-09-11
+
+### Added
+
+- Added canonical David and Melody traveler identifiers without duplicating shared flight records.
+- Added the generic Italian phrase “I would like… / Vorrei” with pronunciation.
+
+### Changed
+
+- Corrected the Google Translate launch path to target the installed Android app before using web fallback.
+- Replaced the retired luggage budget item with the receipt-backed Travelpro Platinum Elite Carry-On Spinner — True Navy purchase.
+- Promoted the newer UniCredit ATM note from the phone review and reconciled phone deltas without duplicate records.
+- Renamed and reordered the featured Key Trip Guides section for Copenhagen, FCO arrival, and Venice.
+- Combined duplicate CPH outbound and ACTV Vaporetto guide cards so graphic and PDF links appear together.
+- Moved Maps, Links & Travel Guide directly below Journal & Notes in Trip Tools.
+- Removed the stale Technical notes deletion marker while keeping the technical note available for future review.
+- Bumped the service-worker cache to ensure installed PWAs receive the 10.14.0 release cleanly.
+
+### Preserved
+
+- Backup schema 6, offline guides and graphics, stable IDs, local photos, phone-only luggage lock codes, and unrelated phone deletion markers.
+- Pending agenda items remain pending until the official agenda is available.
+
 ## [10.13.0] - 2026-09-06
 
 ### Changed

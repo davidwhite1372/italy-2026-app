@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.12.1");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.12.1");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.14.0");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.14.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 5, 2026 at 6:45 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 11, 2026 at 6:00 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -353,6 +353,7 @@ test("Packing, phrases, and safety are separate tools and phrase changes survive
   assert.match(document.querySelector(".phrase-group h3").textContent, /Greetings/);
   assert.match(document.querySelector("#prepContent").textContent, /English ↔ Italian Translator/);
   assert.match(window.openItalianTranslator.toString(), /context\.reverso\.net\/translation\/english-italian/);
+  assert.doesNotMatch(window.openItalianTranslator.toString(), /GOOGLE_TRANSLATE_PLAY_URL|play\.google\.com/);
 
   window.openPhraseEditor(null);
   assert.equal(document.querySelector("#ef_it").getAttribute("lang"), "it");
@@ -582,6 +583,7 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   assert.equal(packing.some(item=>item._id==="packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b" && item.bag==="Sling bag"),true);
   assert.equal(packing.some(item=>item._id==="packing-custom-222f6ddd-49f0-4f25-870f-0e54ebc226ae" && item.qty===2),true);
   const phrases=window.getPhraseItems();
+  assert.equal(phrases.some(item=>item.id==="phrase-custom-0005a4bb-12de-4c6a-985c-cb73fff738ec" && item.en==="I would like…" && item.it==="Vorrei"),true);
   assert.equal(phrases.some(item=>item.id==="phrase-custom-a106f552-7b58-4333-a8a5-32c187ba162f" && item.it==="Può aiutarmi?"),true);
   assert.equal(phrases.some(item=>item.id==="phrase-custom-da366552-4415-4bbf-9781-fa032d9078ce" && item.it==="Formaggio"),true);
   assert.equal(phrases.some(item=>item.id==="phrase-custom-9fa31b65-9c66-41f4-a233-9247772dde99" && item.it==="Estathé"),true);
@@ -589,6 +591,9 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   const expenses=window.getExpenses();
   assert.equal(expenses.some(item=>item.desc==="Alibaba backpacks" && item.amt===25),true);
   assert.equal(expenses.some(item=>item.desc==="Amazon - tracker cards" && item.amt===80),true);
+  assert.equal(expenses.some(item=>item.id===1788990000000 && item.amt===353.05 && /Carry-On Spinner/.test(item.desc)),true);
+  assert.equal(expenses.some(item=>item.id===1788280000000),false);
+  assert.equal(window.getPackingItems().some(item=>item._id==="packing-0015" && /Carry-On Spinner/.test(item.item) && item.bag==="Carry-on"),true);
   assert.equal(expenses.some(item=>/Walmart/i.test(item.desc)),false);
   assert.equal(window.eval('OPEN_ITEMS.find(item=>item.id==="open-0007").status'),"Done");
   assert.equal(window.eval('PRETRIP.flatMap(group=>group.items).find(item=>item.id==="h7").done'),true);
@@ -596,7 +601,7 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
 });
 
 test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async t => {
-  const promotedNote={id:"note_1787450342393",title:"ATM IN ROME",category:"Miscellaneous",body:"Walk toward the Anantara Palazzo Naiadi.\n\nStop at the UniCredit ATM on Via Vittorio Emanuele Orlando 70",pinned:false,createdAt:"2026-08-23T01:59:02.393Z",updatedAt:"2026-08-23T01:59:02.393Z"};
+  const promotedNote={id:"note_1787450342393",title:"UNICREDIT ATM IN ROME",category:"Miscellaneous",body:"Walk toward and just past the Anantara Palazzo Naiadi. Head to the NW part of the circle in front of the hotel.\n\nStop at the UniCredit ATM on Via Vittorio Emanuele Orlando, 70, 00185 Roma RM, Italy",pinned:false,createdAt:"2026-08-23T01:59:02.393Z",updatedAt:"2026-09-07T00:21:58.594Z"};
   const app = await bootApp({
     italy2026_live:{sharedTravel:{
       "travel-8":{itemType:"Transfer",transportation:"Walk",transportationDetails:"Airport connection / passport control"},
@@ -638,7 +643,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"10.12.1");
+  assert.equal(payload.appVersion,"10.14.0");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -676,7 +681,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.12.1");
+  assert.equal(payload.appVersion, "10.14.0");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -695,7 +700,7 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.12.1");
+  assert.equal(packageData.version,"10.14.0");
   assert.match(manifest.description,/Version 10\.12\.1/);
   assert.match(worker,/v10-12-1-guide-usability/);
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{

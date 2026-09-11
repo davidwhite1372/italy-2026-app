@@ -17,6 +17,21 @@
       fx: 1.1367
     };
 
+    const TRAVELER_IDENTIFIERS = Object.freeze({
+      David: Object.freeze({
+        tsaKtn: "1383385020",
+        deltaSkyMiles: "9941234776",
+        sasEuroBonus: "EBB772160933",
+        deltaConfirmation: ""
+      }),
+      Melody: Object.freeze({
+        tsaKtn: "TE01685638",
+        deltaSkyMiles: "9646816026",
+        sasEuroBonus: "Unknown / not assigned",
+        deltaConfirmation: "GQMVQK"
+      })
+    });
+
     const DAYS = [
       { date: "2026-10-04", theme: "Departure Day", city: "Tampa → Boston → Copenhagen", hotel: "Overnight in flight",
         schedule: "6:00 AM leave Spring Hill; park at TPA; check bags to FCO; DL2706 to Boston; transfer to Terminal E; SK928 overnight to Copenhagen.",
@@ -437,7 +452,7 @@
       {"id":"packing-0011","cat":"Health","traveler":"Melody","item":"Prescription medications","qty":1,"bag":"Personal item","pri":"Critical","notes":"Original containers"},
       {"id":"packing-0013","cat":"Money","traveler":"Melody","item":"Primary credit card","qty":1,"bag":"Crossbody","pri":"Critical","notes":"No foreign transaction fee"},
       {"id":"packing-0014","cat":"Personal Care","traveler":"David","item":"Reading glasses","qty":1,"bag":"Backpack","pri":"Critical","notes":""},
-      {"id":"packing-0015","cat":"Travel Gear","traveler":"David","item":"Checked roller suitcase","qty":1,"bag":"Checked","pri":"Critical","notes":""},
+      {"id":"packing-0015","cat":"Travel Gear","traveler":"David","item":"Travelpro Platinum Elite Carry-On Spinner — True Navy","qty":1,"bag":"Carry-on","pri":"Critical","notes":"Order #700101771509; $353.05 total including tax; replaces the previous checked suitcase."},
       {"id":"packing-0016","cat":"Travel Gear","traveler":"Melody","item":"Checked roller suitcase","qty":1,"bag":"Checked","pri":"Critical","notes":""},
       {"id":"packing-0017","cat":"Travel Gear","traveler":"David","item":"Backpack","qty":1,"bag":"Personal item","pri":"Critical","notes":""},
       {"id":"packing-0018","cat":"Travel Gear","traveler":"Melody","item":"Personal item bag","qty":1,"bag":"Personal item","pri":"Critical","notes":""},
@@ -540,6 +555,7 @@
         {id:"phrase-menu-dolci",en:"Desserts",it:"Dolci",pr:"DOHL-chee"}
       ],
       "Food & Ordering": [
+        {id:"phrase-custom-0005a4bb-12de-4c6a-985c-cb73fff738ec",en:"I would like…",it:"Vorrei",pr:"vohr-REH-ray"},
         {id:"phrase-0201",en:"French fries",it:"Patatine fritte",pr:"pah-tah-TEE-neh FREET-teh"},
         {id:"phrase-0202",en:"Lemonade",it:"Limonata",pr:"lee-moh-NAH-tah"},
         {id:"phrase-0203",en:"Hot chocolate",it:"Cioccolata calda",pr:"choh-koh-LAH-tah KAHL-dah"},
@@ -696,7 +712,7 @@
     const BASE_EXPENSES = [
       {id:1785675607375,date:"2026-08-02",city:"Other",cat:"Shopping",desc:"Alibaba backpacks",amt:25,cur:"USD",fx:1,statementUsd:25,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:""},
       {id:1785675679218,date:"2026-08-04",city:"Home",cat:"Miscellaneous",desc:"Amazon - tracker cards",amt:80,cur:"USD",fx:1,statementUsd:null,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:""},
-      {id:1788280000000,date:"2026-09-01",city:"Home",cat:"Shopping",desc:"Travelpro Platinum Elite Medium Check-In Spinner - True Navy",amt:407.36,cur:"USD",fx:1,statementUsd:407.36,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:"$450.00 retail; $67.50 Military ID.me discount; $382.50 subtotal; free shipping; $22.95 Florida tax; $1.91 Hernando County tax; $407.36 total."},
+      {id:1788990000000,date:"2026-09-09",city:"Home",cat:"Shopping",desc:"Travelpro Platinum Elite Carry-On Spinner - True Navy",amt:353.05,cur:"USD",fx:1,statementUsd:353.05,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:"Order #700101771509; $390.00 retail; $58.50 Military ID.me discount; $331.50 subtotal; free shipping; $19.89 Florida state tax; $1.66 Hernando County tax; $353.05 total."},
       {id:1786810000001,date:"2026-08-15",city:"Other",cat:"Shopping",desc:"Small carabiner clips (24-piece pack)",amt:6.35,cur:"USD",fx:1,statementUsd:6.35,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:"Receipt total including tax; order placed August 15, 2026."},
       {id:1787940000001,date:"2026-08-28",city:"Other",cat:"Shopping",desc:"Espera slim wallet and Lewis N. Clark cable luggage lock",amt:21.97,cur:"USD",fx:1,statementUsd:21.97,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:"Receipt total including tax; wallet $7.59 and cable lock $13.04 before combined tax."},
       {id:1788636409472,date:"2026-09-03",city:"Other",cat:"Miscellaneous",desc:"Motorola Moto Tag 2 (4-pack)",amt:83.07,cur:"USD",fx:1,statementUsd:83.07,traveler:"David",payment:"Credit Card",company:false,reimbursable:false,receipt:true,notes:"Receipt total including tax; shipping charge and free-shipping credit cancel out."}
