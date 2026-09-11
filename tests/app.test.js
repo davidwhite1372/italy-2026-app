@@ -820,8 +820,8 @@ test("release metadata and stable-ID collections stay consistent", async t => {
   })`));
 
   assert.equal(packageData.version,"10.14.0");
-  assert.match(manifest.description,/Version 10\.13\.0/);
-  assert.match(worker,/v10-13-0-original-comfort-maps/);
+  assert.match(manifest.description,/Version 10\.14\.0/);
+  assert.match(worker,/v10-14-0-final-release/);
   ["fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
