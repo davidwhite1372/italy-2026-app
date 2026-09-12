@@ -1405,6 +1405,8 @@
     <div class="image-viewer-bar">
       <div id="imageViewerTitle" class="image-viewer-title">Image</div>
       <div class="image-viewer-controls">
+        <button type="button" id="imageViewerPrev" onclick="changeImageViewerSlide(-1)" aria-label="Previous image" hidden>‹</button>
+        <button type="button" id="imageViewerNext" onclick="changeImageViewerSlide(1)" aria-label="Next image" hidden>›</button>
         <button type="button" onclick="adjustImageViewerZoom(-0.5)" aria-label="Zoom out">−</button>
         <button type="button" onclick="resetImageViewer()" aria-label="Reset zoom">1×</button>
         <button type="button" onclick="adjustImageViewerZoom(0.5)" aria-label="Zoom in">+</button>
@@ -1412,7 +1414,7 @@
       </div>
     </div>
     <div id="imageViewerStage" class="image-viewer-stage"><img id="imageViewerImage" alt="" /></div>
-    <div class="image-viewer-help">Pinch or double-tap to zoom · drag to move · Android Back closes</div>
+    <div id="imageViewerHelp" class="image-viewer-help">Pinch or double-tap to zoom · drag to move · Android Back closes</div>
   </div>
 
   <div id="pdfViewer" class="pdf-viewer" role="dialog" aria-modal="true" aria-label="PDF viewer">
@@ -1426,8 +1428,8 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.14.0",
-      build: "10.14.0",
+      version: "10.14.1",
+      build: "10.14.1",
       backupSchema: 6,
       lastEdited: "September 11, 2026 at 6:00 PM EDT"
     });
@@ -1438,7 +1440,7 @@
     const BUILD_LABEL = `Italy App v${APP_VERSION} ⓘ`;
     // Trip data is loaded from data.js so itinerary updates do not require changing the app layout.
 
-    const imageViewerState = {scale:1,x:0,y:0,pointers:new Map(),startDistance:0,startScale:1,lastTap:0,history:false};
+    const imageViewerState = {scale:1,x:0,y:0,pointers:new Map(),startDistance:0,startScale:1,lastTap:0,history:false,gallery:[],galleryIndex:0};
     const pdfViewerState = {history:false};
     function updateStickyOffsets(){
       const header=document.querySelector('.app-header');
@@ -1451,16 +1453,38 @@
     }
     function resetImageViewer(){imageViewerState.scale=1;imageViewerState.x=0;imageViewerState.y=0;applyImageViewerTransform();}
     function adjustImageViewerZoom(delta){imageViewerState.scale=Math.max(1,Math.min(6,imageViewerState.scale+delta));if(imageViewerState.scale===1){imageViewerState.x=0;imageViewerState.y=0;}applyImageViewerTransform();}
-    function openImageViewer(src,title="Image"){
-      const viewer=document.getElementById("imageViewer"),img=document.getElementById("imageViewerImage");
-      if(!viewer||!img||!src)return;
-      img.src=src;img.alt=title;document.getElementById("imageViewerTitle").textContent=title;
-      resetImageViewer();viewer.classList.add("open");document.body.style.overflow="hidden";
+    function updateImageViewerControls(){
+      const hasGallery=imageViewerState.gallery.length>1;
+      const prev=document.getElementById("imageViewerPrev"),next=document.getElementById("imageViewerNext"),help=document.getElementById("imageViewerHelp");
+      if(prev)prev.hidden=!hasGallery;
+      if(next)next.hidden=!hasGallery;
+      if(help)help.textContent=hasGallery?"Swipe or use ‹ › to change pages · pinch or double-tap to zoom · Android Back closes":"Pinch or double-tap to zoom · drag to move · Android Back closes";
+    }
+    function setImageViewerSlide(index){
+      const item=imageViewerState.gallery[index];
+      const img=document.getElementById("imageViewerImage"),title=document.getElementById("imageViewerTitle");
+      if(!item||!img||!title)return;
+      imageViewerState.galleryIndex=index;
+      img.src=item.src;img.alt=item.title||"Image";title.textContent=imageViewerState.gallery.length>1?`${item.title||"Image"} · ${index+1}/${imageViewerState.gallery.length}`:(item.title||"Image");
+      resetImageViewer();updateImageViewerControls();
+    }
+    function openImageGallery(items,index=0){
+      const gallery=(items||[]).filter(item=>item&&item.src);
+      const viewer=document.getElementById("imageViewer");
+      if(!viewer||!gallery.length)return;
+      imageViewerState.gallery=gallery;setImageViewerSlide(Math.max(0,Math.min(Number(index)||0,gallery.length-1)));
+      viewer.classList.add("open");document.body.style.overflow="hidden";
       if(!imageViewerState.history){history.pushState({imageViewer:true},"");imageViewerState.history=true;}
+    }
+    function openImageViewer(src,title="Image"){openImageGallery([{src,title}],0);}
+    function changeImageViewerSlide(delta){
+      if(imageViewerState.gallery.length<2)return;
+      const next=(imageViewerState.galleryIndex+delta+imageViewerState.gallery.length)%imageViewerState.gallery.length;
+      setImageViewerSlide(next);
     }
     function closeImageViewer(fromHistory=false){
       const viewer=document.getElementById("imageViewer");if(!viewer||!viewer.classList.contains("open"))return;
-      viewer.classList.remove("open");document.body.style.overflow="";imageViewerState.pointers.clear();
+      viewer.classList.remove("open");document.body.style.overflow="";imageViewerState.pointers.clear();imageViewerState.gallery=[];imageViewerState.galleryIndex=0;updateImageViewerControls();
       if(imageViewerState.history&&!fromHistory){imageViewerState.history=false;history.back();}else imageViewerState.history=false;
     }
     function openPdfViewer(src,title="PDF guide"){
@@ -1481,7 +1505,7 @@
       if(document.getElementById("imageViewer")?.classList.contains("open")) closeImageViewer(true);
       if(document.getElementById("pdfViewer")?.classList.contains("open")) closePdfViewer(true);
     });
-    document.addEventListener("keydown",e=>{if(e.key==="Escape")closeImageViewer();});
+    document.addEventListener("keydown",e=>{if(e.key==="Escape")closeImageViewer();if(e.key==="ArrowLeft")changeImageViewerSlide(-1);if(e.key==="ArrowRight")changeImageViewerSlide(1);});
     document.addEventListener("DOMContentLoaded",()=>{
       updateStickyOffsets();
       if (window.ResizeObserver) {
@@ -1489,9 +1513,9 @@
         if(header) new ResizeObserver(updateStickyOffsets).observe(header);
       }
       const stage=document.getElementById("imageViewerStage");if(!stage)return;
-      stage.addEventListener("pointerdown",e=>{stage.setPointerCapture(e.pointerId);imageViewerState.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY,px:e.clientX,py:e.clientY});if(imageViewerState.pointers.size===2){imageViewerState.startDistance=imageViewerDistance();imageViewerState.startScale=imageViewerState.scale;}});
+      stage.addEventListener("pointerdown",e=>{stage.setPointerCapture(e.pointerId);imageViewerState.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY,px:e.clientX,py:e.clientY,startX:e.clientX,startY:e.clientY});if(imageViewerState.pointers.size===2){imageViewerState.startDistance=imageViewerDistance();imageViewerState.startScale=imageViewerState.scale;}});
       stage.addEventListener("pointermove",e=>{const p=imageViewerState.pointers.get(e.pointerId);if(!p)return;p.px=p.x;p.py=p.y;p.x=e.clientX;p.y=e.clientY;if(imageViewerState.pointers.size===2&&imageViewerState.startDistance){imageViewerState.scale=Math.max(1,Math.min(6,imageViewerState.startScale*imageViewerDistance()/imageViewerState.startDistance));}else if(imageViewerState.scale>1){imageViewerState.x+=p.x-p.px;imageViewerState.y+=p.y-p.py;}applyImageViewerTransform();});
-      const end=e=>{imageViewerState.pointers.delete(e.pointerId);if(imageViewerState.scale===1)resetImageViewer();};stage.addEventListener("pointerup",end);stage.addEventListener("pointercancel",end);
+      const end=e=>{const p=imageViewerState.pointers.get(e.pointerId);if(p&&imageViewerState.pointers.size===1&&imageViewerState.scale===1&&imageViewerState.gallery.length>1){const dx=p.x-p.startX,dy=p.y-p.startY;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy))changeImageViewerSlide(dx<0?1:-1);}imageViewerState.pointers.delete(e.pointerId);if(imageViewerState.scale===1)resetImageViewer();};stage.addEventListener("pointerup",end);stage.addEventListener("pointercancel",end);
       stage.addEventListener("dblclick",()=>{imageViewerState.scale=imageViewerState.scale>1?1:2.5;if(imageViewerState.scale===1){imageViewerState.x=0;imageViewerState.y=0;}applyImageViewerTransform();});
     });
 
@@ -4716,16 +4740,18 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       "travel-50":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide"}]
     });
     const MAP_GUIDE_LIBRARY = Object.freeze([
-      {src:"assets/guides/cph-connection-guide-outbound.png",pdf:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide",category:"Airport connection"},
-      {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1",category:"Airport arrival"},
-      {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2",category:"Airport arrival"},
-      {src:"assets/guides/venice-station-to-jw-marriott.png",title:"Venezia Santa Lucia → JW Marriott",category:"Venice transfer"},
-      {src:"assets/guides/venice-vaporetto-map-2026.png",pdf:"assets/guides/venice-vaporetto-map-2026.pdf",title:"ACTV Vaporetto Route Map · 2026",category:"Venice transport"},
-      {src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide",category:"Airport departure"},
-      {src:"assets/guides/venice-october-2026-tide-chart.png",title:"Venice Tide Chart · October 2026",category:"Venice practical guide"},
-      {src:"assets/guides/italy-bathroom-survival.jpg",title:"Toilets in Italy · Survival Guide",category:"Comfort"},
-      {src:"assets/guides/laundry-king-florence.png",title:"Laundry King Florence Guide",category:"Comfort"},
-      {src:"assets/guides/luggage-lock-instructions.jpg",title:"Luggage Lock Instructions",category:"Packing reference"}
+      {src:"assets/guides/cph-connection-guide-outbound.png",pdf:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide",category:"Oct 5 · Airport connection"},
+      {gallery:[
+        {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1"},
+        {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2"}
+      ],title:"FCO Arrival → Train Station",category:"Oct 5 · Airport arrival"},
+      {src:"assets/guides/laundry-king-florence.png",title:"Laundry King Florence Guide",category:"Oct 8–10 · Florence practical guide"},
+      {src:"assets/guides/venice-station-to-jw-marriott.png",title:"Venezia Santa Lucia → JW Marriott",category:"Oct 10 · Venice transfer"},
+      {src:"assets/guides/venice-vaporetto-map-2026.png",pdf:"assets/guides/venice-vaporetto-map-2026.pdf",title:"ACTV Vaporetto Route Map · 2026",category:"Oct 10–13 · Venice transport"},
+      {src:"assets/guides/venice-october-2026-tide-chart.png",title:"Venice Tide Chart · October 2026",category:"Oct 10–15 · Venice practical guide"},
+      {src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide",category:"Oct 15 · Airport departure"},
+      {src:"assets/guides/italy-bathroom-survival.jpg",title:"Toilets in Italy · Survival Guide",category:"Any day · Comfort"},
+      {src:"assets/guides/luggage-lock-instructions.jpg",title:"Luggage Lock Instructions",category:"Before departure · Packing reference"}
     ]);
     function guideActionsForTravel(id){
       return (TRAVEL_GUIDES_BY_ID[id]||[]).map(guide=>guide.secondary
@@ -5447,11 +5473,12 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           <p>Outbound CPH transfer steps, passport control, and the short connection plan.</p>
           <button type="button" class="link-btn" onclick='openImageViewer("assets/guides/cph-connection-guide-outbound.png","CPH Outbound Connection Guide")'>Open guide →</button>
           <button type="button" class="link-btn map-secondary-btn" onclick='openPdfViewer("assets/guides/cph-connection-guide-outbound.pdf","CPH Outbound Connection Guide · PDF")'>PDF / print version</button>
+          <a class="link-btn" href="${CPH_PASSPORT_WAIT_URL}" target="_blank" rel="noopener">Live passport wait times →</a>
         </div>
         <div class="maps-feature-card">
           <h3>🚆 FCO arrival → train</h3>
           <p>Follow the airport signs from the aircraft to baggage claim and the Leonardo Express.</p>
-          <button type="button" class="link-btn" onclick='openImageViewer("assets/guides/fco-arrival-to-train-1.png","FCO Arrival → Train Station · Page 1")'>Open guide →</button>
+          <button type="button" class="link-btn" onclick='openImageGallery([{src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1"},{src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2"}],0)'>Open guide →</button>
         </div>
         <div class="maps-feature-card">
           <h3>🚤 Venice Vaporetto map</h3>
@@ -5465,7 +5492,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         <div class="maps-feature-card">
           <div class="text-xs text-muted">${escapeHtml(guide.category)}</div>
           <h3>${escapeHtml(guide.title)}</h3>
-          <button type="button" class="link-btn" onclick='openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>🖼️ Open guide →</button>
+          ${guide.gallery ? `<div class="guide-gallery">${guide.gallery.map((page,index)=>`<button type="button" class="guide-open" onclick='openImageGallery(${JSON.stringify(guide.gallery)},${index})'><img class="guide-thumb" src="${escapeHtml(page.src)}" alt="Open ${escapeHtml(page.title)}" loading="lazy"><span class="link-btn" style="display:block;margin-top:6px;text-align:center;">Open ${escapeHtml(page.title.replace(guide.title+" · ",""))} →</span></button>`).join("")}</div>` : `<button type="button" class="link-btn" onclick='openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>🖼️ Open guide →</button>`}
           ${guide.pdf ? `<button type="button" class="link-btn map-secondary-btn" onclick='openPdfViewer(${JSON.stringify(guide.pdf)},${JSON.stringify(`${guide.title} · PDF`)})'>📄 PDF / print version</button>` : ""}
         </div>`).join(""));
 
@@ -5512,6 +5539,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           <div class="row mt-8" style="gap:12px;flex-wrap:wrap;">
             <a class="link-btn" href="${normalizedLink(a.official)}" target="_blank" rel="noopener">Official site →</a>
             ${a.secondary ? `<a class="link-btn" href="${normalizedLink(a.secondary)}" target="_blank" rel="noopener" style="color:var(--accent);">Terminal / transfer link →</a>` : ""}
+            ${a.code === "CPH" ? `<a class="link-btn" href="${CPH_PASSPORT_WAIT_URL}" target="_blank" rel="noopener">Passport wait times →</a>` : ""}
           </div>
         </div>`).join(""));
 

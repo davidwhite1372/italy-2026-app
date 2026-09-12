@@ -80,8 +80,8 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.14.0");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.14.0");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.14.1");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.14.1");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
   assert.match(document.querySelector("#aboutLastEdited").textContent, /September 11, 2026 at 6:00 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
@@ -531,12 +531,36 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
   assert.equal(document.querySelectorAll("#mapsFeaturedGuides button").length, 5);
   assert.match(document.querySelector("#mapsFeaturedGuides").innerHTML, /venice-vaporetto-map-2026\.png/);
   assert.match(document.querySelector("#mapsFeaturedGuides").innerHTML, /cph-connection-guide-outbound\.png/);
-  assert.equal(document.querySelectorAll("#mapsGuideLibrary .maps-feature-card").length, 10);
-  assert.match(document.querySelector("#mapsGuideLibrary").textContent, /Luggage Lock Instructions/);
-  assert.match(document.querySelector("#mapsGuideLibrary").textContent, /Toilets in Italy/);
-  assert.match(document.querySelector("#mapsGuideLibrary").textContent, /Laundry King Florence Guide/);
+  assert.equal(document.querySelector(`#mapsFeaturedGuides a[href="https://cphsecuritywait.dk/en/passport-control"]`)?.textContent.trim(), "Live passport wait times →");
+  assert.equal(document.querySelector(`#mapsAirports a[href="https://cphsecuritywait.dk/en/passport-control"]`)?.textContent.trim(), "Passport wait times →");
+  const libraryCards=[...document.querySelectorAll("#mapsGuideLibrary .maps-feature-card")];
+  assert.equal(libraryCards.length, 9);
+  assert.deepEqual(libraryCards.map(card=>card.querySelector("h3").textContent),[
+    "CPH Outbound Connection Guide",
+    "FCO Arrival → Train Station",
+    "Laundry King Florence Guide",
+    "Venezia Santa Lucia → JW Marriott",
+    "ACTV Vaporetto Route Map · 2026",
+    "Venice Tide Chart · October 2026",
+    "Venice Departure Day Guide",
+    "Toilets in Italy · Survival Guide",
+    "Luggage Lock Instructions"
+  ]);
+  const fcoCard=libraryCards[1];
+  assert.equal(fcoCard.querySelectorAll(".guide-gallery img").length,2);
+  assert.deepEqual([...fcoCard.querySelectorAll(".guide-gallery img")].map(image=>image.getAttribute("src")),["assets/guides/fco-arrival-to-train-1.png","assets/guides/fco-arrival-to-train-2.png"]);
   assert.match(document.querySelector("#mapsGuideLibrary").innerHTML, /venice-vaporetto-map-2026\.pdf/);
   assert.match(document.querySelector("#mapsGuideLibrary").innerHTML, /cph-connection-guide-outbound\.pdf/);
+  window.openImageGallery([
+    {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1"},
+    {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2"}
+  ],0);
+  assert.equal(document.querySelector("#imageViewerImage").getAttribute("src"),"assets/guides/fco-arrival-to-train-1.png");
+  window.changeImageViewerSlide(1);
+  assert.equal(document.querySelector("#imageViewerImage").getAttribute("src"),"assets/guides/fco-arrival-to-train-2.png");
+  window.changeImageViewerSlide(-1);
+  assert.equal(document.querySelector("#imageViewerImage").getAttribute("src"),"assets/guides/fco-arrival-to-train-1.png");
+  window.closeImageViewer();
   assert.match(document.querySelector("#mapsGuideFilters").textContent, /Comfort/);
   assert.match(document.querySelector("style").textContent, /maps-feature-card button\.link-btn \{ color:#fff; background:var\(--primary\)/);
   assert.equal(document.querySelector("#mapsHotels"), null);
@@ -760,7 +784,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"10.14.0");
+  assert.equal(payload.appVersion,"10.14.1");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -800,7 +824,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.14.0");
+  assert.equal(payload.appVersion, "10.14.1");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -819,9 +843,9 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.14.0");
-  assert.match(manifest.description,/Version 10\.14\.0/);
-  assert.match(worker,/v10-14-0-final-release/);
+  assert.equal(packageData.version,"10.14.1");
+  assert.match(manifest.description,/Version 10\.14\.1/);
+  assert.match(worker,/v10-14-1-final-fixes/);
   ["fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
@@ -893,7 +917,7 @@ test("offline application shell lists every required local asset", () => {
     "./assets/tides/santa-lucia.png"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v10-14-0-final-release/);
+  assert.match(worker, /italy-2026-github-v10-14-1-final-fixes/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);
