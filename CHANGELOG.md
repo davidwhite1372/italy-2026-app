@@ -5,7 +5,7 @@
 ### Changed
 
 - Added the live Copenhagen passport-wait link to both the Key Trip Guides connection card and the Airports & Terminals Copenhagen card.
-- Combined FCO Arrival → Train Station pages 1 and 2 into one All Guides & Maps card with bidirectional swipe, arrow, and keyboard navigation.
+- Combined FCO Arrival → Train Station pages 1 and 2 into one All Guides & Maps card with two page links; each opens a bidirectional swipe, arrow, and keyboard viewer without displaying thumbnails in the card.
 - Reordered All Guides & Maps chronologically to follow the travel timeline, with date/use labels on each card.
 - Bumped the service-worker cache and release metadata for the 10.14.1 build.
 

@@ -6,7 +6,7 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 
 **Version 10.14.1 - Guide and airport usability release**
 
-Version 10.14.1 adds the Copenhagen passport-wait links, combines the two-page FCO arrival guide into a swipeable offline card, and orders the guide library chronologically to match the travel timeline. It retains the reviewed traveler identifiers, corrected Google Translate launch path, receipt-backed Travelpro carry-on budget entry, merged PDF/graphic guide cards, reconciled phone changes, offline support, and backup schema 6.
+Version 10.14.1 adds the Copenhagen passport-wait links, combines the two-page FCO arrival guide into one card with two links to a swipeable offline viewer, and orders the guide library chronologically to match the travel timeline. It retains the reviewed traveler identifiers, corrected Google Translate launch path, receipt-backed Travelpro carry-on budget entry, merged PDF/graphic guide cards, reconciled phone changes, offline support, and backup schema 6.
 
 Version 10.12.0 included the Timeline and Travel Details corrections, receipt sourced expenses, work expense report tracking, CPH and Venice offline guides, the Quick Guides & Maps page, Italian phrase playback, Google Translate access, separate Favorite and Want to try restaurant states, corrected sticky headers, expanded note editing, and the reviewed phone-data reconciliation while retaining schema 6 compatibility.
 

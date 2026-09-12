@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.14.1");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.14.1");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 11, 2026 at 8:18 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 11, 2026 at 8:25 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -547,8 +547,10 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
     "Luggage Lock Instructions"
   ]);
   const fcoCard=libraryCards[1];
-  assert.equal(fcoCard.querySelectorAll(".guide-gallery img").length,2);
-  assert.deepEqual([...fcoCard.querySelectorAll(".guide-gallery img")].map(image=>image.getAttribute("src")),["assets/guides/fco-arrival-to-train-1.png","assets/guides/fco-arrival-to-train-2.png"]);
+  assert.equal(fcoCard.querySelectorAll(".guide-gallery-links .link-btn").length,2);
+  assert.equal(fcoCard.querySelectorAll(".guide-gallery img").length,0);
+  assert.match(fcoCard.querySelector(".guide-gallery-links").innerHTML,/fco-arrival-to-train-1\.png/);
+  assert.match(fcoCard.querySelector(".guide-gallery-links").innerHTML,/fco-arrival-to-train-2\.png/);
   assert.match(document.querySelector("#mapsGuideLibrary").innerHTML, /venice-vaporetto-map-2026\.pdf/);
   assert.match(document.querySelector("#mapsGuideLibrary").innerHTML, /cph-connection-guide-outbound\.pdf/);
   window.openImageGallery([
