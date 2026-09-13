@@ -4,13 +4,13 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 
 ## Current development build
 
-**Version 10.14.1 - Guide and airport usability release**
+**Version 10.14.2 - Stabilization and reconciliation release**
 
-Version 10.14.1 adds the Copenhagen passport-wait links, combines the two-page FCO arrival guide into one card with two links to a swipeable offline viewer, and orders the guide library chronologically to match the travel timeline. It retains the reviewed traveler identifiers, corrected Google Translate launch path, receipt-backed Travelpro carry-on budget entry, merged PDF/graphic guide cards, reconciled phone changes, offline support, and backup schema 6.
+Version 10.14.2 is a stabilization release: it normalizes the three airline confirmation records and SAS e-ticket numbers, promotes the reviewed packing and phrase updates, adds phrase-category filters, upgrades the Home open-items card to Trip Critical / Open Items, adds Last Verified labels to time-sensitive guides, and keeps backup schema 6 unchanged.
 
 Version 10.12.0 included the Timeline and Travel Details corrections, receipt sourced expenses, work expense report tracking, CPH and Venice offline guides, the Quick Guides & Maps page, Italian phrase playback, Google Translate access, separate Favorite and Want to try restaurant states, corrected sticky headers, expanded note editing, and the reviewed phone-data reconciliation while retaining schema 6 compatibility.
 
-Version 10.14.0 is the previous release. Version 10.14.1 is developed and tested on `develop` before its approved merge to `main`.
+Version 10.14.1 is the previous release. Version 10.14.2 is developed and tested on `develop` before its approved merge to `main`.
 
 Production remains on the stable `main` branch. New work is developed and tested on `develop` before release.
 
@@ -20,7 +20,7 @@ User-entered information is currently stored locally in each browser or installe
 
 - Export a fresh backup before changing devices, clearing browser data, or reinstalling the app.
 - Backup schema numbers describe file compatibility; they are separate from the app version.
-- Version 10.14.1 creates schema 6 backups and continues to import schema 5, schema 4, and older supported backups automatically.
+- Version 10.14.2 creates schema 6 backups and continues to import schema 5, schema 4, and older supported backups automatically.
 - Version 11 will evaluate authorized shared cloud data while retaining offline support and manual backups.
 
 ## Publishing

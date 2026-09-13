@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-14-1-final-fixes';
+const CACHE = 'italy-2026-github-v10-14-2-stabilization';
 const APP_SHELL = [
   './',
   './index.html',

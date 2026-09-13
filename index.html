@@ -917,7 +917,7 @@
       <div id="homeNextUp"></div>
       <div id="homeQuickTip" aria-live="polite"></div>
       <div class="card">
-        <div class="card-title"><span class="icon">⚡</span> Most Important Open Items</div>
+        <div class="card-title"><span class="icon">⚡</span> Trip Critical / Open Items</div>
         <div id="homeOpenItems"></div>
         <button class="expand-btn" onclick="showPage('bookings')">View all open items →</button>
       </div>
@@ -1428,10 +1428,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.14.1",
-      build: "10.14.1",
+      version: "10.14.2",
+      build: "10.14.2",
       backupSchema: 6,
-      lastEdited: "September 11, 2026 at 8:25 PM EDT"
+      lastEdited: "September 13, 2026 at 1:41 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1687,6 +1687,7 @@
     let tlSearch = "";
     let prepTab = "packing";
     let packingTravelerFilter = "all";
+    let phraseCategoryFilter = "all";
     let attrCityFilter = "all";
     let attrVisitFilter = "all";
     let expOwnerFilter = "all";
@@ -1938,7 +1939,9 @@
     const PHRASE_CATEGORY_OPTIONS = Object.freeze(Object.keys(PHRASES));
     const RETIRED_PROMOTED_PHRASE_IDS = new Set([
       "phrase-custom-6870f416-fbb7-411b-8df2-461bfa0d7d22",
-      "phrase-custom-3f36de23-aab2-406b-adfb-ed1ea70f7e5a"
+      "phrase-custom-3f36de23-aab2-406b-adfb-ed1ea70f7e5a",
+      "phrase-custom-e71f5832-eee6-4984-8a02-14b0f8271663",
+      "phrase-custom-b1f3ca36-15bf-4398-9859-5ace5565255d"
     ]);
     function phraseBaseById(id) { return Object.values(PHRASES).flat().find(item=>item.id===id); }
     function normalizePhraseCatalogData(obj) {
@@ -2156,35 +2159,13 @@ Shakerato: An espresso shot shaken hard with ice and sugar until it is cold and 
       category: "Miscellaneous",
       body: `Walk toward and just past the Anantara Palazzo Naiadi. Head to the NW part of the circle in front of the hotel.
 
-Stop at the UniCredit ATM on Via Vittorio Emanuele Orlando, 70, 00185 Roma RM, Italy`,
+UniCredit — Via Vittorio Emanuele Orlando 70, 00185 Roma RM, Italy.
+Two bank-owned ATMs are listed at this branch. If the ATM offers Dynamic Currency Conversion, decline it and choose EUR.
+
+Last Verified: Sep 13, 2026`,
       pinned: false,
       createdAt: "2026-08-23T01:59:02.393Z",
       updatedAt: "2026-09-07T00:21:58.594Z"
-    },{
-      id: "note_1787518112130",
-      title: "Laundry - Florence",
-      category: "Travel Tips",
-      body: `Laundry King in Florence offers a full wash, dry, and fold drop-off service with hotel delivery.
-
-You drop off your clothes in the morning, and they deliver them back clean and neatly folded to your hotel later that same day.
-
-Location and Contact address:
-Via della Scala 52-54/r, 50123 Florence
-
-Italy hours: Monday through Sunday, 8:00 AM – 9:30 PM
-
- (Note: Full-service and delivery hours may end earlier than self-service hours, typically around 1:00 PM to 5:00 PM for drop-offs/deliveries)Service
-
- Details pricing structure: Charged by basket/bin size rather than exact weight, with tiers roughly around €13, €18, and €25 depending on the volume of clothing.Delivery fee:
-
-Around an extra €5 to deliver straight to your hotel front desk anywhere in central Florence.
-
-Turnaround: Drop off in the morning, and receive your clothes back folded and bagged by late afternoon (around 5:00 PM).
-
-https://www.laundryking.it/`,
-      pinned: false,
-      createdAt: "2026-08-23T20:48:32.130Z",
-      updatedAt: "2026-08-23T20:50:13.389Z"
     },{
       id: "note_1787519592195",
       title: "Euro Coins And Bills",
@@ -3481,13 +3462,25 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       return out;
     }
     const RETIRED_EXPENSE_IDS = new Set(["1788280000000"]);
+    function recordUpdatedTime(record) {
+      if (!record || typeof record !== "object") return 0;
+      const candidates=[record.updatedAt,record.createdAt,record.ts,record.date];
+      for (const value of candidates) {
+        const parsed=Date.parse(value||"");
+        if (Number.isFinite(parsed)) return parsed;
+      }
+      return 0;
+    }
     function applyDeleted(arr, type, idFn, deleted) {
       const d=(deleted&&deleted[type])||{};
       return (arr||[]).filter(x=>{
         const id=String(idFn(x));
         if(type==="notes" && PROTECTED_REVIEW_NOTE_IDS.has(id) && !localStorage.getItem("italy2026_review_notes_released")) return true;
         if(type==="expenses" && RETIRED_EXPENSE_IDS.has(id)) return false;
-        return !(id in d);
+        if(!(id in d)) return true;
+        const deletionTime=Date.parse(d[id]||"")||0;
+        const updateTime=recordUpdatedTime(x);
+        return updateTime>deletionTime;
       });
     }
     const SAVED_DATA_KEYS = ["italy2026_customrestaurants","italy2026_restaurantedits","italy2026_live","italy2026_expenses","italy2026_pack","italy2026_open","italy2026_journal","italy2026_notes","italy2026_tldone","italy2026_tlhidden","italy2026_restlog","italy2026_attrlog","italy2026_pretrip","italy2026_customlegs","italy2026_routeedits","italy2026_plannededits","italy2026_deleted","italy2026_packcatalog","italy2026_phrasecatalog"];
@@ -3798,8 +3791,11 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       `;
       renderHomeWeather();
       const openState = getOpenState();
-      const highItems = OPEN_ITEMS.filter(o => o.urgency === "High" && o.status !== "Done" && !openState[o.id]);
-      document.getElementById("homeOpenItems").innerHTML = highItems.slice(0,5).map(o => `
+      const urgencyRank = { High:3, Medium:2, Low:1, Optional:1 };
+      const criticalItems = OPEN_ITEMS
+        .filter(o => o.status !== "Done" && !openState[o.id])
+        .sort((a,b) => (urgencyRank[b.urgency]||0) - (urgencyRank[a.urgency]||0) || a.pri - b.pri);
+      document.getElementById("homeOpenItems").innerHTML = criticalItems.slice(0,5).map(o => `
         <div class="list-item">
           <div class="num">${o.pri}</div>
           <div class="content">
@@ -3807,7 +3803,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
             <div class="meta">${o.area} · ${o.why}</div>
           </div>
         </div>
-      `).join("") || '<div class="text-muted text-sm">All high-priority items checked!</div>';
+      `).join("") || '<div class="text-sm fw-600">Trip Critical: All Clear</div>';
 
       const hotels = liveHotels();
       document.getElementById("homeGlance").innerHTML = `
@@ -4086,7 +4082,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         <div class="card">
           <div class="row space-between"><div class="card-title">✈️ Flights · Delta / SAS</div><button class="edit-btn" onclick="copyTextValue(airConfirmationText(),'Air confirmation copied')">Copy conf.</button></div><div class="wallet-key">${airConfirmationText()}</div>
           <div class="text-sm" style="line-height:1.85;">
-            <strong>Record locators:</strong> ${airConfirmationText()}<br>
+            <strong>Master itinerary:</strong> <span class="wallet-key">${travelerIdentifierText(liveAirBooking().masterLocator || "H9BVBD")}</span><br>
+            <strong>Delta · DL2706 TPA→BOS:</strong> <span class="wallet-key">${travelerIdentifierText(liveAirBooking().deltaLocator || "GQMVQK")}</span><br>
+            <strong>SAS-operated / managed portions:</strong> <span class="wallet-key">${travelerIdentifierText(liveAirBooking().sasLocator || "AZ3BUA")}</span><br>
             <strong>Outbound:</strong> ${flightSummary(outbound)}<br>
             <strong>Return:</strong> ${flightSummary(returning)}<br>
             <strong>Cabins:</strong> ${[...new Set(flights.map(f=>f.cabin))].join(" / ")}<br>
@@ -4103,9 +4101,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
             <strong>Delta SkyMiles</strong><br>
             David: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">${travelerIdentifierText(TRAVELER_IDENTIFIERS.David.deltaSkyMiles)}</span><br>
             Melody: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">${travelerIdentifierText(TRAVELER_IDENTIFIERS.Melody.deltaSkyMiles)}</span><br><br>
-            <strong>Delta confirmation by traveler</strong><br>
-            David: <span class="text-muted">Shared air booking above</span><br>
-            Melody: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">${travelerIdentifierText(TRAVELER_IDENTIFIERS.Melody.deltaConfirmation)}</span><br><br>
+            <strong>SAS e-ticket numbers</strong><br>
+            David: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">${travelerIdentifierText(TRAVELER_IDENTIFIERS.David.sasETicket)}</span><br>
+            Melody: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">${travelerIdentifierText(TRAVELER_IDENTIFIERS.Melody.sasETicket)}</span><br><br>
             <strong>SAS EuroBonus</strong><br>
             David: <span class="wallet-key" style="display:inline-block;margin:4px 0 8px;">${travelerIdentifierText(TRAVELER_IDENTIFIERS.David.sasEuroBonus)}</span><br>
             Melody: <span class="text-muted">${travelerIdentifierText(TRAVELER_IDENTIFIERS.Melody.sasEuroBonus)}</span>
@@ -4724,39 +4722,42 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
 
     const TRAVEL_GUIDES_BY_ID = Object.freeze({
       "travel-8":[
-        {src:"assets/guides/cph-connection-guide-outbound.png",title:"CPH Outbound Connection Guide"},
-        {src:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide · PDF",secondary:true}
+        {src:"assets/guides/cph-connection-guide-outbound.png",title:"CPH Outbound Connection Guide",verified:"Sep 13, 2026"},
+        {src:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide · PDF",secondary:true,verified:"Sep 13, 2026"}
       ],
       "travel-10":[
-        {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1"},
-        {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2"}
+        {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1",verified:"Sep 13, 2026"},
+        {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2",verified:"Sep 13, 2026"}
       ],
       "travel-24":[
-        {src:"assets/guides/venice-station-to-jw-marriott.png",title:"Venezia Santa Lucia → JW Marriott"},
-        {src:"assets/guides/venice-vaporetto-map-2026.png",title:"ACTV Vaporetto Route Map · 2026"},
-        {src:"assets/guides/venice-vaporetto-map-2026.pdf",title:"ACTV Vaporetto Route Map · 2026 · PDF",secondary:true}
+        {src:"assets/guides/venice-station-to-jw-marriott.png",title:"Venezia Santa Lucia → JW Marriott",verified:"Sep 13, 2026"},
+        {src:"assets/guides/venice-vaporetto-map-2026.png",title:"ACTV Vaporetto Route Map · 2026",verified:"Sep 13, 2026"},
+        {src:"assets/guides/venice-vaporetto-map-2026.pdf",title:"ACTV Vaporetto Route Map · 2026 · PDF",secondary:true,verified:"Sep 13, 2026"}
       ],
-      "travel-34":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide"}],
-      "travel-50":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide"}]
+      "travel-34":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide",verified:"Sep 13, 2026"}],
+      "travel-50":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide",verified:"Sep 13, 2026"}]
     });
     const MAP_GUIDE_LIBRARY = Object.freeze([
-      {src:"assets/guides/cph-connection-guide-outbound.png",pdf:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide",category:"Oct 5 · Airport connection"},
+      {src:"assets/guides/cph-connection-guide-outbound.png",pdf:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide",category:"Oct 5 · Airport connection",verified:"Sep 13, 2026"},
       {gallery:[
         {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1"},
         {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2"}
-      ],title:"FCO Arrival → Train Station",category:"Oct 5 · Airport arrival"},
-      {src:"assets/guides/laundry-king-florence.png",title:"Laundry King Florence Guide",category:"Oct 8–10 · Florence practical guide"},
-      {src:"assets/guides/venice-station-to-jw-marriott.png",title:"Venezia Santa Lucia → JW Marriott",category:"Oct 10 · Venice transfer"},
-      {src:"assets/guides/venice-vaporetto-map-2026.png",pdf:"assets/guides/venice-vaporetto-map-2026.pdf",title:"ACTV Vaporetto Route Map · 2026",category:"Oct 10–13 · Venice transport"},
+      ],title:"FCO Arrival → Train Station",category:"Oct 5 · Airport arrival",verified:"Sep 13, 2026"},
+      {src:"assets/guides/laundry-king-florence.png",title:"Laundry King Florence Guide",category:"Oct 8–10 · Florence practical guide",verified:"Sep 13, 2026"},
+      {src:"assets/guides/venice-station-to-jw-marriott.png",title:"Venezia Santa Lucia → JW Marriott",category:"Oct 10 · Venice transfer",verified:"Sep 13, 2026"},
+      {src:"assets/guides/venice-vaporetto-map-2026.png",pdf:"assets/guides/venice-vaporetto-map-2026.pdf",title:"ACTV Vaporetto Route Map · 2026",category:"Oct 10–13 · Venice transport",verified:"Sep 13, 2026"},
       {src:"assets/guides/venice-october-2026-tide-chart.png",title:"Venice Tide Chart · October 2026",category:"Oct 10–15 · Venice practical guide"},
-      {src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide",category:"Oct 15 · Airport departure"},
+      {src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide",category:"Oct 15 · Airport departure",verified:"Sep 13, 2026"},
       {src:"assets/guides/italy-bathroom-survival.jpg",title:"Toilets in Italy · Survival Guide",category:"Any day · Comfort"},
       {src:"assets/guides/luggage-lock-instructions.jpg",title:"Luggage Lock Instructions",category:"Before departure · Packing reference"}
     ]);
     function guideActionsForTravel(id){
-      return (TRAVEL_GUIDES_BY_ID[id]||[]).map(guide=>guide.secondary
+      const guides=TRAVEL_GUIDES_BY_ID[id]||[];
+      const buttons=guides.map(guide=>guide.secondary
         ? `<button type="button" class="link-btn guide-secondary" onclick='openPdfViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>📄 Open PDF version →</button>`
         : `<button type="button" class="link-btn" onclick='openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>🖼️ Open ${escapeHtml(guide.title)}</button>`).join("");
+      const verified=guides.find(guide=>guide.verified)?.verified;
+      return buttons + (verified ? `<div class="text-xs text-muted" style="width:100%;margin-top:5px;">Last Verified: ${escapeHtml(verified)}</div>` : "");
     }
 
     function travelRouteBlock(from, start, to, end) {
@@ -4888,6 +4889,11 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       renderPrep();
     }
 
+    function setPhraseCategoryFilter(category) {
+      phraseCategoryFilter = category === "all" || PHRASE_CATEGORY_OPTIONS.includes(category) ? category : "all";
+      renderPrep();
+    }
+
     function renderPrep() {
       const title=document.getElementById("prepPageTitle");
       const banner=document.getElementById("prepOwnerBanner");
@@ -4967,7 +4973,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       } else if (prepTab === "phrases") {
         const phrases=getPhraseItems();
         let html = `<div class="btn-row" style="margin-bottom:12px;"><button onclick="openPhraseEditor(null)">＋ Add Phrase</button><button class="btn-outline" onclick="openItalianTranslator()">🎙️ Google Translate face-to-face (English ↔ Italian Translator) ↗</button></div><div class="text-xs text-muted" style="margin-bottom:12px;">Tap Listen for normal speed or Slow for practice. Audio uses the phone’s Italian voice and works offline when that voice is installed.</div>`;
+        html += `<div class="filter-bar" id="phraseCategoryFilters" style="margin-bottom:14px;"><div class="filter-chip ${phraseCategoryFilter === "all" ? "active" : ""}" onclick="setPhraseCategoryFilter('all')">All</div>${PHRASE_CATEGORY_OPTIONS.map(g=>`<div class="filter-chip ${phraseCategoryFilter === g ? "active" : ""}" onclick='setPhraseCategoryFilter(${JSON.stringify(g)})'>${escapeHtml(g)}</div>`).join("")}</div>`;
         PHRASE_CATEGORY_OPTIONS.forEach(g => {
+          if (phraseCategoryFilter !== "all" && phraseCategoryFilter !== g) return;
           const group=phrases.filter(item=>item.category===g);
           if(!group.length) return;
           html += `<div class="phrase-group"><h3>${g}</h3>`;
@@ -5492,6 +5500,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         <div class="maps-feature-card">
           <div class="text-xs text-muted">${escapeHtml(guide.category)}</div>
           <h3>${escapeHtml(guide.title)}</h3>
+          ${guide.verified ? `<div class="text-xs text-muted" style="margin:-4px 0 8px;">Last Verified: ${escapeHtml(guide.verified)}</div>` : ""}
           ${guide.gallery ? `<div class="quick-action-row guide-gallery-links">${guide.gallery.map((page,index)=>`<button type="button" class="link-btn" onclick='openImageGallery(${JSON.stringify(guide.gallery)},${index})'>🖼️ Open ${escapeHtml(page.title.replace(guide.title+" · ",""))} →</button>`).join("")}</div>` : `<button type="button" class="link-btn" onclick='openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>🖼️ Open guide →</button>`}
           ${guide.pdf ? `<button type="button" class="link-btn map-secondary-btn" onclick='openPdfViewer(${JSON.stringify(guide.pdf)},${JSON.stringify(`${guide.title} · PDF`)})'>📄 PDF / print version</button>` : ""}
         </div>`).join(""));

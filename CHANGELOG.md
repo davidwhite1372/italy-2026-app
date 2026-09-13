@@ -1,5 +1,18 @@
 # Changelog
 
+## [10.14.2] - 2026-09-13
+
+### Stabilization / reconciliation
+- Added explicit Confirmation Wallet roles for H9BVBD (master itinerary), GQMVQK (Delta DL2706), and AZ3BUA (SAS-managed portions), plus SAS e-ticket numbers 117-2618230396 (David) and 117-2618230398 (Melody).
+- Promoted reviewed packing updates: Professional dinner outfit (1 each), SD Card and USB Adapter, Luggage Cable Lock, and 10 shared Luggage Padlocks.
+- Promoted the reviewed phrase updates with consistent display capitalization and pronunciation for Good Morning, I Don't Understand, and Caffè Latte.
+- Added compact phrase-category filter chips while retaining phrase search/edit behavior and custom-category support.
+- Renamed the Home card to Trip Critical / Open Items; it now ranks up to five unresolved items by urgency and shows Trip Critical: All Clear when none remain.
+- Added Last Verified: Sep 13, 2026 labels to time-sensitive connection, airport, transfer, transit, departure, and Laundry King guide entries.
+- Updated the permanent UniCredit Rome ATM reference with verified location guidance; removed the redundant Laundry - Florence default note because the permanent guide already covers it.
+- Kept backup schema 6 unchanged and preserved stable IDs / historical phone compatibility.
+- Bumped release metadata, package version, and service-worker cache to 10.14.2.
+
 ## [10.14.1] - 2026-09-11
 
 ### Changed

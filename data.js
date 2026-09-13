@@ -10,7 +10,7 @@
         { city: "Venice", name: "JW Marriott Venice Resort & Spa", dates: "Oct 10–13", conf: "Event-provided", address: "Sacca Sessola Laguna di, 30133 Venezia VE, Italy" },
         { city: "Venice", name: "Hotel Antiche Figure", dates: "Oct 13–15", conf: "PO55JT57ZW", address: "Santa Croce 686, Fondamenta San Simeon Piccolo" }
       ],
-      air: "H9BVBD / AZ3BUA",
+      air: "H9BVBD / GQMVQK / AZ3BUA",
       confRomeFlo: "NCN4K9C4SJD",
       confVen: "WGNRXC5J54C",
       italo: "EM7VNB",
@@ -22,13 +22,13 @@
         tsaKtn: "1383385020",
         deltaSkyMiles: "9941234776",
         sasEuroBonus: "EBB772160933",
-        deltaConfirmation: ""
+        sasETicket: "117-2618230396"
       }),
       Melody: Object.freeze({
         tsaKtn: "TE01685638",
         deltaSkyMiles: "9646816026",
         sasEuroBonus: "Unknown / not assigned",
-        deltaConfirmation: "GQMVQK"
+        sasETicket: "117-2618230398"
       })
     });
 
@@ -255,7 +255,7 @@
       }));
 
     const RESERVATIONS = [
-      {id:"reservation-0001", item:"Air reservation", provider:"Delta / SAS", conf:"H9BVBD / AZ3BUA", dates:"Oct 4–15", status:"Confirmed", notes:"Store PDFs offline on both phones" },
+      {id:"reservation-0001", item:"Air reservation", provider:"Delta / SAS", conf:"H9BVBD / GQMVQK / AZ3BUA", dates:"Oct 4–15", status:"Confirmed", notes:"Master H9BVBD · Delta GQMVQK · SAS AZ3BUA · Store PDFs offline on both phones" },
       {id:"reservation-0002", item:"Rome hotel", hotelId:"hotel-rome-anantara", provider:"Anantara Palazzo Naiadi", conf:"Event-provided", dates:"Oct 5–8", status:"Confirmed", notes:"Need room confirmation and check-in details" },
       {id:"reservation-0003", item:"Florence hotel", hotelId:"hotel-florence-w", provider:"W Florence", conf:"Event-provided", dates:"Oct 8–10", status:"Confirmed", notes:"Need room confirmation and breakfast details" },
       {id:"reservation-0004", item:"Rome to Florence train", provider:"PSA group travel", conf:"TBD", dates:"Oct 8", status:"Pending", notes:"Need station, train number, times, coach, seats" },
@@ -390,7 +390,10 @@
     const AIR_BOOKING = {
       id:"air-main",
       travelers:"David & Melody",
-      recordLocators:["H9BVBD","AZ3BUA"],
+      masterLocator:"H9BVBD",
+      deltaLocator:"GQMVQK",
+      sasLocator:"AZ3BUA",
+      recordLocators:["H9BVBD","GQMVQK","AZ3BUA"],
       notes:"Store itinerary PDFs offline on both phones. Confirm checked bags are tagged to FCO outbound and TPA on return."
     };
 
@@ -460,7 +463,7 @@
       {"id":"packing-0020","cat":"Travel Gear","traveler":"David","item":"Cell phone stand","qty":1,"bag":"Checked","pri":"Medium","notes":""},
       {"id":"packing-0021","cat":"Travel Gear","traveler":"Melody","item":"Crossbody anti-pickpocket bag","qty":2,"bag":"Wear","pri":"Critical","notes":""},
       {"id":"packing-0022","cat":"Clothing","traveler":"David","item":"Rain jacket/windbreaker","qty":1,"bag":"Backpack","pri":"High","notes":""},
-      {"id":"packing-0023","cat":"Clothing","traveler":"Melody","item":"Business-casual outfits","qty":5,"bag":"Checked","pri":"High","notes":""},
+      {"id":"packing-0023","cat":"Clothing","traveler":"Shared","item":"Professional dinner outfit (1 each)","qty":2,"bag":"Checked","pri":"High","notes":"One professional dinner outfit for David and one for Melody"},
       {"id":"packing-0024","cat":"Clothing","traveler":"David","item":"Collared shirts","qty":5,"bag":"Checked","pri":"High","notes":""},
       {"id":"packing-0025","cat":"Clothing","traveler":"David","item":"Light sweater/layer","qty":1,"bag":"Checked","pri":"High","notes":""},
       {"id":"packing-0026","cat":"Clothing","traveler":"Melody","item":"Light sweater/layer","qty":1,"bag":"Checked","pri":"High","notes":""},
@@ -508,7 +511,9 @@
       {"id":"packing-0069","cat":"Personal Care","traveler":"David","item":"Sunglasses case","qty":1,"bag":"Backpack","pri":"Medium","notes":""},
       {"id":"packing-custom-13363fd7-e533-4bd6-8839-9922acf6139b","cat":"Money","traveler":"Shared","item":"Credit Cards - Work/Carnival/USAA Debit","qty":1,"bag":"Sling bag","pri":"Critical","notes":"Keep backup card separately"},
       {"id":"packing-custom-222f6ddd-49f0-4f25-870f-0e54ebc226ae","cat":"Health","traveler":"Shared","item":"Toilet Paper or wipes","qty":2,"bag":"Checked","pri":"High","notes":""},
-      {"id":"packing-custom-018902e0-0328-42d7-b3c7-dfadd3b1bcba","cat":"Travel Gear","traveler":"David","item":"Luggage Lock","qty":1,"bag":"Checked","pri":"Critical","notes":"Instructions available offline in the app"},
+      {"id":"packing-custom-018902e0-0328-42d7-b3c7-dfadd3b1bcba","cat":"Travel Gear","traveler":"David","item":"Luggage Cable Lock","qty":1,"bag":"Checked","pri":"Critical","notes":"Instructions available offline in the app"},
+      {"id":"packing-custom-cf79b0e8-0e25-4292-9870-389f3a22f53d","cat":"Electronics","traveler":"David","item":"SD Card and USB Adapter","qty":1,"bag":"Backpack","pri":"Medium","notes":""},
+      {"id":"packing-custom-b6741fc7-f34d-4b97-aae7-e9b969985e5a","cat":"Travel Gear","traveler":"Shared","item":"Luggage Padlocks","qty":10,"bag":"Checked","pri":"High","notes":"Multiple locks for suitcase and backpack zippers"},
       {"id":"packing-custom-098dfc93-369b-4043-812d-03cde6945cda","cat":"Travel Gear","traveler":"David","item":"Luggage/Bag Security Clips","qty":1,"bag":"Backpack","pri":"Medium","notes":""},
       {"id":"packing-custom-4f397362-8025-404b-8270-d730d1aff4c4","cat":"Money","traveler":"David","item":"Alternate Wallet","qty":1,"bag":"Checked","pri":"Medium","notes":"Keep separate from daily wallet"}
     ];
@@ -516,7 +521,7 @@
     const PHRASES = {
       "Greetings": [
         {id:"phrase-0101",en:"Hello / goodbye (informal)",it:"Ciao",pr:"CHOW"},
-        {en:"Hello (day)",it:"Buongiorno",pr:"bwon-jor-NO"},
+        {id:"phrase-greetings-hello-day",en:"Good Morning",it:"Buongiorno",pr:"bwon-jor-NO"},
         {en:"Good evening",it:"Buonasera",pr:"bwoh-nah-SEH-rah"},
         {en:"Good night",it:"Buonanotte",pr:"bwoh-nah-NOT-teh"},
         {en:"Goodbye",it:"Arrivederci",pr:"ah-ree-veh-DER-chee"},
@@ -566,6 +571,7 @@
         {id:"phrase-0208",en:"Herbal tea",it:"Tisana",pr:"tee-ZAH-nah"},
         {id:"phrase-0209",en:"Espresso",it:"Espresso",pr:"eh-SPRES-soh"},
         {id:"phrase-0210",en:"Cappuccino",it:"Cappuccino",pr:"kahp-poo-CHEE-noh"},
+        {id:"phrase-custom-b1f3ca36-15bf-4398-9859-5ace5565255d",en:"Caffè Latte (Coffee With Milk)",it:"Un Caffè Latte",pr:"oon kaf-FEH LAT-teh"},
         {id:"phrase-0211",en:"Smoothie",it:"Frullato",pr:"froo-LAH-toh"}
       ],
       "Shopping": [
@@ -612,6 +618,7 @@
         {en:"Do you speak English?",it:"Parla inglese?",pr:"PAR-lah een-GLAY-zeh"},
         {en:"Watch out, pickpocket!",it:"Attenzione, borseggiatore!",pr:"aht-tehn-TSYOH-neh, bor-sej-jah-TOH-reh"},
         {id:"phrase-quick-reference-thank-you",en:"Thank you",it:"Grazie",pr:"GRAHT-tsyeh"},
+        {id:"phrase-custom-e71f5832-eee6-4984-8a02-14b0f8271663",en:"I Don't Understand",it:"Non Capisco",pr:"non ka-PEE-sko"},
         {id:"phrase-custom-841aad4e-0337-4a1d-a251-ae9794e1b4e4",en:"I'm sorry",it:"Mi dispiace",pr:"mee dee-SPYAH-cheh"},
         {id:"phrase-custom-d34e56e6-a7fd-4887-8d88-c234ed0aca21",en:"Nice to meet you. I'm David",it:"Piacere, sono David",pr:"pya-CHEH-reh, SOH-noh DAH-veed"}
       ]
