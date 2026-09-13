@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.14.2");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.14.2");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 13, 2026 at 1:57 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 13, 2026 at 2:00 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -853,7 +853,7 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
   });
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
-    timeline:49,restaurants:67,attractions:15,reservations:10,budget:18,packing:72,open:13
+    timeline:49,restaurants:67,attractions:15,reservations:10,budget:18,packing:74,open:13
   });
   Object.values(counts).forEach(ids=>{
     assert.equal(ids.every(Boolean),true);
