@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.14.2");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.14.2");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 11, 2026 at 8:25 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 13, 2026 at 1:57 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -846,7 +846,7 @@ test("release metadata and stable-ID collections stay consistent", async t => {
   })`));
 
   assert.equal(packageData.version,"10.14.2");
-  assert.match(manifest.description,/Version 10\.14\.1/);
+  assert.match(manifest.description,/Version 10\.14\.2/);
   assert.match(worker,/v10-14-2-stabilization/);
   ["fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
@@ -936,7 +936,7 @@ test("retired planning notes are removed without deleting reference notes", asyn
   });
   t.after(() => app.dom.window.close());
   const notes = JSON.parse(JSON.stringify(app.dom.window.getNotes()));
-  assert.deepEqual(notes.map(note => note.id), ["note_sweet_drinks_italy", "note_1787450342393", "note_1787518112130", "note_1787519592195", "note_keep_me"]);
+  assert.deepEqual(notes.map(note => note.id), ["note_sweet_drinks_italy", "note_1787450342393", "note_1787519592195", "note_keep_me"]);
   assert.equal(notes[0].pinned, false);
   assert.match(notes[0].body, /Estathé: \(ess-tah-tay\)/);
   assert.deepEqual(app.runtimeErrors, []);

@@ -1431,7 +1431,7 @@
       version: "10.14.2",
       build: "10.14.2",
       backupSchema: 6,
-      lastEdited: "September 13, 2026 at 1:41 PM EDT"
+      lastEdited: "September 13, 2026 at 1:57 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -2210,7 +2210,15 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     function referenceNoteById(id) { return DEFAULT_REFERENCE_NOTES.find(note => note.id === id); }
     function applyReferenceNoteDeltas(deltas) {
       const byId=new Map(DEFAULT_REFERENCE_NOTES.map(note=>[note.id,{...note}]));
-      (Array.isArray(deltas)?deltas:[]).forEach(note=>{ if(note&&note.id) byId.set(note.id,note); });
+      (Array.isArray(deltas)?deltas:[]).forEach(note=>{
+        if(!note||!note.id) return;
+        const base=byId.get(note.id);
+        if(base&&base.updatedAt&&note.updatedAt) {
+          const baseTime=Date.parse(base.updatedAt), noteTime=Date.parse(note.updatedAt);
+          if(Number.isFinite(baseTime)&&Number.isFinite(noteTime)&&noteTime<=baseTime) return;
+        }
+        byId.set(note.id,note);
+      });
       return [...byId.values()];
     }
     function getExportNotes() {
