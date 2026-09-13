@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.14.2");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.14.2");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 13, 2026 at 2:25 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 13, 2026 at 2:35 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -99,6 +99,7 @@ test("Trip Critical count badge and Today active date strip stay synchronized", 
   assert.equal(document.querySelector("#homeOpenItemsCount").textContent, String(unresolvedCount));
   assert.equal(document.querySelectorAll("#homeOpenItems .list-item").length, Math.min(5, unresolvedCount));
 
+  window.showPage("today");
   const chips = document.querySelector("#dateChips");
   let lastScroll = null;
   chips.scrollTo = options => { lastScroll = options; };
