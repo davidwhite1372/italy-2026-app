@@ -83,8 +83,32 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.14.2");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.14.2");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 13, 2026 at 2:00 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 13, 2026 at 2:25 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("Trip Critical count badge and Today active date strip stay synchronized", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+  const document = window.document;
+
+  window.renderHome();
+  const unresolvedCount = window.eval(`OPEN_ITEMS.filter(item => item.status !== "Done" && !getOpenState()[item.id]).length`);
+  assert.equal(document.querySelector("#homeOpenItemsCount").textContent, String(unresolvedCount));
+  assert.equal(document.querySelectorAll("#homeOpenItems .list-item").length, Math.min(5, unresolvedCount));
+
+  const chips = document.querySelector("#dateChips");
+  let lastScroll = null;
+  chips.scrollTo = options => { lastScroll = options; };
+  const oct9 = [...chips.querySelectorAll(".date-chip")].find(chip => chip.dataset.date === "2026-10-09");
+  assert.ok(oct9);
+  oct9.click();
+  await new Promise(resolve => setTimeout(resolve, 25));
+  assert.equal(document.querySelector("#dateChips .date-chip.active").dataset.date, "2026-10-09");
+  assert.ok(lastScroll, "Today date strip should scroll to keep the active date visible");
+  assert.equal(lastScroll.behavior, "smooth");
   assert.deepEqual(app.runtimeErrors, []);
 });
 

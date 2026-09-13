@@ -768,6 +768,7 @@
     }
 
     .quick-action-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .critical-count-badge{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:24px;padding:0 8px;border-radius:999px;background:var(--primary);color:#fff;font-size:.75rem;font-weight:800;line-height:1;}
     .quick-action-row .link-btn, .quick-action-row button { border:1px solid var(--border); border-radius:9px; padding:7px 9px; background:var(--card); text-decoration:none; }
     .wallet-key { font-size:1.08rem; font-weight:800; color:var(--primary); letter-spacing:.02em; }
     .budget-hero { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px; }
@@ -917,7 +918,7 @@
       <div id="homeNextUp"></div>
       <div id="homeQuickTip" aria-live="polite"></div>
       <div class="card">
-        <div class="card-title"><span class="icon">⚡</span> Trip Critical / Open Items</div>
+        <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px;"><span><span class="icon">⚡</span> Trip Critical / Open Items</span><span class="critical-count-badge" id="homeOpenItemsCount" aria-label="Open item count">0</span></div>
         <div id="homeOpenItems"></div>
         <button class="expand-btn" onclick="showPage('bookings')">View all open items →</button>
       </div>
@@ -1431,7 +1432,7 @@
       version: "10.14.2",
       build: "10.14.2",
       backupSchema: 6,
-      lastEdited: "September 13, 2026 at 2:00 PM EDT"
+      lastEdited: "September 13, 2026 at 2:25 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -3803,6 +3804,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       const criticalItems = OPEN_ITEMS
         .filter(o => o.status !== "Done" && !openState[o.id])
         .sort((a,b) => (urgencyRank[b.urgency]||0) - (urgencyRank[a.urgency]||0) || a.pri - b.pri);
+      const criticalCountBadge = document.getElementById("homeOpenItemsCount");
+      if (criticalCountBadge) criticalCountBadge.textContent = String(criticalItems.length);
       document.getElementById("homeOpenItems").innerHTML = criticalItems.slice(0,5).map(o => `
         <div class="list-item">
           <div class="num">${o.pri}</div>
@@ -3861,6 +3864,15 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       `).join("");
       chips.querySelectorAll(".date-chip").forEach(c => {
         c.onclick = () => { selectedDate = c.dataset.date; renderToday(); };
+      });
+
+      requestAnimationFrame(() => {
+        const activeChip = chips.querySelector(".date-chip.active");
+        if (!activeChip) return;
+        const targetLeft = activeChip.offsetLeft - (chips.clientWidth - activeChip.offsetWidth) / 2;
+        const left = Math.max(0, targetLeft);
+        if (typeof chips.scrollTo === "function") chips.scrollTo({ left, behavior: "smooth" });
+        else chips.scrollLeft = left;
       });
 
       const day = DAYS.find(d => d.date === selectedDate) || DAYS[0];

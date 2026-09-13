@@ -12,6 +12,8 @@
 - Updated the permanent UniCredit Rome ATM reference with verified location guidance; removed the redundant Laundry - Florence default note because the permanent guide already covers it.
 - Kept backup schema 6 unchanged and preserved stable IDs / historical phone compatibility.
 - Bumped release metadata, package version, and service-worker cache to 10.14.2.
+- Added the agreed unresolved-item count badge to the Trip Critical / Open Items card.
+- Fixed Today Plan date chips so the active date automatically scrolls into view when moving across the trip.
 
 ## [10.14.1] - 2026-09-11
 
