@@ -1,5 +1,14 @@
 # Changelog
 
+## [10.14.3] - 2026-09-23
+
+### Data update
+- Reconciled phone phrase edits and added Maritozzo and Permesso with their existing stable IDs; retained private luggage-lock notes and the personal expense as phone-only data.
+- Added seats DL2706 29F/29E, SK928 27E/27D, SK915 24G/24H, and SK3438 27A/27B; left SK681 open.
+- Added the corrected Boston Terminal A → E guide with exact DL2706/SK928 times and updated shuttle, TSA, and gate targets.
+- Updated the timeline, Travel Details, and route notes from the temporary PSA agenda; marked the official Joe Lynch agenda and incomplete train/coach details for follow-up.
+- Kept backup schema 6 and stable records; release remains on the 10.x version line.
+
 ## [10.14.2] - 2026-09-13
 
 ### Stabilization / reconciliation

@@ -41,45 +41,45 @@
         phrase: "Dov'è il gate? — Where is the gate?",
         checklist: ["Passports","Wallet","Phones","Boarding passes","Medication","Power bank"] },
       { date: "2026-10-05", theme: "Arrival in Rome", city: "Rome", hotel: "Anantara Palazzo Naiadi",
-        schedule: "CPH passport control and SK681 to Rome; collect bags; Leonardo Express to Termini; walk/taxi to hotel; registration; 8:00 PM welcome dinner at SEEN by Olivier.",
+        schedule: "Arrive in Rome; collect bags and take the Leonardo Express to Termini; check in and register. PSA's temporary agenda lists registration from 1–5 PM, hotel check-in from 3 PM, and a casual welcome dinner from 7–9 PM.",
         transport: "SAS SK681, Leonardo Express, then walk or taxi to Piazza della Repubblica.",
-        dining: "Light lunch after arrival; welcome dinner at the hotel at 8:00 PM.",
+        dining: "Light lunch after arrival; casual welcome dinner at SEEN by Olivier, 7–9 PM per the temporary PSA agenda.",
         tip: "Avoid a long nap. Hydrate, shower and stay awake until the evening program.",
         phrase: "Vorrei un taxi, per favore. — I would like a taxi, please.",
         checklist: ["Bags collected","Train tickets","Hotel check-in","Registration","Dinner attire"] },
-      { date: "2026-10-06", theme: "Rome Program Day", city: "Rome", hotel: "Anantara Palazzo Naiadi",
-        schedule: "Private Joe Lynch agenda is still pending. Official fallback options include winery or Castel Gandolfo.",
-        transport: "Group coach if provided; otherwise confirm the meeting point at the hotel.",
-        dining: "Follow the hosted schedule; do not make a conflicting nonrefundable reservation.",
-        tip: "Check the hospitality desk and messages before breakfast for final instructions.",
+      { date: "2026-10-06", theme: "Rome Experiences", city: "Rome", hotel: "Anantara Palazzo Naiadi",
+        schedule: "Temporary PSA agenda: breakfast 7–11 AM; assigned Rome experience tour; return about 3:30 PM. Options shown are Papal Palace (leave 8:45 AM; lobby by 8:30) or Cantina Santa Benedetta (leave 9:00 AM; lobby by 8:45).",
+        transport: "PSA tour transport; confirm which option is assigned and the exact pickup point.",
+        dining: "Meet in the hotel lobby at 6:15 PM for dine-around dinner; restaurant assignment is not listed.",
+        tip: "This is a temporary PSA agenda. Replace these details when the official Joe Lynch agenda arrives; do not assume both tours are scheduled for you.",
         phrase: "A che ora partiamo? — What time do we leave?",
         checklist: ["Confirm agenda","Meeting point","Comfortable shoes","Water","Phone charged"] },
-      { date: "2026-10-07", theme: "Rome & Awards Dinner", city: "Rome", hotel: "Anantara Palazzo Naiadi",
-        schedule: "Private group activities during the day; awards dinner at Villa Miani in the evening.",
-        transport: "Use the group coach if provided; Villa Miani is typically 20–35 minutes from the hotel depending on traffic.",
-        dining: "Hosted awards dinner; confirm dress code and coach departure time.",
-        tip: "Set out dinner clothes early and be in the lobby 15 minutes before departure.",
+      { date: "2026-10-07", theme: "Rome Experiences & Awards Dinner", city: "Rome", hotel: "Anantara Palazzo Naiadi",
+        schedule: "Temporary PSA agenda: breakfast 7–11 AM; assigned Rome tour or free time; lunch is on your own. Papal Rome leaves at 7:15 AM (lobby by 7:00, dress code); Imperial Rome, Ciao Rome, and Upside Down Rome times are still being confirmed. Meet in the lobby at 5:00 PM for the Villa Miani Awards Gala.",
+        transport: "Use the PSA group coach for the assigned tour and Villa Miani; confirm pickup and return details when the official agenda arrives.",
+        dining: "Awards Gala at Villa Miani; cocktail attire per the temporary PSA agenda.",
+        tip: "Tours run rain or shine. This is a temporary agenda, not the final Joe Lynch schedule.",
         phrase: "Qual è il codice di abbigliamento? — What is the dress code?",
         checklist: ["Dress clothes","Coach time","Event credentials","Phone","Room key"] },
       { date: "2026-10-08", theme: "Rome to Florence", city: "Florence", hotel: "W Florence",
-        schedule: "Pack and check out; follow PSA instructions to the Rome station; group train to Florence; check in at W Florence; networking event at Giardino Corsini al Prato.",
-        transport: "Group transfer, train, then short walk or taxi to W Florence.",
-        dining: "Networking event in the evening; confirm whether food is included.",
-        tip: "Do not assume Roma Termini until PSA confirms the station, train and meeting point.",
+        schedule: "Temporary PSA agenda: breakfast 7–11 AM; meet in the hotel lobby at 11:00 AM. The Rome–Florence train is listed for 12:05 PM, about 1 hour 40 minutes, arriving around 1:45 PM. Check in at W Florence; dinner is at Giardino Corsini al Prato.",
+        transport: "PSA is handling luggage by truck from the hotel bag drop. The temporary note mentions walking to the station and three private cars but does not explain the car assignment; follow the organizer's final instructions.",
+        dining: "No lunch is provided; eat breakfast or bring snacks. Dinner at Giardino Corsini; exact time and transport are not listed.",
+        tip: "The agenda does not name the Rome station, train operator, or train number. Roma Termini remains the working route only until PSA confirms it. This agenda is temporary.",
         phrase: "Da quale binario parte il treno? — Which platform does the train leave from?",
         checklist: ["Check out","Luggage tags","Train details","Hotel address","Event attire"] },
-      { date: "2026-10-09", theme: "Florence Program Day", city: "Florence", hotel: "W Florence",
-        schedule: "Florence private group activities. Official excursions and dinner remain fallback options until the final agenda arrives.",
-        transport: "Walk or group coach depending on the activity.",
-        dining: "Follow hosted plans; leave dinner flexible until the agenda is confirmed.",
-        tip: "Keep museum bookings refundable until the private schedule is final.",
+      { date: "2026-10-09", theme: "Florence Experiences", city: "Florence", hotel: "W Florence",
+        schedule: "Temporary PSA agenda: breakfast on your own; morning activities and tours, followed by free time. Meet in the hotel lobby at 6:00 PM for dine-around dinner.",
+        transport: "Walk or use PSA-provided transport for the assigned morning activity; listed dinner locations are walkable from W Florence.",
+        dining: "Dinner is dine-around; restaurant assignment is not listed.",
+        tip: "Replace these temporary details when the official Joe Lynch agenda arrives.",
         phrase: "Possiamo andare a piedi? — Can we walk there?",
         checklist: ["Confirm agenda","Comfortable shoes","Water","Portable charger","Dinner plan"] },
       { date: "2026-10-10", theme: "Florence to Venice", city: "Venice", hotel: "JW Marriott Venice",
         schedule: "Check out and travel to Firenze S.M.N.; Italo 8904 departs 9:39 AM and arrives Venezia S.L. at 11:55 AM; follow the confirmed transfer to JW Marriott; gondola rides and welcome reception 4:00-6:00 PM.",
         transport: "Walk/taxi to Firenze S.M.N., Italo 8904, then PSA/JW hotel transfer.",
         dining: "Light lunch provided during transit. Free evening for dinner after the reception.",
-        tip: "Italo 8904 Club Executive is the confirmed primary plan. Cancel only if the final PSA group transfer becomes clearly preferable.",
+        tip: "The Hang-10 departure event is only for non-Venice travelers. Keep Italo 8904 as the Venice plan; do not attend the non-Venice departure event.",
         phrase: "Dov'è il punto d'incontro? — Where is the meeting point?",
         checklist: ["Check out","Meeting point","Luggage","Reception attire","Dinner shortlist"] },
       { date: "2026-10-11", theme: "Venice Excursion Day", city: "Venice", hotel: "JW Venice",
@@ -125,24 +125,24 @@
       { id:"tl-0003", travelId:"travel-3", date:"2026-10-04", start:"08:40", end:"09:05", itemType:"Information", title:"TPA Main Terminal → Delta check-in / bag drop", from:"TPA Main Terminal", to:"Delta check-in / bag drop", mode:"Walk", time:"15-25 min", status:"Confirmed", instructions:"Check bags through to FCO. Photograph baggage tags.", notes:"Verify final destination reads FCO." },
       { id:"tl-0004", travelId:"travel-4", date:"2026-10-04", start:"09:05", end:"09:35", itemType:"Information", title:"Delta check-in → TPA departure gate", from:"Delta check-in", to:"TPA departure gate", mode:"Walk", time:"20-30 min", status:"Confirmed", instructions:"Clear TSA and proceed to gate.", notes:"Boarding pass and passports accessible." },
       { id:"tl-0005", date:"2026-10-04", start:"11:39", end:"14:55", itemType:"Flight", flightId:"flight-dl2706", title:"TPA Airport → BOS - Boston Logan Airport Terminal A", from:"TPA Airport", to:"BOS - Boston Logan Airport Terminal A", mode:"Flight DL2706", time:"3h 16m", status:"Confirmed", instructions:"Economy.", notes:"" },
-      { id:"tl-0006", travelId:"travel-6", date:"2026-10-04", start:"14:55", end:"16:55", itemType:"Walk", title:"Walk from Boston Terminal A to Terminal E / SAS gate", from:"BOS - Boston Logan Airport Terminal A", to:"BOS - Boston Logan Airport Terminal E / SAS gate", mode:"Walk", time:"45-90 min", status:"Verify Day-Of", instructions:"Confirm SK928 gate; follow the signed terminal route; re-clear TSA if required.", notes:"Gate target about 4:55 PM." },
+      { id:"tl-0006", travelId:"travel-6", date:"2026-10-04", start:"14:55", end:"17:00", itemType:"Transfer", title:"BOS Terminal A → Terminal E / clear TSA", from:"BOS - Boston Logan Airport Terminal A", to:"BOS - Boston Logan Airport Terminal E security", mode:"Free terminal shuttle + walk + TSA", time:"About 2 hr 5 min to gate", status:"Verify Day-Of", instructions:"Exit to ground transportation without collecting checked bags. Take the free Massport shuttle to Terminal E, re-clear TSA, and follow live signs to the assigned SAS gate.", notes:"The updated guide's plan: DL2706 arrives 2:55 PM; take the shuttle about 3:10–3:25 PM; reach Terminal E around 3:25–3:35 PM; clear TSA about 3:45–4:25 PM; aim to reach the gate by 5:00 PM for SK928 at 5:40 PM." },
       { id:"tl-0007", date:"2026-10-04", start:"17:40", end:"07:00+1", itemType:"Flight", flightId:"flight-sk928", title:"BOS - Boston Logan Airport Terminal E → CPH - Copenhagen Airport", from:"BOS - Boston Logan Airport Terminal E", to:"CPH - Copenhagen Airport", mode:"Flight SK928", time:"7h 20m", status:"Confirmed", instructions:"Premium Economy; set devices to Rome time, hydrate, sleep after meal.", notes:"Arrival is Oct 5." },
       { id:"tl-0008", travelId:"travel-8", date:"2026-10-05", start:"07:00", end:"08:30", itemType:"Walk", title:"CPH - Copenhagen Airport arrival gate → CPH - Copenhagen Airport Rome departure gate", from:"CPH - Copenhagen Airport arrival gate", to:"CPH - Copenhagen Airport Rome departure gate", mode:"Airport connection / passport control", time:"90 min scheduled connection", status:"Confirmed", instructions:"Stay airside. Follow Transfer / Omstigning signs; complete EES only if directed, then passport control; check the live screen for SK681 and proceed directly to its assigned gate.", notes:"SK928 arrives 07:00; SK681 departs 08:30. Aim to reach the gate by 08:10; boarding may close before departure." },
       { id:"tl-0009", date:"2026-10-05", start:"08:30", end:"11:05", itemType:"Flight", flightId:"flight-sk681", title:"CPH - Copenhagen Airport → FCO - Rome Fiumicino Airport Terminal 1", from:"CPH - Copenhagen Airport", to:"FCO - Rome Fiumicino Airport Terminal 1", mode:"Flight SK681", time:"2h 35m", status:"Confirmed", instructions:"Premium Economy.", notes:"" },
       { id:"tl-0010", travelId:"travel-10", date:"2026-10-05", start:"11:05", end:"12:15", itemType:"Information", title:"FCO - Rome Fiumicino Airport aircraft → FCO Airport baggage claim / train station", from:"FCO - Rome Fiumicino Airport aircraft", to:"FCO Airport baggage claim / train station", mode:"Walk", time:"45-70 min", status:"Confirmed", instructions:"Collect both bags, follow train icons to railway station.", notes:"No passport control expected after Schengen entry at CPH." },
       { id:"tl-0011", travelId:"travel-11", date:"2026-10-05", start:"12:15", end:"13:00", itemType:"Train", title:"Fiumicino Aeroporto Train Station → Roma Termini Train Station", from:"Fiumicino Aeroporto Train Station", to:"Roma Termini Train Station", mode:"Leonardo Express", time:"32 min + wait", status:"Confirmed", instructions:"Buy tickets from official Trenitalia. Nonstop to Termini.", notes:"Do not take FL1." },
       { id:"tl-0012", travelId:"travel-12", date:"2026-10-05", start:"13:00", end:"13:20", itemType:"Walk", title:"Roma Termini Train Station → Anantara Palazzo Naiadi Hotel", from:"Roma Termini Train Station", to:"Anantara Palazzo Naiadi Hotel", mode:"Walk", time:"10-15 min", status:"Confirmed", instructions:"Exit toward Piazza dei Cinquecento / Via Luigi Einaudi to Piazza della Repubblica.", notes:"Hotel: Piazza della Repubblica 48-49." },
-      { id:"tl-0013", travelId:"travel-13", date:"2026-10-05", start:"13:20", end:"17:00", itemType:"Event", title:"Check in, register, and settle into the hotel", from:"Hotel", to:"Tea Room / room", mode:"Event", time:"Flexible", status:"Confirmed", instructions:"Check in or store luggage; event registration; hydrate, shower, light meal.", notes:"Avoid long nap." },
-      { id:"tl-0014", travelId:"travel-14", date:"2026-10-05", start:"20:00", end:"22:30", itemType:"Walk", title:"Hotel → SEEN by Olivier", from:"Hotel", to:"SEEN by Olivier", mode:"Walk", time:"On-site", status:"Confirmed", instructions:"Attend welcome dinner.", notes:"Confirm exact venue on agenda." },
-      { id:"tl-0015", travelId:"travel-15", date:"2026-10-06", start:"All day", end:"", itemType:"Bus", title:"Hotel → Rome / official excursion", from:"Hotel", to:"Rome / official excursion", mode:"Group Coach", time:"TBD", status:"Pending", instructions:"Joe Lynch private agenda TBD. Fallback: winery or Castel Gandolfo.", notes:"Do not book conflicting nonrefundable tour." },
-      { id:"tl-0016", travelId:"travel-16", date:"2026-10-07", start:"All day", end:"", itemType:"Bus", title:"Hotel → Rome / Villa Miani", from:"Hotel", to:"Rome / Villa Miani", mode:"Group Coach", time:"20-35 min to venue", status:"Partial", instructions:"Private group day; awards dinner at Villa Miani. Use group coach if provided.", notes:"Confirm dress code and coach time." },
-      { id:"tl-0017", travelId:"travel-17", date:"2026-10-08", start:"Morning", end:"", itemType:"Walk", title:"Anantara Palazzo Naiadi Hotel → Roma Termini Train Station", from:"Anantara Palazzo Naiadi Hotel", to:"Roma Termini Train Station", mode:"Walk", time:"TBD", status:"Confirmed", instructions:"Walk with the PSA/Joe Lynch group to Roma Termini Train Station. Final train details are still TBD.", notes:"Station route is current; final train number, departure time, coach, and seats are pending." },
-      { id:"tl-0018", travelId:"travel-18", date:"2026-10-08", start:"Morning", end:"", itemType:"Train", title:"Rome to Florence Train - PSA group transfer", from:"Roma Termini Train Station", to:"Firenze S.M.N. Train Station", mode:"Train", time:"Approx. 5 hr group travel window", status:"Pending", instructions:"Follow the PSA/Joe Lynch group. The station-to-station plan is current; the final train is being booked by the group.", notes:"Need final train number, exact departure/arrival times, coach, and seats." },
-      { id:"tl-0019", travelId:"travel-19", date:"2026-10-08", start:"Day", end:"", itemType:"Walk", title:"Firenze S.M.N. Train Station → W Florence Hotel", from:"Firenze S.M.N. Train Station", to:"W Florence Hotel", mode:"Walk", time:"5-10 min", status:"Confirmed", instructions:"Stay with group. If S.M.N., walk to Via del Melarancio 1.", notes:"Exact station depends on group train." },
-      { id:"tl-0020", travelId:"travel-20", date:"2026-10-08", start:"Evening", end:"", itemType:"Walk", title:"W Florence → Giardino Corsini al Prato", from:"W Florence", to:"Giardino Corsini al Prato", mode:"Walk", time:"15-20 min walk", status:"Pending", instructions:"Networking event. Use event transport if provided.", notes:"Need dress code and transport plan." },
-      { id:"tl-0021", travelId:"travel-21", date:"2026-10-09", start:"All day", end:"", itemType:"Walk", title:"W Florence → Florence activities", from:"W Florence", to:"Florence activities", mode:"Walk", time:"TBD", status:"Pending", instructions:"Official excursions and dinner are fallback items.", notes:"Do not lock museum tickets until private agenda is final." },
+      { id:"tl-0013", travelId:"travel-13", date:"2026-10-05", start:"13:00", end:"17:00", itemType:"Event", title:"Hotel check-in and PSA registration", from:"Anantara Palazzo Naiadi", to:"Anantara Palazzo Naiadi", mode:"Event", time:"Check-in from 3:00 PM; registration 1:00–5:00 PM", status:"Partial", instructions:"The temporary agenda lists hotel check-in at 3:00 PM and PSA registration from 1:00–5:00 PM. Store bags if the room is not ready.", notes:"Arrival timing may affect registration; confirm with the hotel and PSA desk." },
+      { id:"tl-0014", travelId:"travel-14", date:"2026-10-05", start:"19:00", end:"21:00", itemType:"Event", title:"Welcome dinner at SEEN by Olivier", from:"Anantara Palazzo Naiadi", to:"SEEN by Olivier", mode:"Walk", time:"On-site", status:"Partial", instructions:"Casual attire. The temporary PSA agenda lists 7:00–9:00 PM.", notes:"Replace with the official agenda if its time or venue changes." },
+      { id:"tl-0015", travelId:"travel-15", date:"2026-10-06", start:"08:30", end:"15:30", itemType:"Tour", title:"Rome experience tour (assigned option)", from:"Anantara Palazzo Naiadi", to:"Assigned Rome tour", mode:"PSA tour transport", time:"Morning tour; return about 3:30 PM", status:"Partial", instructions:"Temporary agenda options: Papal Palace leaves 8:45 AM (lobby by 8:30) or Cantina Santa Benedetta leaves 9:00 AM (lobby by 8:45). Follow only your assigned option.", notes:"Breakfast 7:00–11:00 AM. Activities and lunch are included. Confirm assigned tour and exact pickup point in the official agenda." },
+      { id:"tl-0016", travelId:"travel-16", date:"2026-10-07", start:"07:00", end:"15:00", itemType:"Tour", title:"Rome tour options and free time", from:"Anantara Palazzo Naiadi", to:"Assigned Rome tour", mode:"PSA tour transport", time:"Tour schedule varies", status:"Partial", instructions:"Temporary agenda lists Papal Rome leaving 7:15 AM (lobby by 7:00; dress code required). Imperial Rome, Ciao Rome, and Upside Down Rome times are still being confirmed. Tours run rain or shine.", notes:"Breakfast 7:00–11:00 AM; lunch is on your own. Follow only the assigned tour." },
+      { id:"tl-0017", travelId:"travel-17", date:"2026-10-08", start:"11:00", end:"12:05", itemType:"Transfer", title:"Anantara lobby → Rome train station", from:"Anantara Palazzo Naiadi Hotel", to:"Rome train station (PSA confirmation pending)", mode:"PSA walk / private cars", time:"Meet in lobby at 11:00 AM", status:"Partial", instructions:"Meet in the hotel lobby at 11:00 AM. The temporary note says walk to the station and mentions three private cars, but does not explain how they are used. PSA handles luggage by truck from the hotel bag drop.", notes:"Roma Termini remains the working route only; confirm station, meeting point, car assignments, and luggage drop with PSA." },
+      { id:"tl-0018", travelId:"travel-18", date:"2026-10-08", start:"12:05", end:"13:45", itemType:"Train", title:"Rome → Florence PSA group train", from:"Rome train station (confirm with PSA)", to:"Firenze S.M.N. Train Station (working assumption)", mode:"PSA group train", time:"About 1 hr 40 min", status:"Partial", instructions:"The temporary PSA agenda lists a 12:05 PM departure from Rome and a 1 hr 40 min ride. No station, train operator, train number, coach, or seats are provided.", notes:"No lunch is provided. Eat breakfast or bring snacks. Replace these provisional details when the official Joe Lynch agenda arrives." },
+      { id:"tl-0019", travelId:"travel-19", date:"2026-10-08", start:"Day", end:"", itemType:"Walk", title:"Firenze S.M.N. Train Station → W Florence Hotel", from:"Firenze S.M.N. Train Station", to:"W Florence Hotel", mode:"Walk", time:"5-10 min", status:"Partial", instructions:"Firenze S.M.N. is the working assumption. Stay with group and follow PSA instructions to W Florence, Via del Melarancio 1.", notes:"Confirm station and arrival transfer with PSA." },
+      { id:"tl-0020", travelId:"travel-20", date:"2026-10-08", start:"Evening", end:"", itemType:"Event", title:"Dinner at Giardino Corsini al Prato", from:"W Florence", to:"Giardino Corsini al Prato", mode:"Walk", time:"15–20 min walk", status:"Partial", instructions:"The temporary PSA agenda lists dinner at Giardino Corsini. Walk from W Florence unless the official agenda provides group transport.", notes:"Dinner time, dress code, and transport are not listed; confirm when the official agenda arrives." },
+      { id:"tl-0021", travelId:"travel-21", date:"2026-10-09", start:"Morning", end:"17:30", itemType:"Tour", title:"Florence morning activities and free time", from:"W Florence", to:"Assigned Florence activities", mode:"Walk / PSA transport", time:"Morning activities; afternoon free", status:"Partial", instructions:"Temporary PSA agenda: breakfast on your own, morning activities and tours, then free time. Follow the assigned event details when available.", notes:"Meet in the hotel lobby at 6:00 PM for dine-around dinner; listed restaurants are walkable from the hotel." },
       { id:"tl-0022", travelId:"travel-22", date:"2026-10-10", start:"08:15", end:"08:30", itemType:"Walk", title:"W Florence Hotel → Firenze S.M.N. Train Station", from:"W Florence Hotel", to:"Firenze S.M.N. Train Station", mode:"Walk", time:"5-10 min + buffer", status:"Confirmed", instructions:"Check out, retrieve luggage, walk to station. Allow extra time for Club Executive boarding.", notes:"Ticket EM7VNB; train departs 9:39 AM." },
-      { id:"tl-0023", travelId:"travel-23", date:"2026-10-10", start:"09:39", end:"11:55", itemType:"Train", title:"Firenze S.M.N. Train Station → Venezia Santa Lucia Train Station", from:"Firenze S.M.N. Train Station", to:"Venezia Santa Lucia Train Station", mode:"Train - Italo 8904 Club Executive", time:"2h 16m", status:"Confirmed", instructions:"Board Coach 1; David seat 13, Melody seat 16. Keep valuables at seats.", notes:"Primary plan: keep the excellent first-class seats. May cancel only if the PSA group transfer becomes the better final option." },
+      { id:"tl-0023", travelId:"travel-23", date:"2026-10-10", start:"09:39", end:"11:55", itemType:"Train", title:"Firenze S.M.N. Train Station → Venezia Santa Lucia Train Station", from:"Firenze S.M.N. Train Station", to:"Venezia Santa Lucia Train Station", mode:"Train - Italo 8904 Club Executive", time:"2h 16m", status:"Confirmed", instructions:"Board Coach 1; David seat 13, Melody seat 16. Keep valuables at seats.", notes:"Primary plan remains Italo 8904. The temporary PSA agenda says the Hang-10 departure event applies only to non-Venice travelers." },
       { id:"tl-0024", travelId:"travel-24", date:"2026-10-10", start:"12:00", end:"13:30", itemType:"Boat / Ferry", title:"Venezia Santa Lucia Train Station → JW Marriott Venice Resort & Spa Hotel", from:"Venezia Santa Lucia Train Station", to:"JW Marriott Venice Resort & Spa Hotel", mode:"PSA/JW Group Water Transfer", time:"TBD", status:"Pending", instructions:"PSA will move the group from Venezia Santa Lucia Train Station to the JW Marriott island hotel. Follow the group meeting point and water-transfer instructions.", notes:"Train arrives 11:55 AM; hotel program begins 1:30 PM. Exact boat and meeting point remain pending." },
       { id:"tl-0025", travelId:"travel-25", date:"2026-10-10", start:"16:00", end:"18:00", itemType:"Tour", title:"Gondola experience and welcome reception", from:"JW Venice", to:"Gondola / reception", mode:"Tour", time:"2 hr", status:"Confirmed", instructions:"Evening gondola rides and welcome reception.", notes:"Follow PSA meeting instructions from hospitality desk." },
       { id:"tl-0026", travelId:"travel-26", date:"2026-10-10", start:"Evening", end:"", itemType:"Walk", title:"JW Venice → Dinner of choice", from:"JW Venice", to:"Dinner of choice", mode:"Walk", time:"Flexible", status:"Confirmed", instructions:"Free evening for dinner.", notes:"Use Restaurants tab." },
@@ -169,6 +169,9 @@
       { id:"tl-0038", date:"2026-10-15", start:"19:50", end:"23:13", itemType:"Flight", flightId:"flight-sk3438", title:"JFK Airport Terminal 4 → TPA - Tampa International Airport", from:"JFK Airport Terminal 4", to:"TPA - Tampa International Airport", mode:"Flight SK3438 (Delta)", time:"3h 23m", status:"Confirmed", instructions:"Check Delta app for gate.", notes:"" },
       { id:"tl-0039", travelId:"travel-39", date:"2026-10-15", start:"23:13", end:"23:55", itemType:"Train", title:"Take SkyConnect from TPA baggage claim to Economy Parking", from:"TPA Airport baggage claim", to:"TPA Airport Economy Parking", mode:"SkyConnect Train", time:"30-45 min", status:"Confirmed", instructions:"Collect bags, follow signs to SkyConnect, ride to Economy Parking, and use the parking-location photo.", notes:"Inspect vehicle before leaving." },
       { id:"tl-0040", travelId:"travel-40", date:"2026-10-16", start:"00:00", end:"01:15", itemType:"Car / Drive", title:"Drive home to Spring Hill", from:"TPA Airport Economy Parking", to:"Spring Hill, FL", mode:"Drive", time:"60-75 min", status:"Confirmed", instructions:"Drive via Veterans / Suncoast. Stop if fatigued.", notes:"Expected home after midnight." },
+      { id:"tl-0051", travelId:"travel-51", date:"2026-10-06", start:"18:15", end:"", itemType:"Event", title:"Meet in lobby for Rome dine-around dinner", from:"Anantara Palazzo Naiadi", to:"Rome restaurant (assignment TBD)", mode:"Walk / group plan", time:"Meet at 6:15 PM", status:"Partial", instructions:"The temporary PSA agenda says to meet in the hotel lobby at 6:15 PM. Restaurant assignment and return plan are not listed.", notes:"Replace these details when the official agenda arrives." },
+      { id:"tl-0052", travelId:"travel-52", date:"2026-10-07", start:"17:00", end:"", itemType:"Event", title:"Meet in lobby → Villa Miani Awards Gala", from:"Anantara Palazzo Naiadi", to:"Villa Miani", mode:"PSA group coach", time:"Meet at 5:00 PM", status:"Partial", instructions:"Cocktail attire. Use the PSA group coach; the temporary agenda gives the lobby meeting time but not the coach return time.", notes:"Confirm coach pickup and return details in the official agenda." },
+      { id:"tl-0053", travelId:"travel-53", date:"2026-10-09", start:"18:00", end:"", itemType:"Event", title:"Meet in lobby for Florence dine-around dinner", from:"W Florence", to:"Florence restaurant (assignment TBD)", mode:"Walk", time:"Meet at 6:00 PM", status:"Partial", instructions:"The temporary PSA agenda says to meet in the hotel lobby at 6:00 PM. Dinner locations are walkable from W Florence.", notes:"Restaurant assignment is not listed; replace with the official agenda when received." },
     ];
 
 
@@ -224,7 +227,10 @@
       "tl-0047": {itemType:"To-do",transportation:"None / Not applicable"},
       "tl-0048": {itemType:"Event",transportation:"Walk"},
       "tl-0049": {itemType:"Transfer",transportation:"Walk"},
-      "tl-0050": {itemType:"Transfer",transportation:"Bus / Coach"}
+      "tl-0050": {itemType:"Transfer",transportation:"Bus / Coach"},
+      "tl-0051": {itemType:"Event",transportation:"Walk"},
+      "tl-0052": {itemType:"Event",transportation:"Bus / Coach"},
+      "tl-0053": {itemType:"Event",transportation:"Walk"}
     });
     TIMELINE.forEach(item => Object.assign(item, TIMELINE_CLASSIFICATION[item.id] || {
       itemType:"Information", transportation:"Other"
@@ -258,7 +264,7 @@
       {id:"reservation-0001", item:"Air reservation", provider:"Delta / SAS", conf:"H9BVBD / GQMVQK / AZ3BUA", dates:"Oct 4–15", status:"Confirmed", notes:"Master H9BVBD · Delta GQMVQK · SAS AZ3BUA · Store PDFs offline on both phones" },
       {id:"reservation-0002", item:"Rome hotel", hotelId:"hotel-rome-anantara", provider:"Anantara Palazzo Naiadi", conf:"Event-provided", dates:"Oct 5–8", status:"Confirmed", notes:"Need room confirmation and check-in details" },
       {id:"reservation-0003", item:"Florence hotel", hotelId:"hotel-florence-w", provider:"W Florence", conf:"Event-provided", dates:"Oct 8–10", status:"Confirmed", notes:"Need room confirmation and breakfast details" },
-      {id:"reservation-0004", item:"Rome to Florence train", provider:"PSA group travel", conf:"TBD", dates:"Oct 8", status:"Pending", notes:"Need station, train number, times, coach, seats" },
+      {id:"reservation-0004", item:"Rome to Florence train", provider:"PSA group travel", conf:"TBD", dates:"Oct 8", status:"Partial", notes:"Temporary PSA agenda: depart Rome 12:05 PM, about 1 hr 40 min, arrive Florence around 1:45 PM. Confirm station, operator, train number, coach, and seats." },
       {id:"reservation-0005", item:"Possible PSA Florence-to-Venice group transfer", provider:"PSA", conf:"Event-provided", dates:"Oct 10", status:"Alternative", notes:"Possible backup only. Italo 8904 Club Executive remains the confirmed primary plan." },
       {id:"reservation-0006", item:"Italo Florence-to-Venice ticket", provider:"Italo", conf:"EM7VNB / Rec. 118932941", dates:"Oct 10", status:"Confirmed", notes:"Primary plan: Italo 8904, 9:39–11:55 AM; Club Executive; Coach 1 seats 13 & 16; €177.76. Cancel only if the final PSA group transfer becomes clearly preferable." },
       {id:"reservation-0007", item:"Venice hotel (group)", hotelId:"hotel-venice-jw", provider:"JW Marriott Venice", conf:"Event-provided", dates:"Oct 10–13", status:"Confirmed", notes:"Confirm room details, island shuttle schedule and transfer from central Venice." },
@@ -268,19 +274,20 @@
     ];
 
     const OPEN_ITEMS = [
-      { id:"open-0001", pri:1, item:"Joe Lynch private Rome agenda", area:"Conference", urgency:"High", status:"Pending", why:"Completes Oct 6–8 activities and transport" },
-      { id:"open-0002", pri:2, item:"Rome to Florence train details", area:"Transportation", urgency:"High", status:"Pending", why:"Needed for Oct 8 departure and Florence arrival" },
+      { id:"open-0001", pri:1, item:"Replace temporary details when official Joe Lynch agenda arrives", area:"Conference", urgency:"High", status:"Pending", why:"Today's PSA itinerary is temporary; final activities, times, and transport may change" },
+      { id:"open-0002", pri:2, item:"Confirm Oct 8 Rome–Florence station and train details", area:"Transportation", urgency:"High", status:"Pending", why:"Temporary agenda gives 12:05 PM and about 1 hr 40 min; station, operator, number, coach, and seats remain unknown" },
       { id:"open-0003", pri:3, item:"Confirm JW Venice full property / room details", area:"Hotel / Transport", urgency:"High", status:"Pending", why:"Needed for shuttle, arrival and airport departure logistics" },
       { id:"open-0004", pri:4, item:"Reconfirm Italo 8904 remains the primary Florence-to-Venice plan", area:"Transportation", urgency:"Medium", status:"Optional", why:"Keep the excellent Club Executive seats; cancel only if the final PSA group transfer becomes clearly preferable." },
       { id:"open-0005", pri:5, item:"Select Oct 11 Venice excursion", area:"Conference", urgency:"High", status:"Pending", why:"Choose Ciao Venice OR Murano & Burano" },
-      { id:"open-0006", pri:6, item:"Flight seat assignments", area:"Flights", urgency:"Medium", status:"Pending", why:"Completes flight preparation" },
+      { id:"open-0006", pri:6, item:"Confirm remaining flight seat for SK681", area:"Flights", urgency:"Medium", status:"Pending", why:"Seat screenshots now show DL2706, SK928, SK915, and SK3438; SK681 remains unassigned" },
       { id:"open-0007", pri:7, item:"Awards dinner dress code and coach time", area:"Conference", urgency:"Done", status:"Done", why:"Confirmed for the Oct 7 awards dinner" },
-      { id:"open-0008", pri:8, item:"Giardino Corsini transport and dress code", area:"Conference", urgency:"Medium", status:"Pending", why:"Finalizes Oct 8 evening" },
+      { id:"open-0008", pri:8, item:"Confirm Giardino Corsini transport and dress code", area:"Conference", urgency:"Medium", status:"Pending", why:"Temporary agenda says meet at 6:00 PM and locations are walkable, but restaurant assignment and dress code are not listed" },
       { id:"open-0009", pri:9, item:"Download Venice Excursions page", area:"Conference", urgency:"Medium", status:"Pending", why:"Keep details available offline" },
       { id:"open-0010", pri:10, item:"Restaurant reservations", area:"Dining", urgency:"Low", status:"Optional", why:"Add only after private agenda is known" },
       { id:"open-0011", pri:11, item:"Hotel Antiche Figure booked", area:"Hotel", urgency:"Done", status:"Done", why:"Confirmation PO55JT57ZW; Superior Double Room." },
       { id:"open-0012", pri:12, item:"Pay Hotel Antiche Figure balance", area:"Budget / Hotel", urgency:"High", status:"Pending", why:"Payment link arrives 7 days before Oct 13; valid 48 hours. Balance €620." },
-      { id:"open-0013", pri:13, item:"Confirm Hotel Antiche Figure to VCE transport", area:"Transportation", urgency:"Medium", status:"Pending", why:"Verify first ATVO/ACTV bus or pre-book private water taxi for Oct 15." }
+      { id:"open-0013", pri:13, item:"Confirm Hotel Antiche Figure to VCE transport", area:"Transportation", urgency:"Medium", status:"Pending", why:"Verify first ATVO/ACTV bus or pre-book private water taxi for Oct 15." },
+      { id:"open-0014", pri:14, item:"Confirm Villa Miani coach pickup and return", area:"Conference", urgency:"Medium", status:"Pending", why:"Temporary agenda gives 5:00 PM lobby meet and cocktail attire; coach pickup point details and return time are missing" }
     ];
 
     const CITY_CARDS = {
@@ -398,12 +405,12 @@
     };
 
     const FLIGHTS = [
-      {id:"flight-dl2706",bookingId:"air-main",date:"2026-10-04",flight:"DL2706",op:"Delta",from:"TPA - Tampa International Airport",dep:"11:39 AM",to:"BOS - Boston Logan Airport Terminal A",arr:"2:55 PM",dur:"3h 16m",cabin:"Economy",status:"Confirmed",notes:"Confirm bags tagged to FCO",timelineNotes:""},
-      {id:"flight-sk928",bookingId:"air-main",date:"2026-10-04",flight:"SK928",op:"SAS",from:"BOS - Boston Logan Airport Terminal E",dep:"5:40 PM",to:"CPH - Copenhagen Airport",arr:"7:00 AM +1",dur:"7h 20m",cabin:"Premium Economy",status:"Confirmed",notes:"Set devices to Rome time, hydrate, and sleep after the meal.",timelineNotes:"Arrival is Oct 5."},
+      {id:"flight-dl2706",bookingId:"air-main",date:"2026-10-04",flight:"DL2706",op:"Delta",from:"TPA - Tampa International Airport",dep:"11:39 AM",to:"BOS - Boston Logan Airport Terminal A",arr:"2:55 PM",dur:"3h 16m",cabin:"Economy",seats:"29F, 29E",status:"Confirmed",notes:"Confirm bags tagged to FCO. Seat screenshot shows 29F and 29E; traveler order is not identified.",timelineNotes:""},
+      {id:"flight-sk928",bookingId:"air-main",date:"2026-10-04",flight:"SK928",op:"SAS",from:"BOS - Boston Logan Airport Terminal E",dep:"5:40 PM",to:"CPH - Copenhagen Airport",arr:"7:00 AM +1",dur:"7h 20m",cabin:"Premium Economy",seats:"27E, 27D",status:"Confirmed",notes:"Set devices to Rome time, hydrate, and sleep after the meal. Seat screenshot shows 27E and 27D; traveler order is not identified.",timelineNotes:"Arrival is Oct 5."},
       {id:"flight-sk681",bookingId:"air-main",date:"2026-10-05",flight:"SK681",op:"SAS",from:"CPH - Copenhagen Airport",dep:"8:30 AM",to:"FCO - Rome Fiumicino Airport Terminal 1",arr:"11:05 AM",dur:"2h 35m",cabin:"Premium Economy",status:"Confirmed",notes:"Collect checked bags in Rome.",timelineNotes:""},
       {id:"flight-sk2692",bookingId:"air-main",date:"2026-10-15",flight:"SK2692",op:"SAS Connect",from:"VCE - Venice Marco Polo Airport",dep:"11:00 AM",to:"CPH - Copenhagen Airport",arr:"1:05 PM",dur:"2h 5m",cabin:"Premium Economy",status:"Confirmed",notes:"Confirm bags tagged to TPA.",timelineNotes:"Connection 1h 15m."},
-      {id:"flight-sk915",bookingId:"air-main",date:"2026-10-15",flight:"SK915",op:"SAS",from:"CPH - Copenhagen Airport",dep:"2:20 PM",to:"JFK - New York John F. Kennedy Airport Terminal 1",arr:"5:00 PM",dur:"8h 40m",cabin:"Premium Economy",status:"Confirmed",notes:"Reclaim checked bags at JFK.",timelineNotes:"Most time-sensitive connection at CPH (exit passport control)."},
-      {id:"flight-sk3438",bookingId:"air-main",date:"2026-10-15",flight:"SK3438",op:"Delta (operated)",from:"JFK - New York John F. Kennedy Airport Terminal 4",dep:"7:50 PM",to:"TPA - Tampa International Airport",arr:"11:13 PM",dur:"3h 23m",cabin:"Economy",status:"Confirmed",notes:"Check the Delta app for the departure gate.",timelineNotes:""}
+      {id:"flight-sk915",bookingId:"air-main",date:"2026-10-15",flight:"SK915",op:"SAS",from:"CPH - Copenhagen Airport",dep:"2:20 PM",to:"JFK - New York John F. Kennedy Airport Terminal 1",arr:"5:00 PM",dur:"8h 40m",cabin:"Premium Economy",seats:"24G, 24H",status:"Confirmed",notes:"Reclaim checked bags at JFK. Seat screenshot shows 24G and 24H; traveler order is not identified.",timelineNotes:"Most time-sensitive connection at CPH (exit passport control)."},
+      {id:"flight-sk3438",bookingId:"air-main",date:"2026-10-15",flight:"SK3438",op:"Delta (operated)",from:"JFK - New York John F. Kennedy Airport Terminal 4",dep:"7:50 PM",to:"TPA - Tampa International Airport",arr:"11:13 PM",dur:"3h 23m",cabin:"Economy",seats:"27A, 27B",status:"Confirmed",notes:"Check the Delta app for the departure gate. Seat screenshot shows 27A and 27B; traveler order is not identified.",timelineNotes:""}
     ];
 
 
@@ -571,7 +578,8 @@
         {id:"phrase-0208",en:"Herbal tea",it:"Tisana",pr:"tee-ZAH-nah"},
         {id:"phrase-0209",en:"Espresso",it:"Espresso",pr:"eh-SPRES-soh"},
         {id:"phrase-0210",en:"Cappuccino",it:"Cappuccino",pr:"kahp-poo-CHEE-noh"},
-        {id:"phrase-custom-b1f3ca36-15bf-4398-9859-5ace5565255d",en:"Caffè Latte (Coffee With Milk)",it:"Un Caffè Latte",pr:"oon kaf-FEH LAT-teh"},
+        {id:"phrase-custom-b1f3ca36-15bf-4398-9859-5ace5565255d",en:"A Caffè Latte (Coffee With Milk)",it:"Un Caffè Latte",pr:"oon kaf-FEH LAT-teh"},
+        {id:"phrase-custom-d25e83d8-19d9-4b9f-9415-50922e540a97",en:"Maritozzo with Whipped Cream",it:"Maritozzo con la Panna",pr:""},
         {id:"phrase-0211",en:"Smoothie",it:"Frullato",pr:"froo-LAH-toh"}
       ],
       "Shopping": [
@@ -620,7 +628,8 @@
         {id:"phrase-quick-reference-thank-you",en:"Thank you",it:"Grazie",pr:"GRAHT-tsyeh"},
         {id:"phrase-custom-e71f5832-eee6-4984-8a02-14b0f8271663",en:"I Don't Understand",it:"Non Capisco",pr:"non ka-PEE-sko"},
         {id:"phrase-custom-841aad4e-0337-4a1d-a251-ae9794e1b4e4",en:"I'm sorry",it:"Mi dispiace",pr:"mee dee-SPYAH-cheh"},
-        {id:"phrase-custom-d34e56e6-a7fd-4887-8d88-c234ed0aca21",en:"Nice to meet you. I'm David",it:"Piacere, sono David",pr:"pya-CHEH-reh, SOH-noh DAH-veed"}
+        {id:"phrase-custom-d34e56e6-a7fd-4887-8d88-c234ed0aca21",en:"Nice to meet you. I'm David",it:"Piacere, sono David",pr:"pya-CHEH-reh, SOH-noh DAH-veed"},
+        {id:"phrase-custom-4e6ace85-9cd3-4036-be7a-2371f414792d",en:"Permit or May I Pass?",it:"Permesso?",pr:"Per-mess-oh"}
       ]
     };
     Object.entries(PHRASES).forEach(([category,items]) => items.forEach(item => {
@@ -778,13 +787,13 @@ const MAP_DOOR_ROUTES = [
     "start": "14:55",
     "date": "Oct 4",
     "to": "BOS - Boston Logan Airport Terminal E",
-    "mode": "Airport shuttle / walk + TSA",
+    "mode": "Free Massport shuttle / walk + TSA",
     "duration": "45–90 min",
     "link": "https://www.massport.com/logan-airport/getting-to-logan/on-airport-shuttle/",
     "backupLink": "",
     "status": "Verify day-of",
-    "note": "Go directly to Terminal E",
-    "secondaryNote": "",
+    "note": "Updated transfer guide: DL2706 arrives 2:55 PM; shuttle about 3:10–3:25 PM; Terminal E around 3:25–3:35 PM; TSA about 3:45–4:25 PM; reach the SK928 gate by 5:00 PM for its 5:40 PM departure.",
+    "secondaryNote": "Do not collect checked bags in Boston. Re-clear TSA in Terminal E and check live shuttle signs, flight monitors, and gate assignment.",
     "from": "BOS - Boston Logan Airport Terminal A"
   },
   {
@@ -880,31 +889,31 @@ const MAP_DOOR_ROUTES = [
   {
     "order": 11,
     "dateISO": "2026-10-08",
-    "start": "08:00",
+    "start": "11:00",
     "date": "Oct 8",
-    "to": "Roma Termini Train Station",
-    "mode": "Walk - PSA group plan",
-    "duration": "TBD",
+    "to": "Rome train station (confirm with PSA)",
+    "mode": "PSA walk / private-car coordination",
+    "duration": "Meet in hotel lobby at 11:00 AM",
     "link": "https://maps.app.goo.gl/NXvwdAqRMB15Jjh69",
     "backupLink": "",
-    "status": "Pending",
-    "note": "Roma Termini Train Station route is current; final train and exact departure time remain TBD",
-    "secondaryNote": "",
+    "status": "Partial",
+    "note": "Temporary agenda lists an 11:00 AM lobby meet and a 12:05 PM train. It mentions walking and three private cars but does not explain the car plan. PSA transports luggage by truck from the hotel bag drop.",
+    "secondaryNote": "Roma Termini is only the working route; confirm the station and car assignments.",
     "from": "Anantara Palazzo Naiadi Hotel"
   },
   {
     "order": 12,
     "dateISO": "2026-10-08",
-    "start": "12:00",
+    "start": "13:45",
     "date": "Oct 8",
     "to": "W Florence Hotel",
     "mode": "Walk / group transfer",
     "duration": "5–10 min",
     "link": "https://www.google.com/maps/dir/?api=1&origin=Firenze+Santa+Maria+Novella+Train+Station,+Florence,+Italy&destination=W+Florence,+Via+del+Melarancio+1,+Florence,+Italy&travelmode=walking",
     "backupLink": "",
-    "status": "Pending station",
-    "note": "Stay with group until released",
-    "secondaryNote": "",
+    "status": "Partial",
+    "note": "Temporary agenda estimates arrival around 1:45 PM after a 12:05 PM Rome departure and 1 hr 40 min ride. Follow PSA luggage delivery and stay with the group.",
+    "secondaryNote": "Firenze S.M.N. is the working station; confirm the final train details.",
     "from": "Firenze S.M.N. Train Station"
   },
   {
@@ -1373,8 +1382,8 @@ const MAP_VENUES_EVENTS = [
     "address": "Inside Anantara Palazzo Naiadi",
     "link": "https://www.google.com/maps/search/?api=1&query=SEEN+by+Olivier+Rome",
     "access": "Inside the hotel",
-    "note": "Oct. 5, 8:00 PM",
-    "status": "Confirmed"
+    "note": "Temporary PSA agenda: Oct. 5, 7:00–9:00 PM; casual attire. Replace if the official Joe Lynch agenda changes the time or venue.",
+    "status": "Partial"
   },
   {
     "city": "Rome",
@@ -1385,8 +1394,8 @@ const MAP_VENUES_EVENTS = [
     "address": "",
     "link": "https://www.google.com/maps/search/?api=1&query=Villa+Miani+Rome",
     "access": "20–35 min by road from hotel",
-    "note": "Use the group bus; not practical by Metro",
-    "status": "Confirmed / details pending"
+    "note": "Oct. 7 Awards Gala. Meet in the hotel lobby at 5:00 PM; cocktail attire. Use the PSA coach. Return time and coach pickup details are pending.",
+    "status": "Partial"
   },
   {
     "city": "Florence",
@@ -1397,8 +1406,8 @@ const MAP_VENUES_EVENTS = [
     "address": "",
     "link": "https://www.google.com/maps/search/?api=1&query=Giardino+Corsini+al+Prato",
     "access": "15–20 min walk from W Florence",
-    "note": "Walk from the hotel",
-    "status": "Confirmed / details pending"
+    "note": "Oct. 8 dinner per temporary PSA agenda. Walk from W Florence unless PSA says otherwise; dinner time and dress code are not listed.",
+    "status": "Partial"
   }
 ];
 
@@ -1523,7 +1532,7 @@ const MAP_SAVED_PENDING = [
     "due": "Before Oct. 8",
     "status": "Pending",
     "dependency": "Final group agenda",
-    "note": "Need station, train, time, coach, seats, meeting point"
+    "note": "Temporary agenda gives an 11:00 AM lobby meet and 12:05 PM train (about 1 hr 40 min). Confirm station, operator, train number, coach, seats, three-car plan, and luggage drop."
   },
   {
     "priority": "High",
@@ -1553,7 +1562,7 @@ const MAP_SAVED_PENDING = [
     "due": "Before check-in",
     "status": "Pending",
     "dependency": "Seat assignments",
-    "note": "Save airline seat maps/screenshots"
+    "note": "Seats saved for DL2706 (29F/29E), SK928 (27E/27D), SK915 (24G/24H), and SK3438 (27A/27B). SK681 is not shown; keep this item open and retain seat screenshots offline."
   },
   {
     "priority": "Medium",

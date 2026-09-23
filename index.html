@@ -1429,10 +1429,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.14.2",
-      build: "10.14.2",
+      version: "10.14.3",
+      build: "10.14.3",
       backupSchema: 6,
-      lastEdited: "September 13, 2026 at 2:35 PM EDT"
+      lastEdited: "September 23, 2026 at 6:36 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1942,7 +1942,9 @@
       "phrase-custom-6870f416-fbb7-411b-8df2-461bfa0d7d22",
       "phrase-custom-3f36de23-aab2-406b-adfb-ed1ea70f7e5a",
       "phrase-custom-e71f5832-eee6-4984-8a02-14b0f8271663",
-      "phrase-custom-b1f3ca36-15bf-4398-9859-5ace5565255d"
+      "phrase-custom-b1f3ca36-15bf-4398-9859-5ace5565255d",
+      "phrase-custom-d25e83d8-19d9-4b9f-9415-50922e540a97",
+      "phrase-custom-4e6ace85-9cd3-4036-be7a-2371f414792d"
     ]);
     function phraseBaseById(id) { return Object.values(PHRASES).flat().find(item=>item.id===id); }
     function normalizePhraseCatalogData(obj) {
@@ -2889,7 +2891,20 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     function liveFlights() {
       const live = getLive();
       const edits = live.flights || {};
-      return FLIGHTS.map(f => edits[f.id] ? { ...f, ...edits[f.id], id:f.id, bookingId:f.bookingId } : { ...f });
+      return FLIGHTS.map(f => {
+        const merged = edits[f.id] ? { ...f, ...edits[f.id], id:f.id, bookingId:f.bookingId } : { ...f };
+        // Old phone notes may repeat seat assignments; show canonical seats and retain
+        // any payment note without writing changes back to either phone.
+        if (f.seats && merged.notes) {
+          const seatLine = merged.notes.match(/(?:^|\n)\s*Seats?\s+([^\n]*)$/i);
+          if (seatLine) {
+            const payment = seatLine[1].match(/paid\s+\$[\d,.]+\s+on\s+\d{1,2}\/\d{1,2}/i)?.[0];
+            const before = merged.notes.slice(0, seatLine.index).trim();
+            merged.notes = [before, payment ? `Seat assignment payment: ${payment}.` : ""].filter(Boolean).join("\n");
+          }
+        }
+        return merged;
+      });
     }
 
     function flightById(id) {
@@ -2926,7 +2941,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         mode:`Flight ${f.flight}`,
         time:f.dur,
         status:f.status || "Confirmed",
-        instructions:[f.cabin, f.notes].filter(Boolean).join(" · "),
+        instructions:[f.cabin, f.seats ? `Seats ${f.seats}` : "", f.notes].filter(Boolean).join(" · "),
         notes:f.timelineNotes || ""
       };
     }
@@ -4741,6 +4756,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     }
 
     const TRAVEL_GUIDES_BY_ID = Object.freeze({
+      "travel-6":[
+        {src:"assets/guides/boston-terminal-a-to-e.png",title:"Boston Terminal A → E transfer guide",verified:"Sep 23, 2026",note:"Updated guide timings: shuttle about 3:10–3:25 PM, Terminal E around 3:25–3:35 PM, TSA about 3:45–4:25 PM. Reach the SK928 gate by 5:00 PM for the 5:40 PM departure."}
+      ],
       "travel-8":[
         {src:"assets/guides/cph-connection-guide-outbound.png",title:"CPH Outbound Connection Guide",verified:"Sep 13, 2026"},
         {src:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide · PDF",secondary:true,verified:"Sep 13, 2026"}
@@ -4758,6 +4776,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       "travel-50":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide",verified:"Sep 13, 2026"}]
     });
     const MAP_GUIDE_LIBRARY = Object.freeze([
+      {src:"assets/guides/boston-terminal-a-to-e.png",title:"Boston Terminal A → E transfer guide",category:"Oct 4 · Airport connection",verified:"Sep 23, 2026",note:"Updated guide timings: shuttle about 3:10–3:25 PM, Terminal E around 3:25–3:35 PM, TSA about 3:45–4:25 PM. Reach the SK928 gate by 5:00 PM for the 5:40 PM departure."},
       {src:"assets/guides/cph-connection-guide-outbound.png",pdf:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide",category:"Oct 5 · Airport connection",verified:"Sep 13, 2026"},
       {gallery:[
         {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1"},
@@ -4777,7 +4796,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         ? `<button type="button" class="link-btn guide-secondary" onclick='openPdfViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>📄 Open PDF version →</button>`
         : `<button type="button" class="link-btn" onclick='openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>🖼️ Open ${escapeHtml(guide.title)}</button>`).join("");
       const verified=guides.find(guide=>guide.verified)?.verified;
-      return buttons + (verified ? `<div class="text-xs text-muted" style="width:100%;margin-top:5px;">Last Verified: ${escapeHtml(verified)}</div>` : "");
+      const note=guides.find(guide=>guide.note)?.note;
+      return buttons + (note ? `<div class="text-xs" style="width:100%;margin-top:5px;color:var(--danger,#b42318);">${escapeHtml(note)}</div>` : "") + (verified ? `<div class="text-xs text-muted" style="width:100%;margin-top:5px;">Last Verified: ${escapeHtml(verified)}</div>` : "");
     }
 
     function travelRouteBlock(from, start, to, end) {
@@ -5497,6 +5517,11 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     function renderMaps() {
       setMapsSection("mapsFeaturedGuides", `
         <div class="maps-feature-card">
+          <h3>✈️ Boston Terminal A → E</h3>
+          <p>Free Massport shuttle; exit security, transfer to Terminal E, then re-clear TSA. The updated guide targets Terminal E around 3:25–3:35 PM, TSA by about 4:25 PM, and the gate by 5:00 PM for the 5:40 PM SK928 departure.</p>
+          <button type="button" class="link-btn" onclick='openImageViewer("assets/guides/boston-terminal-a-to-e.png","Boston Terminal A → E transfer guide · DL2706 / SK928")'>Open guide →</button>
+        </div>
+        <div class="maps-feature-card">
           <h3>✈️ Copenhagen connection</h3>
           <p>Outbound CPH transfer steps, passport control, and the short connection plan.</p>
           <button type="button" class="link-btn" onclick='openImageViewer("assets/guides/cph-connection-guide-outbound.png","CPH Outbound Connection Guide")'>Open guide →</button>
@@ -5521,6 +5546,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           <div class="text-xs text-muted">${escapeHtml(guide.category)}</div>
           <h3>${escapeHtml(guide.title)}</h3>
           ${guide.verified ? `<div class="text-xs text-muted" style="margin:-4px 0 8px;">Last Verified: ${escapeHtml(guide.verified)}</div>` : ""}
+          ${guide.note ? `<p style="color:var(--danger,#b42318);">${escapeHtml(guide.note)}</p>` : ""}
           ${guide.gallery ? `<div class="quick-action-row guide-gallery-links">${guide.gallery.map((page,index)=>`<button type="button" class="link-btn" onclick='openImageGallery(${JSON.stringify(guide.gallery)},${index})'>🖼️ Open ${escapeHtml(page.title.replace(guide.title+" · ",""))} →</button>`).join("")}</div>` : `<button type="button" class="link-btn" onclick='openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>🖼️ Open guide →</button>`}
           ${guide.pdf ? `<button type="button" class="link-btn map-secondary-btn" onclick='openPdfViewer(${JSON.stringify(guide.pdf)},${JSON.stringify(`${guide.title} · PDF`)})'>📄 PDF / print version</button>` : ""}
         </div>`).join(""));
