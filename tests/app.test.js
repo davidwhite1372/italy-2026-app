@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.14.2");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.14.2");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.14.3");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.14.3");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 13, 2026 at 2:35 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 23, 2026 at 6:46 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -275,12 +275,32 @@ test("every shared travel item uses controlled purpose and transportation values
   t.after(() => app.dom.window.close());
   const { window } = app;
 
-  assert.equal(window.eval("SHARED_TRAVEL_ITEMS.length"), 43);
+  assert.equal(window.eval("SHARED_TRAVEL_ITEMS.length"), 46);
   assert.equal(window.eval("SHARED_TRAVEL_ITEMS.every(item => ITEM_TYPE_OPTIONS.includes(item.itemType))"), true);
   assert.equal(window.eval("SHARED_TRAVEL_ITEMS.every(item => TRANSPORTATION_OPTIONS.includes(item.transportation))"), true);
   assert.equal(window.eval("TIMELINE.every(item => ITEM_TYPE_OPTIONS.includes(item.itemType))"), true);
   assert.equal(window.eval("TIMELINE.every(item => TRANSPORTATION_OPTIONS.includes(item.transportation))"), true);
   assert.equal(window.eval("liveTrains().every(item => item.itemType === 'Transfer' && item.transportation === 'Train')"), true);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("updated flight seats and Boston transfer guide match the supplied records", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const { window } = app;
+  const seats = JSON.parse(window.eval(`JSON.stringify(Object.fromEntries(liveFlights().filter(f=>f.seats).map(f=>[f.flight,f.seats])))`));
+  assert.deepEqual(seats, {
+    DL2706:"29F, 29E",
+    SK928:"27E, 27D",
+    SK915:"24G, 24H",
+    SK3438:"27A, 27B"
+  });
+  assert.equal(window.eval("OPEN_ITEMS.find(item=>item.id==='open-0006').item"), "Confirm remaining flight seat for SK681");
+  const boston = window.eval("MAP_GUIDE_LIBRARY.find(guide=>guide.src==='assets/guides/boston-terminal-a-to-e.png')");
+  assert.ok(boston);
+  assert.match(boston.note, /5:40 PM/);
+  window.showPage("maps");
+  assert.match(window.document.querySelector("#mapsFeaturedGuides").textContent, /3:45–4:25 PM/);
   assert.deepEqual(app.runtimeErrors, []);
 });
 
@@ -553,14 +573,15 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
   assert.match(document.querySelector("#mapsGuideFilters").textContent, /Key trip guides/);
   assert.match(document.querySelector("#page-maps").textContent, /Key Trip Guides/);
   assert.match(document.querySelector("#mapsFeaturedGuides").textContent, /Copenhagen connection[\s\S]*FCO arrival[\s\S]*Venice Vaporetto map/);
-  assert.equal(document.querySelectorAll("#mapsFeaturedGuides button").length, 5);
+  assert.equal(document.querySelectorAll("#mapsFeaturedGuides button").length, 6);
   assert.match(document.querySelector("#mapsFeaturedGuides").innerHTML, /venice-vaporetto-map-2026\.png/);
   assert.match(document.querySelector("#mapsFeaturedGuides").innerHTML, /cph-connection-guide-outbound\.png/);
   assert.equal(document.querySelector(`#mapsFeaturedGuides a[href="https://cphsecuritywait.dk/en/passport-control"]`)?.textContent.trim(), "Live passport wait times →");
   assert.equal(document.querySelector(`#mapsAirports a[href="https://cphsecuritywait.dk/en/passport-control"]`)?.textContent.trim(), "Passport wait times →");
   const libraryCards=[...document.querySelectorAll("#mapsGuideLibrary .maps-feature-card")];
-  assert.equal(libraryCards.length, 9);
+  assert.equal(libraryCards.length, 10);
   assert.deepEqual(libraryCards.map(card=>card.querySelector("h3").textContent),[
+    "Boston Terminal A → E transfer guide",
     "CPH Outbound Connection Guide",
     "FCO Arrival → Train Station",
     "Laundry King Florence Guide",
@@ -571,7 +592,7 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
     "Toilets in Italy · Survival Guide",
     "Luggage Lock Instructions"
   ]);
-  const fcoCard=libraryCards[1];
+  const fcoCard=libraryCards.find(card=>card.querySelector("h3").textContent==="FCO Arrival → Train Station");
   assert.equal(fcoCard.querySelectorAll(".guide-gallery-links .link-btn").length,2);
   assert.equal(fcoCard.querySelectorAll(".guide-gallery img").length,0);
   assert.match(fcoCard.querySelector(".guide-gallery-links").innerHTML,/fco-arrival-to-train-1\.png/);
@@ -727,8 +748,8 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   const { window } = app;
 
   const travel=JSON.parse(window.eval("JSON.stringify(SHARED_TRAVEL_ITEMS)"));
-  assert.equal(travel.find(item=>item.id==="travel-17").status,"Confirmed");
-  assert.equal(travel.find(item=>item.id==="travel-19").status,"Confirmed");
+  assert.equal(travel.find(item=>item.id==="travel-17").status,"Partial");
+  assert.equal(travel.find(item=>item.id==="travel-19").status,"Partial");
   assert.equal(travel.find(item=>item.id==="travel-13").itemType,"Event");
   assert.equal(travel.find(item=>item.id==="travel-27").itemType,"Meal");
   assert.equal(travel.find(item=>item.id==="travel-27").transportation,"Walk");
@@ -811,9 +832,9 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"10.14.2");
+  assert.equal(payload.appVersion,"10.14.3");
   assert.equal(payload.referenceNotesMode,"delta");
-  assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
+  assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{transportationDetails:"Train",notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
   assert.deepEqual(payload.routeedits,{});
   assert.deepEqual(payload.packcatalog,{edits:{},custom:{},deleted:{}});
@@ -851,7 +872,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.14.2");
+  assert.equal(payload.appVersion, "10.14.3");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -870,15 +891,15 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.14.2");
-  assert.match(manifest.description,/Version 10\.14\.2/);
-  assert.match(worker,/v10-14-2-stabilization/);
-  ["fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png"].forEach(name=>{
+  assert.equal(packageData.version,"10.14.3");
+  assert.match(manifest.description,/Version 10\.14\.3/);
+  assert.match(worker,/v10-14-3-data-update/);
+  ["boston-terminal-a-to-e.png","fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
   });
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
-    timeline:49,restaurants:67,attractions:15,reservations:10,budget:18,packing:74,open:13
+    timeline:52,restaurants:67,attractions:15,reservations:10,budget:18,packing:74,open:14
   });
   Object.values(counts).forEach(ids=>{
     assert.equal(ids.every(Boolean),true);
@@ -941,10 +962,11 @@ test("offline application shell lists every required local asset", () => {
     "./assets/comfort/venice-restrooms.jpg",
     "./assets/tides/san-marco.png",
     "./assets/tides/rialto.png",
-    "./assets/tides/santa-lucia.png"
+    "./assets/tides/santa-lucia.png",
+    "./assets/guides/boston-terminal-a-to-e.png"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v10-14-2-stabilization/);
+  assert.match(worker, /italy-2026-github-v10-14-3-data-update/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);
