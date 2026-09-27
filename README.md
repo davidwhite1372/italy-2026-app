@@ -4,13 +4,13 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 
 ## Current development build
 
-**Version 10.14.8 - SAS seat-selection budget**
+**Version 10.14.9 - Florence arrival and Timeline day filter**
 
-Version 10.14.8 records four paid SAS advance seat-selection receipts as a $260 flight cost. It retains the 10.14.7 camera guide, Oct. 8 Rome–Florence train timeline, and other reviewed develop updates; backup schema 6 is unchanged.
+Version 10.14.9 orders the Oct. 8 Florence arrival steps, adds station-to-W Florence walking instructions and the hotel's published 3:00 PM check-in, and adds a small day selector to the existing Timeline filters. It retains the $260 SAS seat-selection budget item and other reviewed develop updates; backup schema 6 is unchanged.
 
 Version 10.12.0 included the Timeline and Travel Details corrections, receipt sourced expenses, work expense report tracking, CPH and Venice offline guides, the Quick Guides & Maps page, Italian phrase playback, Google Translate access, separate Favorite and Want to try restaurant states, corrected sticky headers, expanded note editing, and the reviewed phone-data reconciliation while retaining schema 6 compatibility.
 
-Version 10.14.7 is the previous release. Version 10.14.8 is developed and tested on `develop` before its approved merge to `main`.
+Version 10.14.8 is the previous release. Version 10.14.9 is developed and tested on `develop` before its approved merge to `main`.
 
 Production remains on the stable `main` branch. New work is developed and tested on `develop` before release.
 
@@ -20,7 +20,7 @@ User-entered information is currently stored locally in each browser or installe
 
 - Export a fresh backup before changing devices, clearing browser data, or reinstalling the app.
 - Backup schema numbers describe file compatibility; they are separate from the app version.
-- Version 10.14.8 creates schema 6 backups and continues to import schema 5, schema 4, and older supported backups automatically.
+- Version 10.14.9 creates schema 6 backups and continues to import schema 5, schema 4, and older supported backups automatically.
 - Version 11 will evaluate authorized shared cloud data while retaining offline support and manual backups.
 
 ## Publishing

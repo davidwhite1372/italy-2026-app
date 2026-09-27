@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 10.14.9 — September 27, 2026
+- Ordered the Oct. 8 Florence arrival as train (12:05–1:45 PM), station-to-hotel walk (about 1:45–1:55 PM), then W Florence check-in from 3:00 PM.
+- Added the missing station-to-W Florence walking instructions while keeping Firenze S.M.N. and the PSA arrival transfer visibly provisional until confirmed.
+- Added a compact Show day dropdown to the existing Timeline filters; all days remains the default and the existing layout and mode/status filters remain in place.
+- Kept backup schema 6 unchanged.
+
 ## Version 10.14.8 — September 27, 2026
 - Added the four paid SAS advance seat-selection receipts to the budget as a $260 flight cost, with the traveler, segment, and EMD breakdown.
 - Preserved the Oct. 8 PSA train timeline split and the rest of the 10.14.7 develop updates; backup schema remains 6.

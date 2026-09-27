@@ -1,13 +1,20 @@
-ITALY 2026 TRAVEL APP - GITHUB PAGES DEPLOYMENT
-Current development line: Version 10.14.6
-
-GitHub Pages publishes the main branch from the repository root.
-Make and test changes on develop, then merge an approved release into main.
-
-IMPORTANT:
-- Keep index.html, data.js, manifest.json, sw.js, and .nojekyll in the repository root.
-- Do not upload a ZIP file as the website content.
-- Do not include a local .git directory in replacement-file ZIP packages.
-- Tag each tested main-branch release so it can be restored if needed.
+ITALY 2026 TRAVEL APP — DEVELOP / GITHUB PAGES WORKFLOW
+Current develop package: Version 10.14.9
 
 Production URL: https://davidwhite1372.github.io/italy-2026-app/
+GitHub Pages publishes the main branch from the repository root. Work on develop first; publish only after the develop checks pass and the release is approved.
+
+AT THE START OF EVERY APP WORK SESSION
+- Local checkout: confirm the working tree is clean, then run `git checkout develop` and `git pull --ff-only origin develop` before editing.
+- If the working tree has uncommitted work, preserve and review it before pulling; never overwrite or discard it to sync.
+- GitHub web workflow: choose `develop` in the branch selector and verify its latest commit before making changes. Do not edit `main` during development.
+
+PACKAGE AND FILE CHANGES
+- The review ZIP is a complete app snapshot, not a patch. It contains unchanged files too. Extract it before uploading; do not upload the ZIP as website content.
+- Report the exact changed files separately from the ZIP's full file list. Upload only the changed files to the matching repository paths unless deliberately replacing the complete repository snapshot.
+- Keep `index.html`, `data.js`, `manifest.json`, `sw.js`, and `.nojekyll` in the repository root. Do not include a local `.git` directory in replacement ZIP packages.
+
+COMMIT, PUSH, AND RELEASE
+- Every handoff must include a ready-to-use commit title, a description/body, and the exact develop push/test instructions.
+- Commit and push the approved changes to `develop` first. Wait for GitHub Actions to pass before merging `develop` into `main`.
+- Tag each tested main-branch release so it can be restored if needed.

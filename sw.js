@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-14-8-sas-seats-budget';
+const CACHE = 'italy-2026-github-v10-14-9-florence-timeline';
 const APP_SHELL = [
   './',
   './index.html',

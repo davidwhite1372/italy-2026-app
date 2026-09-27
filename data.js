@@ -62,7 +62,7 @@
         phrase: "Qual è il codice di abbigliamento? — What is the dress code?",
         checklist: ["Dress clothes","Coach time","Event credentials","Phone","Room key"] },
       { date: "2026-10-08", theme: "Rome to Florence", city: "Florence", hotel: "W Florence",
-        schedule: "11:00 AM: meet in the hotel lobby and complete the group luggage drop. 12:05 PM: Rome–Florence train departs; ride is about 1 hour 40 minutes, arriving around 1:45 PM. Check in at W Florence; dinner is at Giardino Corsini al Prato.",
+        schedule: "11:00 AM: meet in the hotel lobby and complete the group luggage drop. 12:05 PM: Rome–Florence train departs; ride is about 1 hour 40 minutes, arriving around 1:45 PM. Walk to W Florence (about 5–10 minutes from Firenze S.M.N., the working station assumption). Hotel check-in begins at 3:00 PM. Dinner is at Giardino Corsini al Prato.",
         transport: "The group walks to the train station. PSA moves luggage by truck from the hotel bag drop; the instructions also mention three private cars. PSA handles all arrangements.",
         dining: "No lunch is provided; eat breakfast or bring snacks. Dinner at Giardino Corsini; exact time and transport are not listed.",
         tip: "The train number and coach details are not needed for this PSA-managed group transfer. The final agenda is still pending for other event details.",
@@ -138,7 +138,7 @@
       { id:"tl-0016", travelId:"travel-16", date:"2026-10-07", start:"07:00", end:"15:00", itemType:"Tour", title:"Rome tour options and free time", from:"Anantara Palazzo Naiadi", to:"Assigned Rome tour", mode:"PSA tour transport", time:"Tour schedule varies", status:"Partial", instructions:"Temporary agenda lists Papal Rome leaving 7:15 AM (lobby by 7:00; dress code required). Imperial Rome, Ciao Rome, and Upside Down Rome times are still being confirmed. Tours run rain or shine.", notes:"Breakfast 7:00–11:00 AM; lunch is on your own. Follow only the assigned tour." },
       { id:"tl-0017", travelId:"travel-17", date:"2026-10-08", start:"11:00", end:"", itemType:"Transfer", title:"11:00 AM group meeting & luggage drop → Rome train station", from:"Anantara Palazzo Naiadi Hotel", to:"Rome train station (PSA-managed)", mode:"Walk / PSA group transport", time:"11:00 AM meeting and group luggage drop", status:"Confirmed", instructions:"Meet at 11:00 AM in the hotel lobby and complete the group luggage drop. Walk to the train station with the group. PSA moves bags by truck from the hotel bag drop; the instructions also mention three private cars. PSA handles all arrangements.", notes:"PSA manages the group transfer. The final agenda has not arrived, but no train number or coach detail is needed for this leg." },
       { id:"tl-0018", travelId:"travel-18", date:"2026-10-08", start:"12:05", end:"13:45", itemType:"Train", title:"Rome → Florence PSA group train", from:"Rome train station (PSA-managed)", to:"Florence train station (PSA-managed)", mode:"PSA group train", time:"1 hr 40 min", status:"Confirmed", instructions:"The train departs Rome at 12:05 PM and takes about 1 hour 40 minutes, arriving in Florence around 1:45 PM. PSA arranges the group train and related transfers; no train number or coach detail is needed.", notes:"No lunch is provided. Eat breakfast or bring snacks. PSA handles the arrangements; the final agenda is still pending for other event details." },
-      { id:"tl-0019", travelId:"travel-19", date:"2026-10-08", start:"Day", end:"", itemType:"Walk", title:"Firenze S.M.N. Train Station → W Florence Hotel", from:"Firenze S.M.N. Train Station", to:"W Florence Hotel", mode:"Walk", time:"5-10 min", status:"Partial", instructions:"Firenze S.M.N. is the working assumption. Stay with group and follow PSA instructions to W Florence, Via del Melarancio 1.", notes:"Confirm station and arrival transfer with PSA." },
+      { id:"tl-0019", travelId:"travel-19", date:"2026-10-08", start:"13:45", end:"13:55", itemType:"Walk", title:"Firenze S.M.N. Train Station → W Florence Hotel", from:"Firenze S.M.N. Train Station", to:"W Florence Hotel", mode:"Walk", time:"5–10 min", status:"Partial", instructions:"After arriving around 1:45 PM, leave Firenze S.M.N. through the main exit toward Piazza della Stazione. Follow the linked walking route toward Piazza dell’Unità Italiana and Via del Melarancio 1 (W Florence). Stay with the group and follow PSA directions if they provide a different arrival transfer.", notes:"Firenze S.M.N. is the working station assumption. Confirm the station and arrival transfer with PSA." },
       { id:"tl-0020", travelId:"travel-20", date:"2026-10-08", start:"Evening", end:"", itemType:"Event", title:"Dinner at Giardino Corsini al Prato", from:"W Florence", to:"Giardino Corsini al Prato", mode:"Walk", time:"15–20 min walk", status:"Partial", instructions:"The temporary PSA agenda lists dinner at Giardino Corsini. Walk from W Florence unless the official agenda provides group transport.", notes:"No dinner details are confirmed yet. The temporary agenda listing is provisional until the official agenda arrives." },
       { id:"tl-0021", travelId:"travel-21", date:"2026-10-09", start:"Morning", end:"17:30", itemType:"Tour", title:"Florence morning activities and free time", from:"W Florence", to:"Assigned Florence activities", mode:"Walk / PSA transport", time:"Morning activities; afternoon free", status:"Partial", instructions:"Temporary PSA agenda: breakfast on your own, morning activities and tours, then free time. Follow the assigned event details when available.", notes:"Meet in the hotel lobby at 6:00 PM for dine-around dinner; listed restaurants are walkable from the hotel." },
       { id:"tl-0022", travelId:"travel-22", date:"2026-10-10", start:"08:15", end:"08:30", itemType:"Walk", title:"W Florence Hotel → Firenze S.M.N. Train Station", from:"W Florence Hotel", to:"Firenze S.M.N. Train Station", mode:"Walk", time:"5-10 min + buffer", status:"Confirmed", instructions:"Check out, retrieve luggage, walk to station. Allow extra time for Club Executive boarding.", notes:"Ticket EM7VNB; train departs 9:39 AM." },
@@ -172,6 +172,7 @@
       { id:"tl-0051", travelId:"travel-51", date:"2026-10-06", start:"18:15", end:"", itemType:"Event", title:"Meet in lobby for Rome dine-around dinner", from:"Anantara Palazzo Naiadi", to:"Rome restaurant (assignment TBD)", mode:"Walk / group plan", time:"Meet at 6:15 PM", status:"Partial", instructions:"The temporary PSA agenda says to meet in the hotel lobby at 6:15 PM. Restaurant assignment and return plan are not listed.", notes:"Replace these details when the official agenda arrives." },
       { id:"tl-0052", travelId:"travel-52", date:"2026-10-07", start:"17:00", end:"", itemType:"Event", title:"Meet in lobby → Villa Miani Awards Gala", from:"Anantara Palazzo Naiadi", to:"Villa Miani", mode:"PSA group coach", time:"Meet at 5:00 PM", status:"Partial", instructions:"Cocktail attire. Use the PSA group coach; the temporary agenda gives the lobby meeting time but not the coach return time.", notes:"Confirm coach pickup and return details in the official agenda." },
       { id:"tl-0053", travelId:"travel-53", date:"2026-10-09", start:"18:00", end:"", itemType:"Event", title:"Meet in lobby for Florence dine-around dinner", from:"W Florence", to:"Florence restaurant (assignment TBD)", mode:"Walk", time:"Meet at 6:00 PM", status:"Partial", instructions:"The temporary PSA agenda says to meet in the hotel lobby at 6:00 PM. Dinner locations are walkable from W Florence.", notes:"Restaurant assignment is not listed; replace with the official agenda when received." },
+      { id:"tl-0054", travelId:"travel-54", date:"2026-10-08", start:"15:00", end:"", itemType:"Hotel / Check-in", title:"W Florence check-in", from:"W Florence lobby", to:"W Florence guest room", mode:"Hotel check-in", time:"Check-in begins at 3:00 PM", status:"Confirmed", instructions:"Check in at the front desk when rooms are available. If you arrive before 3:00 PM, ask the desk about early room access and luggage handling; PSA room-specific details remain outstanding.", notes:"W Florence publishes a 3:00 PM check-in time. The hotel stay is event-provided." },
     ];
 
 
@@ -230,7 +231,8 @@
       "tl-0050": {itemType:"Transfer",transportation:"Bus / Coach"},
       "tl-0051": {itemType:"Event",transportation:"Walk"},
       "tl-0052": {itemType:"Event",transportation:"Bus / Coach"},
-      "tl-0053": {itemType:"Event",transportation:"Walk"}
+      "tl-0053": {itemType:"Event",transportation:"Walk"},
+      "tl-0054": {itemType:"Hotel / Check-in",transportation:"None / Not applicable"}
     });
     TIMELINE.forEach(item => Object.assign(item, TIMELINE_CLASSIFICATION[item.id] || {
       itemType:"Information", transportation:"Other"
@@ -263,7 +265,7 @@
     const RESERVATIONS = [
       {id:"reservation-0001", item:"Air reservation", provider:"Delta / SAS", conf:"H9BVBD / GQMVQK / AZ3BUA", dates:"Oct 4–15", status:"Confirmed", notes:"Master H9BVBD · Delta GQMVQK · SAS AZ3BUA · Store PDFs offline on both phones" },
       {id:"reservation-0002", item:"Rome hotel", hotelId:"hotel-rome-anantara", provider:"Anantara Palazzo Naiadi", conf:"Event-provided", dates:"Oct 5–8", status:"Confirmed", notes:"PSA-provided stay; no additional hotel confirmation number is available as of Sep. 27. Room-specific confirmation and check-in details are still outstanding." },
-      {id:"reservation-0003", item:"Florence hotel", hotelId:"hotel-florence-w", provider:"W Florence", conf:"Event-provided", dates:"Oct 8–10", status:"Confirmed", notes:"PSA-provided stay; no additional hotel confirmation number is available as of Sep. 27. Room-specific confirmation and breakfast details are still outstanding." },
+      {id:"reservation-0003", item:"Florence hotel", hotelId:"hotel-florence-w", provider:"W Florence", conf:"Event-provided", dates:"Oct 8–10", status:"Confirmed", notes:"PSA-provided stay; no additional hotel confirmation number is available as of Sep. 27. W Florence publishes check-in from 3:00 PM; room-specific confirmation and breakfast details are still outstanding." },
       {id:"reservation-0004", item:"Rome to Florence train", provider:"PSA group travel", conf:"PSA-managed group transfer", dates:"Oct 8", status:"Confirmed", notes:"Meet at 11:00 AM in the hotel lobby for the group luggage drop, then walk to the train station. PSA moves luggage by truck from the hotel bag drop; three private cars are also mentioned. The train departs at 12:05 PM, takes about 1 hr 40 min, and arrives around 1:45 PM. No lunch; eat breakfast or bring snacks. PSA handles all arrangements; train number and coach details are not needed." },
       {id:"reservation-0005", item:"Possible PSA Florence-to-Venice group transfer", provider:"PSA", conf:"Event-provided", dates:"Oct 10", status:"Alternative", notes:"Possible backup only. Italo 8904 Club Executive remains the confirmed primary plan." },
       {id:"reservation-0006", item:"Italo Florence-to-Venice ticket", provider:"Italo", conf:"EM7VNB / Rec. 118932941", dates:"Oct 10", status:"Confirmed", notes:"Primary plan: Italo 8904, 9:39–11:55 AM; Club Executive; Coach 1 seats 13 & 16; €177.76. Cancel only if the final PSA group transfer becomes clearly preferable." },
@@ -418,7 +420,7 @@
     // Master hotel records. All hotel views read from these records.
     const HOTELS = [
       {id:"hotel-rome-anantara",city:"Rome",name:"Anantara Palazzo Naiadi",aliases:["Anantara Palazzo Naiadi Hotel"],checkIn:"2026-10-05",checkOut:"2026-10-08",dates:"Oct 5–8",conf:"Event-provided",status:"Confirmed",address:"Piazza della Repubblica 48-49",room:"Event-provided room",payment:"Provided by PSA / Joe Lynch program",tax:"Confirm with hotel",breakfast:"Confirm program inclusions",notes:"Need final room confirmation and check-in details.",maps:"https://www.google.com/maps/search/?api=1&query=Anantara+Palazzo+Naiadi+Rome"},
-      {id:"hotel-florence-w",city:"Florence",name:"W Florence",aliases:["W Florence Hotel"],checkIn:"2026-10-08",checkOut:"2026-10-10",dates:"Oct 8–10",conf:"Event-provided",status:"Confirmed",address:"Via del Melarancio 1",room:"Event-provided room",payment:"Provided by PSA / Joe Lynch program",tax:"Confirm with hotel",breakfast:"Confirm breakfast details",notes:"Need final room confirmation and breakfast details.",maps:"https://www.google.com/maps/search/?api=1&query=W+Florence+Via+del+Melarancio+1"},
+      {id:"hotel-florence-w",city:"Florence",name:"W Florence",aliases:["W Florence Hotel"],checkIn:"2026-10-08",checkOut:"2026-10-10",dates:"Oct 8–10",conf:"Event-provided",status:"Confirmed",address:"Via del Melarancio 1",room:"Event-provided room",payment:"Provided by PSA / Joe Lynch program",tax:"Confirm with hotel",breakfast:"Confirm breakfast details",notes:"Published hotel check-in begins at 3:00 PM. Need final room confirmation and breakfast details.",maps:"https://www.google.com/maps/search/?api=1&query=W+Florence+Via+del+Melarancio+1"},
       {id:"hotel-venice-jw",city:"Venice",name:"JW Marriott Venice Resort & Spa",aliases:["JW Marriott Venice","JW Venice","JW Marriott Venice Resort & Spa Hotel"],checkIn:"2026-10-10",checkOut:"2026-10-13",dates:"Oct 10–13",conf:"Event-provided",status:"Confirmed",address:"Sacca Sessola Laguna di, 30133 Venezia VE, Italy",room:"Event-provided room",payment:"Provided by PSA / Joe Lynch program",tax:"Confirm with hotel",breakfast:"Confirm program inclusions",notes:"Confirm room details, island shuttle schedule, and transfer from central Venice.",maps:"https://www.google.com/maps/search/?api=1&query=Sacca+Sessola+Laguna+di%2C+30133+Venezia+VE%2C+Italy"},
       {id:"hotel-venice-antiche",city:"Venice",name:"Hotel Antiche Figure",aliases:["Antiche Figure"],checkIn:"2026-10-13",checkOut:"2026-10-15",dates:"Oct 13–15",conf:"PO55JT57ZW",status:"Confirmed / Pay Later",address:"Santa Croce 686, Fondamenta San Simeon Piccolo",room:"Superior Double",payment:"€620 due 7 days before via payment link",tax:"€16 city tax on site",breakfast:"Breakfast and gluten-free breakfast included",notes:"Free cancellation until 5 days before arrival.",maps:"https://www.google.com/maps/search/?api=1&query=Hotel+Antiche+Figure+Venice"}
     ];
@@ -907,6 +909,7 @@ const MAP_DOOR_ROUTES = [
     "order": 12,
     "dateISO": "2026-10-08",
     "start": "13:45",
+    "end": "13:55",
     "date": "Oct 8",
     "to": "W Florence Hotel",
     "mode": "Walk / group transfer",
@@ -914,8 +917,8 @@ const MAP_DOOR_ROUTES = [
     "link": "https://www.google.com/maps/dir/?api=1&origin=Firenze+Santa+Maria+Novella+Train+Station,+Florence,+Italy&destination=W+Florence,+Via+del+Melarancio+1,+Florence,+Italy&travelmode=walking",
     "backupLink": "",
     "status": "Partial",
-    "note": "Temporary agenda estimates arrival around 1:45 PM after a 12:05 PM Rome departure and 1 hr 40 min ride. Follow PSA luggage delivery and stay with the group.",
-    "secondaryNote": "Firenze S.M.N. is the working station; confirm the final train details.",
+    "note": "From Firenze S.M.N., leave through the main exit toward Piazza della Stazione. Follow the linked walking route toward Piazza dell’Unità Italiana and Via del Melarancio 1 (W Florence). Stay with the group and follow PSA directions if they provide a different arrival transfer.",
+    "secondaryNote": "Estimated hotel arrival is 1:50–1:55 PM after the train's 1:45 PM arrival and a 5–10 minute walk. Firenze S.M.N. is the working station assumption; confirm the station/transfer with PSA. W Florence check-in begins at 3:00 PM.",
     "from": "Firenze S.M.N. Train Station"
   },
   {
@@ -1349,7 +1352,7 @@ const MAP_HOTELS = [
     "address": "Via del Melarancio 1, Florence",
     "link": "https://www.google.com/maps/search/?api=1&query=W+Florence",
     "access": "5–10 min walk from S.M.N.",
-    "note": "PSA-provided group stay. No additional hotel confirmation number is available as of Sep. 27; room-specific confirmation, breakfast, and luggage-storage details remain outstanding.",
+    "note": "PSA-provided group stay. No additional hotel confirmation number is available as of Sep. 27. W Florence publishes check-in from 3:00 PM; room-specific confirmation, breakfast, and luggage-handling details remain outstanding.",
     "status": "Confirmed"
   },
   {
