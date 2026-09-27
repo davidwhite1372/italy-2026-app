@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.14.10");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.14.10");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.14.11");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.14.11");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 27, 2026 at 1:43 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 27, 2026 at 2:38 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -221,7 +221,45 @@ test("Oct 8 PSA-managed group train moves out of pending without inventing a tra
   window.document.querySelector("#timelineDayFilter").dispatchEvent(new window.Event("change",{bubbles:true}));
   const oct8Cards=[...window.document.querySelectorAll("#timelineList .tl-step[data-timeline-id]")].map(card=>card.dataset.timelineId);
   assert.ok(oct8Cards.indexOf("tl-0055")<oct8Cards.indexOf("tl-0017"));
+  assert.ok(oct8Cards.indexOf("tl-0017")<oct8Cards.indexOf("tl-0018"));
+  assert.ok(oct8Cards.indexOf("tl-0018")<oct8Cards.indexOf("tl-0019"));
+  assert.ok(oct8Cards.indexOf("tl-0019")<oct8Cards.indexOf("tl-0054"));
+  const trainTimelineCard=window.document.querySelector('#timelineList .tl-step[data-timeline-id="tl-0018"]');
+  assert.match(trainTimelineCard.textContent,/12:05 PM–1:45 PM/);
   assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("stale phone train overrides cannot replace confirmed PSA time or order", async t => {
+  const app=await bootApp({
+    italy2026_live:{
+      trains:{"1":{dep:"Morning",arr:"",dur:"Approx. 5 hr group travel window",notes:"Keep this unrelated phone note."}},
+      timeline:{"tl-0018":{start:"Morning",end:"",time:"Approx. 5 hr group travel window",status:"Pending",instructions:"Still need train details."}}
+    }
+  });
+  t.after(()=>app.dom.window.close());
+  const {window}=app;
+  const live=JSON.parse(window.eval("JSON.stringify(getLive())"));
+  assert.deepEqual(live.sharedTravel["travel-18"],{notes:"Keep this unrelated phone note."});
+  const train=window.eval('liveSharedTravelItems().find(item=>item.id==="travel-18")');
+  assert.equal(train.start,"12:05");
+  assert.equal(train.end,"13:45");
+  assert.equal(train.duration,"1 hr 40 min");
+  assert.equal(train.status,"Confirmed");
+
+  window.showPage("transport");
+  const trainCard=window.document.querySelector('.train-card[data-travel-id="travel-18"]');
+  assert.match(trainCard.textContent,/12:05 PM/);
+  assert.match(trainCard.textContent,/1:45 PM/);
+  assert.match(trainCard.textContent,/1 hr 40 min/);
+  assert.match(trainCard.textContent,/Confirmed/);
+  assert.doesNotMatch(trainCard.textContent,/Morning|Approx\. 5 hr|Pending/);
+  window.showPage("timeline");
+  window.document.querySelector("#timelineDayFilter").value="2026-10-08";
+  window.document.querySelector("#timelineDayFilter").dispatchEvent(new window.Event("change",{bubbles:true}));
+  const cards=[...window.document.querySelectorAll("#timelineList .tl-step[data-timeline-id]")].map(card=>card.dataset.timelineId);
+  assert.ok(cards.indexOf("tl-0017")<cards.indexOf("tl-0018"));
+  assert.ok(cards.indexOf("tl-0018")<cards.indexOf("tl-0019"));
+  assert.deepEqual(app.runtimeErrors,[]);
 });
 
 test("SAS advance seat-selection receipts are recorded once as paid budget cost", async t => {
@@ -1044,7 +1082,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
 
   assert.deepEqual(JSON.parse(JSON.stringify(window.getLive())),{sharedTravel:{
     "travel-8":{itemType:"Transfer",transportation:"Walk",transportationDetails:"Airport connection / passport control"},
-    "travel-18":{itemType:"Transfer",transportation:"Train",transportationDetails:"Train",notes:"Phone-only note"}
+    "travel-18":{notes:"Phone-only note"}
   }});
   assert.deepEqual(JSON.parse(JSON.stringify(window.getCustomRestaurants())),[]);
   assert.deepEqual(JSON.parse(JSON.stringify(window.getRouteEdits())),{});
@@ -1055,9 +1093,9 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"10.14.10");
+  assert.equal(payload.appVersion,"10.14.11");
   assert.equal(payload.referenceNotesMode,"delta");
-  assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{transportationDetails:"Train",notes:"Phone-only note"}}});
+  assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
   assert.deepEqual(payload.routeedits,{});
   assert.deepEqual(payload.packcatalog,{edits:{},custom:{},deleted:{}});
@@ -1095,7 +1133,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.14.10");
+  assert.equal(payload.appVersion, "10.14.11");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -1114,9 +1152,9 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.14.10");
-  assert.match(manifest.description,/Version 10\.14\.10/);
-  assert.match(worker,/v10-14-10-rome-checkout/);
+  assert.equal(packageData.version,"10.14.11");
+  assert.match(manifest.description,/Version 10\.14\.11/);
+  assert.match(worker,/v10-14-11-rome-florence-train/);
   ["boston-terminal-a-to-e.png","fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png","italy-camera-cheat-sheet-samsung-s23-ultra.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
@@ -1190,7 +1228,7 @@ test("offline application shell lists every required local asset", () => {
     "./assets/guides/italy-camera-cheat-sheet-samsung-s23-ultra.png"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v10-14-10-rome-checkout/);
+  assert.match(worker, /italy-2026-github-v10-14-11-rome-florence-train/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);

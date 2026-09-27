@@ -1435,10 +1435,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.14.10",
-      build: "10.14.10",
+      version: "10.14.11",
+      build: "10.14.11",
       backupSchema: 6,
-      lastEdited: "September 27, 2026 at 1:43 PM EDT"
+      lastEdited: "September 27, 2026 at 2:38 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -2294,7 +2294,11 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       if(/walk|passport|security|airport connection/.test(text)) return "Walk";
       return fallback||"None / Not applicable";
     }
-    const PROMOTED_SHARED_TRAVEL_IDS = new Set(["travel-13","travel-27","travel-42"]);
+    const PROMOTED_SHARED_TRAVEL_IDS = new Set(["travel-13","travel-18","travel-27","travel-42"]);
+    const CANONICAL_SHARED_TRAVEL_FIELDS = Object.freeze({
+      // PSA's confirmed Oct. 8 train time supersedes stale phone-export fields.
+      "travel-18": ["date","start","end","duration","status","instructions","transportationDetails"]
+    });
     function normalizeSharedTravelEdits(obj) {
       return Object.entries(obj&&typeof obj==="object"?obj:{}).reduce((out,[id,value])=>{
         if(!value||typeof value!=="object"||Array.isArray(value)) return out;
@@ -2311,8 +2315,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         if(!TRANSPORTATION_OPTIONS.includes(next.transportation)) next.transportation=(base&&base.transportation)||"Other";
         if(next.transportationDetails===undefined) next.transportationDetails=next.mode||((base&&base.transportationDetails)||"");
         delete next.mode;
-        // Only retire exact travel overrides explicitly reviewed and promoted into
-        // 10.10.2 master data. Other legacy/current overrides remain intact.
+        (CANONICAL_SHARED_TRAVEL_FIELDS[id]||[]).forEach(key=>delete next[key]);
+        // Retire exact travel overrides explicitly reviewed and promoted into
+        // master data. Other legacy/current overrides remain intact.
         if(base&&PROMOTED_SHARED_TRAVEL_IDS.has(id)) {
           Object.keys(next).forEach(key=>{ if(next[key]===base[key]) delete next[key]; });
         }
@@ -4341,16 +4346,19 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         const route = t._isCustom && t._customId ? getAllDoorRoutes().find(r => r._isCustom && r._id === t._customId) : routeForTimelineId(timelineId);
         const primary = route ? normalizedLink(route.link) : "";
         const backup = route ? normalizedLink(route.backupLink) : "";
+        const useTrainClock=t.travelId==="travel-18";
+        const displayStart=useTrainClock?trainDisplayTime(t.start):t.start;
+        const displayEnd=useTrainClock?trainDisplayTime(t.end):t.end;
         const routeSummary = isActualTravelStep(t) && (t.from || t.to)
           ? `<div class="tl-route-summary">
-              <div class="from"><span class="tl-route-label">From</span><div class="tl-route-place">${escapeHtml(t.from || "Start")}</div>${t.start ? `<div class="tl-route-clock">${escapeHtml(t.start)}</div>` : ""}</div>
+              <div class="from"><span class="tl-route-label">From</span><div class="tl-route-place">${escapeHtml(t.from || "Start")}</div>${t.start ? `<div class="tl-route-clock">${escapeHtml(displayStart)}</div>` : ""}</div>
               <div class="arrow" aria-hidden="true">→</div>
-              <div class="to"><span class="tl-route-label">To</span><div class="tl-route-place">${escapeHtml(t.to || "Destination")}</div>${t.end ? `<div class="tl-route-clock">${escapeHtml(t.end)}</div>` : ""}</div>
+              <div class="to"><span class="tl-route-label">To</span><div class="tl-route-place">${escapeHtml(t.to || "Destination")}</div>${t.end ? `<div class="tl-route-clock">${escapeHtml(displayEnd)}</div>` : ""}</div>
             </div>`
           : "";
         const transportation = timelineTransportation(t);
         const metaBits = [timelineItemType(t), `${transportationIcon(transportation)} ${transportation}`, t.transportationDetails || "", t.time || ""].filter(Boolean);
-        const timeLabel = t.start ? `${escapeHtml(t.start)}${t.end ? "–" + escapeHtml(t.end) : ""}` : "Time TBD";
+        const timeLabel = t.start ? `${escapeHtml(displayStart)}${t.end ? "–" + escapeHtml(displayEnd) : ""}` : "Time TBD";
         return `${dateHeader}
           <div class="tl-step ${cls} ${timelineStyleClass(t)} ${isNext ? "is-next" : ""}" data-timeline-id="${timelineId}" style="${isHidden ? 'opacity:0.75;' : ''}">
             <div class="tl-dot"></div>
@@ -4826,11 +4834,20 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       return buttons + (note ? `<div class="text-xs" style="width:100%;margin-top:5px;color:var(--danger,#b42318);">${escapeHtml(note)}</div>` : "") + (verified ? `<div class="text-xs text-muted" style="width:100%;margin-top:5px;">Last Verified: ${escapeHtml(verified)}</div>` : "");
     }
 
-    function travelRouteBlock(from, start, to, end) {
+    function trainDisplayTime(value) {
+      const match=String(value||"").trim().match(/^(\d{1,2}):(\d{2})$/);
+      if(!match) return value||"";
+      const hour=Number(match[1]);
+      return `${hour%12||12}:${match[2]} ${hour>=12?"PM":"AM"}`;
+    }
+
+    function travelRouteBlock(from, start, to, end, useTrainClock=false) {
+      const displayStart=useTrainClock?trainDisplayTime(start):start;
+      const displayEnd=useTrainClock?trainDisplayTime(end):end;
       return `<div class="travel-route-grid">
-        <div class="travel-route-point"><span class="travel-route-label">From</span><div class="travel-route-place">${escapeHtml(from || "Start")}</div>${start ? `<div class="travel-route-time">${escapeHtml(start)}</div>` : ""}</div>
+        <div class="travel-route-point"><span class="travel-route-label">From</span><div class="travel-route-place">${escapeHtml(from || "Start")}</div>${start ? `<div class="travel-route-time">${escapeHtml(displayStart)}</div>` : ""}</div>
         <div class="travel-route-arrow">→</div>
-        <div class="travel-route-point to"><span class="travel-route-label">To</span><div class="travel-route-place">${escapeHtml(to || "Destination")}</div>${end ? `<div class="travel-route-time">${escapeHtml(end)}</div>` : ""}</div>
+        <div class="travel-route-point to"><span class="travel-route-label">To</span><div class="travel-route-place">${escapeHtml(to || "Destination")}</div>${end ? `<div class="travel-route-time">${escapeHtml(displayEnd)}</div>` : ""}</div>
       </div>`;
     }
 
@@ -4914,7 +4931,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         <div class="card travel-card flight-card" data-flight-id="${escapeHtml(f.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">✈️ ${escapeHtml(f.flight)} · ${escapeHtml(f.op)}</div><div class="travel-date-label">${fmtDate(f.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(f.from,f.dep,f.to,f.arr)}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(f.dur || "Duration TBD")}</span><span class="travel-chip">${escapeHtml(f.cabin || "Cabin TBD")}</span>${statusBadge(f.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(airConfirmationText(), f.status || "Confirmed")}${travelDetailPanel("Seats", f.seats || "Not assigned — verify in airline app")}${travelDetailPanel("Travel note", f.notes)}`, `${seeInTimelineButton("flight",f.id)}<button class="edit-btn" onclick="copyText('${String(airConfirmationText()).replace(/'/g,"\\'")}','Air confirmation copied')">Copy Confirmation</button>${travelMapActions(f.from,f.to)}<button class="edit-btn" onclick="editFlightById('${f.id}')">Edit Flight</button>`)}</div></div>`, f.flight));
 
       trains.forEach(t => addRecord("transfer", "Train", t.date, t.start, [t.transportationDetails,t.mode,t.title,t.from,t.to,t.start,t.end,t.duration,t.status,t.instructions,t.notes,trainConfirmation(t)].join(" "), `
-        <div class="card travel-card train-card" data-travel-id="${escapeHtml(t.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🚆 ${escapeHtml(t.transportationDetails || t.title || "Train")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">🚆 Train</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(trainConfirmation(t), t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${seeInTimelineButton("travel",t.id)}${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Train</button>`)}</div></div>`, t.transportationDetails || t.title));
+        <div class="card travel-card train-card" data-travel-id="${escapeHtml(t.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🚆 ${escapeHtml(t.transportationDetails || t.title || "Train")}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end,true)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">🚆 Train</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(trainConfirmation(t), t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}`, `${seeInTimelineButton("travel",t.id)}${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Train</button>`)}</div></div>`, t.transportationDetails || t.title));
 
       transfers.forEach(t => addRecord("transfer", timelineTransportation(t), t.date, t.start, [t.title,t.from,t.to,t.mode,t.itemType,t.transportation,t.transportationDetails,t.duration,t.status,t.instructions,t.notes].join(" "), `
         <div class="card travel-card transfer-card" data-travel-id="${escapeHtml(t.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Steps", t.instructions)}${travelDetailPanel("Travel note", t.notes)}${cphPassportWaitTracker(t.id)}`, `${seeInTimelineButton("travel",t.id)}${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button>`)}</div></div>`, t.title || t.from));

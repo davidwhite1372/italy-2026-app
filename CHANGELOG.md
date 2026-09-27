@@ -1,3 +1,8 @@
+## Version 10.14.11 — September 27, 2026
+- Fixed stale phone-export overrides that could restore “Morning,” an outdated duration, or Pending status on the Oct. 8 PSA train card; confirmed master values now take precedence while unrelated phone notes remain.
+- Displayed the train times as 12:05 PM–1:45 PM in Timeline and Travel Details and regression-checked the sequence: 11:00 AM lobby meeting, train, station-to-hotel walk, then W Florence check-in.
+- Kept backup schema 6 unchanged.
+
 # Changelog
 
 ## Version 10.14.10 — September 27, 2026

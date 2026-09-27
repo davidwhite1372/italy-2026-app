@@ -4,13 +4,13 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 
 ## Current development build
 
-**Version 10.14.10 - Rome checkout reminder and Florence arrival**
+**Version 10.14.11 - Corrected Rome–Florence train card**
 
-Version 10.14.10 adds a visible Oct. 8 Anantara Palazzo Naiadi checkout reminder immediately before the 11:00 AM PSA lobby meeting. It retains the Oct. 8 Florence arrival sequence, walking directions, 3:00 PM W Florence check-in, and existing Timeline day selector; backup schema 6 is unchanged.
+Version 10.14.11 prevents stale phone exports from replacing the confirmed Oct. 8 PSA train departure (12:05 PM), arrival (about 1:45 PM), duration (1 hour 40 minutes), and confirmed status. The timeline and train card show the times in order between the 11:00 AM lobby meeting and Florence station walk; unrelated phone notes are preserved. Backup schema 6 is unchanged.
 
 Version 10.12.0 included the Timeline and Travel Details corrections, receipt sourced expenses, work expense report tracking, CPH and Venice offline guides, the Quick Guides & Maps page, Italian phrase playback, Google Translate access, separate Favorite and Want to try restaurant states, corrected sticky headers, expanded note editing, and the reviewed phone-data reconciliation while retaining schema 6 compatibility.
 
-Version 10.14.9 is the previous release. Version 10.14.10 is developed and tested on `develop` before its approved merge to `main`.
+Version 10.14.10 was the previous release. Version 10.14.11 is developed and tested on `develop` before its approved merge to `main`.
 
 Production remains on the stable `main` branch. New work is developed and tested on `develop` before release.
 
@@ -20,7 +20,7 @@ User-entered information is currently stored locally in each browser or installe
 
 - Export a fresh backup before changing devices, clearing browser data, or reinstalling the app.
 - Backup schema numbers describe file compatibility; they are separate from the app version.
-- Version 10.14.10 creates schema 6 backups and continues to import schema 5, schema 4, and older supported backups automatically.
+- Version 10.14.11 creates schema 6 backups and continues to import schema 5, schema 4, and older supported backups automatically.
 - Version 11 will evaluate authorized shared cloud data while retaining offline support and manual backups.
 
 ## Publishing
