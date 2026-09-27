@@ -80,8 +80,8 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.14.9");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.14.9");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "10.14.10");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "10.14.10");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
   assert.match(document.querySelector("#aboutLastEdited").textContent, /September 27, 2026 at 1:43 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
@@ -162,9 +162,11 @@ test("10.14.6 replaces taxi phrases with the Venice vaporetto ticket phrase", as
 test("Oct 8 PSA-managed group train moves out of pending without inventing a train number", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
-  const data = JSON.parse(app.window.eval(`JSON.stringify({
+  const { window } = app;
+  const data = JSON.parse(window.eval(`JSON.stringify({
     train:TIMELINE.find(item=>item.id==="tl-0018"),
     transfer:TIMELINE.find(item=>item.id==="tl-0017"),
+    romeCheckout:TIMELINE.find(item=>item.id==="tl-0055"),
     florenceWalk:TIMELINE.find(item=>item.id==="tl-0019"),
     florenceCheckIn:TIMELINE.find(item=>item.id==="tl-0054"),
     sharedTransfer:SHARED_TRAVEL_ITEMS.find(item=>item.id==="travel-17"),
@@ -181,6 +183,12 @@ test("Oct 8 PSA-managed group train moves out of pending without inventing a tra
   assert.equal(data.transfer.status,"Confirmed");
   assert.equal(data.transfer.start,"11:00");
   assert.equal(data.transfer.end,"");
+  assert.equal(data.romeCheckout.date,"2026-10-08");
+  assert.equal(data.romeCheckout.start,"10:45");
+  assert.equal(data.romeCheckout.end,"11:00");
+  assert.equal(data.romeCheckout.itemType,"To-do");
+  assert.match(data.romeCheckout.title,/Anantara Palazzo Naiadi/);
+  assert.match(data.romeCheckout.instructions,/before the 11:00 AM PSA group meeting/);
   assert.match(data.transfer.instructions,/11:00 AM.*group luggage drop/i);
   assert.equal(data.sharedTransfer.start,"11:00");
   assert.equal(data.sharedTransfer.end,"");
@@ -208,6 +216,11 @@ test("Oct 8 PSA-managed group train moves out of pending without inventing a tra
   assert.match(data.reservation.notes,/three private cars/i);
   assert.match(data.reservation.notes,/truck from the hotel bag drop/i);
   assert.doesNotMatch(data.reservation.notes,/train number.*confirm/i);
+  window.showPage("timeline");
+  window.document.querySelector("#timelineDayFilter").value="2026-10-08";
+  window.document.querySelector("#timelineDayFilter").dispatchEvent(new window.Event("change",{bubbles:true}));
+  const oct8Cards=[...window.document.querySelectorAll("#timelineList .tl-step[data-timeline-id]")].map(card=>card.dataset.timelineId);
+  assert.ok(oct8Cards.indexOf("tl-0055")<oct8Cards.indexOf("tl-0017"));
   assert.deepEqual(app.runtimeErrors, []);
 });
 
@@ -436,7 +449,7 @@ test("every shared travel item uses controlled purpose and transportation values
   t.after(() => app.dom.window.close());
   const { window } = app;
 
-  assert.equal(window.eval("SHARED_TRAVEL_ITEMS.length"), 47);
+  assert.equal(window.eval("SHARED_TRAVEL_ITEMS.length"), 48);
   assert.equal(window.eval("SHARED_TRAVEL_ITEMS.every(item => ITEM_TYPE_OPTIONS.includes(item.itemType))"), true);
   assert.equal(window.eval("SHARED_TRAVEL_ITEMS.every(item => TRANSPORTATION_OPTIONS.includes(item.transportation))"), true);
   assert.equal(window.eval("TIMELINE.every(item => ITEM_TYPE_OPTIONS.includes(item.itemType))"), true);
@@ -1042,7 +1055,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"10.14.9");
+  assert.equal(payload.appVersion,"10.14.10");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{transportationDetails:"Train",notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -1082,7 +1095,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "10.14.9");
+  assert.equal(payload.appVersion, "10.14.10");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -1101,15 +1114,15 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"10.14.9");
-  assert.match(manifest.description,/Version 10\.14\.9/);
-  assert.match(worker,/v10-14-9-florence-timeline/);
+  assert.equal(packageData.version,"10.14.10");
+  assert.match(manifest.description,/Version 10\.14\.10/);
+  assert.match(worker,/v10-14-10-rome-checkout/);
   ["boston-terminal-a-to-e.png","fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png","italy-camera-cheat-sheet-samsung-s23-ultra.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
   });
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
-    timeline:53,restaurants:67,attractions:15,reservations:10,budget:19,packing:74,open:14
+    timeline:54,restaurants:67,attractions:15,reservations:10,budget:19,packing:74,open:14
   });
   Object.values(counts).forEach(ids=>{
     assert.equal(ids.every(Boolean),true);
@@ -1177,7 +1190,7 @@ test("offline application shell lists every required local asset", () => {
     "./assets/guides/italy-camera-cheat-sheet-samsung-s23-ultra.png"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v10-14-9-florence-timeline/);
+  assert.match(worker, /italy-2026-github-v10-14-10-rome-checkout/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);

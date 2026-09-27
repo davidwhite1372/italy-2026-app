@@ -10,9 +10,9 @@ AT THE START OF EVERY APP WORK SESSION
 - GitHub web workflow: choose `develop` in the branch selector and verify its latest commit before making changes. Do not edit `main` during development.
 
 PACKAGE AND FILE CHANGES
-- The review ZIP is a complete app snapshot, not a patch. It contains unchanged files too. Extract it before uploading; do not upload the ZIP as website content.
-- Report the exact changed files separately from the ZIP's full file list. Upload only the changed files to the matching repository paths unless deliberately replacing the complete repository snapshot.
-- Keep `index.html`, `data.js`, `manifest.json`, `sw.js`, and `.nojekyll` in the repository root. Do not include a local `.git` directory in replacement ZIP packages.
+- By default, the handoff ZIP contains only changed files, with repository-relative folder paths preserved. Extract it and upload those files to the matching paths; do not upload the ZIP as website content.
+- Include the exact changed-file list and commit details with every handoff. Do not send unchanged files unless David asks for a complete backup or repository replacement.
+- Keep `index.html`, `data.js`, `manifest.json`, `sw.js`, and `.nojekyll` in the repository root when those files are part of the change. Exclude `.git` and `node_modules` from any full-repository snapshot.
 
 COMMIT, PUSH, AND RELEASE
 - Every handoff must include a ready-to-use commit title, a description/body, and the exact develop push/test instructions.

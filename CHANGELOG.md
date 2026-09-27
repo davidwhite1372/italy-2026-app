@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 10.14.10 — September 27, 2026
+- Added a visible Oct. 8 Anantara Palazzo Naiadi checkout reminder ending at 11:00 AM, directly before the 11:00 AM PSA lobby meeting and luggage drop.
+- Updated the Oct. 8 day checklist and Rome hotel record with the checkout deadline; backup schema 6 remains unchanged.
+
 ## Version 10.14.9 — September 27, 2026
 - Ordered the Oct. 8 Florence arrival as train (12:05–1:45 PM), station-to-hotel walk (about 1:45–1:55 PM), then W Florence check-in from 3:00 PM.
 - Added the missing station-to-W Florence walking instructions while keeping Firenze S.M.N. and the PSA arrival transfer visibly provisional until confirmed.

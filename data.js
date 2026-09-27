@@ -67,7 +67,7 @@
         dining: "No lunch is provided; eat breakfast or bring snacks. Dinner at Giardino Corsini; exact time and transport are not listed.",
         tip: "The train number and coach details are not needed for this PSA-managed group transfer. The final agenda is still pending for other event details.",
         phrase: "Da quale binario parte il treno? — Which platform does the train leave from?",
-        checklist: ["Check out","Group luggage drop at 11:00 AM","Meet PSA in lobby at 11:00 AM","Hotel address","Event attire"] },
+        checklist: ["Check out of Anantara Palazzo Naiadi by 11:00 AM","Group luggage drop at 11:00 AM","Meet PSA in lobby at 11:00 AM","Hotel address","Event attire"] },
       { date: "2026-10-09", theme: "Florence Experiences", city: "Florence", hotel: "W Florence",
         schedule: "Temporary PSA agenda: breakfast on your own; morning activities and tours, followed by free time. Meet in the hotel lobby at 6:00 PM for dine-around dinner.",
         transport: "Walk or use PSA-provided transport for the assigned morning activity; listed dinner locations are walkable from W Florence.",
@@ -173,6 +173,7 @@
       { id:"tl-0052", travelId:"travel-52", date:"2026-10-07", start:"17:00", end:"", itemType:"Event", title:"Meet in lobby → Villa Miani Awards Gala", from:"Anantara Palazzo Naiadi", to:"Villa Miani", mode:"PSA group coach", time:"Meet at 5:00 PM", status:"Partial", instructions:"Cocktail attire. Use the PSA group coach; the temporary agenda gives the lobby meeting time but not the coach return time.", notes:"Confirm coach pickup and return details in the official agenda." },
       { id:"tl-0053", travelId:"travel-53", date:"2026-10-09", start:"18:00", end:"", itemType:"Event", title:"Meet in lobby for Florence dine-around dinner", from:"W Florence", to:"Florence restaurant (assignment TBD)", mode:"Walk", time:"Meet at 6:00 PM", status:"Partial", instructions:"The temporary PSA agenda says to meet in the hotel lobby at 6:00 PM. Dinner locations are walkable from W Florence.", notes:"Restaurant assignment is not listed; replace with the official agenda when received." },
       { id:"tl-0054", travelId:"travel-54", date:"2026-10-08", start:"15:00", end:"", itemType:"Hotel / Check-in", title:"W Florence check-in", from:"W Florence lobby", to:"W Florence guest room", mode:"Hotel check-in", time:"Check-in begins at 3:00 PM", status:"Confirmed", instructions:"Check in at the front desk when rooms are available. If you arrive before 3:00 PM, ask the desk about early room access and luggage handling; PSA room-specific details remain outstanding.", notes:"W Florence publishes a 3:00 PM check-in time. The hotel stay is event-provided." },
+      { id:"tl-0055", travelId:"travel-55", date:"2026-10-08", start:"10:45", end:"11:00", itemType:"To-do", title:"Check out of Anantara Palazzo Naiadi", from:"Anantara Palazzo Naiadi guest room", to:"Anantara Palazzo Naiadi lobby", mode:"Hotel check-out", time:"Complete by 11:00 AM", status:"Confirmed", instructions:"Check out at the front desk and bring your luggage to the lobby before the 11:00 AM PSA group meeting and luggage drop.", notes:"Rome hotel checkout is on Oct. 8. Meet PSA in the lobby at 11:00 AM; the group then walks to the train station." },
     ];
 
 
@@ -232,7 +233,8 @@
       "tl-0051": {itemType:"Event",transportation:"Walk"},
       "tl-0052": {itemType:"Event",transportation:"Bus / Coach"},
       "tl-0053": {itemType:"Event",transportation:"Walk"},
-      "tl-0054": {itemType:"Hotel / Check-in",transportation:"None / Not applicable"}
+      "tl-0054": {itemType:"Hotel / Check-in",transportation:"None / Not applicable"},
+      "tl-0055": {itemType:"To-do",transportation:"None / Not applicable"}
     });
     TIMELINE.forEach(item => Object.assign(item, TIMELINE_CLASSIFICATION[item.id] || {
       itemType:"Information", transportation:"Other"
@@ -419,7 +421,7 @@
 
     // Master hotel records. All hotel views read from these records.
     const HOTELS = [
-      {id:"hotel-rome-anantara",city:"Rome",name:"Anantara Palazzo Naiadi",aliases:["Anantara Palazzo Naiadi Hotel"],checkIn:"2026-10-05",checkOut:"2026-10-08",dates:"Oct 5–8",conf:"Event-provided",status:"Confirmed",address:"Piazza della Repubblica 48-49",room:"Event-provided room",payment:"Provided by PSA / Joe Lynch program",tax:"Confirm with hotel",breakfast:"Confirm program inclusions",notes:"Need final room confirmation and check-in details.",maps:"https://www.google.com/maps/search/?api=1&query=Anantara+Palazzo+Naiadi+Rome"},
+      {id:"hotel-rome-anantara",city:"Rome",name:"Anantara Palazzo Naiadi",aliases:["Anantara Palazzo Naiadi Hotel"],checkIn:"2026-10-05",checkOut:"2026-10-08",dates:"Oct 5–8",conf:"Event-provided",status:"Confirmed",address:"Piazza della Repubblica 48-49",room:"Event-provided room",payment:"Provided by PSA / Joe Lynch program",tax:"Confirm with hotel",breakfast:"Confirm program inclusions",notes:"Check out by 11:00 AM on Oct. 8 before the 11:00 AM PSA lobby meeting. Need final room confirmation and check-in details.",maps:"https://www.google.com/maps/search/?api=1&query=Anantara+Palazzo+Naiadi+Rome"},
       {id:"hotel-florence-w",city:"Florence",name:"W Florence",aliases:["W Florence Hotel"],checkIn:"2026-10-08",checkOut:"2026-10-10",dates:"Oct 8–10",conf:"Event-provided",status:"Confirmed",address:"Via del Melarancio 1",room:"Event-provided room",payment:"Provided by PSA / Joe Lynch program",tax:"Confirm with hotel",breakfast:"Confirm breakfast details",notes:"Published hotel check-in begins at 3:00 PM. Need final room confirmation and breakfast details.",maps:"https://www.google.com/maps/search/?api=1&query=W+Florence+Via+del+Melarancio+1"},
       {id:"hotel-venice-jw",city:"Venice",name:"JW Marriott Venice Resort & Spa",aliases:["JW Marriott Venice","JW Venice","JW Marriott Venice Resort & Spa Hotel"],checkIn:"2026-10-10",checkOut:"2026-10-13",dates:"Oct 10–13",conf:"Event-provided",status:"Confirmed",address:"Sacca Sessola Laguna di, 30133 Venezia VE, Italy",room:"Event-provided room",payment:"Provided by PSA / Joe Lynch program",tax:"Confirm with hotel",breakfast:"Confirm program inclusions",notes:"Confirm room details, island shuttle schedule, and transfer from central Venice.",maps:"https://www.google.com/maps/search/?api=1&query=Sacca+Sessola+Laguna+di%2C+30133+Venezia+VE%2C+Italy"},
       {id:"hotel-venice-antiche",city:"Venice",name:"Hotel Antiche Figure",aliases:["Antiche Figure"],checkIn:"2026-10-13",checkOut:"2026-10-15",dates:"Oct 13–15",conf:"PO55JT57ZW",status:"Confirmed / Pay Later",address:"Santa Croce 686, Fondamenta San Simeon Piccolo",room:"Superior Double",payment:"€620 due 7 days before via payment link",tax:"€16 city tax on site",breakfast:"Breakfast and gluten-free breakfast included",notes:"Free cancellation until 5 days before arrival.",maps:"https://www.google.com/maps/search/?api=1&query=Hotel+Antiche+Figure+Venice"}

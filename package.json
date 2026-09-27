@@ -1,6 +1,6 @@
 {
   "name": "italy-2026-travel-companion",
-  "version": "10.14.9",
+  "version": "10.14.10",
   "private": true,
   "description": "Regression checks for the Italy 2026 Travel Companion",
   "scripts": {

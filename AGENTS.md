@@ -10,8 +10,8 @@
 
 - Provide the commit title and full commit description/body every time a build is ready for GitHub. Do not make David ask for commit information.
 - Include exact develop commit/push and test steps with every handoff, followed by the main-branch merge steps only after the develop checks pass.
-- Distinguish a complete review ZIP from changed source files. The ZIP is a full snapshot and contains unchanged files; list the actual changed paths separately so GitHub uploads do not create needless churn.
-- Keep the review ZIP complete and exclude `.git` and `node_modules`.
+- By default, hand off only the changed files in a ZIP, preserving their repository-relative folder paths, and list those paths separately. Do not include unchanged repository files.
+- Create a full-repository snapshot only when David asks for a complete backup or replacement. Exclude `.git` and `node_modules` from any full snapshot.
 - Preserve `main` as production. Do not deploy/merge to `main` unless David directs the release.
 
 ## Project workflow
