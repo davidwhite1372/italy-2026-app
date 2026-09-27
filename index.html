@@ -1429,10 +1429,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.14.3",
-      build: "10.14.3",
+      version: "10.14.8",
+      build: "10.14.8",
       backupSchema: 6,
-      lastEdited: "September 23, 2026 at 6:46 PM EDT"
+      lastEdited: "September 27, 2026 at 1:27 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1944,7 +1944,9 @@
       "phrase-custom-e71f5832-eee6-4984-8a02-14b0f8271663",
       "phrase-custom-b1f3ca36-15bf-4398-9859-5ace5565255d",
       "phrase-custom-d25e83d8-19d9-4b9f-9415-50922e540a97",
-      "phrase-custom-4e6ace85-9cd3-4036-be7a-2371f414792d"
+      "phrase-custom-4e6ace85-9cd3-4036-be7a-2371f414792d",
+      "phrase-custom-83be4830-dc91-4d3c-9b6c-32d9dee15809",
+      "phrase-transportation-i-would-like-a-taxi-please"
     ]);
     function phraseBaseById(id) { return Object.values(PHRASES).flat().find(item=>item.id===id); }
     function normalizePhraseCatalogData(obj) {
@@ -1952,6 +1954,8 @@
       const out={edits:{},custom:{},deleted:{}};
       Object.entries(source.edits||{}).forEach(([id,value])=>{
         if(id==="phrase-quick-reference-thank-you" && value && typeof value==="object" && String(value.pr||"").trim().toLowerCase()==="most used") return;
+        // This exact phone edit is now the permanent formal built-in; discard only its stale pronunciation override.
+        if(id==="phrase-0103" && value && value.en==="How are you?" && value.it==="Come sta?" && value.pr==="KOH-meh STAI") return;
         out.edits[id]=value;
       });
       Object.entries(source.custom||{}).forEach(([key,value])=>{
@@ -4068,7 +4072,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       ]},
       { id: "p5", group: "Before Oct 15 return", items: [
         { id: "r1", text: "Buy/stage ATVO or ACTV airport bus tickets on Oct 14" },
-        { id: "r2", text: "Confirm first morning bus time or pre-book water taxi" },
+        { id: "r2", text: "Confirm first morning ATVO/ACTV airport-bus departure and ticket" },
         { id: "r3", text: "Online check-in; verify bags tagged to TPA" },
         { id: "r4", text: "Stage passports + boarding passes the night before" }
       ]}
@@ -4787,6 +4791,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       {src:"assets/guides/venice-vaporetto-map-2026.png",pdf:"assets/guides/venice-vaporetto-map-2026.pdf",title:"ACTV Vaporetto Route Map · 2026",category:"Oct 10–13 · Venice transport",verified:"Sep 13, 2026"},
       {src:"assets/guides/venice-october-2026-tide-chart.png",title:"Venice Tide Chart · October 2026",category:"Oct 10–15 · Venice practical guide"},
       {src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide",category:"Oct 15 · Airport departure",verified:"Sep 13, 2026"},
+      {src:"assets/guides/italy-camera-cheat-sheet-samsung-s23-ultra.png",title:"Italy Camera Cheat Sheet · Samsung Galaxy S23 Ultra",category:"Before departure · Photography"},
       {src:"assets/guides/italy-bathroom-survival.jpg",title:"Toilets in Italy · Survival Guide",category:"Any day · Comfort"},
       {src:"assets/guides/luggage-lock-instructions.jpg",title:"Luggage Lock Instructions",category:"Before departure · Packing reference"}
     ]);

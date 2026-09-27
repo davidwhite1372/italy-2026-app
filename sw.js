@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-14-3-data-update';
+const CACHE = 'italy-2026-github-v10-14-8-sas-seats-budget';
 const APP_SHELL = [
   './',
   './index.html',
@@ -25,6 +25,7 @@ const APP_SHELL = [
   ,'./assets/guides/venice-vaporetto-map-2026.png'
   ,'./assets/guides/laundry-king-florence.png'
   ,'./assets/guides/boston-terminal-a-to-e.png'
+  ,'./assets/guides/italy-camera-cheat-sheet-samsung-s23-ultra.png'
 ];
 
 self.addEventListener('install', event => {

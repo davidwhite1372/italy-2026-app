@@ -1,5 +1,41 @@
 # Changelog
 
+## Version 10.14.8 — September 27, 2026
+- Added the four paid SAS advance seat-selection receipts to the budget as a $260 flight cost, with the traveler, segment, and EMD breakdown.
+- Preserved the Oct. 8 PSA train timeline split and the rest of the 10.14.7 develop updates; backup schema remains 6.
+
+## Version 10.14.7 — September 27, 2026
+- Added the Samsung Galaxy S23 Ultra Italy Camera Cheat Sheet to All Guides & Maps and the offline app shell.
+- Kept the Oct. 15 airport transfer on the ATVO/ACTV bus plan and removed the water-taxi backup from the itinerary.
+- Recorded the Oct. 8 PSA-managed Rome–Florence group train as confirmed from the 11:00 AM lobby meet and group luggage drop, separate 12:05 PM departure, 1 hour 40 minute ride, and estimated 1:45 PM arrival; the train number is not needed.
+- Kept the event-provided hotel reservations confirmed while recording that there are no additional confirmation numbers; added the Marriott Bonvoy name-search result and the still-missing JW room/shuttle details.
+- Kept the SK681 flight confirmed and the seat-selection follow-up open until check-in.
+- Clarified that Giardino Corsini dinner information from the temporary agenda remains provisional; no dinner details are confirmed yet.
+
+
+## [10.14.6] - 2026-09-27
+
+### Changed
+- Removed the generic taxi phrase and Venice water-taxi daily phrase; replaced them with “I would like a vaporetto ticket, please / Vorrei un biglietto per il vaporetto, per favore” and pronunciation guidance.
+- Replaced the obsolete taxi phrase-of-the-day on Rome arrival with the hotel-reservation phrase and removed taxi alternatives from the affected trip-day route text.
+- Retired the phone-only taxi deletion marker without reusing its ID; kept the prior promoted phrase IDs, schema 6, and unrelated phone data unchanged.
+- Bumped app, build, package, manifest, and service-worker cache metadata to 10.14.6.
+
+## [10.14.5] - 2026-09-27
+
+### Changed
+- Promoted David’s “Do you have.... / Avete” phone phrase under its existing stable ID as “Do you have…? (asking staff) / Avete…?” with pronunciation ah-VEH-teh.
+- Added the promoted ID to the retired-phone catalog list so the duplicate custom record and any stale deletion marker normalize away while the permanent built-in remains visible.
+- Kept the formal greeting update from 10.14.4, backup schema 6, and unrelated user data unchanged.
+- Bumped app, build, package, manifest, and service-worker cache metadata to 10.14.5.
+
+## [10.14.4] - 2026-09-27
+
+### Changed
+- Promoted the formal greeting “How are you? / Come sta?” as the sole built-in phrase for phrase ID phrase-0103, with pronunciation KOH-meh STAH.
+- Removed the exact stale phone override that carried the formal Italian text with the informal pronunciation; unrelated phrase edits and user data remain untouched.
+- Kept backup schema 6 and incremented app, build, package, manifest, and service-worker cache metadata to 10.14.4.
+
 ## [10.14.3] - 2026-09-23
 
 ### Data update
