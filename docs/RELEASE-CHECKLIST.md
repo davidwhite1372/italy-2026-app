@@ -1,6 +1,6 @@
 # Version 11.0.0 Release Checklist
 
-Develop build prepared September 29, 2026. Production remains on `main`; do not merge, publish, or deploy until the user approves after review.
+Develop build prepared September 29, 2026 at 2:12 PM EDT. Production remains on `main`; do not merge, publish, or deploy until the user approves after review.
 
 ## Automated checks
 
@@ -12,16 +12,16 @@ Develop build prepared September 29, 2026. Production remains on `main`; do not 
 
 ## Agenda and content review
 
-- [ ] Oct. 5: 12:23 is clearly marked as a Leonardo Express placeholder; Nerone replaces SEEN.
+- [x] Oct. 5: 12:23 is clearly marked as a Leonardo Express placeholder; Nerone replaces SEEN.
 - [x] Oct. 6: Cantine Santa Benedetta and Comodo replace the old excursion/dine-around entries; an Oct. 6 email check for the €620 Antiche Figure link is listed.
 - [x] Oct. 7: tour meeting directions, maps, return guide, and free-dinner restaurant suggestion are clear; Villa Miani is removed.
-- [ ] Oct. 8: Train 10 group block is 10:45 AM–1:15 PM; Da Burde is 7:00 PM, time unconfirmed.
+- [x] Oct. 8: Train 10 group block is 10:45 AM–1:15 PM; Da Burde is 7:00 PM, explicitly time-unconfirmed.
 - [x] Oct. 9: Accademia/Uffizi tour with outbound and return guidance; 6:15 PM dinner at Cucina retained; 3rosso is recorded as the street number.
-- [ ] Oct. 10: Italo 8904, PSA transfer, gondola, and 6:00 PM provisional Osteria Ai Assassini entry are intact.
+- [x] Oct. 10: Italo 8904, PSA-led transfer (no independent routing), gondola, and 6:00 PM provisional Osteria Ai Assassini entry are intact.
 - [x] Oct. 11: Murano & Burano is selected; missing pickup details and the still-unsaved PSA excursion page remain visible.
-- [ ] Oct. 12: booked tour, JW shuttle/walking guides, and 7:00 PM Oniga dinner are present.
-- [ ] Oct. 13–15 remain unchanged.
-- [ ] Open Items accurately list remaining decisions; no old Sep. 27 itinerary facts remain active.
+- [x] Oct. 12: booked tour, JW shuttle/walking guides, and 7:00 PM Oniga dinner are present; variable shuttle timing remains in Open Items.
+- [x] Oct. 13–15 personal itinerary remains unchanged; Oct. 15 bus timing is a separate Open Item.
+- [x] Open Items contains eight genuine future confirmations; obsolete and completed entries are removed.
 
 ## Phone and offline review
 

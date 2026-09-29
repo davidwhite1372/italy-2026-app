@@ -783,10 +783,10 @@ test("pre-departure checklist includes the Italy EES app support reminder", asyn
   window.showPage("pretrip");
   const item = window.eval('PRETRIP.flatMap(group=>group.items).find(item=>item.id==="h9")');
   assert.ok(item);
-  assert.match(item.text, /Italy.*Travel to Europe.*72 hours/);
+  assert.match(item.text, /Sweden and Portugal, not Denmark or Italy/);
   const links = [...window.document.querySelectorAll('#pretripContent a')].map(link=>link.href);
-  assert.equal(links.includes("https://travel-europe.europa.eu/ees/Travel-to-Europe-mobile-app"), true);
-  assert.equal(links.includes("https://play.google.com/store/apps/details?id=eu.europa.publications.quickborder"), true);
+  assert.equal(links.includes("https://travel-europe.europa.eu/dam/jcr:1429f2b3-ac8e-4c6b-914c-2ebbdb063fa9/FAQ_app.pdf"), true);
+  assert.equal(links.includes("https://travel-europe.europa.eu/ees"), true);
   assert.deepEqual(app.runtimeErrors, []);
 });
 

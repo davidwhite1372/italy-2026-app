@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "11.0.0");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "11.0.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 29, 2026 at 1:45 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 29, 2026 at 2:12 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -237,6 +237,9 @@ test("Version 11 itinerary cards, clickable routes, and offline guides match the
   })`));
   assert.equal(data.release.version,"11.0.0");
   assert.equal(data.release.backupSchema,6);
+  assert.equal(data.routes.find(route=>route.order===15).start,"After 11:55 AM train");
+  assert.equal(data.routes.find(route=>route.order===15).duration,"Per PSA group schedule");
+  assert.equal(data.routes.find(route=>route.order===17).status,"Pending timetable");
   const byId=Object.fromEntries(data.timeline.map(item=>[item.id,item]));
   assert.match(byId["tl-0011"].instructions,/12:23 PM.*placeholder.*next available.*Trenitalia app/i);
   assert.match(byId["tl-0014"].title,/Nerone/);
@@ -275,6 +278,9 @@ test("Version 11 itinerary cards, clickable routes, and offline guides match the
   assert.equal(data.open.find(item=>item.id==="open-0019"),undefined);
   assert.equal(data.open.find(item=>item.id==="open-0018").status,"Pending");
   assert.equal(data.open.find(item=>item.id==="open-0020").status,"Pending");
+  assert.equal(data.open.length,8);
+  assert.ok(data.open.every(item=>item.status==="Pending"));
+  assert.ok(!data.open.some(item=>/Villa Miani|awards dinner|Italo.*reconfirm|restaurant reservations/i.test(item.item)));
   assert.match(data.pretrip.find(item=>item.id==="h1v11").text,/Oct 6.*€620.*pay when it arrives/);
   const orders=JSON.parse(window.eval(`JSON.stringify(Object.fromEntries(Object.entries(TIMELINE_ROUTE_MAP).filter(([id])=>["tl-0014","tl-0051","tl-0056","tl-0016","tl-0057","tl-0062","tl-0058","tl-0021","tl-0059","tl-0030","tl-0060","tl-0061","tl-0026","tl-0045","tl-0053"].includes(id))))`));
   for (const id of ["tl-0014","tl-0051","tl-0056","tl-0016","tl-0057","tl-0062","tl-0058","tl-0021","tl-0059","tl-0030","tl-0060","tl-0061","tl-0026","tl-0045","tl-0053"]) {
@@ -822,7 +828,7 @@ test("SK681 stays confirmed while its seat follow-up remains open until check-in
   assert.equal(data.followup.status,"Pending");
   assert.match(data.followup.why,/until online check-in/i);
   assert.match(data.flight.notes,/until check-in/i);
-  assert.match(data.map.note,/until check-in/i);
+  assert.match(data.map.note,/online check-in/i);
   assert.deepEqual(app.runtimeErrors, []);
 });
 
@@ -835,10 +841,9 @@ test("hotel stays remain confirmed while missing confirmation and room details s
     mapHotels:MAP_HOTELS
   })`));
   assert.deepEqual(result.hotels.map(item=>item.status),["Confirmed","Confirmed","Confirmed"]);
-  assert.match(result.hotels[2].notes,/not found by property name in the Marriott Bonvoy app/i);
-  assert.match(result.jwFollowup.why,/no additional hotel confirmation number/i);
-  assert.equal(result.jwFollowup.status,"Pending");
-  assert.match(result.mapHotels.find(item=>item.city==="Venice" && item.name==="JW Marriott Venice Resort & Spa").note,/island shuttle schedule/i);
+  assert.match(result.hotels[2].notes,/Follow PSA instructions for the station-to-island group transfer/i);
+  assert.equal(result.jwFollowup,undefined);
+  assert.equal(result.mapHotels.find(item=>item.city==="Venice" && item.name==="JW Marriott Venice Resort & Spa").status,"Confirmed");
   assert.deepEqual(app.runtimeErrors, []);
 });
 
@@ -1034,14 +1039,14 @@ test("legacy packing and open-item state migrates to stable IDs", async t => {
   assert.deepEqual(Object.keys(window.getPackCatalogData().edits), ["packing-0001"]);
   assert.deepEqual(Object.keys(window.getPackCatalogData().deleted), ["packing-0003"]);
 
-  assert.deepEqual(JSON.parse(JSON.stringify(window.getOpenState())), { "open-0001": true });
-  window.toggleOpen("open-0002", true);
-  assert.deepEqual(JSON.parse(JSON.stringify(window.getOpenState())), { "open-0001": true, "open-0002": true });
+  assert.deepEqual(JSON.parse(JSON.stringify(window.getOpenState())), { "open-0012": true });
+  window.toggleOpen("open-0020", true);
+  assert.deepEqual(JSON.parse(JSON.stringify(window.getOpenState())), { "open-0012": true, "open-0020": true });
 
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.deepEqual(Object.keys(payload.pack).sort(), ["packing-0001", "packing-0002"]);
-  assert.deepEqual(Object.keys(payload.open), ["open-0001", "open-0002"]);
+  assert.deepEqual(Object.keys(payload.open), ["open-0012", "open-0020"]);
   assert.deepEqual(Object.keys(payload.packcatalog.edits), ["packing-0001"]);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -1209,7 +1214,7 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
   });
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
-    timeline:60,restaurants:67,attractions:15,reservations:13,budget:19,packing:74,open:17
+    timeline:60,restaurants:67,attractions:15,reservations:13,budget:19,packing:74,open:8
   });
   Object.values(counts).forEach(ids=>{
     assert.equal(ids.every(Boolean),true);
@@ -1307,10 +1312,11 @@ test("pre-departure checklist includes the Italy EES app support reminder", asyn
   window.showPage("pretrip");
   const item = window.eval('PRETRIP.flatMap(group=>group.items).find(item=>item.id==="h9")');
   assert.ok(item);
-  assert.match(item.text, /Italy.*Travel to Europe.*72 hours/);
+  assert.equal(item.done,true);
+  assert.match(item.text, /Sweden and Portugal, not Denmark or Italy/);
   const links = [...window.document.querySelectorAll('#pretripContent a')].map(link=>link.href);
-  assert.equal(links.includes("https://travel-europe.europa.eu/ees/Travel-to-Europe-mobile-app"), true);
-  assert.equal(links.includes("https://play.google.com/store/apps/details?id=eu.europa.publications.quickborder"), true);
+  assert.equal(links.includes("https://travel-europe.europa.eu/dam/jcr:1429f2b3-ac8e-4c6b-914c-2ebbdb063fa9/FAQ_app.pdf"), true);
+  assert.equal(links.includes("https://travel-europe.europa.eu/ees"), true);
   assert.deepEqual(app.runtimeErrors, []);
 });
 

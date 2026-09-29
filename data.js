@@ -143,7 +143,7 @@
       { id:"tl-0021", travelId:"travel-21", date:"2026-10-09", start:"10:30", end:"", itemType:"Tour", title:"Accademia’s David and Uffizi Half-Day Tour", from:"Piazza della Santissima Annunziata 13, Florence", to:"Uffizi Gallery, Florence", mode:"Guided walking tour", time:"Arrive 10:15 AM; start 10:30 AM; end time not listed", status:"Confirmed", instructions:"Tour booking 1211656 for two adults. Meet at Piazza della Santissima Annunziata 13, 50122 Firenze, in front of the equestrian statue of Ferdinando dei Medici. Look for The Tour Guy staff holding a bright red sign. The guided tour visits the Accademia, walks through the historic center past the Duomo, Via Calzaiuoli and Piazza della Signoria, then visits the Uffizi. It ends inside the Uffizi; keep the rest of the day flexible.", notes:"Use the linked meeting-point map. Return route to W Florence is a separate timeline card. PSA dinner at Cucina remains at 6:15 PM." },
       { id:"tl-0022", travelId:"travel-22", date:"2026-10-10", start:"08:15", end:"08:30", itemType:"Walk", title:"W Florence Hotel → Firenze S.M.N. Train Station", from:"W Florence Hotel", to:"Firenze S.M.N. Train Station", mode:"Walk", time:"5-10 min + buffer", status:"Confirmed", instructions:"Check out, retrieve luggage, walk to station. Allow extra time for Club Executive boarding.", notes:"Ticket EM7VNB; train departs 9:39 AM." },
       { id:"tl-0023", travelId:"travel-23", date:"2026-10-10", start:"09:39", end:"11:55", itemType:"Train", title:"Firenze S.M.N. Train Station → Venezia Santa Lucia Train Station", from:"Firenze S.M.N. Train Station", to:"Venezia Santa Lucia Train Station", mode:"Train - Italo 8904 Club Executive", time:"2h 16m", status:"Confirmed", instructions:"Board Coach 1; David seat 13, Melody seat 16. Keep valuables at seats.", notes:"Primary plan remains Italo 8904. The temporary PSA agenda says the Hang-10 departure event applies only to non-Venice travelers." },
-      { id:"tl-0024", travelId:"travel-24", date:"2026-10-10", start:"12:00", end:"13:30", itemType:"Boat / Ferry", title:"Venezia Santa Lucia Train Station → JW Marriott Venice Resort & Spa Hotel", from:"Venezia Santa Lucia Train Station", to:"JW Marriott Venice Resort & Spa Hotel", mode:"PSA/JW Group Water Transfer", time:"TBD", status:"Pending", instructions:"PSA will move the group from Venezia Santa Lucia Train Station to the JW Marriott island hotel. Follow the group meeting point and water-transfer instructions.", notes:"Train arrives 11:55 AM; hotel program begins 1:30 PM. Exact boat and meeting point remain pending." },
+      { id:"tl-0024", travelId:"travel-24", date:"2026-10-10", start:"After 11:55", end:"13:30", itemType:"Transfer", title:"Venezia Santa Lucia → JW Marriott · PSA group transfer", from:"Venezia Santa Lucia Train Station", to:"JW Marriott Venice Resort & Spa Hotel", mode:"PSA-led group transfer", time:"After train arrival; follow PSA schedule", status:"Confirmed / PSA-led", instructions:"After Italo 8904 arrives at Venezia Santa Lucia at 11:55 AM, follow the PSA group leader and instructions for the transfer to the JW Marriott island hotel. Do not arrange a separate boat or public-transit route.", notes:"The hotel program begins at 1:30 PM. Exact group meeting point and departure details will come from PSA." },
       { id:"tl-0025", travelId:"travel-25", date:"2026-10-10", start:"16:00", end:"18:00", itemType:"Tour", title:"Gondola experience and welcome reception", from:"JW Venice", to:"Gondola / reception", mode:"Tour", time:"2 hr", status:"Confirmed", instructions:"Evening gondola rides and welcome reception.", notes:"Follow PSA meeting instructions from hospitality desk." },
       { id:"tl-0026", travelId:"travel-26", date:"2026-10-10", start:"18:00", end:"", itemType:"Event", title:"Osteria Ai Assassini dinner", from:"JW Marriott Venice Resort & Spa", to:"Osteria Ai Assassini, Rio Terrà degli Assassini 3695, Venice", mode:"JW shuttle / ferry", time:"6:00 PM — provisional", status:"Time Provisional", instructions:"Dinner at Osteria Ai Assassini, Rio Terrà degli Assassini 3695, 30124 Venezia. Official website: https://osteriaaiassassini.it/. A ferry ride is required from Isola delle Rose; confirm the best route and ferry schedule before leaving.", notes:"6:00 PM is a working time only; update later. Add restaurant and ferry map links in Travel Details." },
       { id:"tl-0027", travelId:"travel-27", date:"2026-10-11", start:"Morning", end:"", itemType:"Information", title:"JW Venice → JW Venice", from:"JW Venice", to:"JW Venice", mode:"Breakfast / excursion preparation", time:"Flexible", status:"Confirmed", instructions:"Breakfast at leisure.", notes:"Check breakfast hours the night before." },
@@ -285,9 +285,9 @@
       {id:"reservation-0004", item:"Rome to Florence Train 10", provider:"PSA group travel", conf:"PSA-managed group transfer", dates:"Oct 8", status:"Confirmed", notes:"Meet in the hotel lobby at 10:45 AM. Walk with the assigned train group to the station starting at 11:00 AM. Train block ends around 1:15 PM. No train number, station, coach, or individual ticket details were provided." },
       {id:"reservation-0005", item:"Possible PSA Florence-to-Venice group transfer", provider:"PSA", conf:"Event-provided", dates:"Oct 10", status:"Alternative", notes:"Possible backup only. Italo 8904 Club Executive remains the confirmed primary plan." },
       {id:"reservation-0006", item:"Italo Florence-to-Venice ticket", provider:"Italo", conf:"EM7VNB / Rec. 118932941", dates:"Oct 10", status:"Confirmed", notes:"Primary plan: Italo 8904, 9:39–11:55 AM; Club Executive; Coach 1 seats 13 & 16; €177.76. Cancel only if the final PSA group transfer becomes clearly preferable." },
-      {id:"reservation-0007", item:"Venice hotel (group)", hotelId:"hotel-venice-jw", provider:"JW Marriott Venice", conf:"Event-provided", dates:"Oct 10–13", status:"Confirmed", notes:"PSA-provided group stay; no additional confirmation number is available, and the booking was not found by property name in the Marriott Bonvoy app. Room details, island shuttle schedule and transfer from central Venice remain outstanding with PSA." },
+      {id:"reservation-0007", item:"Venice hotel (group)", hotelId:"hotel-venice-jw", provider:"JW Marriott Venice", conf:"Event-provided", dates:"Oct 10–13", status:"Confirmed", notes:"PSA-provided group stay. Follow PSA instructions for the station-to-island group transfer; no separate transfer booking is needed." },
       {id:"reservation-0008", item:"PSA Murano & Burano group excursion", provider:"PSA", conf:"Group event", dates:"Oct 11", status:"Confirmed / Details Pending", notes:"Transportation is provided by PSA. Confirm pickup time, pier, return time, and tour inclusions." },
-      {id:"reservation-0009", item:"Conference registration", provider:"PSA Convention 2026", conf:"NCN4K9C4SJD / WGNRXC5J54C", dates:"Oct 5–12", status:"Confirmed", notes:"Add final registration record and excursion page offline" },
+      {id:"reservation-0009", item:"Conference registration", provider:"PSA Convention 2026", conf:"NCN4K9C4SJD / WGNRXC5J54C", dates:"Oct 5–12", status:"Confirmed", notes:"Registration confirmed. See the Oct 11 excursion card for the known group details." },
       {id:"reservation-0010", item:"Venice hotel 2", hotelId:"hotel-venice-antiche", provider:"Hotel Antiche Figure", conf:"PO55JT57ZW", dates:"Oct 13–15", status:"Confirmed / Pay Later", notes:"Superior Double; €620 due 7 days before via payment link; €16 city tax on site. Free cancellation until 5 days before." },
       {id:"reservation-0011", item:"Rome in a Day Tour with Vatican Museums and Colosseum", provider:"The Tour Guy", conf:"Booking 1211646", dates:"Oct 7", status:"Booked", notes:"Two adults. Meet at Viale Vaticano 100; check in by 10:00 AM for the 10:15 AM start. Expected finish about 5:15 PM at or near the Colosseum."},
       {id:"reservation-0012", item:"Accademia’s David and Uffizi Half-Day Tour", provider:"The Tour Guy", conf:"Booking 1211656", dates:"Oct 9", status:"Booked", notes:"Two adults. Arrive by 10:15 AM for 10:30 AM start at Piazza della Santissima Annunziata 13. Tour ends inside the Uffizi; end time not listed."},
@@ -295,23 +295,14 @@
     ];
 
     const OPEN_ITEMS = [
-      { id:"open-0001", pri:1, item:"Confirm final Joe Lynch group instructions and unresolved timings", area:"Conference", urgency:"High", status:"Pending", why:"Confirm Oct 8 Da Burde dinner time/transport, Oct 11 island tour pickup, and Oct 12 hotel shuttle schedule." },
-      { id:"open-0002", pri:2, item:"Oct 8 Rome–Florence train arrangements", area:"Transportation", urgency:"High", status:"Done", why:"Confirmed as the Oct 8 Train 10 group-travel block. Meet in lobby at 10:45 AM; walk with the assigned group to the station from 11:00 AM; block ends about 1:15 PM." },
-      { id:"open-0003", pri:3, item:"Confirm JW Venice full property / room details", area:"Hotel / Transport", urgency:"High", status:"Pending", why:"PSA-provided group stay is confirmed, but no additional hotel confirmation number is available and the booking was not found by property name in the Marriott Bonvoy app. Room details, island shuttle schedule, and central Venice transfer instructions still need confirmation from PSA." },
-      { id:"open-0004", pri:4, item:"Reconfirm Italo 8904 remains the primary Florence-to-Venice plan", area:"Transportation", urgency:"Medium", status:"Optional", why:"Keep the excellent Club Executive seats; cancel only if the final PSA group transfer becomes clearly preferable." },
-      { id:"open-0005", pri:5, item:"Select Oct 11 Venice excursion", area:"Conference", urgency:"Done", status:"Done", why:"Selected the PSA-hosted Murano & Burano excursion." },
-      { id:"open-0006", pri:6, item:"Confirm remaining flight seat for SK681", area:"Flights", urgency:"Medium", status:"Pending", why:"SK681 is confirmed, but no seat is recorded. Keep this follow-up open until online check-in, then select or confirm a seat if available." },
-      { id:"open-0008", pri:8, item:"Confirm Giardino Corsini transport and dress code", area:"Conference", urgency:"Done", status:"Done", why:"Replaced with the private Joe Lynch Group Dinner at Trattoria Da Burde; current timing and transport have a separate open item." },
-      { id:"open-0009", pri:9, item:"Download Venice Excursions page", area:"Conference", urgency:"Medium", status:"Pending", why:"The PSA excursion information has not been saved into the offline app guides." },
-      { id:"open-0010", pri:10, item:"Restaurant reservations", area:"Dining", urgency:"Low", status:"Optional", why:"Add only after private agenda is known" },
-      { id:"open-0011", pri:11, item:"Hotel Antiche Figure booked", area:"Hotel", urgency:"Done", status:"Done", why:"Confirmation PO55JT57ZW; Superior Double Room." },
-      { id:"open-0012", pri:12, item:"Pay Hotel Antiche Figure balance", area:"Budget / Hotel", urgency:"High", status:"Pending", why:"Payment link arrives 7 days before Oct 13; valid 48 hours. Balance €620." },
-      { id:"open-0013", pri:13, item:"Confirm Hotel Antiche Figure to VCE transport", area:"Transportation", urgency:"Medium", status:"Pending", why:"Verify the first suitable ATVO/ACTV airport-bus departure and ticket for Oct 15." },
-            { id:"open-0015", pri:15, item:"Resolve Cantine Santa Benedetta address discrepancy", area:"Conference", urgency:"Medium", status:"Pending", why:"The agenda street address and linked location pin disagree. Confirm the actual winery address and exact group pickup with PSA before using a standalone map." },
-      { id:"open-0016", pri:16, item:"Verify Oct 12 Viator payment, tickets, and JW shuttle", area:"Tour / Transportation", urgency:"High", status:"Pending", why:"$241.38 payment is scheduled Oct 10; confirm the charge and ticket delivery, then verify the Oct 12 shuttle schedule and pier before departure." },
-      { id:"open-0017", pri:17, item:"Confirm Osteria Ai Assassini ferry plan and dinner time", area:"Dining / Transportation", urgency:"Medium", status:"Pending", why:"The 6:00 PM dinner time is provisional and a ferry is required from the JW Marriott island hotel." },
-      { id:"open-0018", pri:18, item:"Confirm Oct 11 Murano & Burano pickup and return details", area:"Conference", urgency:"Medium", status:"Pending", why:"PSA transportation is provided; pickup time, pier, return time, and inclusions remain unknown." },
-      { id:"open-0020", pri:20, item:"Confirm Trattoria Da Burde dinner time and transportation", area:"Conference", urgency:"Medium", status:"Pending", why:"Private Joe Lynch dinner is listed at 7:00 PM with time unconfirmed; transportation from W Florence is not provided." }
+      { id:"open-0012", pri:1, item:"Pay Hotel Antiche Figure balance", area:"Budget / Hotel", urgency:"High", status:"Pending", why:"Check email on Oct 6 for the payment link and pay within 48 hours. Balance €620." },
+      { id:"open-0020", pri:2, item:"Confirm Trattoria Da Burde dinner time and transportation", area:"Conference", urgency:"Medium", status:"Pending", why:"Private Joe Lynch dinner is listed at 7:00 PM with time unconfirmed; transportation from W Florence is not provided." },
+      { id:"open-0018", pri:3, item:"Confirm Oct 11 Murano & Burano pickup and return details", area:"Conference", urgency:"Medium", status:"Pending", why:"PSA transportation is provided; pickup time, pier, return time, and inclusions remain unknown." },
+      { id:"open-0016", pri:4, item:"Verify Oct 12 Viator payment, tickets, and JW shuttle", area:"Tour / Transportation", urgency:"High", status:"Pending", why:"$241.38 payment is scheduled Oct 10; confirm the charge and ticket delivery, then verify the Oct 12 JW shuttle schedule and pier for both outbound and return trips." },
+      { id:"open-0017", pri:5, item:"Confirm Osteria Ai Assassini ferry plan and dinner time", area:"Dining / Transportation", urgency:"Medium", status:"Pending", why:"The 6:00 PM dinner time is provisional and a ferry is required from the JW Marriott island hotel." },
+      { id:"open-0013", pri:6, item:"Confirm Hotel Antiche Figure to VCE transport", area:"Transportation", urgency:"Medium", status:"Pending", why:"Hotel is confirmed. Verify the first suitable ATVO/ACTV airport-bus departure and ticket for Oct 15." },
+      { id:"open-0006", pri:7, item:"Confirm remaining flight seat for SK681", area:"Flights", urgency:"Medium", status:"Pending", why:"SK681 is confirmed, but no seat is recorded. Keep this follow-up open until online check-in, then select or confirm a seat if available." },
+      { id:"open-0009", pri:8, item:"Save the PSA Venice Excursions page for offline use", area:"Conference", urgency:"Low", status:"Pending", why:"The authoritative excursion page has not been supplied; the Oct 11 card has the known group details and the remaining pickup information is listed separately." }
     ];
 
     const CITY_CARDS = {
@@ -976,15 +967,15 @@ const MAP_DOOR_ROUTES = [
   {
     "order": 15,
     "dateISO": "2026-10-10",
-    "start": "12:00",
+    "start": "After 11:55 AM train",
     "date": "Oct 10",
     "to": "JW Marriott Venice Resort & Spa Hotel",
     "mode": "PSA/JW group water transfer",
-    "duration": "TBD",
+    "duration": "Per PSA group schedule",
     "link": "https://www.google.com/maps/search/?api=1&query=Venezia+Santa+Lucia+Station",
     "backupLink": "https://avm.avmspa.it/en/content/vaporetto",
-    "status": "Pending group instructions",
-    "note": "PSA will transfer the group from Venezia Santa Lucia Train Station to the island hotel; exact boat and meeting point TBD",
+    "status": "Confirmed / PSA-led",
+    "note": "After Italo 8904 arrives at 11:55 AM, follow the PSA group leader to the JW Marriott island hotel; no separate transfer route is needed.",
     "secondaryNote": "",
     "from": "Venezia Santa Lucia Train Station"
   },
@@ -1043,8 +1034,8 @@ const MAP_DOOR_ROUTES = [
     "duration": "60–120 min",
     "link": "https://www.veneziaairport.it/en/transport/transfers.html",
     "backupLink": "https://www.alilaguna.it/en",
-    "status": "Pending hotel",
-    "note": "Target airport arrival about 8:00 AM",
+    "status": "Pending timetable",
+    "note": "Hotel Antiche Figure is confirmed. Verify the first suitable airport-bus departure and ticket; target airport arrival about 8:00 AM.",
     "secondaryNote": "",
     "from": "Hotel Antiche Figure"
   },
@@ -1357,8 +1348,8 @@ const MAP_AIRPORTS = [
     "official": "https://www.veneziaairport.it/en/",
     "secondary": "https://www.veneziaairport.it/en/transport/transfers.html",
     "concern": "Early-morning hotel transfer",
-    "action": "Finalize after hotel assignment",
-    "status": "Pending hotel"
+    "action": "Verify the first suitable ATVO/ACTV airport-bus departure and ticket",
+    "status": "Pending timetable"
   },
   {
     "name": "New York JFK",
@@ -1400,8 +1391,8 @@ const MAP_HOTELS = [
     "address": "Sacca Sessola Laguna di, 30133 Venezia VE, Italy",
     "link": "https://www.google.com/maps/search/?api=1&query=JW+Marriott+Venice+Resort+Spa",
     "access": "Island resort; use confirmed JW/PSA shuttle or water transfer",
-    "note": "PSA-provided group stay. No additional confirmation number is available, and the booking was not found by property name in the Marriott Bonvoy app. Room details, island shuttle schedule, and central Venice pickup point remain outstanding with PSA.",
-    "status": "Confirmed / details pending"
+    "note": "PSA-provided group stay. Follow PSA instructions for the station-to-island group transfer; no separate arrival route is needed in this agenda.",
+    "status": "Confirmed"
   },
   {
     "city": "Venice",
@@ -1617,46 +1608,13 @@ const MAP_OFFICIAL_SITES = [
 
 const MAP_SAVED_PENDING = [
   {
-    "priority": "High",
-    "item": "Rome-to-Florence group train",
-    "link": "",
-    "owner": "PSA / organizer",
-    "due": "Confirmed",
-    "status": "Done",
-    "dependency": "PSA group arrangements",
-    "note": "Meet in the hotel lobby at 10:45 AM. Join the assigned group; the group walk to the station starts at 11:00 AM. The Train 10 block ends around 1:15 PM. Exact station/platform/coach were not supplied."
-  },
-  {
-    "priority": "High",
-    "item": "Hotel Antiche Figure map",
-    "link": "https://www.google.com/maps/search/?api=1&query=Hotel+Antiche+Figure+Venice",
-    "owner": "David",
-    "due": "Complete",
-    "status": "Done",
-    "dependency": "Hotel confirmed",
-    "note": "Across from Santa Lucia station; confirmation PO55JT57ZW."
-  },
-  {
-    "priority": "High",
-    "item": "Hotel Antiche Figure to VCE route",
-    "link": "https://www.google.com/maps/dir/?api=1&origin=Hotel+Antiche+Figure+Venice&destination=Venice+Marco+Polo+Airport&travelmode=transit",
-    "owner": "David",
-    "due": "Oct. 14",
-    "status": "Pending timetable",
-    "dependency": "Official early-morning bus schedule",
-    "note": "Primary route drafted; verify first departure and buy/stage tickets."
-  },
-  {
     "priority": "Medium",
     "item": "Flight seat map links",
     "link": "",
     "owner": "David",
     "due": "Before check-in",
     "status": "Pending",
-    "dependency": "Seat assignments",
-    "note": "Seats saved for DL2706 (29F/29E), SK928 (27E/27D), SK915 (24G/24H), and SK3438 (27A/27B). SK681 is confirmed; its seat follow-up stays open until check-in."
-  },
-  {
-    "priority": "Medium",
+    "dependency": "SK681 seat assignment",
+    "note": "Seats saved for DL2706 (29F/29E), SK928 (27E/27D), SK915 (24G/24H), and SK3438 (27A/27B). SK681 is confirmed; select or confirm its seat at online check-in."
   }
 ];

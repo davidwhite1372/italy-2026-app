@@ -8,7 +8,9 @@
 - Replaced the obsolete Oct. 8 train details with the user-supplied Train 10 group block (10:45 AM–1:15 PM), keeping the lobby meeting, group station walk, and train leg in order. Replaced Giardino Corsini with the private Joe Lynch dinner at Trattoria Da Burde at 7:00 PM, explicitly time-unconfirmed.
 - Replaced Oct. 9 free-explore content with the booked Accademia / Uffizi tour and matching outbound/return walk cards, clickable maps, and offline picture/PDF guides; preserved the 6:15 PM PSA group dinner at Cucina (Via Giano della Bella 3rosso).
 - Replaced the Oct. 10 dinner-of-choice card with Osteria Ai Assassini at 6:00 PM provisional; preserved Italo 8904, the PSA-led station-to-hotel transfer, and the gondola experience.
-- Confirmed the Oct. 11 PSA Murano & Burano excursion while leaving its missing pickup/pier/return details open.
+- Confirmed the Oct. 11 PSA Murano & Burano excursion while keeping only its still-unknown pickup/pier/return details open.
+- Refined Open Items to remove completed, optional, duplicate, and obsolete tasks. The Oct. 10 Venezia Santa Lucia-to-JW transfer is listed as PSA-led per the user's instructions; Oct. 15 is marked as timetable-pending rather than hotel-pending.
+- Checked the current EU Travel to Europe FAQ: preregistration currently supports Sweden and Portugal, not Denmark or Italy; marked that pretrip check complete.
 - Replaced Oct. 12 free-explore activity with the booked Doge’s Palace / St. Mark’s Basilica tour, hotel shuttle/walking cards in both directions, clickable maps, and offline guides; replaced the dinner-of-choice card with the 7:00 PM PSA group dinner at Ristoteca Oniga.
 - Updated Oct. 12 shuttle instructions against JW Marriott’s current information: target the 9:00 AM boat only after concierge confirmation; the official page describes service from 8:30 AM and about every 30 minutes, subject to changes.
 - Added tour reservation records and updated the event venue index, Maps/Travel routes, offline All Guides library, and service-worker shell for the new guides.
