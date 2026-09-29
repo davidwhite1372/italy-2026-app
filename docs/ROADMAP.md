@@ -31,6 +31,14 @@ Status: Prepared as a Version 11.0.0 develop build from the supplied source ZIP;
 - Keep uncertain facts visible as open items and preserve backup schema 6 and stable record compatibility.
 - Maintain local-only trip data and manual backup/import. No cloud backend or sync was added.
 
+## Version 11.0.1 — Hotel Confirmation Patch
+
+Status: Prepared on `develop` September 29, 2026 at 6:07 PM EDT; automated tests pass (41 tests). Phone review remains pending.
+
+- Record PSA confirmation numbers and room types for the Anantara, W Florence, and JW Marriott stays in the existing hotel and reservation records.
+- Update the confirmation wallet and related hotel/check-in notes; add per-hotel copy controls.
+- Preserve schema 6, stable hotel IDs, offline behavior, and phone-local data.
+
 ## Future evaluation — Shared Cloud Data
 
 Status: Not part of Version 11; requirements and authorization remain open.

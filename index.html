@@ -1435,10 +1435,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "11.0.0",
-      build: "11.0.0",
+      version: "11.0.1",
+      build: "11.0.1",
       backupSchema: 6,
-      lastEdited: "September 29, 2026 at 2:12 PM EDT"
+      lastEdited: "September 29, 2026 at 6:07 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -3016,7 +3016,24 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     function liveHotels() {
       const live = getLive();
       const edits = live.hotels || {};
-      return HOTELS.map(h => edits[h.id] ? { ...h, ...edits[h.id], id:h.id, aliases:h.aliases || [] } : { ...h });
+      return HOTELS.map(h => {
+        const edit = edits[h.id] || {};
+        const hotel = edit ? { ...h, ...edit, id:h.id, aliases:h.aliases || [] } : { ...h };
+        // A phone may still hold the old built-in placeholders. Promote only
+        // those exact defaults so the new confirmed details appear without
+        // discarding any genuinely edited hotel fields or notes.
+        if (h.id === "hotel-rome-anantara" || h.id === "hotel-florence-w" || h.id === "hotel-venice-jw") {
+          if (edit.conf === "Event-provided") hotel.conf = h.conf;
+          if (edit.room === "Event-provided room") hotel.room = h.room;
+          const priorDefaultNotes = {
+            "hotel-rome-anantara": "Check out by 11:00 AM on Oct. 8 before the 11:00 AM PSA lobby meeting. Need final room confirmation and check-in details.",
+            "hotel-florence-w": "Published hotel check-in begins at 3:00 PM. Need final room confirmation and breakfast details.",
+            "hotel-venice-jw": "Confirm room details, island shuttle schedule, and transfer from central Venice."
+          }[h.id];
+          if (edit.notes === priorDefaultNotes) hotel.notes = h.notes;
+        }
+        return hotel;
+      });
     }
 
     function hotelById(id) {
@@ -4185,9 +4202,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           </div>
         </div>
         <div class="card">
-          <div class="row space-between"><div class="card-title">🏨 Hotels</div><button class="edit-btn" onclick="copyTextValue((hotelById('hotel-venice-antiche')||{}).conf,'Hotel confirmation copied')">Copy Antiche conf.</button></div>
+          <div class="row space-between"><div class="card-title">🏨 Hotels</div><span class="text-muted">Tap Copy to copy a confirmation</span></div>
           <div class="text-sm" style="line-height:1.85;">
-            ${liveHotels().map(h => `<div style="padding:8px 0;border-bottom:1px solid var(--border);"><strong>${escapeHtml(h.city)} ${escapeHtml(h.dates)}:</strong> ${escapeHtml(h.name)} <button class="edit-btn" onclick="editHotelById('${h.id}')">Edit</button><br>${escapeHtml(h.address)} · ${escapeHtml(h.conf)}${h.room?`<br>${escapeHtml(h.room)}`:""}${h.payment?` · ${escapeHtml(h.payment)}`:""}${h.tax?` · ${escapeHtml(h.tax)}`:""}${h.breakfast?`<br>${escapeHtml(h.breakfast)}`:""}</div>`).join("")}
+            ${liveHotels().map(h => `<div style="padding:8px 0;border-bottom:1px solid var(--border);"><strong>${escapeHtml(h.city)} ${escapeHtml(h.dates)}:</strong> ${escapeHtml(h.name)} <button class="edit-btn" onclick="editHotelById('${h.id}')">Edit</button><br>${escapeHtml(h.address)} · ${escapeHtml(h.conf)} <button class="edit-btn" onclick="copyTextValue(${JSON.stringify(h.conf)},'Hotel confirmation copied')">Copy</button>${h.room?`<br>${escapeHtml(h.room)}`:""}${h.payment?` · ${escapeHtml(h.payment)}`:""}${h.tax?` · ${escapeHtml(h.tax)}`:""}${h.breakfast?`<br>${escapeHtml(h.breakfast)}`:""}</div>`).join("")}
           </div>
         </div>
         <div class="card"><div class="card-title">🎫 Conference / PSA</div><div class="text-sm" style="line-height:1.85;"><strong>Rom/Flo:</strong> ${TRIP.confRomeFlo}<br><strong>Ven:</strong> ${TRIP.confVen}<br><span class="text-muted">Registration confirmed; add final agenda offline when available.</span></div></div>

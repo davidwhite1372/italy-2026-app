@@ -1,13 +1,15 @@
-# Version 11.0.0 Release Checklist
+# Version 11.0.1 Release Checklist
 
-Develop build prepared September 29, 2026 at 2:12 PM EDT. Production remains on `main`; do not merge, publish, or deploy until the user approves after review.
+V11.0.1 develop build prepared September 29, 2026 at 6:07 PM EDT from V11.0.0. Production branch `main` has not been changed by this patch; do not merge, publish, or deploy until the user approves after review.
 
 ## Automated checks
 
 - [x] `npm ci` completes from the supplied lockfile.
 - [x] `npm test` passes locally (41 tests); GitHub Actions still requires a develop push.
-- [x] App/build/package/manifest versions all show 11.0.0; backup schema remains 6.
-- [x] Service worker cache uses the v11.0.0 key and all new guide PNG/PDF assets are in its shell.
+- [x] App/build/package/manifest versions all show 11.0.1; backup schema remains 6.
+- [x] Service worker cache uses the v11.0.1 key and all guide PNG/PDF assets remain in its shell.
+- [x] Rome, Florence, and JW hotel records, reservations, confirmation wallet, and W Florence check-in card show confirmation numbers 203390136, 186071359, and 187185636 with the supplied room types.
+- [x] The confirmation wallet provides a copy control for each hotel number.
 - [x] Existing backup imports remain schema-compatible; stable IDs are unique.
 
 ## Agenda and content review
@@ -36,4 +38,4 @@ Develop build prepared September 29, 2026 at 2:12 PM EDT. Production remains on 
 - [ ] Commit and push only after the user reviews the changed-files ZIP and resolves any blocking agenda questions.
 - [ ] Verify GitHub Actions and manual local checks on `develop`.
 - [ ] Ask the user to approve before merging `develop` to `main` or publishing.
-- [ ] After approval, merge and verify production; tag `v11.0.0` only after the live app checks pass.
+- [ ] After approval, merge and verify production; tag `v11.0.1` only after any chosen production checks pass.

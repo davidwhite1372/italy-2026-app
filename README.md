@@ -4,10 +4,12 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 
 ## Current development build
 
-**Version 11.0.0 — Major itinerary and guide release**  
-Last edited September 29, 2026 at 2:12 PM EDT. Backup schema 6 remains unchanged.
+**Version 11.0.1 — Hotel confirmations patch**
+Last edited September 29, 2026 at 6:07 PM EDT. Backup schema 6 remains unchanged.
 
-Version 11 updates the Oct. 5–12 itinerary, adds three booked tour records and the matching outbound/return transfer cards, and includes six Rome/Florence/Venice transfer guides plus a Copenhagen return-connection guide in PNG and PDF formats. The Oct. 13–15 personal itinerary remains as supplied. The Open Items list contains only eight genuine future checks; completed, optional, duplicate, and obsolete tasks were removed. Remaining items cover the €620 hotel balance, Da Burde timing/transport, Oct. 11 excursion details, Oct. 12 Viator payment/tickets and shuttle timing, Osteria ferry/time, the Oct. 15 bus timetable, the SK681 seat, and the unsupplied PSA excursion page.
+Version 11.0.1 records the final PSA hotel confirmation numbers and room types for Anantara Palazzo Naiadi, W Florence, and JW Marriott Venice in the hotel details, reservation records, and confirmation wallet. Each hotel confirmation now has its own Copy button. Phone-local data and photos are not modified.
+
+Version 11.0.0 updated the Oct. 5–12 itinerary, added three booked tour records and the matching outbound/return transfer cards, and included six Rome/Florence/Venice transfer guides plus a Copenhagen return-connection guide in PNG and PDF formats. The Oct. 13–15 personal itinerary remains as supplied. The Open Items list contains only eight genuine future checks; completed, optional, duplicate, and obsolete tasks were removed. Remaining items cover the €620 hotel balance, Da Burde timing/transport, Oct. 11 excursion details, Oct. 12 Viator payment/tickets and shuttle timing, Osteria ferry/time, the Oct. 15 bus timetable, the SK681 seat, and the unsupplied PSA excursion page.
 
 Production remains on the stable `main` branch. Develop and test on `develop`; do not merge or publish until the app and both phones are reviewed and the release is approved.
 
@@ -17,7 +19,7 @@ User-entered information is stored locally on each phone. Changes made on one ph
 
 - Export a fresh backup before changing devices, clearing browser data, or reinstalling the app.
 - Backup schema numbers describe file compatibility; they are separate from the app version.
-- Version 11.0.0 creates schema 6 backups and continues importing schema 5, schema 4, and older supported backups.
+- Version 11.0.1 creates schema 6 backups and continues importing schema 5, schema 4, and older supported backups.
 - No phone backup was used to reconcile personal data in this build. Preserve existing phone-only notes and expenses.
 - Shared cloud data is still an evaluation item; this release adds no account, backend, or online synchronization.
 - Online receipt recognition and the AI Italian tutor / microphone workflow remain unbuilt; provider, privacy, offline, and interaction requirements still need a product decision.

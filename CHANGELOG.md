@@ -1,3 +1,13 @@
+## Version 11.0.1 — September 29, 2026
+
+Build prepared on `develop` September 29, 2026 at 6:07 PM EDT.
+
+### Hotel confirmations
+- Added the PSA email confirmations for Anantara Palazzo Naiadi (203390136, Premium Room, Oct 5–8), W Florence (186071359, KING, Oct 8–10), and JW Marriott Venice (187185636, KING, Oct 10–13) to the shared hotel, reservation, and confirmation-wallet records.
+- Updated the W Florence check-in card and hotel-map notes to show the confirmed room type and confirmation number; removed stale notes saying the group hotel confirmations were still missing.
+- Added a Copy button beside every hotel confirmation in the wallet.
+- Updated app/build/package/manifest metadata, the PWA cache key, and last-edited time for Version 11.0.1. Backup schema 6, existing hotel IDs, offline behavior, and local phone data remain unchanged.
+
 ## Version 11.0.0 — September 29, 2026
 
 ### Major agenda and guide release

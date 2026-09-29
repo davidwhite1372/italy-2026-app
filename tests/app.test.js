@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "11.0.0");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "11.0.0");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "11.0.1");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "11.0.1");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 29, 2026 at 2:12 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 29, 2026 at 6:07 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -235,7 +235,7 @@ test("Version 11 itinerary cards, clickable routes, and offline guides match the
     pretrip:PRETRIP.flatMap(group=>group.items),
     release:APP_METADATA
   })`));
-  assert.equal(data.release.version,"11.0.0");
+  assert.equal(data.release.version,"11.0.1");
   assert.equal(data.release.backupSchema,6);
   assert.equal(data.routes.find(route=>route.order===15).start,"After 11:55 AM train");
   assert.equal(data.routes.find(route=>route.order===15).duration,"Per PSA group schedule");
@@ -832,19 +832,43 @@ test("SK681 stays confirmed while its seat follow-up remains open until check-in
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("hotel stays remain confirmed while missing confirmation and room details stay visible", async t => {
+test("event hotel confirmations are visible while stale placeholders and other phone edits are preserved", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
   const result = JSON.parse(app.window.eval(`JSON.stringify({
     hotels:RESERVATIONS.filter(item=>["reservation-0002","reservation-0003","reservation-0007"].includes(item.id)),
+    hotelRecords:HOTELS.filter(item=>["hotel-rome-anantara","hotel-florence-w","hotel-venice-jw"].includes(item.id)),
     jwFollowup:OPEN_ITEMS.find(item=>item.id==="open-0003"),
     mapHotels:MAP_HOTELS
   })`));
   assert.deepEqual(result.hotels.map(item=>item.status),["Confirmed","Confirmed","Confirmed"]);
+  assert.deepEqual(result.hotels.map(item=>item.conf),["203390136","186071359","187185636"]);
+  assert.deepEqual(result.hotelRecords.map(item=>[item.conf,item.room]),[["203390136","Premium Room"],["186071359","KING"],["187185636","KING"]]);
+  assert.doesNotMatch(result.hotels[0].notes,/no additional hotel confirmation number|room-specific confirmation .* outstanding/i);
+  assert.doesNotMatch(result.hotels[1].notes,/no additional hotel confirmation number|room-specific confirmation .* outstanding/i);
   assert.match(result.hotels[2].notes,/Follow PSA instructions for the station-to-island group transfer/i);
   assert.equal(result.jwFollowup,undefined);
   assert.equal(result.mapHotels.find(item=>item.city==="Venice" && item.name==="JW Marriott Venice Resort & Spa").status,"Confirmed");
+  assert.match(result.mapHotels.find(item=>item.city==="Rome").note,/203390136.*Premium Room/);
+  app.window.renderWallet();
+  const wallet=app.window.document.querySelector("#walletContent");
+  assert.match(wallet.textContent,/203390136.*186071359.*187185636/s);
+  const hotelCard=Array.from(wallet.querySelectorAll(".card")).find(card=>card.textContent.includes("🏨 Hotels"));
+  assert.equal(Array.from(hotelCard.querySelectorAll("button")).filter(button=>button.textContent.trim()==="Copy").length,4);
   assert.deepEqual(app.runtimeErrors, []);
+
+  const stalePhoneApp=await bootApp({italy2026_live:{hotels:{
+    "hotel-rome-anantara":{conf:"Event-provided",room:"Event-provided room",notes:"Check out by 11:00 AM on Oct. 8 before the 11:00 AM PSA lobby meeting. Need final room confirmation and check-in details."},
+    "hotel-florence-w":{conf:"Event-provided",room:"Event-provided room",notes:"Melody's private hotel note"},
+    "hotel-venice-jw":{conf:"Event-provided",room:"Event-provided room"}
+  }}});
+  t.after(()=>stalePhoneApp.dom.window.close());
+  const mergedHotels=JSON.parse(stalePhoneApp.window.eval(`JSON.stringify(liveHotels().filter(item=>["hotel-rome-anantara","hotel-florence-w","hotel-venice-jw"].includes(item.id)).map(item=>({id:item.id,conf:item.conf,room:item.room,notes:item.notes})))`));
+  assert.deepEqual(mergedHotels.map(item=>[item.conf,item.room]),[["203390136","Premium Room"],["186071359","KING"],["187185636","KING"]]);
+  assert.match(mergedHotels[0].notes,/Confirmation received Sep\. 29, 2026.*Guests: David Theodore White and Melody Kay/);
+  assert.equal(mergedHotels[1].notes,"Melody's private hotel note");
+  assert.equal(stalePhoneApp.window.JSON.parse(stalePhoneApp.window.localStorage.getItem("italy2026_live")).hotels["hotel-rome-anantara"].conf,"Event-provided");
+  assert.deepEqual(stalePhoneApp.runtimeErrors, []);
 });
 
 test("Maps page prioritizes quick guides and avoids duplicate itinerary sections", async t => {
@@ -1147,7 +1171,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"11.0.0");
+  assert.equal(payload.appVersion,"11.0.1");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -1187,7 +1211,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "11.0.0");
+  assert.equal(payload.appVersion, "11.0.1");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -1206,9 +1230,9 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"11.0.0");
-  assert.match(manifest.description,/Version 11\.0\.0/);
-  assert.match(worker,/v11-0-0-italy-agenda/);
+  assert.equal(packageData.version,"11.0.1");
+  assert.match(manifest.description,/Version 11\.0\.1/);
+  assert.match(worker,/v11-0-1-hotel-confirmations/);
   ["boston-terminal-a-to-e.png","fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png","italy-camera-cheat-sheet-samsung-s23-ultra.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
@@ -1282,7 +1306,7 @@ test("offline application shell lists every required local asset", () => {
     "./assets/guides/italy-camera-cheat-sheet-samsung-s23-ultra.png"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v11-0-0-italy-agenda/);
+  assert.match(worker, /italy-2026-github-v11-0-1-hotel-confirmations/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);
