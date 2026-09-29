@@ -16,7 +16,7 @@ Develop build prepared September 29, 2026. Production remains on `main`; do not 
 - [x] Oct. 6: Cantine Santa Benedetta and Comodo replace the old excursion/dine-around entries; an Oct. 6 email check for the €620 Antiche Figure link is listed.
 - [x] Oct. 7: tour meeting directions, maps, return guide, and free-dinner restaurant suggestion are clear; Villa Miani is removed.
 - [ ] Oct. 8: Train 10 group block is 10:45 AM–1:15 PM; Da Burde is 7:00 PM, time unconfirmed.
-- [ ] Oct. 9: Accademia/Uffizi tour with outbound and return guidance; 6:15 PM Cucina 3rosso retained.
+- [x] Oct. 9: Accademia/Uffizi tour with outbound and return guidance; 6:15 PM dinner at Cucina retained; 3rosso is recorded as the street number.
 - [ ] Oct. 10: Italo 8904, PSA transfer, gondola, and 6:00 PM provisional Osteria Ai Assassini entry are intact.
 - [x] Oct. 11: Murano & Burano is selected; missing pickup details and the still-unsaved PSA excursion page remain visible.
 - [ ] Oct. 12: booked tour, JW shuttle/walking guides, and 7:00 PM Oniga dinner are present.

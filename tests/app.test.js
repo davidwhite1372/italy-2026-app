@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "11.0.0");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "11.0.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 29, 2026 at 11:12 AM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 29, 2026 at 1:45 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -255,6 +255,10 @@ test("Version 11 itinerary cards, clickable routes, and offline guides match the
   assert.match(byId["tl-0057"].instructions,/licensed white taxi.*060609.*Line B/i);
   assert.match(byId["tl-0020"].time,/7:00 PM.*time unconfirmed/i);
   assert.match(byId["tl-0021"].title,/Accademia.*Uffizi/);
+  assert.equal(byId["tl-0053"].title,"PSA Group Dinner at Cucina");
+  assert.match(byId["tl-0053"].to,/Cucina, Via Giano della Bella 3rosso/);
+  assert.ok(!data.venues.some(item=>item.name==="Cucina 3rosso"));
+  assert.equal(data.venues.find(item=>item.name==="Cucina").address,"Via Giano della Bella 3rosso, 50124 Firenze");
   assert.match(byId["tl-0058"].instructions,/9:40 AM.*10:15 AM/);
   assert.match(byId["tl-0059"].instructions,/Uffizi.*W Florence/);
   assert.match(byId["tl-0026"].time,/6:00 PM.*provisional/i);
@@ -861,7 +865,7 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
     ["Comodo Mercado Trevi","Joe Lynch Group Dinner · Oct 6","Walk / group plan"],
     ["Nerone al Viminale","Joe Lynch Group Dinner · Oct 5","Walk / group meetup"],
     ["Osteria Ai Assassini","Dinner · Oct 10","JW shuttle / ferry"],
-    ["Cucina 3rosso","PSA Group Dinner · Oct 9","PSA group dinner / transport TBD"],
+    ["Cucina","PSA Group Dinner · Oct 9","PSA group dinner / transport TBD"],
     ["Ristoteca Oniga","PSA Group Dinner · Oct 12","JW shuttle / vaporetto"]
   ]);
   assert.deepEqual(mapData.help.map(item => item.name), ["U.S. Embassy Rome"]);

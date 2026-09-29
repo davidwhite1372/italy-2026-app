@@ -5,7 +5,7 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 ## Current development build
 
 **Version 11.0.0 — Major itinerary and guide release**  
-Last edited September 29, 2026 at 11:12 AM EDT. Backup schema 6 remains unchanged.
+Last edited September 29, 2026 at 1:45 PM EDT. Backup schema 6 remains unchanged.
 
 Version 11 updates the Oct. 5–12 itinerary, adds three booked tour records and the matching outbound/return transfer cards, and includes six Rome/Florence/Venice transfer guides plus a Copenhagen return-connection guide in PNG and PDF formats. The Oct. 13–15 personal itinerary remains as supplied. Review the app's Open Items for unresolved schedule details, including Da Burde timing/transport, the Oct. 11 pickup, the offline PSA excursion page, and JW Marriott shuttle times.
 
