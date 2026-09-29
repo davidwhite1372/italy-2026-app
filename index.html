@@ -1435,10 +1435,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "10.14.11",
-      build: "10.14.11",
+      version: "11.0.0",
+      build: "11.0.0",
       backupSchema: 6,
-      lastEdited: "September 27, 2026 at 2:38 PM EDT"
+      lastEdited: "September 29, 2026 at 11:12 AM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1735,7 +1735,10 @@
       "tl-0017":11, "tl-0019":12, "tl-0022":13, "tl-0023":14, "tl-0024":15,
       "tl-0031":16, "tl-0032":16.1, "tl-0041":16.2, "tl-0034":17,
       "tl-0035":18, "tl-0043":19, "tl-0036":20, "tl-0037":21, "tl-0038":22,
-      "tl-0039":23, "tl-0040":23.1
+      "tl-0039":23, "tl-0040":23.1, "tl-0014":24, "tl-0051":25,
+      "tl-0056":26, "tl-0016":27, "tl-0057":28, "tl-0058":29,
+      "tl-0021":30, "tl-0059":31, "tl-0030":32, "tl-0060":33,
+      "tl-0061":34, "tl-0026":35, "tl-0045":36, "tl-0053":37, "tl-0062":28.1
     };
 
     function modeIcon(mode) {
@@ -2296,8 +2299,22 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     }
     const PROMOTED_SHARED_TRAVEL_IDS = new Set(["travel-13","travel-18","travel-27","travel-42"]);
     const CANONICAL_SHARED_TRAVEL_FIELDS = Object.freeze({
-      // PSA's confirmed Oct. 8 train time supersedes stale phone-export fields.
-      "travel-18": ["date","start","end","duration","status","instructions","transportationDetails"]
+      // Version 11 reviewed agenda facts supersede stale card fields from old phone exports.
+      // User-authored notes and unrelated data remain on the phone.
+      "travel-11": ["date","start","end","itemType","transportation","transportationDetails","title","from","to","mode","duration","status","instructions"],
+      "travel-14": ["date","start","end","itemType","transportation","transportationDetails","title","from","to","mode","duration","status","instructions"],
+      "travel-15": ["date","start","end","itemType","transportation","transportationDetails","title","from","to","mode","duration","status","instructions"],
+      "travel-16": ["date","start","end","itemType","transportation","transportationDetails","title","from","to","mode","duration","status","instructions"],
+      "travel-17": ["date","start","end","itemType","transportation","transportationDetails","title","from","to","mode","duration","status","instructions"],
+      "travel-18": ["date","start","end","itemType","transportation","transportationDetails","title","from","to","mode","duration","status","instructions"],
+      "travel-19": ["date","start","end","itemType","transportation","transportationDetails","title","from","to","mode","duration","status","instructions"],
+      "travel-20": ["date","start","end","itemType","transportation","transportationDetails","title","from","to","mode","duration","status","instructions"],
+      "travel-21": ["date","start","end","itemType","transportation","transportationDetails","title","from","to","mode","duration","status","instructions"],
+      "travel-26": ["date","start","end","itemType","transportation","transportationDetails","title","from","to","mode","duration","status","instructions"],
+      "travel-28": ["date","start","end","itemType","transportation","transportationDetails","title","from","to","mode","duration","status","instructions"],
+      "travel-30": ["date","start","end","itemType","transportation","transportationDetails","title","from","to","mode","duration","status","instructions"],
+      "travel-45": ["date","start","end","itemType","transportation","transportationDetails","title","from","to","mode","duration","status","instructions"],
+      "travel-53": ["date","start","end","itemType","transportation","transportationDetails","title","from","to","mode","duration","status","instructions"]
     });
     function normalizeSharedTravelEdits(obj) {
       return Object.entries(obj&&typeof obj==="object"?obj:{}).reduce((out,[id,value])=>{
@@ -4046,18 +4063,19 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     }
 
     const PRETRIP = [
+      { id: "p0v11", group: "Dated reminder — October 6", items: [
+        { id: "h1v11", text: "Oct 6: check email for Hotel Antiche Figure’s €620 balance payment link; pay when it arrives" }
+      ]},
       { id: "p1", group: "Decisions (do first)", items: [
         { id: "d1", text: "Reconfirm Italo 8904 remains primary; cancel only if PSA transfer becomes clearly preferable" },
-        { id: "d2", text: "Select Oct 11 Venice excursion (Ciao Venice OR Murano & Burano)" },
-        { id: "d3", text: "Get Joe Lynch private Rome agenda (or confirm official fallback)" },
-        { id: "d4", text: "Get Rome → Florence train details from PSA (station, times, seats)" }
+        { id: "d2v11", text: "Confirm Oct 11 Murano & Burano pickup time, pier, and return" },
+        { id: "d3v11", text: "Confirm Cantine coach instructions and winery address with PSA" },
+        { id: "d4v11", text: "Confirm Train 10 station and Florence arrival transfer with PSA" }
       ]},
       { id: "p2", group: "72 hours before departure", items: [
-        { id: "h1", text: "Pay Hotel Antiche Figure balance (€620) when payment link arrives" },
         { id: "h2", text: "Confirm JW Venice room / shuttle / arrival transfer details" },
-        { id: "h3", text: "Confirm awards dinner dress code and coach time" },
-        { id: "h4", text: "Confirm Giardino Corsini transport and dress code" },
-        { id: "h5", text: "Download Venice Excursions page for offline use" },
+        { id: "h4v11", text: "Confirm Trattoria Da Burde time and transportation" },
+        { id: "h5v11", text: "Verify Oct 12 Viator payment, tickets, and JW shuttle schedule" },
         { id: "h6", text: "Verify flight seat assignments; save seat maps offline" },
         { id: "h7", text: "Check TPA Economy Parking rate and SunPass", done: true },
         { id: "h8", text: "Update EUR→USD rate in Budget if needed" },
@@ -4222,6 +4240,11 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       const m = start.match(/(\d{1,2}):(\d{2})/);
       let mins = 24 * 60; // flexible / unknown → end of day
       if (m) mins = (+m[1]) * 60 + (+m[2]) + dayOffset * 24 * 60;
+      else if (t.sortAfterTimelineId) {
+        const prior = TIMELINE.find(item => item.id === t.sortAfterTimelineId && item.date === date);
+        const priorStart = String(prior && prior.start || "").match(/(\d{1,2}):(\d{2})/);
+        if (priorStart) mins = (+priorStart[1]) * 60 + (+priorStart[2]) + 1;
+      }
       return date + "|" + String(mins).padStart(5, "0") + "|" + timelineStateId(t);
     }
 
@@ -4796,6 +4819,34 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         {src:"assets/guides/cph-connection-guide-outbound.png",title:"CPH Outbound Connection Guide",verified:"Sep 13, 2026"},
         {src:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide · PDF",secondary:true,verified:"Sep 13, 2026"}
       ],
+      "travel-43":[
+        {src:"assets/guides/cph-connection-guide-return.png",title:"CPH Return Connection Guide",verified:"Sep 29, 2026"},
+        {src:"assets/guides/cph-connection-guide-return.pdf",title:"CPH Return Connection Guide · PDF",secondary:true,verified:"Sep 29, 2026"}
+      ],
+      "travel-56":[
+        {src:"assets/guides/rome-metro-transfer-guide.png",title:"Anantara → Vatican tour transit guide",verified:"Sep 29, 2026"},
+        {src:"assets/guides/rome-metro-transfer-guide.pdf",title:"Anantara → Vatican tour transit guide · PDF",secondary:true,verified:"Sep 29, 2026"}
+      ],
+      "travel-57":[
+        {src:"assets/guides/rome-return-transfer-guide.png",title:"Colosseum → Anantara return guide",verified:"Sep 29, 2026"},
+        {src:"assets/guides/rome-return-transfer-guide.pdf",title:"Colosseum → Anantara return guide · PDF",secondary:true,verified:"Sep 29, 2026"}
+      ],
+      "travel-58":[
+        {src:"assets/guides/florence-tour-outbound-guide.png",title:"W Florence → Accademia tour guide",verified:"Sep 29, 2026"},
+        {src:"assets/guides/florence-tour-outbound-guide.pdf",title:"W Florence → Accademia tour guide · PDF",secondary:true,verified:"Sep 29, 2026"}
+      ],
+      "travel-59":[
+        {src:"assets/guides/florence-tour-return-guide.png",title:"Uffizi → W Florence return guide",verified:"Sep 29, 2026"},
+        {src:"assets/guides/florence-tour-return-guide.pdf",title:"Uffizi → W Florence return guide · PDF",secondary:true,verified:"Sep 29, 2026"}
+      ],
+      "travel-30":[
+        {src:"assets/guides/venice-tour-outbound-guide.png",title:"JW Marriott → Calle de le Rasse tour guide",verified:"Sep 29, 2026"},
+        {src:"assets/guides/venice-tour-outbound-guide.pdf",title:"JW Marriott → Calle de le Rasse tour guide · PDF",secondary:true,verified:"Sep 29, 2026"}
+      ],
+      "travel-61":[
+        {src:"assets/guides/venice-tour-return-guide.png",title:"Doge’s Palace → JW Marriott return guide",verified:"Sep 29, 2026"},
+        {src:"assets/guides/venice-tour-return-guide.pdf",title:"Doge’s Palace → JW Marriott return guide · PDF",secondary:true,verified:"Sep 29, 2026"}
+      ],
       "travel-10":[
         {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1",verified:"Sep 13, 2026"},
         {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2",verified:"Sep 13, 2026"}
@@ -4811,6 +4862,13 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     const MAP_GUIDE_LIBRARY = Object.freeze([
       {src:"assets/guides/boston-terminal-a-to-e.png",title:"Boston Terminal A → E transfer guide",category:"Oct 4 · Airport connection",verified:"Sep 23, 2026",note:"Updated guide timings: shuttle about 3:10–3:25 PM, Terminal E around 3:25–3:35 PM, TSA about 3:45–4:25 PM. Reach the SK928 gate by 5:00 PM for the 5:40 PM departure."},
       {src:"assets/guides/cph-connection-guide-outbound.png",pdf:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide",category:"Oct 5 · Airport connection",verified:"Sep 13, 2026"},
+      {src:"assets/guides/cph-connection-guide-return.png",pdf:"assets/guides/cph-connection-guide-return.pdf",title:"CPH Return Connection Guide",category:"Oct 15 · Airport connection",verified:"Sep 29, 2026"},
+      {src:"assets/guides/rome-metro-transfer-guide.png",pdf:"assets/guides/rome-metro-transfer-guide.pdf",title:"Anantara → Vatican Tour Transit Guide",category:"Oct 7 · Rome tour transfer",verified:"Sep 29, 2026"},
+      {src:"assets/guides/rome-return-transfer-guide.png",pdf:"assets/guides/rome-return-transfer-guide.pdf",title:"Colosseum → Anantara Return Guide",category:"Oct 7 · Rome tour return",verified:"Sep 29, 2026"},
+      {src:"assets/guides/florence-tour-outbound-guide.png",pdf:"assets/guides/florence-tour-outbound-guide.pdf",title:"W Florence → Accademia Tour Guide",category:"Oct 9 · Florence tour transfer",verified:"Sep 29, 2026"},
+      {src:"assets/guides/florence-tour-return-guide.png",pdf:"assets/guides/florence-tour-return-guide.pdf",title:"Uffizi → W Florence Return Guide",category:"Oct 9 · Florence tour return",verified:"Sep 29, 2026"},
+      {src:"assets/guides/venice-tour-outbound-guide.png",pdf:"assets/guides/venice-tour-outbound-guide.pdf",title:"JW Marriott → Calle de le Rasse Guide",category:"Oct 12 · Venice tour transfer",verified:"Sep 29, 2026"},
+      {src:"assets/guides/venice-tour-return-guide.png",pdf:"assets/guides/venice-tour-return-guide.pdf",title:"Doge’s Palace → JW Marriott Return Guide",category:"Oct 12 · Venice tour return",verified:"Sep 29, 2026"},
       {gallery:[
         {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1"},
         {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2"}

@@ -455,7 +455,7 @@ test("Maps separates hotels, dinner venues, and consular help", async t => {
   ]);
   assert.deepEqual(mapData.venues.map(item => [item.name,item.event,item.transportation]), [
     ["SEEN by Olivier","Dinner","None / Not applicable"],
-    ["Villa Miani","Awards Dinner","Bus / Coach"],
+    ["Da Danilo","Free Dinner · Oct 7 (restaurant-list suggestion)","Walk / taxi"],
     ["Giardino Corsini al Prato","Dinner","Walk"]
   ]);
   assert.deepEqual(mapData.help.map(item => item.name), ["U.S. Embassy Rome"]);
@@ -463,7 +463,7 @@ test("Maps separates hotels, dinner venues, and consular help", async t => {
   window.showPage("maps");
   assert.equal(document.querySelectorAll("#mapsHotels .card").length, 4);
   assert.equal(document.querySelectorAll("#mapsVenues .card").length, 3);
-  assert.match(document.querySelector("#mapsVenues").textContent, /Villa Miani[\s\S]*Awards Dinner[\s\S]*Bus \/ Coach/);
+  assert.match(document.querySelector("#mapsVenues").textContent, /Trattoria da Danilo[\s\S]*Free Dinner/);
   assert.match(document.querySelector("#mapsTravelHelpLocations").textContent, /U\.S\. Embassy Rome/);
   assert.match(document.querySelector("#mapsLocalGuide").textContent, /Venice High Water Guide[\s\S]*82 cm[\s\S]*105 cm[\s\S]*135 cm/);
   assert.deepEqual(

@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v10-14-11-rome-florence-train';
+const CACHE = 'italy-2026-github-v11-0-0-italy-agenda';
 const APP_SHELL = [
   './',
   './index.html',
@@ -25,7 +25,21 @@ const APP_SHELL = [
   ,'./assets/guides/venice-vaporetto-map-2026.png'
   ,'./assets/guides/laundry-king-florence.png'
   ,'./assets/guides/boston-terminal-a-to-e.png'
-  ,'./assets/guides/italy-camera-cheat-sheet-samsung-s23-ultra.png'
+  ,'./assets/guides/italy-camera-cheat-sheet-samsung-s23-ultra.png',
+  './assets/guides/cph-connection-guide-return.png',
+  './assets/guides/cph-connection-guide-return.pdf',
+  './assets/guides/rome-metro-transfer-guide.png',
+  './assets/guides/rome-metro-transfer-guide.pdf',
+  './assets/guides/rome-return-transfer-guide.png',
+  './assets/guides/rome-return-transfer-guide.pdf',
+  './assets/guides/florence-tour-outbound-guide.png',
+  './assets/guides/florence-tour-outbound-guide.pdf',
+  './assets/guides/florence-tour-return-guide.png',
+  './assets/guides/florence-tour-return-guide.pdf',
+  './assets/guides/venice-tour-outbound-guide.png',
+  './assets/guides/venice-tour-outbound-guide.pdf',
+  './assets/guides/venice-tour-return-guide.png',
+  './assets/guides/venice-tour-return-guide.pdf',
 ];
 
 self.addEventListener('install', event => {

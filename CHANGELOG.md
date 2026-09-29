@@ -1,3 +1,22 @@
+## Version 11.0.0 — September 29, 2026
+
+### Major agenda and guide release
+- Updated the October 5–12 itinerary from the reviewed Joe Lynch / PSA agenda and personal bookings; October 13–15 personal plans remain unchanged.
+- Replaced the Oct. 5 SEEN dinner card with the Joe Lynch Group Dinner at Nerone and added restaurant website/map links. Leonardo Express remains a next-available ticket bought in the Trenitalia app after bag collection; 12:23 PM is a planning placeholder, not a booked ticket.
+- Replaced Oct. 6’s generic excursion and dine-around entries with the Cantine Santa Benedetta excursion and Comodo Mercado Trevi dinner.
+- Added the booked Oct. 7 Vatican Museums / Sistine Chapel / Colosseum tour, detailed outbound Metro A directions, a separate return-to-hotel card, clickable maps, and offline picture/PDF guides. Replaced the Villa Miani gala with flexible free-dinner time and a Trattoria da Danilo suggestion from the existing restaurant list; the booked tour and return-to-hotel guidance remain.
+- Replaced the obsolete Oct. 8 train details with the user-supplied Train 10 group block (10:45 AM–1:15 PM), keeping the lobby meeting, group station walk, and train leg in order. Replaced Giardino Corsini with the private Joe Lynch dinner at Trattoria Da Burde at 7:00 PM, explicitly time-unconfirmed.
+- Replaced Oct. 9 free-explore content with the booked Accademia / Uffizi tour and matching outbound/return walk cards, clickable maps, and offline picture/PDF guides; preserved the 6:15 PM Cucina 3rosso dinner.
+- Replaced the Oct. 10 dinner-of-choice card with Osteria Ai Assassini at 6:00 PM provisional; preserved Italo 8904, the PSA-led station-to-hotel transfer, and the gondola experience.
+- Confirmed the Oct. 11 PSA Murano & Burano excursion while leaving its missing pickup/pier/return details open.
+- Replaced Oct. 12 free-explore activity with the booked Doge’s Palace / St. Mark’s Basilica tour, hotel shuttle/walking cards in both directions, clickable maps, and offline guides; replaced the dinner-of-choice card with the 7:00 PM PSA group dinner at Ristoteca Oniga.
+- Updated Oct. 12 shuttle instructions against JW Marriott’s current information: target the 9:00 AM boat only after concierge confirmation; the official page describes service from 8:30 AM and about every 30 minutes, subject to changes.
+- Added tour reservation records and updated the event venue index, Maps/Travel routes, offline All Guides library, and service-worker shell for the new guides.
+- Added a Copenhagen return-connection visual guide for the Oct. 15 SK2692 → SK915 transfer, using live signage instructions and no assumed gate or terminal.
+- Added an October 6 dated reminder to check email for the €620 Hotel Antiche Figure balance payment link and pay when received.
+- Refreshed app/build/package/manifest metadata and the PWA cache key for Version 11.0.0. Backup schema 6 and stable pre-existing IDs remain compatible.
+- Shared cloud synchronization remains future evaluation work; this release does not add a backend or send local trip data online.
+
 ## Version 10.14.11 — September 27, 2026
 - Fixed stale phone-export overrides that could restore “Morning,” an outdated duration, or Pending status on the Oct. 8 PSA train card; confirmed master values now take precedence while unrelated phone notes remain.
 - Displayed the train times as 12:05 PM–1:45 PM in Timeline and Travel Details and regression-checked the sequence: 11:00 AM lobby meeting, train, station-to-hotel walk, then W Florence check-in.

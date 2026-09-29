@@ -1,68 +1,46 @@
 # Italy 2026 Travel Companion Roadmap
 
-## Version 10.2.1 — Stable GitHub Migration
-Status: Complete
+## Versions 10.2.1–10.8.2 — Stable App and Travel Expansion
 
-- Preserve the existing design, content, PWA installation, and offline behavior.
-- Add pinch-to-zoom support.
-- Move hosting from Netlify to GitHub Pages.
-- Establish GitHub Desktop, `main`, and `develop` workflows.
+Status: Released and complete.
 
-## Versions 10.3.0–10.8.2 — Travel App Expansion
-Status: Complete
+- Migrated the app to GitHub Pages, added the travel timeline, master trip data, restaurants, reservations, maps, packing, budget, notes, weather, search, and backup tools.
+- Improved mobile/PWA use, offline access, stable IDs, and user-data compatibility.
 
-- Added Timeline, Travel, reservations, wallet, maps, trip guidance, and live-trip tools.
-- Added linked master trip records and on-device data-integrity checks.
-- Added restaurant, attraction, packing, budget, journal, notes, search, weather, and backup features.
-- Improved mobile, installed-PWA, dark-mode, and offline behavior.
-- Released and tagged Version 10.8.2 as the stable pre-foundation rollback point.
+## Version 10.9.0 — Pre-11 Data Foundation
 
-## Version 10.9.0 — Pre-11 Foundation
-Status: Released
+Status: Released and complete.
 
-- Clarify app, build, and backup-schema metadata.
-- Clean current documentation and obsolete internal development labels.
-- Introduce stable record IDs before multi-device synchronization. Timeline, restaurant, attraction, reservation, planned-budget, packing, and open-item IDs are complete.
-- Migrate Timeline data, state, editors, map routing, and backup files away from numeric step identifiers. Complete, with schema 4 conversion retained.
-- Define timestamps, deletion markers, and conflict behavior for mutable records.
-- Preserve compatibility with existing local data and Version 4 backup files.
-- Add automated regression coverage before shared-data work.
-- Remove confirmed dead code separately from data-model migration. Complete for retired train/transfer duplicates and uncalled compatibility helpers.
-- Complete automated metadata, stable-ID, migration, backup round-trip, dependency, and offline-shell audits before release.
+- Added stable record IDs, schema compatibility, timestamps, deletion markers, conflict handling, and regression coverage.
 
-## Version 10.10.0 — Travel Data Refinement
-Status: Completed and included in later releases
+## Versions 10.10.0–10.14.11 — Data Refinement and Stabilization
 
-- Separate itinerary purpose from transportation with controlled, filterable values.
-- Promote confirmed phone edits into permanent master trip data.
-- Improve Timeline responsiveness and preserve the user’s position after details and edits.
-- Make phrases editable and reorganize Packing, Phrases, and Safety.
-- Correct stale maps and travel references, and prepare a readable import-ready workbook.
+Status: Included in Version 11.
 
-## Version 10.12.0 — Full Feature Release
-Status: Released on `main`
+- Refined timeline classification, sticky headers, date anchoring, offline guides, Italian phrases, restaurant states, expenses, report status, and backup compatibility.
+- Added CPH outbound and Venice Vaporetto guides, receipt photo capture, improved notes, and phone-data reconciliation safeguards.
+- Corrected the outbound CPH connection, Boston terminal transfer, and Oct. 4 departure plan.
 
-- Reconcile reviewed phone exports and preserve schema 6 backup compatibility.
-- Correct the CPH outbound timeline, travel-detail sticky headers, and Timeline date anchoring.
-- Add offline CPH connection and Venice Vaporetto guides.
-- Add Italian phrase corrections, pronunciation playback, and Google Translate face-to-face access.
-- Add separate Favorite and Want to try restaurant states.
-- Add receipt-sourced expenses, required company-paid tracking, weekly report status, and online-only scan messaging.
-- Improve notes, Trip Tools ordering, and offline asset coverage.
+## Version 11.0.0 — Major Itinerary and Guide Release
 
-## Version 10.12.1 — Guide Usability Patch
-Status: In progress on `develop`
+Status: Prepared as a Version 11.0.0 develop build from the supplied source ZIP; local tests pass. Phone review, Git commit/push, and release remain pending.
 
-- Open the CPH and Vaporetto guides as phone-friendly PNGs, while retaining PDF print copies.
-- Fix Quick Guides button contrast so every label remains readable.
-- Reorganize the Maps, Links & Travel Guide page again soon; the current task-based separation is intentionally retained for now as a follow-up item.
+- Update the reviewed Oct. 5–12 agenda while preserving the Oct. 13–15 personal itinerary.
+- Add booked Rome, Florence, and Venice tours, their reservation details, clear meeting instructions, and matched transfer cards.
+- Add clickable maps and offline PNG/PDF guides for the tour transfers.
+- Keep uncertain facts visible as open items and preserve backup schema 6 and stable record compatibility.
+- Maintain local-only trip data and manual backup/import. No cloud backend or sync was added.
 
-## Version 11.0.0 — Shared Cloud Data
-Status: Evaluation planned
+## Future evaluation — Shared Cloud Data
 
-- Shared online database for authorized phones.
-- Synchronize selected user-entered data.
-- Preserve offline cached operation and export/import as a manual backup.
-- Add authentication, access control, timestamps, deletion markers, and a documented conflict policy.
-- Separate shared trip data from device-only settings and caches.
-- Protect the stable production app while the shared system is tested.
+Status: Not part of Version 11; requirements and authorization remain open.
+
+- Decide whether multi-device synchronization is wanted and which specific records should sync.
+- Select an owner-controlled backend and authentication/access model before any implementation.
+- Preserve offline operation, export/import, data minimization, and a documented conflict policy.
+
+## Future evaluation — App Features and Project Follow-ups
+
+- Online receipt recognition is not implemented; the app currently keeps receipt photos local. Decide whether recognition must run on-device or may use a service before changing expense data handling.
+- The AI Italian tutor and microphone workflow are unfinished. Define Android permission behavior, speech/pronunciation features, lesson pacing, and the requested daily lesson delivery time.
+- The PSA Venice Excursions page is not saved offline because its authoritative source page has not been supplied in this work session. Keep the Oct. 11 pickup/pier/return details open until PSA confirms them.
