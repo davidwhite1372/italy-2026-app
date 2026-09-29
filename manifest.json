@@ -1,7 +1,7 @@
 {
   "name": "Italy 2026 Travel Companion",
   "short_name": "Italy 2026",
-  "description": "David and Melody Italy 2026 Travel Companion - Version 11.0.1 adds confirmed hotel booking numbers and room types",
+  "description": "David and Melody Italy 2026 Travel Companion - Version 11.0.2 highlights hotel confirmation numbers in the wallet",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#8B1E3F",

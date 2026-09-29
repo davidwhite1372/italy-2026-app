@@ -1,3 +1,12 @@
+## Version 11.0.2 — September 29, 2026
+
+Build prepared on `develop` September 29, 2026 at 6:29 PM EDT.
+
+### Confirmation wallet visibility
+- Gave each hotel confirmation its own labeled line using the same prominent `wallet-key` styling as TSA Known Traveler Numbers and Delta SkyMiles.
+- Kept a dedicated Copy number control beside every hotel confirmation and displayed the room type on a separate line.
+- Bumped app/build/package/manifest metadata and the PWA cache key to Version 11.0.2. Backup schema 6, hotel records, and local phone data remain unchanged.
+
 ## Version 11.0.1 — September 29, 2026
 
 Build prepared on `develop` September 29, 2026 at 6:07 PM EDT.

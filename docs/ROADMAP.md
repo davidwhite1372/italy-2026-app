@@ -39,6 +39,14 @@ Status: Prepared on `develop` September 29, 2026 at 6:07 PM EDT; automated tests
 - Update the confirmation wallet and related hotel/check-in notes; add per-hotel copy controls.
 - Preserve schema 6, stable hotel IDs, offline behavior, and phone-local data.
 
+## Version 11.0.2 — Confirmation Wallet Visibility
+
+Status: Prepared on `develop` September 29, 2026 at 6:29 PM EDT; focused and full tests pending.
+
+- Display each hotel confirmation as a labeled `wallet-key` matching the TSA and Delta identifiers.
+- Keep copy controls beside the numbers and put each room type on a separate line.
+- Preserve V11.0.1 hotel data, schema 6, and phone-local state.
+
 ## Future evaluation — Shared Cloud Data
 
 Status: Not part of Version 11; requirements and authorization remain open.
