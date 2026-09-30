@@ -1,8 +1,11 @@
-const CACHE = 'italy-2026-github-v11-0-2-hotel-wallet-ids';
+const CACHE = 'italy-2026-github-v11-0-3-tour-vouchers';
 const APP_SHELL = [
   './',
   './index.html',
   './data.js',
+  './assets/guides/rome-tour-voucher-1212654.pdf',
+  './assets/guides/florence-tour-voucher-1212654.pdf',
+  './assets/guides/tour-payment-confirmation-1212654.png',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
@@ -45,7 +48,25 @@ const APP_SHELL = [
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE)
-      .then(cache => cache.addAll(APP_SHELL))
+      .then(async cache => {
+        // Core app files AND admission vouchers must be available before activation.
+        // A failed optional guide must not prevent a working offline installation.
+        const required = new Set(['./', './index.html', './data.js', './manifest.json',
+          './assets/guides/rome-tour-voucher-1212654.pdf',
+          './assets/guides/florence-tour-voucher-1212654.pdf']);
+        const failures = [];
+        await Promise.all(APP_SHELL.map(async asset => {
+          try {
+            const response = await fetch(asset, { cache: 'reload' });
+            if (!response.ok || response.type === 'opaque') throw new Error(`HTTP ${response.status}`);
+            await cache.put(asset, response);
+          } catch (error) {
+            console.warn('Offline cache failed:', asset, error);
+            if (required.has(asset)) failures.push(asset);
+          }
+        }));
+        if (failures.length) throw new Error(`Required offline assets missing: ${failures.join(', ')}`);
+      })
       .then(() => self.skipWaiting())
   );
 });

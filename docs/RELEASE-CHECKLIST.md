@@ -1,42 +1,30 @@
-# Version 11.0.2 Release Checklist
+# Version 11.0.3 Release Checklist
 
-V11.0.2 develop build prepared September 29, 2026 at 6:29 PM EDT from V11.0.1. Production branch `main` has not been changed by this patch; do not merge, publish, or deploy until the user approves after review.
+Prepared September 30, 2026 at 5:57 PM EDT from the supplied fresh develop copy (home-PC source commit ac59e06). Work remains local on develop; no remote push, main merge, or deployment performed.
 
-## Automated checks
-
-- [x] `npm ci` completes from the supplied lockfile.
-- [x] `npm test` passes locally (41 tests); GitHub Actions still requires a develop push.
-- [x] App/build/package/manifest versions all show 11.0.2; backup schema remains 6.
-- [x] Service worker cache uses the v11.0.2 key and all guide PNG/PDF assets remain in its shell.
-- [x] Rome, Florence, and JW hotel records, reservations, confirmation wallet, and W Florence check-in card show confirmation numbers 203390136, 186071359, and 187185636 with the supplied room types.
-- [x] The confirmation wallet provides a copy control for each hotel number.
-- [x] Hotel numbers have labeled prominent styling matching TSA and Delta identifiers.
-- [x] Existing backup imports remain schema-compatible; stable IDs are unique.
-
-## Agenda and content review
-
-- [x] Oct. 5: 12:23 is clearly marked as a Leonardo Express placeholder; Nerone replaces SEEN.
-- [x] Oct. 6: Cantine Santa Benedetta and Comodo replace the old excursion/dine-around entries; an Oct. 6 email check for the €620 Antiche Figure link is listed.
-- [x] Oct. 7: tour meeting directions, maps, return guide, and free-dinner restaurant suggestion are clear; Villa Miani is removed.
-- [x] Oct. 8: Train 10 group block is 10:45 AM–1:15 PM; Da Burde is 7:00 PM, explicitly time-unconfirmed.
-- [x] Oct. 9: Accademia/Uffizi tour with outbound and return guidance; 6:15 PM dinner at Cucina retained; 3rosso is recorded as the street number.
-- [x] Oct. 10: Italo 8904, PSA-led transfer (no independent routing), gondola, and 6:00 PM provisional Osteria Ai Assassini entry are intact.
-- [x] Oct. 11: Murano & Burano is selected; missing pickup details and the still-unsaved PSA excursion page remain visible.
-- [x] Oct. 12: booked tour, JW shuttle/walking guides, and 7:00 PM Oniga dinner are present; variable shuttle timing remains in Open Items.
-- [x] Oct. 13–15 personal itinerary remains unchanged; Oct. 15 bus timing is a separate Open Item.
-- [x] Open Items contains eight genuine future confirmations; obsolete and completed entries are removed.
+## Automated and source checks
+- [x] All 41 existing npm tests pass after release and booking assertions were updated.
+- [x] APP_METADATA app/build, package/lockfile, manifest description, and service-worker cache consistently use 11.0.3; schema remains 6.
+- [x] Existing stable IDs unchanged; one new planned-budget ID budget-0020 added; both original tour PDFs preserved byte-for-byte.
+- [x] Both separately labeled Sep 30 phone backups were tested in isolated simulations. Their normalized notes, flights, expenses, packing, checklists, restaurant state, deleted records, phrases, and budget overrides are preserved; only the two new default tour expenses are added.
+- [x] New default expenses total $656.08, company-paid, unsubmitted, not reimbursable; repeated loads do not duplicate them, and submission edits survive.
+- [x] Optional-asset failure tolerated; core/voucher failure blocks new worker activation.
+- [x] A1–A7 / B1–B4 / C1–C3 outcomes recorded in CHANGELOG.md.
 
 ## Phone and offline review
+- [x] Fresh labeled David Cell and David Work Cell schema 6 exports supplied before edits.
+- [ ] Open the FCO guide in Travel Details from either page; swipe between both pages and verify zoom/back.
+- [ ] On develop, confirm both booking numbers and open each voucher on both phones. Original PDFs contain Rome page 1 and Florence page 2.
+- [ ] Verify $351.64 Rome and $304.44 Florence under Company paid and Needs work report, with no duplicates. Venice $241.38 must appear only as a company-card planned cost, charge scheduled Oct 10, and not in actual spending.
+- [ ] Confirm existing notes, flights, restaurant states, and personal expenses survive.
+- [ ] Confirm All Guides are ordered before departure → Oct 4–15 → general references, with Venice departure before Copenhagen return on Oct 15.
+- [ ] Test install sheet in portrait/landscape and at larger text settings; verify dismissal persists.
+- [ ] Load both vouchers online once, then verify they and core pages open in airplane mode. Do not clear storage or uninstall.
+- [ ] Open the supplied payment-confirmation screenshot on either tour card for the expense report; user-added receipt photos remain outside JSON backups.
 
-- [ ] Export fresh labeled backups from both phones before installing/replacing files.
-- [ ] Review the V11 build on each phone and preserve all phone-only notes, expenses, restaurant states, and packing changes.
-- [ ] Open each new PNG guide, PDF guide, map link, reservation, and tour timeline card on a phone.
-- [ ] After loading the app online once, confirm the new guides remain available offline.
-
-## Develop and production handoff
-
-- [ ] Start from latest `develop`; preserve local changes and do not use `main` for development.
-- [ ] Commit and push only after the user reviews the changed-files ZIP and resolves any blocking agenda questions.
-- [ ] Verify GitHub Actions and manual local checks on `develop`.
-- [ ] Ask the user to approve before merging `develop` to `main` or publishing.
-- [ ] After approval, merge and verify production; tag `v11.0.2` only after any chosen production checks pass.
+## Develop handoff / production
+- [ ] Confirm GitHub Desktop is on develop with a clean Changes tab; Fetch origin, then Pull origin if offered, before copying the patch.
+- [ ] Copy the changed files with their relative folders, inspect the Changes tab, then commit/push develop with the supplied title/body.
+- [ ] Verify GitHub Actions and the physical-phone checks above.
+- [ ] Merge develop to main only after David explicitly approves the reviewed release. Provide one step at a time.
+- [ ] Verify production and tag v11.0.3 only after approved release checks.

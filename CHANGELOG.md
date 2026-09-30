@@ -1,3 +1,41 @@
+## Version 11.0.3 — September 30, 2026
+
+Build prepared on `develop` September 30, 2026 at 5:57 PM EDT. Production `main` has not been changed by this patch.
+
+### Tour booking and expense update
+- Rome Oct 7 and Florence Oct 9 use booking 1212654 throughout Today, Timeline, reservations, routes, and Travel Details. Dates, start/check-in times, and existing IDs are unchanged.
+- Added the supplied original PDFs and payment-confirmation screenshot to the tour cards through the existing PDF/image viewers and offline shell. Both originals include both tours (Rome page 1, Florence page 2).
+- Added Rome $351.64 and Florence $304.44 as actual company-paid expenses, not reimbursable, receipt supplied, report not submitted. Total $656.08. No old tour charges existed in master data or either phone export. Existing default-expense merges preserve edits and prevent repeat additions.
+
+- Venice $241.38 is a scheduled company-card cost for Oct 10, not an actual expense. Added budget-0020 and refined the existing Viator reservation/open-item/checklist reminders to record the Minuteman actual and expense-report requirement only after a successful charge. No automatic expense is created from a date alone.
+
+- Reordered the 18 existing All Guides cards: before-departure references first, Oct 4–15 chronologically (multi-day guides at their first date), general references last. Oct 15 Venice departure precedes the Copenhagen return connection. No guide cards or filters were added, removed or redesigned.
+
+- Fixed the two-page FCO plane-to-train guide under Travel Details: either page button opens the same two-page gallery used by All Guides, enabling swipe, arrows and zoom. No change to unrelated image/PDF links. Regression simulates swiping both directions and opening from page 2.
+
+### Reviewed proposal outcomes
+- A1: replaced optional-sounding EES instruction with mandatory first-entry enrollment and staff-directed transfer/passport-control guidance.
+- A2: clarified the €55 direct FCO/Aurelian Walls fare for licensed Roma Capitale taxis, supplements included; other trips follow the applicable fixed fare or meter.
+- A3: added the currently listed Oct 10 GEST Florence tram strike, explicitly subject to change and separate from the Italo train. Preserved the existing walking transfer.
+- A4: changed the Leonardo Express badge to Buy after baggage claim; kept 12:23 as an explicitly provisional time.
+- A5: no change: all 67 restaurants already have map links in supplied develop.
+- A6: filled exactly 32 empty pronunciation fields. No other phrase fields changed.
+- A7: annotated the Oct 16 post-midnight drive following Oct 15 arrival; kept the Oct 15 trip end/countdown and all dates/times.
+- B1: per-asset offline caching tolerates individual optional failures. Core files and both admission vouchers must succeed before activation. Fetch strategies are unchanged.
+- B2: suppressed the Order label for empty/whitespace-only restaurant orders.
+- B3: caption identifies the cached EUR-rate date or the planning-rate fallback; conversion calculations are unchanged.
+- B4: constrained install sheet to the available viewport and enabled scrolling; browser-level cancellation now records dismissal using the existing seven-day mechanism. Existing safe-area padding retained.
+- C1: deferred; no phrase drill or new navigation.
+- C2: deferred; an existing Today text-sharing function was found, so no duplicate feature was added.
+- C3: added one static official MIT strike-calendar contingency and one linked 72-hour checklist item using existing components. External calendar requires internet; no automatic monitoring.
+
+### Validation and boundaries
+- All 41 existing regression tests pass with current release/booking assertions.
+- Separate simulations using both Sep 30 schema 6 phone exports preserve their normalized device-specific data, with only the two added default expenses.
+- Stable record IDs unchanged; all 67 existing restaurant objects unchanged; only 32 pronunciation fields changed.
+- Simulated optional-guide failure permits installation; core-file or voucher failure rejects activation.
+- Physical phone viewport and PDF-opening/offline checks are still required. No installed phone data, receipt photos, production deployment, or remote Git branch was modified.
+
 ## Version 11.0.2 — September 29, 2026
 
 Build prepared on `develop` September 29, 2026 at 6:29 PM EDT.

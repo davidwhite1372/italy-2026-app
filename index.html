@@ -478,6 +478,9 @@
       width: 100%; max-width: 520px; background: #fff;
       border-radius: 20px 20px 0 0; padding: 20px 18px calc(20px + var(--safe-bottom));
       box-shadow: 0 -8px 30px rgba(0,0,0,0.2);
+      max-height: calc(100vh - env(safe-area-inset-top, 0px));
+      max-height: calc(100dvh - env(safe-area-inset-top, 0px));
+      overflow-y: auto; overscroll-behavior: contain;
       transform: translateY(100%); transition: transform .25s ease;
     }
     .install-overlay.open .install-card { transform: translateY(0); }
@@ -1435,10 +1438,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "11.0.2",
-      build: "11.0.2",
+      version: "11.0.3",
+      build: "11.0.3",
       backupSchema: 6,
-      lastEdited: "September 29, 2026 at 6:29 PM EDT"
+      lastEdited: "September 30, 2026 at 5:57 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1660,7 +1663,10 @@
         return;
       }
       deferredInstallPrompt.prompt();
-      try { await deferredInstallPrompt.userChoice; } catch (e) {}
+      try {
+        const choice = await deferredInstallPrompt.userChoice;
+        if (choice.outcome === "dismissed") dismissInstallPrompt();
+      } catch (e) {}
       deferredInstallPrompt = null;
       const overlay = document.getElementById('installOverlay');
       if (overlay) overlay.classList.remove('open');
@@ -4087,8 +4093,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         { id: "d2v11", text: "Confirm Oct 11 Murano & Burano pickup time, pier, and return" }
       ]},
       { id: "p2", group: "72 hours before departure", items: [
+        { id: "h10v1103", text: "Re-check the official transport strike calendar; verify relevant operators and dates (internet required)", links: [{label:"Official MIT strike calendar",href:"https://scioperi.mit.gov.it/mit2/public/scioperi"}] },
         { id: "h4v11", text: "Confirm Trattoria Da Burde time and transportation" },
-        { id: "h5v11", text: "Verify Oct 12 Viator payment, tickets, and JW shuttle schedule/pier for outbound and return" },
+        { id: "h5v11", text: "Oct 10: verify the $241.38 Viator company-card charge and tickets; record the Minuteman expense for the expense report. Confirm Oct 12 JW shuttle schedule/pier for outbound and return" },
         { id: "h6", text: "Verify flight seat assignments; save seat maps offline" },
         { id: "h7", text: "Check TPA Economy Parking rate and SunPass", done: true },
         { id: "h9", text: "Checked Sep 29: Travel to Europe app currently supports Sweden and Portugal, not Denmark or Italy. No app preregistration is available for CPH/FCO; follow border officers’ EES instructions.", done: true, links: [
@@ -4691,7 +4698,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
             </div>
             <div class="tag price">${escapeHtml(r.price)}</div>
           </div>
-          <div class="order"><strong>Order:</strong> ${escapeHtml(r.order)}</div>
+          ${String(r.order || "").trim() ? `<div class="order"><strong>Order:</strong> ${escapeHtml(r.order)}</div>` : ""}
           <div class="text-xs text-muted mt-8">${escapeHtml(r.why)}</div>
           <div class="tags">
             ${r.priority === "Top 5" ? '<span class="tag top">Top 5</span>' : `<span class="tag">${escapeHtml(r.priority)}</span>`}
@@ -4824,6 +4831,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     }
 
     const TRAVEL_GUIDES_BY_ID = Object.freeze({
+      "travel-16":[{src:"assets/guides/rome-tour-voucher-1212654.pdf",title:"Rome tour voucher · Booking 1212654",secondary:true,voucher:true,verified:"Sep 30, 2026"},{src:"assets/guides/tour-payment-confirmation-1212654.png",title:"Tour payment confirmation · Minuteman expense report",verified:"Sep 30, 2026"}],
+      "travel-21":[{src:"assets/guides/florence-tour-voucher-1212654.pdf",title:"Florence tour voucher · Booking 1212654",secondary:true,voucher:true,verified:"Sep 30, 2026"},{src:"assets/guides/tour-payment-confirmation-1212654.png",title:"Tour payment confirmation · Minuteman expense report",verified:"Sep 30, 2026"}],
       "travel-6":[
         {src:"assets/guides/boston-terminal-a-to-e.png",title:"Boston Terminal A → E transfer guide",verified:"Sep 23, 2026",note:"Updated guide timings: shuttle about 3:10–3:25 PM, Terminal E around 3:25–3:35 PM, TSA about 3:45–4:25 PM. Reach the SK928 gate by 5:00 PM for the 5:40 PM departure."}
       ],
@@ -4872,33 +4881,34 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       "travel-50":[{src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide",verified:"Sep 13, 2026"}]
     });
     const MAP_GUIDE_LIBRARY = Object.freeze([
+      {src:"assets/guides/italy-camera-cheat-sheet-samsung-s23-ultra.png",title:"Italy Camera Cheat Sheet · Samsung Galaxy S23 Ultra",category:"Before departure · Photography"},
+      {src:"assets/guides/luggage-lock-instructions.jpg",title:"Luggage Lock Instructions",category:"Before departure · Packing reference"},
       {src:"assets/guides/boston-terminal-a-to-e.png",title:"Boston Terminal A → E transfer guide",category:"Oct 4 · Airport connection",verified:"Sep 23, 2026",note:"Updated guide timings: shuttle about 3:10–3:25 PM, Terminal E around 3:25–3:35 PM, TSA about 3:45–4:25 PM. Reach the SK928 gate by 5:00 PM for the 5:40 PM departure."},
       {src:"assets/guides/cph-connection-guide-outbound.png",pdf:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide",category:"Oct 5 · Airport connection",verified:"Sep 13, 2026"},
-      {src:"assets/guides/cph-connection-guide-return.png",pdf:"assets/guides/cph-connection-guide-return.pdf",title:"CPH Return Connection Guide",category:"Oct 15 · Airport connection",verified:"Sep 29, 2026"},
-      {src:"assets/guides/rome-metro-transfer-guide.png",pdf:"assets/guides/rome-metro-transfer-guide.pdf",title:"Anantara → Vatican Tour Transit Guide",category:"Oct 7 · Rome tour transfer",verified:"Sep 29, 2026"},
-      {src:"assets/guides/rome-return-transfer-guide.png",pdf:"assets/guides/rome-return-transfer-guide.pdf",title:"Colosseum → Anantara Return Guide",category:"Oct 7 · Rome tour return",verified:"Sep 29, 2026"},
-      {src:"assets/guides/florence-tour-outbound-guide.png",pdf:"assets/guides/florence-tour-outbound-guide.pdf",title:"W Florence → Accademia Tour Guide",category:"Oct 9 · Florence tour transfer",verified:"Sep 29, 2026"},
-      {src:"assets/guides/florence-tour-return-guide.png",pdf:"assets/guides/florence-tour-return-guide.pdf",title:"Uffizi → W Florence Return Guide",category:"Oct 9 · Florence tour return",verified:"Sep 29, 2026"},
-      {src:"assets/guides/venice-tour-outbound-guide.png",pdf:"assets/guides/venice-tour-outbound-guide.pdf",title:"JW Marriott → Calle de le Rasse Guide",category:"Oct 12 · Venice tour transfer",verified:"Sep 29, 2026"},
-      {src:"assets/guides/venice-tour-return-guide.png",pdf:"assets/guides/venice-tour-return-guide.pdf",title:"Doge’s Palace → JW Marriott Return Guide",category:"Oct 12 · Venice tour return",verified:"Sep 29, 2026"},
       {gallery:[
         {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1"},
         {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2"}
       ],title:"FCO Arrival → Train Station",category:"Oct 5 · Airport arrival",verified:"Sep 13, 2026"},
+      {src:"assets/guides/rome-metro-transfer-guide.png",pdf:"assets/guides/rome-metro-transfer-guide.pdf",title:"Anantara → Vatican Tour Transit Guide",category:"Oct 7 · Rome tour transfer",verified:"Sep 29, 2026"},
+      {src:"assets/guides/rome-return-transfer-guide.png",pdf:"assets/guides/rome-return-transfer-guide.pdf",title:"Colosseum → Anantara Return Guide",category:"Oct 7 · Rome tour return",verified:"Sep 29, 2026"},
       {src:"assets/guides/laundry-king-florence.png",title:"Laundry King Florence Guide",category:"Oct 8–10 · Florence practical guide",verified:"Sep 13, 2026"},
+      {src:"assets/guides/florence-tour-outbound-guide.png",pdf:"assets/guides/florence-tour-outbound-guide.pdf",title:"W Florence → Accademia Tour Guide",category:"Oct 9 · Florence tour transfer",verified:"Sep 29, 2026"},
+      {src:"assets/guides/florence-tour-return-guide.png",pdf:"assets/guides/florence-tour-return-guide.pdf",title:"Uffizi → W Florence Return Guide",category:"Oct 9 · Florence tour return",verified:"Sep 29, 2026"},
       {src:"assets/guides/venice-station-to-jw-marriott.png",title:"Venezia Santa Lucia → JW Marriott",category:"Oct 10 · Venice transfer",verified:"Sep 13, 2026"},
       {src:"assets/guides/venice-vaporetto-map-2026.png",pdf:"assets/guides/venice-vaporetto-map-2026.pdf",title:"ACTV Vaporetto Route Map · 2026",category:"Oct 10–13 · Venice transport",verified:"Sep 13, 2026"},
       {src:"assets/guides/venice-october-2026-tide-chart.png",title:"Venice Tide Chart · October 2026",category:"Oct 10–15 · Venice practical guide"},
+      {src:"assets/guides/venice-tour-outbound-guide.png",pdf:"assets/guides/venice-tour-outbound-guide.pdf",title:"JW Marriott → Calle de le Rasse Guide",category:"Oct 12 · Venice tour transfer",verified:"Sep 29, 2026"},
+      {src:"assets/guides/venice-tour-return-guide.png",pdf:"assets/guides/venice-tour-return-guide.pdf",title:"Doge’s Palace → JW Marriott Return Guide",category:"Oct 12 · Venice tour return",verified:"Sep 29, 2026"},
       {src:"assets/guides/venice-departure-day.png",title:"Venice Departure Day Guide",category:"Oct 15 · Airport departure",verified:"Sep 13, 2026"},
-      {src:"assets/guides/italy-camera-cheat-sheet-samsung-s23-ultra.png",title:"Italy Camera Cheat Sheet · Samsung Galaxy S23 Ultra",category:"Before departure · Photography"},
-      {src:"assets/guides/italy-bathroom-survival.jpg",title:"Toilets in Italy · Survival Guide",category:"Any day · Comfort"},
-      {src:"assets/guides/luggage-lock-instructions.jpg",title:"Luggage Lock Instructions",category:"Before departure · Packing reference"}
+      {src:"assets/guides/cph-connection-guide-return.png",pdf:"assets/guides/cph-connection-guide-return.pdf",title:"CPH Return Connection Guide",category:"Oct 15 · Airport connection",verified:"Sep 29, 2026"},
+      {src:"assets/guides/italy-bathroom-survival.jpg",title:"Toilets in Italy · Survival Guide",category:"Any day · Comfort"}
     ]);
     function guideActionsForTravel(id){
       const guides=TRAVEL_GUIDES_BY_ID[id]||[];
-      const buttons=guides.map(guide=>guide.secondary
-        ? `<button type="button" class="link-btn guide-secondary" onclick='openPdfViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>📄 Open PDF version →</button>`
-        : `<button type="button" class="link-btn" onclick='openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>🖼️ Open ${escapeHtml(guide.title)}</button>`).join("");
+      const gallery=id==="travel-10" ? guides.filter(guide=>!guide.secondary).map(({src,title})=>({src,title})) : null;
+      const buttons=guides.map((guide,index)=>guide.secondary
+        ? `<button type="button" class="link-btn guide-secondary" onclick='openPdfViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>📄 ${guide.voucher ? "Open tour voucher · 1212654" : "Open PDF version"} →</button>`
+        : `<button type="button" class="link-btn" onclick='${gallery ? `openImageGallery(${JSON.stringify(gallery)},${index})` : `openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})`}'>🖼️ Open ${escapeHtml(guide.title)}</button>`).join("");
       const verified=guides.find(guide=>guide.verified)?.verified;
       const note=guides.find(guide=>guide.note)?.note;
       return buttons + (note ? `<div class="text-xs" style="width:100%;margin-top:5px;color:var(--danger,#b42318);">${escapeHtml(note)}</div>` : "") + (verified ? `<div class="text-xs text-muted" style="width:100%;margin-top:5px;">Last Verified: ${escapeHtml(verified)}</div>` : "");
@@ -5185,7 +5195,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       let expenses=all; if(expOwnerFilter!=="all")expenses=expenses.filter(e=>e.traveler===expOwnerFilter); if(expTypeFilter==="personal")expenses=expenses.filter(e=>!e.company); if(expTypeFilter==="company")expenses=expenses.filter(e=>e.company); if(expTypeFilter==="reimbursable")expenses=expenses.filter(e=>e.reimbursable); if(expTypeFilter==="report")expenses=expenses.filter(e=>reportEligible(e)&&!e.submitted); if(expTypeFilter==="submitted")expenses=expenses.filter(e=>e.submitted); if(expTypeFilter==="missing")expenses=expenses.filter(e=>!e.receipt);
       const sum=f=>all.filter(f).reduce((a,e)=>a+e._usd,0), personalSpent=sum(e=>!e.company),companyPaid=sum(e=>e.company),reimb=sum(e=>e.reimbursable),missing=all.filter(e=>!e.receipt).length;
       const planned=liveBudgetPlanned(); const plannedPersonal=planned.filter(b=>!b.company&&!/canceled|refunded/i.test(b.status||"")).reduce((a,b)=>a+(b.cur==="USD"?Number(b.amt):Number(b.amt)*rate),0),remaining=plannedPersonal-personalSpent;
-      const stat=(usd,label,bad)=>`<div class="stat"><div class="val" ${bad?'style="color:var(--danger);"':''}>$${Math.round(usd).toLocaleString("en-US")}</div><div class="text-xs text-muted">€${Math.round(usd/rate).toLocaleString("en-US")}</div><div class="lbl">${label}</div></div>`;
+      const fxCache=getFxCache();
+      const fxCaption=fxCache && fxCache.rate && fxCache.date ? `EUR rate dated ${fxCache.date}` : "EUR at planning rate";
+      const stat=(usd,label,bad)=>`<div class="stat"><div class="val" ${bad?'style="color:var(--danger);"':''}>$${Math.round(usd).toLocaleString("en-US")}</div><div class="text-xs text-muted">€${Math.round(usd/rate).toLocaleString("en-US")}</div>${label==="Personal budget left"?`<div class="text-xs text-muted">${escapeHtml(fxCaption)}</div>`:""}<div class="lbl">${label}</div></div>`;
       const todayISO=new Date().toISOString().slice(0,10), todaySpent=all.filter(e=>e.date===todayISO&&!e.company).reduce((a,e)=>a+e._usd,0), tripSpent=all.reduce((a,e)=>a+e._usd,0);
       const reportOpen=all.filter(e=>reportEligible(e)&&!e.submitted).length;
       document.getElementById("budgetSummary").innerHTML=`<div class="budget-hero">${stat(todaySpent,"Spent today")}${stat(tripSpent,"Trip total")}${stat(remaining,"Personal budget left",remaining<0)}</div><div class="stats">${stat(personalSpent,"Personal actual")}${stat(companyPaid,"Company paid")}${stat(reimb,"Reimbursable")}</div><div class="alert ${reportOpen?'alert-warn':'alert-info'} text-sm"><strong>${reportOpen}</strong> work expense${reportOpen===1?'':'s'} still need to be submitted. Flights and hotels are excluded from this report list.${missing ? `<br><strong>${missing}</strong> receipt${missing===1?'':'s'} missing.` : ''}</div>`;
@@ -5842,6 +5854,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           <div class="text-sm"><strong>Contact:</strong> ${escapeHtml(c.contact)}</div>
           <div class="text-sm text-muted"><strong>Avoid:</strong> ${escapeHtml(c.avoid)}</div>
           ${c.docs ? `<div class="text-xs text-muted mt-8"><strong>Keep:</strong> ${escapeHtml(c.docs)}</div>` : ""}
+          ${c.link ? `<a class="link-btn" href="${escapeHtml(c.link)}" target="_blank" rel="noopener">Official strike calendar →</a>` : ""}
         </div>`).join(""));
 
       setMapsSection("mapsPending", MAP_SAVED_PENDING.map(p => `

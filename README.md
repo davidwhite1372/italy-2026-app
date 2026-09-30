@@ -4,10 +4,10 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 
 ## Current development build
 
-**Version 11.0.2 — Confirmation wallet visibility patch**
-Last edited September 29, 2026 at 6:29 PM EDT. Backup schema 6 remains unchanged.
+**Version 11.0.3 — Tour vouchers and maintenance patch**
+Last edited September 30, 2026 at 5:57 PM EDT. Backup schema 6 remains unchanged.
 
-Version 11.0.2 gives each hotel confirmation a labeled, prominent display styled like the TSA and Delta identifiers in the confirmation wallet, with a separate Copy number control. Version 11.0.1 recorded the final PSA hotel confirmation numbers and room types for Anantara Palazzo Naiadi, W Florence, and JW Marriott Venice. Phone-local data and photos are not modified.
+Version 11.0.3 replaces the Rome and Florence tour booking numbers with 1212654, adds supplied offline vouchers and $656.08 in company-paid expenses awaiting a work report, and makes narrow travel-data, pronunciation, install-sheet, budget-caption, and offline-cache fixes. Dates, tour times, existing IDs, schema 6, and the page layout are preserved.
 
 Version 11.0.0 updated the Oct. 5–12 itinerary, added three booked tour records and the matching outbound/return transfer cards, and included six Rome/Florence/Venice transfer guides plus a Copenhagen return-connection guide in PNG and PDF formats. The Oct. 13–15 personal itinerary remains as supplied. The Open Items list contains only eight genuine future checks; completed, optional, duplicate, and obsolete tasks were removed. Remaining items cover the €620 hotel balance, Da Burde timing/transport, Oct. 11 excursion details, Oct. 12 Viator payment/tickets and shuttle timing, Osteria ferry/time, the Oct. 15 bus timetable, the SK681 seat, and the unsupplied PSA excursion page.
 
@@ -19,8 +19,8 @@ User-entered information is stored locally on each phone. Changes made on one ph
 
 - Export a fresh backup before changing devices, clearing browser data, or reinstalling the app.
 - Backup schema numbers describe file compatibility; they are separate from the app version.
-- Version 11.0.2 creates schema 6 backups and continues importing schema 5, schema 4, and older supported backups.
-- No phone backup was used to reconcile personal data in this build. Preserve existing phone-only notes and expenses.
+- Version 11.0.3 creates schema 6 backups and continues importing schema 5, schema 4, and older supported backups.
+- Both Sep 30 device-labeled schema 6 exports were reviewed for conflicts. Preserve device-specific notes, flights, expenses, and local photos.
 - Shared cloud data is still an evaluation item; this release adds no account, backend, or online synchronization.
 - Online receipt recognition and the AI Italian tutor / microphone workflow remain unbuilt; provider, privacy, offline, and interaction requirements still need a product decision.
 

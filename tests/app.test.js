@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "11.0.2");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "11.0.2");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "11.0.3");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "11.0.3");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 29, 2026 at 6:29 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 30, 2026 at 5:57 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -235,7 +235,7 @@ test("Version 11 itinerary cards, clickable routes, and offline guides match the
     pretrip:PRETRIP.flatMap(group=>group.items),
     release:APP_METADATA
   })`));
-  assert.equal(data.release.version,"11.0.2");
+  assert.equal(data.release.version,"11.0.3");
   assert.equal(data.release.backupSchema,6);
   assert.equal(data.routes.find(route=>route.order===15).start,"After 11:55 AM train");
   assert.equal(data.routes.find(route=>route.order===15).duration,"Per PSA group schedule");
@@ -271,8 +271,24 @@ test("Version 11 itinerary cards, clickable routes, and offline guides match the
   assert.match(byId["tl-0060"].instructions,/1451899139.*1833917139/);
   assert.match(byId["tl-0061"].instructions,/Giardini Reali.*next hotel shuttle/i);
   assert.match(byId["tl-0045"].title,/Ristoteca Oniga/);
-  assert.equal(data.reservations.find(item=>item.conf.includes("1211646")).dates,"Oct 7");
-  assert.equal(data.reservations.find(item=>item.conf.includes("1211656")).dates,"Oct 9");
+  assert.equal(data.reservations.find(item=>item.id==="reservation-0011").conf,"Booking 1212654");
+  assert.equal(data.reservations.find(item=>item.id==="reservation-0012").conf,"Booking 1212654");
+  assert.equal(data.reservations.find(item=>item.id==="reservation-0011").dates,"Oct 7");
+  assert.equal(data.reservations.find(item=>item.id==="reservation-0012").dates,"Oct 9");
+  const tourExpenses = window.getExpenses().filter(item => [1790790000001,1790790000002].includes(item.id));
+  assert.equal(tourExpenses.length, 2);
+  const venice = JSON.parse(window.eval('JSON.stringify(BUDGET_PLANNED.find(item => item.id === "budget-0020"))'));
+  assert.equal(venice.amt, 241.38);
+  assert.equal(venice.company, true);
+  assert.match(venice.status, /scheduled Oct 10/);
+  assert.equal(window.getExpenses().some(item => /Viator|Doge/i.test(item.desc)), false);
+
+  assert.equal(Math.round(tourExpenses.reduce((sum,item) => sum + item.amt, 0) * 100), 65608);
+  assert.ok(tourExpenses.every(item => item.company && !item.submitted && !item.reimbursable));
+  window.setExpenses(window.getExpenses());
+  assert.equal(window.getExpenses().filter(item => item.id === 1790790000001).length, 1);
+  for (const id of ["travel-16", "travel-21"]) assert.match(window.guideActionsForTravel(id), /Open tour voucher.*1212654/);
+
   assert.ok(data.venues.some(item=>item.name==="Comodo Mercado Trevi"));
   assert.ok(!data.venues.some(item=>item.name==="SEEN by Olivier"));
   assert.equal(data.open.find(item=>item.id==="open-0019"),undefined);
@@ -914,25 +930,54 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
   const libraryCards=[...document.querySelectorAll("#mapsGuideLibrary .maps-feature-card")];
   assert.equal(libraryCards.length, 18);
   assert.deepEqual(libraryCards.map(card=>card.querySelector("h3").textContent),[
+    "Italy Camera Cheat Sheet · Samsung Galaxy S23 Ultra",
+    "Luggage Lock Instructions",
     "Boston Terminal A → E transfer guide",
     "CPH Outbound Connection Guide",
-    "CPH Return Connection Guide",
+    "FCO Arrival → Train Station",
     "Anantara → Vatican Tour Transit Guide",
     "Colosseum → Anantara Return Guide",
+    "Laundry King Florence Guide",
     "W Florence → Accademia Tour Guide",
     "Uffizi → W Florence Return Guide",
-    "JW Marriott → Calle de le Rasse Guide",
-    "Doge’s Palace → JW Marriott Return Guide",
-    "FCO Arrival → Train Station",
-    "Laundry King Florence Guide",
     "Venezia Santa Lucia → JW Marriott",
     "ACTV Vaporetto Route Map · 2026",
     "Venice Tide Chart · October 2026",
+    "JW Marriott → Calle de le Rasse Guide",
+    "Doge’s Palace → JW Marriott Return Guide",
     "Venice Departure Day Guide",
-    "Italy Camera Cheat Sheet · Samsung Galaxy S23 Ultra",
-    "Toilets in Italy · Survival Guide",
-    "Luggage Lock Instructions"
+    "CPH Return Connection Guide",
+    "Toilets in Italy · Survival Guide"
   ]);
+
+  // Travel Details must open both FCO pages as one gallery from either button.
+  const travelFco = document.createElement("div");
+  travelFco.innerHTML = window.guideActionsForTravel("travel-10");
+  document.body.appendChild(travelFco);
+  const travelFcoButtons = travelFco.querySelectorAll("button");
+  assert.equal(travelFcoButtons.length, 2);
+  travelFcoButtons[0].click();
+  assert.equal(document.querySelector("#imageViewerImage").getAttribute("src"), "assets/guides/fco-arrival-to-train-1.png");
+  const stage = document.getElementById("imageViewerStage");
+  stage.setPointerCapture = () => {};
+  const swipe = (from, to) => {
+    for (const [type,x] of [["pointerdown",from],["pointermove",to],["pointerup",to]]) {
+      const event = new window.Event(type, {bubbles:true});
+      Object.assign(event, {pointerId:1,clientX:x,clientY:100});
+      stage.dispatchEvent(event);
+    }
+  };
+  swipe(200, 80);
+  assert.equal(document.querySelector("#imageViewerImage").getAttribute("src"), "assets/guides/fco-arrival-to-train-2.png");
+  swipe(80, 200);
+  assert.equal(document.querySelector("#imageViewerImage").getAttribute("src"), "assets/guides/fco-arrival-to-train-1.png");
+  window.closeImageViewer(true);
+  travelFcoButtons[1].click();
+  assert.equal(document.querySelector("#imageViewerImage").getAttribute("src"), "assets/guides/fco-arrival-to-train-2.png");
+  window.changeImageViewerSlide(-1);
+  assert.equal(document.querySelector("#imageViewerImage").getAttribute("src"), "assets/guides/fco-arrival-to-train-1.png");
+  window.closeImageViewer(true);
+  travelFco.remove();
   const fcoCard=libraryCards.find(card=>card.querySelector("h3").textContent==="FCO Arrival → Train Station");
   assert.equal(fcoCard.querySelectorAll(".guide-gallery-links .link-btn").length,2);
   assert.equal(fcoCard.querySelectorAll(".guide-gallery img").length,0);
@@ -973,6 +1018,16 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
   assert.equal(oldVenueSearch, undefined);
   assert.equal(oldEmbassySearch, undefined);
   assert.deepEqual(app.runtimeErrors, []);
+  const guides = JSON.parse(app.window.eval('JSON.stringify(MAP_GUIDE_LIBRARY)'));
+  const dated = guides.filter(guide => /^Oct \d+/.test(guide.category));
+  const days = dated.map(guide => Number(guide.category.match(/^Oct (\d+)/)[1]));
+  assert.deepEqual(days, days.slice().sort((a,b) => a-b));
+  assert.match(guides[0].category, /Before departure/);
+  assert.match(guides[guides.length-1].category, /Any day/);
+  const returnGuides = dated.filter(guide => /^Oct 15/.test(guide.category));
+  assert.match(returnGuides[0].title, /Venice Departure/);
+  assert.match(returnGuides[1].title, /CPH Return/);
+
 });
 
 test("CPH passport wait tracker appears on both Copenhagen layovers and reviewed note retirement is narrow", async t => {
@@ -1173,7 +1228,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"11.0.2");
+  assert.equal(payload.appVersion,"11.0.3");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -1213,7 +1268,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "11.0.2");
+  assert.equal(payload.appVersion, "11.0.3");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -1232,15 +1287,15 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"11.0.2");
-  assert.match(manifest.description,/Version 11\.0\.2/);
-  assert.match(worker,/v11-0-2-hotel-wallet-ids/);
+  assert.equal(packageData.version,"11.0.3");
+  assert.match(manifest.description,/Version 11\.0\.3/);
+  assert.match(worker,/v11-0-3-tour-vouchers/);
   ["boston-terminal-a-to-e.png","fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png","italy-camera-cheat-sheet-samsung-s23-ultra.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
   });
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
-    timeline:60,restaurants:67,attractions:15,reservations:13,budget:19,packing:74,open:8
+    timeline:60,restaurants:67,attractions:15,reservations:13,budget:20,packing:74,open:8
   });
   Object.values(counts).forEach(ids=>{
     assert.equal(ids.every(Boolean),true);
@@ -1290,7 +1345,7 @@ test("schema 6 backup round trip preserves representative stable-ID records", as
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("offline application shell lists every required local asset", () => {
+test("offline application shell lists every required local asset", async () => {
   const worker = fs.readFileSync(path.join(projectRoot, "sw.js"), "utf8");
   const required = [
     "./index.html",
@@ -1308,10 +1363,34 @@ test("offline application shell lists every required local asset", () => {
     "./assets/guides/italy-camera-cheat-sheet-samsung-s23-ultra.png"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v11-0-2-hotel-wallet-ids/);
+  assert.match(worker, /italy-2026-github-v11-0-3-tour-vouchers/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);
+  const vm = require("node:vm");
+  for (const failed of [null, "./assets/guides/laundry-king-florence.png", "./data.js", "./assets/guides/rome-tour-voucher-1212654.pdf"]) {
+    const handlers = {}, stored = [];
+    let activated = false, installation;
+    const context = vm.createContext({
+      console: {warn() {}}, URL, Set, Promise,
+      fetch: async asset => ({ok: asset !== failed, status: asset === failed ? 404 : 200, type: "basic"}),
+      caches: {open: async () => ({put: async asset => stored.push(asset)})},
+      self: {addEventListener: (type, handler) => {handlers[type] = handler;}, skipWaiting: () => {activated = true;}}
+    });
+    vm.runInContext(worker, context);
+    handlers.install({waitUntil: promise => {installation = promise;}});
+    if (failed === "./data.js" || (failed && failed.includes("voucher"))) {
+      await assert.rejects(installation, /Required offline assets missing/);
+      assert.equal(activated, false);
+    } else {
+      await installation;
+      assert.equal(activated, true);
+      assert.ok(stored.includes("./data.js"));
+      assert.ok(stored.includes("./assets/guides/rome-tour-voucher-1212654.pdf"));
+      assert.ok(stored.includes("./assets/guides/florence-tour-voucher-1212654.pdf"));
+    }
+  }
+
 });
 
 test("retired planning notes are removed without deleting reference notes", async t => {
