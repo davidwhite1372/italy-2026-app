@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.0");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 2, 2026 at 3:56 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 2, 2026 at 4:02 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -1146,7 +1146,7 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   const travel=JSON.parse(window.eval("JSON.stringify(SHARED_TRAVEL_ITEMS)"));
   assert.equal(travel.find(item=>item.id==="travel-17").status,"Confirmed");
   assert.equal(travel.find(item=>item.id==="travel-19").status,"Partial");
-  assert.equal(travel.find(item=>item.id==="travel-13").itemType,"Event");
+  assert.equal(travel.find(item=>item.id==="travel-13").itemType,"Hotel / Check-in");
   assert.equal(travel.find(item=>item.id==="travel-27").itemType,"Meal");
   assert.equal(travel.find(item=>item.id==="travel-27").transportation,"Walk");
   assert.equal(travel.find(item=>item.id==="travel-42").itemType,"Event");
@@ -1217,7 +1217,8 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
 
   assert.deepEqual(JSON.parse(JSON.stringify(window.getLive())),{sharedTravel:{
     "travel-8":{itemType:"Transfer",transportation:"Walk",transportationDetails:"Airport connection / passport control"},
-    "travel-18":{notes:"Phone-only note"}
+    "travel-18":{notes:"Phone-only note"},
+    "travel-42":{itemType:"Event",transportationDetails:"Event"}
   }});
   assert.deepEqual(JSON.parse(JSON.stringify(window.getCustomRestaurants())),[]);
   assert.deepEqual(JSON.parse(JSON.stringify(window.getRouteEdits())),{});
@@ -1230,7 +1231,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   assert.equal(payload.version,6);
   assert.equal(payload.appVersion,"12.0.0");
   assert.equal(payload.referenceNotesMode,"delta");
-  assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
+  assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"},"travel-42":{itemType:"Event",transportationDetails:"Event"}}});
   assert.deepEqual(payload.customrestaurants,[]);
   assert.deepEqual(payload.routeedits,{});
   assert.deepEqual(payload.packcatalog,{edits:{},custom:{},deleted:{}});
