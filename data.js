@@ -648,7 +648,8 @@
         {id:"phrase-custom-e71f5832-eee6-4984-8a02-14b0f8271663",en:"I Don't Understand",it:"Non Capisco",pr:"non ka-PEE-sko"},
         {id:"phrase-custom-841aad4e-0337-4a1d-a251-ae9794e1b4e4",en:"I'm sorry",it:"Mi dispiace",pr:"mee dee-SPYAH-cheh"},
         {id:"phrase-custom-d34e56e6-a7fd-4887-8d88-c234ed0aca21",en:"Nice to meet you. I'm David",it:"Piacere, sono David",pr:"pya-CHEH-reh, SOH-noh DAH-veed"},
-        {id:"phrase-custom-4e6ace85-9cd3-4036-be7a-2371f414792d",en:"Permit or May I Pass?",it:"Permesso?",pr:"Per-mess-oh"}
+        {id:"phrase-custom-4e6ace85-9cd3-4036-be7a-2371f414792d",en:"Permit or May I Pass?",it:"Permesso?",pr:"Per-mess-oh"},
+        {id:"phrase-custom-b8663ca6-2cec-4171-a3f6-f36b234eb9f4",en:"Hello, can you take us to Piazza San Bartolomeo all'Isola, number 22, on Tiber Island? We are starting from the Colosseum. How much will it cost?",it:"Salve, può portarci a Piazza San Bartolomeo all'Isola, numero 22, sull'Isola Tiberina? Partiamo dal Colosseo. Quanto costa?",pr:"SAHL-veh, pwoh por-TAHR-chee ah py-AHT-tsah sahn bahr-toh-loh-MEH-oh ahl-EE-zoh-lah, NOO-meh-roh vehn-tee-DOO-eh, sool-EE-zoh-lah tee-beh-REE-nah? Pahr-TYAH-moh dahl koh-lohs-SEH-oh. KWAHN-toh KOH-stah?"}
       ]
     };
     Object.entries(PHRASES).forEach(([category,items]) => items.forEach(item => {

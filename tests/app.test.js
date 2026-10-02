@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.0");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 2, 2026 at 5:22 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 2, 2026 at 5:35 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -104,6 +104,37 @@ test("formal greeting promotion removes its exact stale phone override", async t
   const phrase=window.getPhraseItems().find(item=>item.id==="phrase-0103");
   assert.deepEqual({en:phrase.en,it:phrase.it,pr:phrase.pr},{
     en:"How are you? (formal)",it:"Come sta?",pr:"KOH-meh STAH"
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(window.getPhraseCatalogData())),{edits:{},custom:{},deleted:{}});
+  window.exportData();
+  const payload=await blobJson(window,app.exportedBlob());
+  assert.deepEqual(payload.phrasecatalog,{edits:{},custom:{},deleted:{}});
+  assert.deepEqual(app.runtimeErrors,[]);
+});
+
+test("V12 promotes the saved pedicab phrase and removes the duplicate phone custom copy", async t => {
+  const id="phrase-custom-b8663ca6-2cec-4171-a3f6-f36b234eb9f4";
+  const savedPhoneCustom={
+    category:"Quick Reference",
+    en:"Hello, can you take us to Piazza San Bartolomeo all'Isola, number 22, on Tiber Island? We are starting from the Colosseum. How much will it cost?",
+    it:"Salve, può portarci a Piazza San Bartolomeo all'Isola, numero 22, sull'Isola Tiberina? Partiamo dal Colosseo. Quanto costa?",
+    pr:"SAHL-veh, pwoh por-TAHR-chee ah py-AHT-tsah sahn bahr-toh-loh-MEH-oh ahl-EE-zoh-lah, NOO-meh-roh vehn-tee-DOO-eh, sool-EE-zoh-lah tee-beh-REE-nah? Pahr-TYAH-moh dahl koh-lohs-SEH-oh. KWAHN-toh KOH-stah?",
+    id,
+    createdAt:"2026-10-02T00:00:00.000Z",
+    updatedAt:"2026-10-02T00:00:00.000Z"
+  };
+  const app=await bootApp({
+    italy2026_phrasecatalog:{edits:{},custom:{[id]:savedPhoneCustom},deleted:{}}
+  });
+  t.after(()=>app.dom.window.close());
+  const {window}=app;
+  const matching=window.getPhraseItems().filter(item=>item.id===id);
+  assert.equal(matching.length,1);
+  assert.deepEqual({category:matching[0].category,en:matching[0].en,it:matching[0].it,pr:matching[0].pr},{
+    category:"Quick Reference",
+    en:savedPhoneCustom.en,
+    it:savedPhoneCustom.it,
+    pr:savedPhoneCustom.pr
   });
   assert.deepEqual(JSON.parse(JSON.stringify(window.getPhraseCatalogData())),{edits:{},custom:{},deleted:{}});
   window.exportData();

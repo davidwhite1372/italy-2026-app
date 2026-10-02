@@ -5,7 +5,7 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 ## Current development build
 
 **Version 12.0.0 — Final itinerary reconciliation**
-Last edited October 2, 2026 at 5:22 PM EDT. Backup schema 6 remains unchanged.
+Last edited October 2, 2026 at 5:35 PM EDT. Backup schema 6 remains unchanged. The Oct 7 pedicab Quick Reference phrase from David Cell is now promoted into V12 master data under its existing stable phrase ID, so clean installs and restored phones retain it without duplication.
 
 Version 12.0.0 replaces the Rome and Florence tour booking numbers with 1212654, adds supplied offline vouchers and $656.08 in company-paid expenses awaiting a work report, and makes narrow travel-data, pronunciation, install-sheet, budget-caption, and offline-cache fixes. Dates, tour times, existing IDs, schema 6, and the page layout are preserved.
 
