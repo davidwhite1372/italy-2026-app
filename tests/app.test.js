@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.0");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 2, 2026 at 4:54 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 2, 2026 at 5:00 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -253,7 +253,7 @@ test("Version 12 itinerary cards, clickable routes, and offline guides match the
   assert.ok(!data.venues.some(item=>item.name==="Da Danilo"));
   assert.ok(!data.venues.some(item=>item.name==="Trattoria Da Burde"));
   assert.match(byId["tl-0056"].instructions,/Repubblica.*Line A.*Battistini.*Cipro.*Viale Vaticano 100/i);
-  assert.match(byId["tl-0057"].instructions,/licensed white taxi.*060609.*Line B/i);
+  assert.match(byId["tl-0057"].instructions,/DO NOT RETURN TO HOTEL.*Via dei Fori Imperiali.*5:25 PM.*pedicab.*Ponte Fabricio.*Tiber Island/is);
   assert.match(byId["tl-0020"].time,/Evening/i);
   assert.match(byId["tl-0020"].instructions,/older Da Burde.*no longer treated as confirmed/i);
   assert.match(byId["tl-0021"].title,/Accademia.*Uffizi/);
