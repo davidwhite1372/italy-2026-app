@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.0");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 2, 2026 at 4:11 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 2, 2026 at 4:54 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -550,7 +550,7 @@ test("every shared travel item uses controlled purpose and transportation values
   t.after(() => app.dom.window.close());
   const { window } = app;
 
-  assert.equal(window.eval("SHARED_TRAVEL_ITEMS.length"), 54);
+  assert.equal(window.eval("SHARED_TRAVEL_ITEMS.length"), 56);
   assert.equal(window.eval("SHARED_TRAVEL_ITEMS.every(item => ITEM_TYPE_OPTIONS.includes(item.itemType))"), true);
   assert.equal(window.eval("SHARED_TRAVEL_ITEMS.every(item => TRANSPORTATION_OPTIONS.includes(item.transportation))"), true);
   assert.equal(window.eval("TIMELINE.every(item => ITEM_TYPE_OPTIONS.includes(item.itemType))"), true);
