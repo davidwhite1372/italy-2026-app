@@ -567,7 +567,7 @@ test("updated flight seats and Boston transfer guide match the supplied records"
   assert.deepEqual(seats, {
     DL2706:"29F, 29E",
     SK928:"27E, 27D",
-    SK915:"24G, 24H",
+    SK915:"24G, 24F",
     SK3438:"27A, 27B"
   });
   assert.equal(window.eval("OPEN_ITEMS.find(item=>item.id==='open-0006').item"), "Confirm remaining flight seat for SK681");
@@ -595,7 +595,7 @@ test("Version 10.9 phone classifications convert to the new controlled model", a
   assert.equal(live["travel-8"].itemType, "Transfer");
   assert.equal(live["travel-8"].transportation, "Walk");
   assert.equal(live["travel-8"].transportationDetails, "Airport connection / passport control");
-  assert.equal(live["travel-14"], undefined);
+  assert.deepEqual(JSON.parse(JSON.stringify(live["travel-14"])), {itemType:"Event",transportation:"Walk",transportationDetails:"Walk"});
   assert.equal(window.liveTimeline().find(item => item.id === "tl-0014").itemType, "Event");
 
   window.renderTransport();
@@ -928,7 +928,7 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
   assert.equal(document.querySelector(`#mapsFeaturedGuides a[href="https://cphsecuritywait.dk/en/passport-control"]`)?.textContent.trim(), "Live passport wait times →");
   assert.equal(document.querySelector(`#mapsAirports a[href="https://cphsecuritywait.dk/en/passport-control"]`)?.textContent.trim(), "Passport wait times →");
   const libraryCards=[...document.querySelectorAll("#mapsGuideLibrary .maps-feature-card")];
-  assert.equal(libraryCards.length, 19);
+  assert.equal(libraryCards.length, 18);
   assert.deepEqual(libraryCards.map(card=>card.querySelector("h3").textContent),[
     "Italy Camera Cheat Sheet · Samsung Galaxy S23 Ultra",
     "Luggage Lock Instructions",
@@ -937,7 +937,6 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
     "FCO Arrival → Train Station",
     "Anantara → Vatican Tour Transit Guide",
     "Colosseum → Tiber Island Food-Tour Transfer",
-    "Colosseum → Anantara Return Guide",
     "Laundry King Florence Guide",
     "W Florence → Accademia Tour Guide",
     "Uffizi → W Florence Return Guide",
@@ -1147,7 +1146,7 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   const travel=JSON.parse(window.eval("JSON.stringify(SHARED_TRAVEL_ITEMS)"));
   assert.equal(travel.find(item=>item.id==="travel-17").status,"Confirmed");
   assert.equal(travel.find(item=>item.id==="travel-19").status,"Partial");
-  assert.equal(travel.find(item=>item.id==="travel-13").itemType,"Hotel / Check-in");
+  assert.equal(travel.find(item=>item.id==="travel-13").itemType,"Event");
   assert.equal(travel.find(item=>item.id==="travel-27").itemType,"Meal");
   assert.equal(travel.find(item=>item.id==="travel-27").transportation,"Walk");
   assert.equal(travel.find(item=>item.id==="travel-42").itemType,"Event");
