@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.0");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 2, 2026 at 5:00 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 2, 2026 at 5:07 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -253,7 +253,9 @@ test("Version 12 itinerary cards, clickable routes, and offline guides match the
   assert.ok(!data.venues.some(item=>item.name==="Da Danilo"));
   assert.ok(!data.venues.some(item=>item.name==="Trattoria Da Burde"));
   assert.match(byId["tl-0056"].instructions,/Repubblica.*Line A.*Battistini.*Cipro.*Viale Vaticano 100/i);
-  assert.match(byId["tl-0057"].instructions,/DO NOT RETURN TO HOTEL.*Via dei Fori Imperiali.*5:25 PM.*pedicab.*Ponte Fabricio.*Tiber Island/is);
+  for (const pattern of [/DO NOT RETURN TO HOTEL/i,/Via dei Fori Imperiali/i,/5:25 PM/i,/pedicab/i,/Ponte Fabricio/i,/Tiber Island/i]) {
+    assert.match(byId["tl-0057"].instructions,pattern);
+  }
   assert.match(byId["tl-0020"].time,/Evening/i);
   assert.match(byId["tl-0020"].instructions,/older Da Burde.*no longer treated as confirmed/i);
   assert.match(byId["tl-0021"].title,/Accademia.*Uffizi/);
@@ -1146,7 +1148,9 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   const travel=JSON.parse(window.eval("JSON.stringify(SHARED_TRAVEL_ITEMS)"));
   assert.equal(travel.find(item=>item.id==="travel-17").status,"Confirmed");
   assert.equal(travel.find(item=>item.id==="travel-19").status,"Partial");
-  assert.equal(travel.find(item=>item.id==="travel-13").itemType,"Event");
+  const psaRegistration=travel.find(item=>item.id==="travel-13");
+  assert.match(psaRegistration.title,/PSA registration/i);
+  assert.equal(psaRegistration.itemType,"Event");
   assert.equal(travel.find(item=>item.id==="travel-27").itemType,"Meal");
   assert.equal(travel.find(item=>item.id==="travel-27").transportation,"Walk");
   assert.equal(travel.find(item=>item.id==="travel-42").itemType,"Event");

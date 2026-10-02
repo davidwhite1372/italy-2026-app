@@ -1446,7 +1446,7 @@
       version: "12.0.0",
       build: "12.0.0",
       backupSchema: 6,
-      lastEdited: "October 2, 2026 at 5:00 PM EDT"
+      lastEdited: "October 2, 2026 at 5:07 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -2286,13 +2286,14 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           Object.entries(fieldMap).forEach(([oldKey,newKey])=>{
             if(value[oldKey]!==undefined&&value[oldKey]!=="") mapped[newKey]=value[oldKey];
           });
-          if (key !== timelineId) {
-            // Numeric Timeline keys are legacy pre-stable-ID data. For itinerary records
-            // explicitly reviewed as canonical, do not let those old fields overwrite
-            // the V12 master itinerary. Preserve non-canonical user content such as notes.
-            const canonicalFields=CANONICAL_SHARED_TRAVEL_FIELDS[base.travelId]||[];
-            canonicalFields.forEach(field=>{ delete mapped[field]; });
-          }
+          // italy2026_live.timeline is a legacy Timeline-format store, even when its
+          // keys were later migrated to stable tl-* IDs. For itinerary records that
+          // have been explicitly reviewed as canonical, legacy Timeline fields must
+          // not overwrite the V12 master itinerary. Preserve non-canonical user
+          // content such as notes. Current edits made in V12 live in sharedTravel
+          // and are merged afterward, so deliberate modern phone edits still win.
+          const canonicalFields=CANONICAL_SHARED_TRAVEL_FIELDS[base.travelId]||[];
+          canonicalFields.forEach(field=>{ delete mapped[field]; });
           shared[base.travelId]=key===timelineId
             ? {...(shared[base.travelId]||{}),...mapped}
             : {...mapped,...(shared[base.travelId]||{})};
