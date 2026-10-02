@@ -67,7 +67,7 @@
         dining: "No confirmed Oct 8 dinner added; follow current group instructions.",
         tip: "Bag drop is 7:30–8:30 AM. Meet the group at 10:45 AM; walk to Termini around 11:00 AM; Train 10 departs 12:05 PM.",
         phrase: "Da quale binario parte il treno? — Which platform does the train leave from?",
-        checklist: ["Check out","Meet in lobby at 10:45 AM","Follow Train 10 group at 11:00 AM","Room check-in","Confirm Da Burde dinner time and transport"] },
+        checklist: ["Check out","Meet in lobby at 10:45 AM","Follow Train 10 group at 11:00 AM","Room check-in","Follow current group plan for the evening"] },
       { date: "2026-10-09", theme: "Florence: Accademia & Uffizi", city: "Florence", hotel: "W Florence",
         schedule: "Walk from W Florence at 9:40 AM to arrive at the meeting point by 10:15 AM. Accademia’s David and Uffizi Half-Day Tour begins at 10:30 AM and ends inside the Uffizi; no end time is listed. Keep the afternoon flexible. PSA dinner at Cucina remains at 6:15 PM.",
         transport: "Walk to Piazza della Santissima Annunziata 13; walk back from the Uffizi when ready. Use the linked route maps and illustrated guides.",
@@ -139,7 +139,7 @@
       { id:"tl-0063", travelId:"travel-63", date:"2026-10-08", start:"07:30", end:"08:30", itemType:"To-do", title:"Anantara luggage drop · PSA truck to Florence", from:"Anantara Palazzo Naiadi", to:"PSA luggage truck", mode:"Luggage handling", time:"7:30–8:30 AM", status:"Confirmed", instructions:"Drop luggage in the Anantara lobby during the PSA window. Bags travel separately by PSA truck to Florence; passengers keep needed valuables/documents with them and walk to the station later.", notes:"Meet the passenger group at 10:45 AM; do not confuse the three train cars with private cars." },
       { id:"tl-0017", travelId:"travel-17", date:"2026-10-08", start:"10:45", end:"11:00", itemType:"Transfer", title:"Meet PSA Train 10 group in Anantara lobby", from:"Anantara Palazzo Naiadi lobby", to:"Roma Termini", mode:"PSA group walk", time:"Meet 10:45 AM; walk around 11:00 AM", status:"Confirmed", instructions:"Luggage was dropped 7:30–8:30 AM and travels separately by PSA truck to Florence. Meet the Train 10 group in the hotel lobby at 10:45 AM, then walk with the group to Roma Termini around 11:00 AM.", notes:"Passengers walk to the station; there are three train cars, not private cars." },
       { id:"tl-0018", travelId:"travel-18", date:"2026-10-08", start:"12:05", end:"13:45", itemType:"Train", title:"Rome → Florence · Train 10", from:"Roma Termini", to:"Florence", mode:"PSA Train 10", time:"12:05 PM · 1h 40m", status:"Confirmed", instructions:"Board assigned Train 10 with the PSA group. Train departs Rome at 12:05 PM and the ride is 1 hour 40 minutes. Luggage travels separately by PSA truck.", notes:"No lunch provided. Follow PSA for platform and assigned car." },
-      { id:"tl-0019", travelId:"travel-19", date:"2026-10-08", start:"13:15", end:"13:30", itemType:"Walk", title:"Florence train station → W Florence Hotel", from:"Florence train station (PSA-managed)", to:"W Florence Hotel", mode:"Walk / group transfer as directed", time:"Arrival after Train 10", status:"Partial", instructions:"After Train 10 arrives at about 1:15 PM, follow the assigned group to W Florence. Firenze S.M.N. and a 5–10 minute walk are working assumptions; follow PSA directions if they provide another arrival transfer.", notes:"Station and onward transfer remain subject to PSA group instructions." },
+      { id:"tl-0019", travelId:"travel-19", date:"2026-10-08", start:"13:45", end:"14:00", itemType:"Walk", title:"Florence train station → W Florence Hotel", from:"Florence train station (PSA-managed)", to:"W Florence Hotel", mode:"Walk / group transfer as directed", time:"Arrival after Train 10", status:"Partial", instructions:"After Train 10 arrives at about 1:45 PM, follow the assigned group to W Florence. Firenze S.M.N. and a 5–10 minute walk are working assumptions; follow PSA directions if they provide another arrival transfer.", notes:"Station and onward transfer remain subject to PSA group instructions." },
       { id:"tl-0020", travelId:"travel-20", date:"2026-10-08", start:"Evening", end:"", itemType:"Information", title:"Florence evening · follow current group plan", from:"W Florence", to:"Florence", mode:"Flexible", time:"Evening", status:"Check group instructions", instructions:"The older Da Burde/private-event information is no longer treated as confirmed. Follow current group instructions for the evening.", notes:"No replacement dinner was confirmed during the Oct 2 agenda reconciliation." },
       { id:"tl-0021", travelId:"travel-21", date:"2026-10-09", start:"10:30", end:"", itemType:"Tour", title:"Accademia’s David and Uffizi Half-Day Tour", from:"Piazza della Santissima Annunziata 13, Florence", to:"Uffizi Gallery, Florence", mode:"Guided walking tour", time:"Arrive 10:15 AM; start 10:30 AM; end time not listed", status:"Confirmed", instructions:"Tour booking 1212654 for two adults. Meet at Piazza della Santissima Annunziata 13, 50122 Firenze, in front of the equestrian statue of Ferdinando dei Medici. Look for The Tour Guy staff holding a bright red sign. The guided tour visits the Accademia, walks through the historic center past the Duomo, Via Calzaiuoli and Piazza della Signoria, then visits the Uffizi. It ends inside the Uffizi; keep the rest of the day flexible.", notes:"Use the linked meeting-point map. Return route to W Florence is a separate timeline card. PSA dinner at Cucina remains at 6:15 PM." },
       { id:"tl-0064", travelId:"travel-64", date:"2026-10-10", start:"08:00", end:"09:30", itemType:"To-do", title:"PSA luggage drop · CONFIRM BAGS GO TO VENICE/JW", from:"W Florence", to:"PSA luggage transport", mode:"Luggage handling", time:"8:00–9:30 AM", status:"Confirmed / Verify destination", instructions:"⚠️ BEFORE LEAVING THE BAGS: confirm with PSA that DAVID & MELODY’S luggage is going to VENICE / JW MARRIOTT. Their passenger plan is the independent 9:39 AM Italo, not the PSA passenger departure.", notes:"Keep passports, medication, valuables and train documents with you." },
@@ -173,7 +173,7 @@
       { id:"tl-0040", travelId:"travel-40", date:"2026-10-16", start:"00:00", end:"01:15", itemType:"Car / Drive", title:"Drive home to Spring Hill", from:"TPA Airport Economy Parking", to:"Spring Hill, FL", mode:"Drive", time:"60-75 min", status:"Confirmed", instructions:"Drive via Veterans / Suncoast. Stop if fatigued.", notes:"Post-midnight drive home on Oct 16 following the Oct 15, 11:13 PM TPA arrival. Trip return date and countdown remain Oct 15; allow time to collect bags and retrieve the truck." },
       { id:"tl-0051", travelId:"travel-51", date:"2026-10-06", start:"18:45", end:"", itemType:"Meal", title:"Comodo Mercado Trevi private group dinner", from:"Anantara Palazzo Naiadi", to:"Comodo Mercado Trevi, Via del Lavatore 88b, Rome", mode:"Walk / group plan", time:"6:45 PM", status:"Confirmed", instructions:"Private Joe Lynch group dinner at Comodo Mercado Trevi, Via del Lavatore 88b, 00187 Roma. Restaurant website: https://www.comodomercatotrevi.it/", notes:"Use the linked map. Confirm any final group meeting instructions by text." },
       { id:"tl-0062", sortAfterTimelineId:"tl-0057", travelId:"travel-62", date:"2026-10-07", start:"18:00", end:"", itemType:"Tour", title:"Twilight Trastevere Rome Food Tour", from:"Piazza S. Bartolomeo all’Isola 22, Tiber Island", to:"Trastevere, Rome", mode:"Eating Europe guided food tour", time:"6:00 PM · target arrival 5:45 PM", status:"Booked / Payment Scheduled Oct 5", instructions:"Eating Europe Twilight Trastevere Rome Food Tour for two adults. Meet at the monument in the center of Piazza S. Bartolomeo all’Isola 22 on Tiber Island. Booking 382969949; Viator reservation 1452609071; confirmation 1834620823. Mobile ticket accepted. $332.46 is scheduled to auto-charge Oct 5 to the original payment method.", notes:"Operator: Eating Europe Food Tours Rome, +1 917 909 6432. If late, contact the operator. Do not return to the hotel after the daytime tour." },
-      { id:"tl-0053", travelId:"travel-53", date:"2026-10-09", start:"18:15", end:"", itemType:"Meal", title:"PSA Group Dinner at Cucina", from:"W Florence", to:"Cucina, Via Giano della Bella 3rosso, 50124 Firenze", mode:"PSA group dinner / transportation TBD", time:"6:15 PM", status:"Confirmed", instructions:"PSA group dinner at Cucina, Via Giano della Bella 3rosso, 50124 Firenze. Confirm the route and any group transport with the PSA desk. Official restaurant site: https://www.c-ucina.it/.", notes:"Separate from the private Joe Lynch Trattoria Da Burde dinner on Oct 8. Map: https://www.google.com/maps/search/?api=1&query=Cucina,+Via+Giano+della+Bella+3rosso,+Florence." },
+      { id:"tl-0053", travelId:"travel-53", date:"2026-10-09", start:"18:15", end:"", itemType:"Meal", title:"PSA Group Dinner at Cucina", from:"W Florence", to:"Cucina, Via Giano della Bella 3rosso, 50124 Firenze", mode:"PSA group dinner / transportation TBD", time:"6:15 PM", status:"Confirmed", instructions:"PSA group dinner at Cucina, Via Giano della Bella 3rosso, 50124 Firenze. Confirm the route and any group transport with the PSA desk. Official restaurant site: https://www.c-ucina.it/.", notes:"3rosso is the street number. Map: https://www.google.com/maps/search/?api=1&query=Cucina,+Via+Giano+della+Bella+3rosso,+Florence." },
       { id:"tl-0056", travelId:"travel-56", date:"2026-10-07", start:"08:15", end:"09:15", itemType:"Transfer", title:"Anantara → Vatican tour meeting point", from:"Anantara Palazzo Naiadi", to:"Viale Vaticano 100, Rome", mode:"Metro Line A / walk", time:"Leave 8:15–8:30 AM; arrive by 9:15 AM", status:"Plan Confirmed / Check Metro Access", instructions:"Walk out into Piazza della Repubblica to Repubblica–Teatro dell’Opera station. Take Metro Line A toward Battistini for six stops: Barberini, Spagna, Flaminio, Lepanto, Ottaviano, then Cipro. Follow the live walking map south via Via Candia and Via Tunisi to Viale Vaticano 100; allow 10–15 minutes. Meeting point is atop the large staircase between Hotel Tmark and Caffè Vaticano; find The Tour Guy’s red sign. Allow ample buffer and check ATAC service/access notices. The Repubblica station platform may involve stairs.", notes:"Target the meeting point by 9:15 AM for the 10:00 AM check-in. Maps are linked below; visual guide is in All Guides & Maps." },
       { id:"tl-0057", sortAfterTimelineId:"tl-0016", travelId:"travel-57", date:"2026-10-07", start:"17:15", end:"17:45", itemType:"Transfer", title:"Colosseum → Tiber Island food-tour meeting point", from:"Colosseum tour exit", to:"Piazza S. Bartolomeo all’Isola 22, Tiber Island", mode:"Walk / pedicab backup", time:"HARD DECISION 5:25 PM · target arrival 5:45 PM", status:"Time Critical", instructions:"DO NOT RETURN TO HOTEL. First objective: get to Via dei Fori Imperiali toward Piazza Venezia. If released by 5:25 PM, start walking immediately: Via dei Fori Imperiali → Piazza Venezia/Vittoriano → Via del Teatro di Marcello → Teatro di Marcello → Ponte Fabricio → Tiber Island → Piazza S. Bartolomeo all’Isola 22. If released after 5:25 PM, actively seek a pedicab. If a pedicab appears early while walking, take it if the total price is acceptable. Once near Piazza Venezia/Teatro di Marcello, keep walking unless a pedicab is immediately available.", notes:"Target meeting point by 5:45 PM for the 6:00 PM tour. Pedicab phrase is saved in Quick Reference on David Cell. Agree on total price before sitting." },
       { id:"tl-0058", travelId:"travel-58", date:"2026-10-09", start:"09:40", end:"10:15", itemType:"Transfer", title:"W Florence → Accademia tour meeting point", from:"W Florence, Via del Melarancio 1", to:"Piazza della Santissima Annunziata 13, Florence", mode:"Walk", time:"Leave 9:40 AM; arrive by 10:15 AM", status:"Confirmed", instructions:"Leave W Florence at 9:40 AM and arrive at the meeting point by 10:15 AM. Walk northeast toward the Duomo, then continue along Via dei Servi to Piazza della Santissima Annunziata. Meet in front of the equestrian statue of Ferdinando dei Medici and look for The Tour Guy’s bright red sign. Allow 15–20 minutes and use the linked live walking map.", notes:"Tour starts 10:30 AM. Visual guide is in All Guides & Maps." },
@@ -284,7 +284,7 @@
       {id:"reservation-0001", item:"Air reservation", provider:"Delta / SAS", conf:"H9BVBD / GQMVQK / AZ3BUA", dates:"Oct 4–15", status:"Confirmed", notes:"Master H9BVBD · Delta GQMVQK · SAS AZ3BUA · Store PDFs offline on both phones" },
       {id:"reservation-0002", item:"Rome hotel", hotelId:"hotel-rome-anantara", provider:"Anantara Palazzo Naiadi", conf:"203390136", dates:"Oct 5–8", status:"Confirmed", notes:"PSA hotel confirmation received Sep. 29, 2026. Two guests: David Theodore White and Melody Kay. Premium Room; special requests/billing: NA." },
       {id:"reservation-0003", item:"Florence hotel", hotelId:"hotel-florence-w", provider:"W Florence", conf:"186071359", dates:"Oct 8–10", status:"Confirmed", notes:"PSA hotel confirmation received Sep. 29, 2026. KING room; special requests/billing: NA. W Florence publishes check-in from 3:00 PM; breakfast details remain to be confirmed." },
-      {id:"reservation-0004", item:"Rome to Florence Train 10", provider:"PSA group travel", conf:"PSA-managed group transfer", dates:"Oct 8", status:"Confirmed", notes:"Meet in the hotel lobby at 10:45 AM. Walk with the assigned train group to the station starting at 11:00 AM. Train block ends around 1:15 PM. No train number, station, coach, or individual ticket details were provided." },
+      {id:"reservation-0004", item:"Rome to Florence Train 10", provider:"PSA group travel", conf:"PSA-managed group transfer", dates:"Oct 8", status:"Confirmed", notes:"Meet in the hotel lobby at 10:45 AM. Walk with the assigned Train 10 group to Roma Termini around 11:00 AM. Train departs at 12:05 PM and the ride is 1 hour 40 minutes, arriving about 1:45 PM. Luggage travels separately by PSA truck; follow PSA for platform and assigned car." },
       {id:"reservation-0005", item:"Possible PSA Florence-to-Venice group transfer", provider:"PSA", conf:"Event-provided", dates:"Oct 10", status:"Alternative", notes:"Possible backup only. Italo 8904 Club Executive remains the confirmed primary plan." },
       {id:"reservation-0006", item:"Italo Florence-to-Venice ticket", provider:"Italo", conf:"EM7VNB / Rec. 118932941", dates:"Oct 10", status:"Confirmed", notes:"Primary plan: Italo 8904, 9:39–11:55 AM; Club Executive; Coach 1 seats 13 & 16; €177.76. Cancel only if the final PSA group transfer becomes clearly preferable." },
       {id:"reservation-0007", item:"Venice hotel (group)", hotelId:"hotel-venice-jw", provider:"JW Marriott Venice", conf:"187185636", dates:"Oct 10–13", status:"Confirmed", notes:"PSA hotel confirmation received Sep. 29, 2026. KING room; special requests/billing: NA. Follow PSA instructions for the station-to-island group transfer; no separate transfer booking is needed." },
@@ -922,13 +922,13 @@ const MAP_DOOR_ROUTES = [
     "backupLink": "",
     "status": "Confirmed / PSA-managed",
     "note": "Meet in the hotel lobby at 10:45 AM. Join the assigned group and prepare luggage before the group walk to the station starts at 11:00 AM.",
-    "secondaryNote": "Train 10 is the assigned Rome-to-Florence train. The working group-travel block ends about 1:15 PM. Exact departure station and coach details were not supplied.",
+    "secondaryNote": "Train 10 is the assigned Rome-to-Florence train. Train 10 departs Roma Termini at 12:05 PM and arrives in Florence about 1:45 PM. Follow PSA for platform and assigned car.",
     "from": "Anantara Palazzo Naiadi Hotel"
   },
   {
     "order": 12,
     "dateISO": "2026-10-08",
-    "start": "13:15",
+    "start": "13:45",
     "end": "13:30",
     "date": "Oct 8",
     "to": "W Florence Hotel",
@@ -938,7 +938,7 @@ const MAP_DOOR_ROUTES = [
     "backupLink": "",
     "status": "Partial",
     "note": "From Firenze S.M.N., leave through the main exit toward Piazza della Stazione. Follow the linked walking route toward Piazza dell’Unità Italiana and Via del Melarancio 1 (W Florence). Stay with the group and follow PSA directions if they provide a different arrival transfer.",
-    "secondaryNote": "Train 10 is expected to finish around 1:15 PM. Firenze S.M.N. and the 5–10 minute walk remain working assumptions; follow PSA directions. W Florence check-in begins at 3:00 PM.",
+    "secondaryNote": "Train 10 is expected to arrive around 1:45 PM. Firenze S.M.N. and the 5–10 minute walk remain working assumptions; follow PSA directions. W Florence check-in begins at 3:00 PM.",
     "from": "Firenze S.M.N. Train Station"
   },
   {
@@ -1416,31 +1416,6 @@ const MAP_HOTELS = [
 const MAP_VENUES_EVENTS = [
   {
     "city": "Rome",
-    "city": "Rome",
-    "name": "Da Danilo",
-    "kind": "Restaurant suggestion",
-    "event": "Free Dinner · Oct 7 (restaurant-list suggestion)",
-    "transportation": "Walk / taxi",
-    "address": "Via Petrarca 13, 00185 Roma",
-    "link": "https://www.trattoriadadanilo.com/",
-    "access": "Restaurant list notes it is walkable from Anantara Palazzo Naiadi",
-    "note": "Flexible dinner suggestion; not booked. Check hours and reserve directly if selected. Map: https://www.google.com/maps/search/?api=1&query=Trattoria+da+Danilo,+Via+Petrarca+13,+Rome",
-    "status": "Suggestion"
-  },
-  {
-    "city": "Florence",
-    "name": "Trattoria Da Burde",
-    "kind": "Restaurant",
-    "event": "Private Joe Lynch Group Dinner · Oct 8",
-    "transportation": "Taxi / group transport TBD",
-    "address": "Via Pistoiese 154, 50145 Firenze",
-    "link": "https://www.google.com/maps/search/?api=1&query=Trattoria+Da+Burde,+Via+Pistoiese+154,+Florence",
-    "access": "Time listed as 7:00 PM, unconfirmed; confirm group transport",
-    "note": "Private Joe Lynch event, not a PSA dinner.",
-    "status": "Time Unconfirmed"
-  },
-  {
-    "city": "Rome",
     "name": "Comodo Mercado Trevi",
     "kind": "Restaurant",
     "event": "Joe Lynch Group Dinner · Oct 6",
@@ -1471,9 +1446,9 @@ const MAP_VENUES_EVENTS = [
     "transportation": "JW shuttle / ferry",
     "address": "Rio Terrà degli Assassini 3695, 30124 Venezia",
     "link": "https://www.google.com/maps/search/?api=1&query=Osteria+Ai+Assassini,+Rio+Terra+degli+Assassini+3695,+Venice",
-    "access": "6:00 PM provisional; ferry required",
+    "access": "Time TBD; ferry required",
     "note": "Official site: https://osteriaaiassassini.it/. Confirm time and ferry route.",
-    "status": "Time Provisional"
+    "status": "Confirmed / Time TBD"
   },
   {
     "city": "Florence",
@@ -1622,6 +1597,6 @@ const MAP_SAVED_PENDING = [
     "due": "Before check-in",
     "status": "Pending",
     "dependency": "SK681 seat assignment",
-    "note": "Seats saved for DL2706 (29F/29E), SK928 (27E/27D), SK915 (24G/24H), and SK3438 (27A/27B). SK681 is confirmed; select or confirm its seat at online check-in."
+    "note": "Seats saved for DL2706 (29F/29E), SK928 (27E/27D), SK915 (24G/24F), and SK3438 (27A/27B). SK681 is confirmed; select or confirm its seat at online check-in."
   }
 ];

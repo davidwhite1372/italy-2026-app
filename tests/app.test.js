@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "11.0.3");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "11.0.3");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.0");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /September 30, 2026 at 5:57 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 2, 2026 at 3:56 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -169,26 +169,24 @@ test("Oct 8 Train 10 agenda block replaces stale PSA train details", async t => 
     checkout:TIMELINE.find(item=>item.id==="tl-0055"),
     walk:TIMELINE.find(item=>item.id==="tl-0019"),
     reservation:RESERVATIONS.find(item=>item.id==="reservation-0004"),
-    venue:MAP_VENUES_EVENTS.find(item=>item.name==="Trattoria Da Burde"),
     day:DAYS.find(item=>item.date==="2026-10-08"),
     mapRoute:MAP_DOOR_ROUTES.find(item=>item.order===11)
   })`));
   assert.equal(data.meetup.start,"10:45");
   assert.equal(data.meetup.end,"11:00");
   assert.match(data.meetup.instructions,/10:45 AM.*11:00 AM/);
-  assert.equal(data.train.start,"11:00");
-  assert.equal(data.train.end,"13:15");
+  assert.equal(data.train.start,"12:05");
+  assert.equal(data.train.end,"13:45");
   assert.match(data.train.title,/Train 10/);
-  assert.match(data.train.instructions,/assigned train group.*station.*scenic/i);
-  assert.doesNotMatch(data.train.instructions,/12:05|1:45|train number/);
+  assert.match(data.train.instructions,/Train 10.*12:05 PM.*1 hour 40 minutes.*PSA truck/i);
+  assert.doesNotMatch(data.train.instructions,/Morning|old block|Pending/);
   assert.equal(data.checkout.end,"10:45");
-  assert.equal(data.walk.start,"13:15");
+  assert.equal(data.walk.start,"13:45");
   assert.equal(data.walk.status,"Partial");
   assert.match(data.reservation.notes,/10:45 AM/);
   assert.match(data.reservation.notes,/11:00 AM/);
-  assert.match(data.reservation.notes,/1:15 PM/);
-  assert.match(data.venue.address,/Via Pistoiese 154/);
-  assert.match(data.day.dining,/7:00 PM.*time unconfirmed/i);
+  assert.match(data.reservation.notes,/12:05 PM.*1 hour 40 minutes.*1:45 PM/i);
+  assert.match(data.day.dining,/No confirmed Oct 8 dinner.*current group instructions/i);
   assert.match(data.mapRoute.note,/10:45 AM/);
   window.showPage("timeline");
   window.document.querySelector("#timelineDayFilter").value="2026-10-08";
@@ -208,21 +206,21 @@ test("stale phone overrides cannot restore superseded Train 10 times", async t =
   const live=JSON.parse(window.eval("JSON.stringify(getLive())"));
   assert.deepEqual(live.sharedTravel["travel-18"],{notes:"Keep this unrelated phone note."});
   const train=window.eval('liveSharedTravelItems().find(item=>item.id==="travel-18")');
-  assert.equal(train.start,"11:00");
-  assert.equal(train.end,"13:15");
+  assert.equal(train.start,"12:05");
+  assert.equal(train.end,"13:45");
   assert.equal(train.status,"Confirmed");
   assert.match(train.instructions,/Train 10/);
   window.showPage("timeline");
   window.document.querySelector("#timelineDayFilter").value="2026-10-08";
   window.document.querySelector("#timelineDayFilter").dispatchEvent(new window.Event("change",{bubbles:true}));
   const card=window.document.querySelector('#timelineList .tl-step[data-timeline-id="tl-0018"]');
-  assert.match(card.textContent,/11:00 AM–1:15 PM/);
+  assert.match(card.textContent,/12:05 PM–1:45 PM/);
   assert.match(card.textContent,/Train 10/);
   assert.doesNotMatch(card.textContent,/Morning|old block|Pending/);
   assert.deepEqual(app.runtimeErrors,[]);
 });
 
-test("Version 11 itinerary cards, clickable routes, and offline guides match the agenda", async t => {
+test("Version 12 itinerary cards, clickable routes, and offline guides match the agenda", async t => {
   const app=await bootApp();
   t.after(()=>app.dom.window.close());
   const {window}=app;
@@ -235,7 +233,7 @@ test("Version 11 itinerary cards, clickable routes, and offline guides match the
     pretrip:PRETRIP.flatMap(group=>group.items),
     release:APP_METADATA
   })`));
-  assert.equal(data.release.version,"11.0.3");
+  assert.equal(data.release.version,"12.0.0");
   assert.equal(data.release.backupSchema,6);
   assert.equal(data.routes.find(route=>route.order===15).start,"After 11:55 AM train");
   assert.equal(data.routes.find(route=>route.order===15).duration,"Per PSA group schedule");
@@ -246,17 +244,18 @@ test("Version 11 itinerary cards, clickable routes, and offline guides match the
   assert.match(byId["tl-0015"].title,/Cantine Santa Benedetta/);
   assert.match(byId["tl-0051"].title,/Comodo Mercado Trevi/);
   assert.match(byId["tl-0016"].title,/Vatican Museums.*Colosseum/);
-  assert.match(byId["tl-0062"].title,/Free Dinner.*Da Danilo suggestion/);
-  assert.match(byId["tl-0062"].time,/Flexible.*not booked/i);
-  assert.match(byId["tl-0062"].instructions,/restaurant-list suggestion/i);
-  assert.match(byId["tl-0062"].instructions,/no group reservation.*walkable/i);
-  assert.match(byId["tl-0062"].instructions,/trattoriadadanilo\.com/i);
+  assert.match(byId["tl-0062"].title,/Twilight Trastevere Rome Food Tour/);
+  assert.match(byId["tl-0062"].time,/6:00 PM.*5:45 PM/i);
+  assert.match(byId["tl-0062"].instructions,/382969949.*1452609071.*1834620823/);
+  assert.match(byId["tl-0062"].notes,/Do not return to the hotel/i);
   assert.ok(!data.timeline.some(item=>/Villa Miani|Awards Gala/.test(item.title+item.to)));
   assert.ok(!data.venues.some(item=>item.name==="Villa Miani"));
-  assert.equal(data.venues.find(item=>item.name==="Da Danilo").status,"Suggestion");
+  assert.ok(!data.venues.some(item=>item.name==="Da Danilo"));
+  assert.ok(!data.venues.some(item=>item.name==="Trattoria Da Burde"));
   assert.match(byId["tl-0056"].instructions,/Repubblica.*Line A.*Battistini.*Cipro.*Viale Vaticano 100/i);
   assert.match(byId["tl-0057"].instructions,/licensed white taxi.*060609.*Line B/i);
-  assert.match(byId["tl-0020"].time,/7:00 PM.*time unconfirmed/i);
+  assert.match(byId["tl-0020"].time,/Evening/i);
+  assert.match(byId["tl-0020"].instructions,/older Da Burde.*no longer treated as confirmed/i);
   assert.match(byId["tl-0021"].title,/Accademia.*Uffizi/);
   assert.equal(byId["tl-0053"].title,"PSA Group Dinner at Cucina");
   assert.match(byId["tl-0053"].to,/Cucina, Via Giano della Bella 3rosso/);
@@ -264,7 +263,7 @@ test("Version 11 itinerary cards, clickable routes, and offline guides match the
   assert.equal(data.venues.find(item=>item.name==="Cucina").address,"Via Giano della Bella 3rosso, 50124 Firenze");
   assert.match(byId["tl-0058"].instructions,/9:40 AM.*10:15 AM/);
   assert.match(byId["tl-0059"].instructions,/Uffizi.*W Florence/);
-  assert.match(byId["tl-0026"].time,/6:00 PM.*provisional/i);
+  assert.match(byId["tl-0026"].time,/Time TBD/i);
   assert.match(byId["tl-0028"].title,/Murano.*Burano/);
   assert.match(byId["tl-0030"].instructions,/8:45 AM.*Giardini Reali.*Calle de le Rasse 4536/i);
   assert.match(byId["tl-0030"].instructions,/8:30 AM.*every 30 minutes/i);
@@ -306,10 +305,14 @@ test("Version 11 itinerary cards, clickable routes, and offline guides match the
   for (const guide of ["cph-connection-guide-return","rome-metro-transfer-guide","rome-return-transfer-guide","florence-tour-outbound-guide","florence-tour-return-guide","venice-tour-outbound-guide","venice-tour-return-guide"]) {
     for (const ext of ["png","pdf"]) assert.ok(fs.existsSync(path.join(projectRoot,"assets/guides",`${guide}.${ext}`)));
   }
+  assert.ok(fs.existsSync(path.join(projectRoot,"assets/guides","rome-colosseum-to-tiber-island-food-tour.png")));
+  assert.ok(fs.existsSync(path.join(projectRoot,"assets/guides","twilight-trastevere-food-tour-382969949.pdf")));
   const sw=fs.readFileSync(path.join(projectRoot,"sw.js"),"utf8");
   for (const guide of ["cph-connection-guide-return","rome-metro-transfer-guide","rome-return-transfer-guide","florence-tour-outbound-guide","florence-tour-return-guide","venice-tour-outbound-guide","venice-tour-return-guide"]) {
     assert.match(sw,new RegExp(`${guide}\\.(?:png|pdf)`));
   }
+  assert.match(sw,/rome-colosseum-to-tiber-island-food-tour\.png/);
+  assert.match(sw,/twilight-trastevere-food-tour-382969949\.pdf/);
   window.showPage("timeline");
   window.document.querySelector("#timelineDayFilter").value="2026-10-12";
   window.document.querySelector("#timelineDayFilter").dispatchEvent(new window.Event("change",{bubbles:true}));
@@ -816,19 +819,18 @@ test("dark-mode converter styling and controlled Checked packing location are pr
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("Da Burde replaces the PSA Giardino Corsini dinner and keeps its time unconfirmed", async t => {
+test("Oct 8 Florence evening no longer treats Da Burde as confirmed", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
   const data = JSON.parse(app.window.eval(`JSON.stringify({
     timeline:TIMELINE.find(item=>item.id==="tl-0020"),
-    followup:OPEN_ITEMS.find(item=>item.id==="open-0020"),
-    venue:MAP_VENUES_EVENTS.find(item=>item.name==="Trattoria Da Burde")
+    day:DAYS.find(item=>item.date==="2026-10-08"),
+    venues:MAP_VENUES_EVENTS
   })`));
-  assert.equal(data.timeline.status,"Time Unconfirmed");
-  assert.equal(data.followup.status,"Pending");
-  assert.match(data.timeline.time,/7:00 PM.*unconfirmed/i);
-  assert.match(data.followup.why,/transportation from W Florence/i);
-  assert.match(data.venue.note,/private Joe Lynch event/i);
+  assert.equal(data.timeline.status,"Check group instructions");
+  assert.match(data.timeline.instructions,/older Da Burde.*no longer treated as confirmed/i);
+  assert.match(data.day.dining,/No confirmed Oct 8 dinner/i);
+  assert.ok(!data.venues.some(item=>item.name==="Trattoria Da Burde"));
   assert.deepEqual(app.runtimeErrors, []);
 });
 
@@ -907,8 +909,6 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
     "Hotel Antiche Figure"
   ]);
   assert.deepEqual(mapData.venues.map(item => [item.name,item.event,item.transportation]), [
-    ["Da Danilo","Free Dinner · Oct 7 (restaurant-list suggestion)","Walk / taxi"],
-    ["Trattoria Da Burde","Private Joe Lynch Group Dinner · Oct 8","Taxi / group transport TBD"],
     ["Comodo Mercado Trevi","Joe Lynch Group Dinner · Oct 6","Walk / group plan"],
     ["Nerone al Viminale","Joe Lynch Group Dinner · Oct 5","Walk / group meetup"],
     ["Osteria Ai Assassini","Dinner · Oct 10","JW shuttle / ferry"],
@@ -1228,7 +1228,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"11.0.3");
+  assert.equal(payload.appVersion,"12.0.0");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -1268,7 +1268,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "11.0.3");
+  assert.equal(payload.appVersion, "12.0.0");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -1287,15 +1287,15 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"11.0.3");
-  assert.match(manifest.description,/Version 11\.0\.3/);
-  assert.match(worker,/v11-0-3-tour-vouchers/);
+  assert.equal(packageData.version,"12.0.0");
+  assert.match(manifest.description,/Version 12\.0\.0/);
+  assert.match(worker,/v12-0-0-final-itinerary/);
   ["boston-terminal-a-to-e.png","fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png","italy-camera-cheat-sheet-samsung-s23-ultra.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
   });
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
-    timeline:60,restaurants:67,attractions:15,reservations:13,budget:20,packing:74,open:8
+    timeline:62,restaurants:67,attractions:15,reservations:14,budget:21,packing:74,open:7
   });
   Object.values(counts).forEach(ids=>{
     assert.equal(ids.every(Boolean),true);
@@ -1360,15 +1360,17 @@ test("offline application shell lists every required local asset", async () => {
     "./assets/tides/rialto.png",
     "./assets/tides/santa-lucia.png",
     "./assets/guides/boston-terminal-a-to-e.png",
-    "./assets/guides/italy-camera-cheat-sheet-samsung-s23-ultra.png"
+    "./assets/guides/italy-camera-cheat-sheet-samsung-s23-ultra.png",
+    "./assets/guides/rome-colosseum-to-tiber-island-food-tour.png",
+    "./assets/guides/twilight-trastevere-food-tour-382969949.pdf"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v11-0-3-tour-vouchers/);
+  assert.match(worker, /italy-2026-github-v12-0-0-final-itinerary/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);
   const vm = require("node:vm");
-  for (const failed of [null, "./assets/guides/laundry-king-florence.png", "./data.js", "./assets/guides/rome-tour-voucher-1212654.pdf"]) {
+  for (const failed of [null, "./assets/guides/laundry-king-florence.png", "./data.js", "./assets/guides/rome-tour-voucher-1212654.pdf", "./assets/guides/twilight-trastevere-food-tour-382969949.pdf"]) {
     const handlers = {}, stored = [];
     let activated = false, installation;
     const context = vm.createContext({
@@ -1379,7 +1381,7 @@ test("offline application shell lists every required local asset", async () => {
     });
     vm.runInContext(worker, context);
     handlers.install({waitUntil: promise => {installation = promise;}});
-    if (failed === "./data.js" || (failed && failed.includes("voucher"))) {
+    if (failed === "./data.js" || (failed && (failed.includes("voucher") || failed.includes("382969949")))) {
       await assert.rejects(installation, /Required offline assets missing/);
       assert.equal(activated, false);
     } else {

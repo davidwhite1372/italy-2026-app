@@ -6,6 +6,8 @@ const APP_SHELL = [
   './assets/guides/rome-tour-voucher-1212654.pdf',
   './assets/guides/florence-tour-voucher-1212654.pdf',
   './assets/guides/tour-payment-confirmation-1212654.png',
+  './assets/guides/rome-colosseum-to-tiber-island-food-tour.png',
+  './assets/guides/twilight-trastevere-food-tour-382969949.pdf',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
@@ -53,7 +55,9 @@ self.addEventListener('install', event => {
         // A failed optional guide must not prevent a working offline installation.
         const required = new Set(['./', './index.html', './data.js', './manifest.json',
           './assets/guides/rome-tour-voucher-1212654.pdf',
-          './assets/guides/florence-tour-voucher-1212654.pdf']);
+          './assets/guides/florence-tour-voucher-1212654.pdf',
+          './assets/guides/rome-colosseum-to-tiber-island-food-tour.png',
+          './assets/guides/twilight-trastevere-food-tour-382969949.pdf']);
         const failures = [];
         await Promise.all(APP_SHELL.map(async asset => {
           try {

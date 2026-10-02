@@ -1,6 +1,6 @@
 # Version 12.0.0 — October 2, 2026
 
-Build prepared on `develop` October 2, 2026 at 3:16 PM EDT. Production `main` has not been changed by this patch.
+Build prepared on `develop` October 2, 2026 at 3:56 PM EDT. Production `main` has not been changed by this patch.
 
 - Reconciled the final Oct 5–15 itinerary with the approved JLFC/PSA agenda decisions.
 - Replaced Oct 7 free dinner/Da Danilo with the booked Twilight Trastevere Rome Food Tour and direct Colosseum→Tiber Island transfer.
