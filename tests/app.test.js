@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.0");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 2, 2026 at 5:35 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 2, 2026 at 7:33 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -190,6 +190,44 @@ test("10.14.6 replaces taxi phrases with the Venice vaporetto ticket phrase", as
   assert.deepEqual(app.runtimeErrors,[]);
 });
 
+test("V12 final meal classifications and return baggage wording are canonical", async t => {
+  const app=await bootApp();
+  t.after(()=>app.dom.window.close());
+  const {window}=app;
+  const data=JSON.parse(window.eval(`JSON.stringify({
+    nerone:TIMELINE.find(item=>item.id==="tl-0014"),
+    daBurde:TIMELINE.find(item=>item.id==="tl-0020"),
+    assassini:TIMELINE.find(item=>item.id==="tl-0026"),
+    dinnerChoice:TIMELINE.find(item=>item.id==="tl-0029"),
+    trastevere:TIMELINE.find(item=>item.id==="tl-0062"),
+    cucina:TIMELINE.find(item=>item.id==="tl-0053"),
+    uffiziReturn:TIMELINE.find(item=>item.id==="tl-0059"),
+    oct15:DAYS.find(item=>item.date==="2026-10-15"),
+    jfkRoute:MAP_DOOR_ROUTES.find(item=>item.order===21),
+    jfkAirport:MAP_AIRPORTS.find(item=>item.code==="JFK"),
+    assassiniRoute:MAP_DOOR_ROUTES.find(item=>item.order===35),
+    assassiniOpen:OPEN_ITEMS.find(item=>item.id==="open-0017")
+  })`));
+  assert.equal(data.nerone.itemType,"Meal");
+  assert.equal(data.daBurde.itemType,"Meal");
+  assert.match(data.daBurde.title,/Da Burde/);
+  assert.equal(data.daBurde.start,"19:00");
+  assert.match(data.daBurde.status,/Tentative|unconfirmed/i);
+  assert.equal(data.assassini.itemType,"Meal");
+  assert.match(data.assassini.time,/TBD/);
+  assert.equal(data.dinnerChoice.itemType,"Meal");
+  assert.equal(data.dinnerChoice.start,"19:00");
+  assert.equal(data.dinnerChoice.status,"Tentative");
+  assert.equal(data.trastevere.itemType,"Meal");
+  assert.equal(data.cucina.itemType,"Meal");
+  assert.equal(data.uffiziReturn.sortAfterTimelineId,"tl-0021");
+  assert.doesNotMatch(data.oct15.dining,/bags are rechecked|reclaim and recheck/i);
+  assert.doesNotMatch(`${data.jfkRoute.mode} ${data.jfkRoute.note} ${data.jfkAirport.concern}`,/bag claim|reclaim and recheck/i);
+  assert.match(`${data.jfkRoute.note} ${data.oct15.dining}`,/through to TPA|checked through to TPA/i);
+  assert.doesNotMatch(`${data.assassiniRoute.start} ${data.assassiniRoute.note} ${data.assassiniOpen.why}`,/6:00 PM/);
+  assert.deepEqual(app.runtimeErrors,[]);
+});
+
 test("Oct 8 Train 10 agenda block replaces stale PSA train details", async t => {
   const app=await bootApp();
   t.after(()=>app.dom.window.close());
@@ -287,8 +325,10 @@ test("Version 12 itinerary cards, clickable routes, and offline guides match the
   for (const pattern of [/DO NOT RETURN TO HOTEL/i,/Via dei Fori Imperiali/i,/5:25 PM/i,/pedicab/i,/Ponte Fabricio/i,/Tiber Island/i]) {
     assert.match(byId["tl-0057"].instructions,pattern);
   }
-  assert.match(byId["tl-0020"].time,/Evening/i);
-  assert.match(byId["tl-0020"].instructions,/older Da Burde.*no longer treated as confirmed/i);
+  assert.match(byId["tl-0020"].time,/7:00 PM.*unconfirmed/i);
+  assert.equal(byId["tl-0020"].itemType,"Meal");
+  assert.match(byId["tl-0020"].title,/Trattoria Da Burde/);
+  assert.match(byId["tl-0020"].status,/Tentative|unconfirmed/i);
   assert.match(byId["tl-0021"].title,/Accademia.*Uffizi/);
   assert.equal(byId["tl-0053"].title,"PSA Group Dinner at Cucina");
   assert.match(byId["tl-0053"].to,/Cucina, Via Giano della Bella 3rosso/);
@@ -852,18 +892,18 @@ test("dark-mode converter styling and controlled Checked packing location are pr
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("Oct 8 Florence evening no longer treats Da Burde as confirmed", async t => {
+test("Oct 8 Florence evening restores the tentative Da Burde dinner", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
   const data = JSON.parse(app.window.eval(`JSON.stringify({
     timeline:TIMELINE.find(item=>item.id==="tl-0020"),
-    day:DAYS.find(item=>item.date==="2026-10-08"),
-    venues:MAP_VENUES_EVENTS
+    day:DAYS.find(item=>item.date==="2026-10-08")
   })`));
-  assert.equal(data.timeline.status,"Check group instructions");
-  assert.match(data.timeline.instructions,/older Da Burde.*no longer treated as confirmed/i);
-  assert.match(data.day.dining,/No confirmed Oct 8 dinner/i);
-  assert.ok(!data.venues.some(item=>item.name==="Trattoria Da Burde"));
+  assert.equal(data.timeline.itemType,"Meal");
+  assert.equal(data.timeline.start,"19:00");
+  assert.match(data.timeline.status,/Tentative|unconfirmed/i);
+  assert.match(data.timeline.instructions,/Trattoria Da Burde.*7:00 PM.*working time/i);
+  assert.match(data.day.dining,/Trattoria Da Burde.*7:00 PM.*unconfirmed/i);
   assert.deepEqual(app.runtimeErrors, []);
 });
 
