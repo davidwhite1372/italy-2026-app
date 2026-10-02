@@ -1,7 +1,8 @@
 # Version 12.0.0 — October 2, 2026
 
-Build prepared on `develop` October 2, 2026 at 5:35 PM EDT. Production `main` has not been changed by this patch.
+Build prepared on `develop` October 2, 2026 at 7:33 PM EDT. Production `main` has not been changed by this patch.
 
+- Final meal/data reconciliation (7:33 PM EDT): classify Nerone, Da Burde, Ai Assassini, Twilight Trastevere, Cucina, and Oct 11 dinner correctly as meals; restore the Oct 8 private Joe Lynch Da Burde dinner as tentative at the 7:00 PM working time; keep Oct 11 Dinner of Choice tentative at 7:00 PM; preserve the Uffizi return walk before Cucina; remove invented 6:00 PM Ai Assassini timing; and remove stale JFK bag-reclaim/recheck instructions because bags are planned through to TPA.
 - Pedicab phrase promotion (5:35 PM EDT): promote David Cell's saved Oct 7 pedicab Quick Reference phrase into V12 master data with its exact stable ID, Italian, English, and pronunciation. Existing phone custom copies normalize away by ID so the phrase is not duplicated.
 - Regression gate correction (5:22 PM EDT): align two stale assertions with the V12 master data: `open-0020` is retired (7 current open items), and `travel-42` remains the Hotel Antiche Figure check-in master record (`Hotel / Check-in`). No itinerary or migration logic changed.
 
