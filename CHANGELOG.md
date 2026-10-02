@@ -1,6 +1,8 @@
 # Version 12.0.0 — October 2, 2026
 
-Build prepared on `develop` October 2, 2026 at 5:07 PM EDT. Production `main` has not been changed by this patch.
+Build prepared on `develop` October 2, 2026 at 5:22 PM EDT. Production `main` has not been changed by this patch.
+
+- Regression gate correction (5:22 PM EDT): align two stale assertions with the V12 master data: `open-0020` is retired (7 current open items), and `travel-42` remains the Hotel Antiche Figure check-in master record (`Hotel / Check-in`). No itinerary or migration logic changed.
 
 - Reconciled the final Oct 5–15 itinerary with the approved JLFC/PSA agenda decisions.
 - Replaced Oct 7 free dinner/Da Danilo with the booked Twilight Trastevere Rome Food Tour and direct Colosseum→Tiber Island transfer.

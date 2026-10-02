@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.0");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.0");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 2, 2026 at 5:07 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 2, 2026 at 5:22 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -294,8 +294,8 @@ test("Version 12 itinerary cards, clickable routes, and offline guides match the
   assert.ok(!data.venues.some(item=>item.name==="SEEN by Olivier"));
   assert.equal(data.open.find(item=>item.id==="open-0019"),undefined);
   assert.equal(data.open.find(item=>item.id==="open-0018").status,"Pending");
-  assert.equal(data.open.find(item=>item.id==="open-0020").status,"Pending");
-  assert.equal(data.open.length,8);
+  assert.equal(data.open.find(item=>item.id==="open-0020"),undefined);
+  assert.equal(data.open.length,7);
   assert.ok(data.open.every(item=>item.status==="Pending"));
   assert.ok(!data.open.some(item=>/Villa Miani|awards dinner|Italo.*reconfirm|restaurant reservations/i.test(item.item)));
   assert.match(data.pretrip.find(item=>item.id==="h1v11").text,/Oct 6.*€620.*pay when it arrives/);
@@ -1153,7 +1153,7 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   assert.equal(psaRegistration.itemType,"Event");
   assert.equal(travel.find(item=>item.id==="travel-27").itemType,"Meal");
   assert.equal(travel.find(item=>item.id==="travel-27").transportation,"Walk");
-  assert.equal(travel.find(item=>item.id==="travel-42").itemType,"Event");
+  assert.equal(travel.find(item=>item.id==="travel-42").itemType,"Hotel / Check-in");
 
   const packing=window.getPackingItems();
   assert.equal(packing.find(item=>item._id==="packing-0019").qty,2);
