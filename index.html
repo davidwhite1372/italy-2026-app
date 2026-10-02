@@ -1090,6 +1090,11 @@
           <button data-travel-filter="todo" onclick="setTravelTypeFilter('todo')">✅ To-Dos</button>
           <button data-travel-filter="information" onclick="setTravelTypeFilter('information')">ℹ️ Information</button>
         </div>
+        <div class="travel-search-row" style="margin-bottom:8px;display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;">
+          <button type="button" class="btn-outline" style="padding:9px 12px;margin:0;" onclick="stepTravelDay(-1)" aria-label="Previous travel day">←</button>
+          <select id="travelDayFilter" aria-label="Filter Travel Details by day" onchange="setTravelDateFilter(this.value)" style="width:100%;margin:0;"></select>
+          <button type="button" class="btn-outline" style="padding:9px 12px;margin:0;" onclick="stepTravelDay(1)" aria-label="Next travel day">→</button>
+        </div>
         <div class="travel-search-row" style="margin-bottom:8px;">
           <select id="travelTransportationFilter" aria-label="Filter by transportation" onchange="setTravelTransportationFilter(this.value)" style="width:100%;margin:0;">
             <option value="all">All transportation</option>
@@ -1438,10 +1443,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "11.0.3",
-      build: "11.0.3",
+      version: "12.0.0",
+      build: "12.0.0",
       backupSchema: 6,
-      lastEdited: "September 30, 2026 at 5:57 PM EDT"
+      lastEdited: "October 2, 2026 at 3:16 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -1690,7 +1695,9 @@
     let currentCity = "rome";
     let travelTypeFilter = "all";
     let travelTransportationFilter = "all";
+    let travelDateFilter = "all";
     let travelSearch = "";
+    let travelViewportAnchor = null;
     let restCityFilter = "all";
     let restAteFilter = "all";
     let restQuickFilter = "all";
@@ -2338,7 +2345,10 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         if(!TRANSPORTATION_OPTIONS.includes(next.transportation)) next.transportation=(base&&base.transportation)||"Other";
         if(next.transportationDetails===undefined) next.transportationDetails=next.mode||((base&&base.transportationDetails)||"");
         delete next.mode;
-        (CANONICAL_SHARED_TRAVEL_FIELDS[id]||[]).forEach(key=>delete next[key]);
+        // V12: preserve current phone edits. Earlier releases removed fields listed in
+        // CANONICAL_SHARED_TRAVEL_FIELDS here, which could erase a deliberate edit
+        // after Save (for example Meal, start/end times, or status). Legacy schema
+        // normalization above still protects old transportation/item-type formats.
         // Retire exact travel overrides explicitly reviewed and promoted into
         // master data. Other legacy/current overrides remain intact.
         if(base&&PROMOTED_SHARED_TRAVEL_IDS.has(id)) {
@@ -3152,6 +3162,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     }
 
     function editSharedTravelById(id) {
+      travelViewportAnchor = captureTravelViewport(id);
       const x = sharedTravelById(id);
       if (!x) return;
       openEditSheet("Edit shared travel item", [
@@ -3171,7 +3182,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       ], data => {
         saveSharedTravelEdit(id,data);
         closeSheet();
-        renderHome(); renderToday(); renderTimeline(); renderTransport(); renderMaps();
+        renderHome(); renderToday(); renderTimeline(); renderTransport(true); renderMaps();
         showToast("Travel item updated everywhere");
       });
     }
@@ -3997,6 +4008,12 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     async function loadVeniceTides(dateISO) {
       const el=document.getElementById("veniceTideCard"); if(!el) return;
       const url="https://dati.venezia.it/sites/default/files/dataset/opendata/previsione.json";
+      // Direct file:// desktop previews cannot make this cross-origin request.
+      // Keep the useful fallback card without spamming DevTools with CORS errors.
+      if (location.protocol === "file:") {
+        try { const c=JSON.parse(localStorage.getItem("italy2026_tides")||"null"); if(c&&c.data) return renderVeniceTides(el,dateISO,c.data,true,c.saved); } catch(_){}
+        return renderVeniceTides(el,dateISO,[],true);
+      }
       try {
         const res=await fetch(url,{cache:"no-store"}); if(!res.ok) throw new Error("forecast unavailable");
         const all=await res.json();
@@ -4804,6 +4821,70 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       })[item.itemType] || "information";
     }
 
+    function travelDates() {
+      return [...new Set([...liveFlights().map(x=>x.date), ...liveSharedTravelItems().map(x=>x.date), ...getCustomLegs().map(x=>x.date), ...liveHotels().map(x=>x.checkIn)].filter(Boolean))].sort();
+    }
+
+    function travelDayLabel(date) {
+      const d = date ? new Date(date + "T00:00:00") : null;
+      return d ? d.toLocaleDateString("en-US", {weekday:"short",month:"numeric",day:"numeric"}) : date;
+    }
+
+    function updateTravelDayFilter() {
+      const select=document.getElementById("travelDayFilter");
+      if(!select) return;
+      const dates=travelDates();
+      if(travelDateFilter!=="all"&&!dates.includes(travelDateFilter)) travelDateFilter="all";
+      select.innerHTML='<option value="all">All days</option>'+dates.map(date=>`<option value="${escapeHtml(date)}">${escapeHtml(travelDayLabel(date))}</option>`).join("");
+      select.value=travelDateFilter;
+    }
+
+    function setTravelDateFilter(date) {
+      travelDateFilter = date || "all";
+      renderTransport();
+      window.scrollTo({top:Math.max(0,(document.getElementById("travelResults")?.getBoundingClientRect().top||0)+window.scrollY-110),behavior:"smooth"});
+    }
+
+    function stepTravelDay(direction) {
+      const dates=travelDates();
+      if(!dates.length) return;
+      let index=travelDateFilter==="all" ? (direction>0 ? 0 : dates.length-1) : dates.indexOf(travelDateFilter)+direction;
+      index=Math.max(0,Math.min(dates.length-1,index));
+      setTravelDateFilter(dates[index]);
+    }
+
+    function captureTravelViewport(id) {
+      if(currentPage!=="transport") return null;
+      let card=id ? document.querySelector(`#travelResults [data-travel-id="${id}"]`) : null;
+      if(!card) {
+        const cards=Array.from(document.querySelectorAll("#travelResults .travel-card"));
+        card=cards.find(node=>node.getBoundingClientRect().bottom>105)||cards[0];
+      }
+      if(!card) return null;
+      return {id:card.dataset.travelId||"", top:card.getBoundingClientRect().top, scrollY:window.scrollY};
+    }
+
+    function restoreTravelViewport(anchor) {
+      if(!anchor) return;
+      requestAnimationFrame(()=>{
+        const card=anchor.id ? document.querySelector(`#travelResults [data-travel-id="${anchor.id}"]`) : null;
+        if(card) {
+          const delta=card.getBoundingClientRect().top-anchor.top;
+          window.scrollTo({top:Math.max(0,window.scrollY+delta),behavior:"auto"});
+        } else window.scrollTo({top:anchor.scrollY||0,behavior:"auto"});
+      });
+    }
+
+    function setupTravelSwipe() {
+      const el=document.getElementById("travelResults"); if(!el) return;
+      let startX=0,startY=0;
+      el.ontouchstart=e=>{const t=e.changedTouches[0];startX=t.clientX;startY=t.clientY;};
+      el.ontouchend=e=>{
+        const t=e.changedTouches[0],dx=t.clientX-startX,dy=t.clientY-startY;
+        if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.3) stepTravelDay(dx<0?1:-1);
+      };
+    }
+
     function setTravelTypeFilter(filter) {
       travelTypeFilter = filter || "all";
       document.querySelectorAll("#travelTypeFilters [data-travel-filter]").forEach(btn => {
@@ -4849,8 +4930,10 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         {src:"assets/guides/rome-metro-transfer-guide.pdf",title:"Anantara → Vatican tour transit guide · PDF",secondary:true,verified:"Sep 29, 2026"}
       ],
       "travel-57":[
-        {src:"assets/guides/rome-return-transfer-guide.png",title:"Colosseum → Anantara return guide",verified:"Sep 29, 2026"},
-        {src:"assets/guides/rome-return-transfer-guide.pdf",title:"Colosseum → Anantara return guide · PDF",secondary:true,verified:"Sep 29, 2026"}
+        {src:"assets/guides/rome-colosseum-to-tiber-island-food-tour.png",title:"Colosseum → Tiber Island food-tour transfer guide",verified:"Oct 2, 2026"}
+      ],
+      "travel-62":[
+        {src:"assets/guides/twilight-trastevere-food-tour-382969949.pdf",title:"Twilight Trastevere food-tour ticket · Booking 382969949",secondary:true,verified:"Oct 2, 2026"}
       ],
       "travel-58":[
         {src:"assets/guides/florence-tour-outbound-guide.png",title:"W Florence → Accademia tour guide",verified:"Sep 29, 2026"},
@@ -4890,7 +4973,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2"}
       ],title:"FCO Arrival → Train Station",category:"Oct 5 · Airport arrival",verified:"Sep 13, 2026"},
       {src:"assets/guides/rome-metro-transfer-guide.png",pdf:"assets/guides/rome-metro-transfer-guide.pdf",title:"Anantara → Vatican Tour Transit Guide",category:"Oct 7 · Rome tour transfer",verified:"Sep 29, 2026"},
-      {src:"assets/guides/rome-return-transfer-guide.png",pdf:"assets/guides/rome-return-transfer-guide.pdf",title:"Colosseum → Anantara Return Guide",category:"Oct 7 · Rome tour return",verified:"Sep 29, 2026"},
+      {src:"assets/guides/rome-colosseum-to-tiber-island-food-tour.png",title:"Colosseum → Tiber Island Food-Tour Transfer",category:"Oct 7 · Time-critical food-tour transfer",verified:"Oct 2, 2026"},
       {src:"assets/guides/laundry-king-florence.png",title:"Laundry King Florence Guide",category:"Oct 8–10 · Florence practical guide",verified:"Sep 13, 2026"},
       {src:"assets/guides/florence-tour-outbound-guide.png",pdf:"assets/guides/florence-tour-outbound-guide.pdf",title:"W Florence → Accademia Tour Guide",category:"Oct 9 · Florence tour transfer",verified:"Sep 29, 2026"},
       {src:"assets/guides/florence-tour-return-guide.png",pdf:"assets/guides/florence-tour-return-guide.pdf",title:"Uffizi → W Florence Return Guide",category:"Oct 9 · Florence tour return",verified:"Sep 29, 2026"},
@@ -4977,7 +5060,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       return `${d}|${String(minutes).padStart(4,"0")}`;
     }
 
-    function renderTransport() {
+    function renderTransport(preserveViewport=false) {
+      const viewportAnchor = preserveViewport ? (travelViewportAnchor || captureTravelViewport()) : null;
+      updateTravelDayFilter();
       const customTripItems = getCustomLegs();
       const flights = liveFlights();
       const trains = liveTrains();
@@ -5017,13 +5102,15 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         <div class="card travel-card transfer-card" data-travel-id="${escapeHtml(t.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Steps", t.instructions)}${travelDetailPanel("Travel note", t.notes)}${cphPassportWaitTracker(t.id)}`, `${seeInTimelineButton("travel",t.id)}${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button>`)}</div></div>`, t.title || t.from));
 
       hotels.forEach(h => addRecord("hotel", "None / Not applicable", h.checkIn, "15:00", [h.name,h.city,h.address,h.dates,h.conf,h.status,h.room,h.payment,h.tax,h.breakfast,h.notes].join(" "), `
-        <div class="card travel-card" data-hotel-id="${escapeHtml(h.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🏨 ${escapeHtml(h.name)}</div><div class="travel-date-label">${escapeHtml(h.dates || fmtDate(h.checkIn))}</div></div></div><div class="travel-card-main"><div class="travel-chip-row"><span class="travel-chip">${escapeHtml(h.city)}</span><span class="travel-chip">Check-in ${fmtDate(h.checkIn)}</span><span class="travel-chip">Check-out ${fmtDate(h.checkOut)}</span>${statusBadge(h.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(h.conf, h.status || "Confirmed")}${travelDetailPanel("Address", h.address)}${travelDetailPanel("Room", h.room)}${travelDetailPanel("Payment", [h.payment,h.tax].filter(Boolean).join(" · "))}${travelDetailPanel("Hotel note", [h.breakfast,h.notes].filter(Boolean).join(" · "))}`, `${seeInTimelineButton("hotel",h.id)}${travelMapActions(h.address || h.name,"")}<button class="edit-btn" onclick="editHotelById('${h.id}')">Edit Hotel</button>`)}</div></div>`, h.name));
+        <div class="card travel-card" data-hotel-id="${escapeHtml(h.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🏨 ${escapeHtml(h.name)}</div><div class="travel-date-label">${escapeHtml(h.dates || fmtDate(h.checkIn))}</div></div></div><div class="travel-card-main"><div class="travel-chip-row"><span class="travel-chip">${escapeHtml(h.city)}</span><span class="travel-chip">Check-in ${fmtDate(h.checkIn)}</span><span class="travel-chip">Check-out ${fmtDate(h.checkOut)}</span>${h.conf ? `<span class="travel-chip" style="font-weight:800;color:var(--primary);">CONF ${escapeHtml(h.conf)}</span>` : ""}${statusBadge(h.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(h.conf, h.status || "Confirmed")}${travelDetailPanel("Address", h.address)}${travelDetailPanel("Room", h.room)}${travelDetailPanel("Payment", [h.payment,h.tax].filter(Boolean).join(" · "))}${travelDetailPanel("Hotel note", [h.breakfast,h.notes].filter(Boolean).join(" · "))}`, `${seeInTimelineButton("hotel",h.id)}${travelMapActions(h.address || h.name,"")}<button class="edit-btn" onclick="editHotelById('${h.id}')">Edit Hotel</button>`)}</div></div>`, h.name));
 
-      activities.forEach(t => addRecord(activityTravelCategory(t), timelineTransportation(t), t.date, t.start, [t.title,t.itemType,t.transportation,t.transportationDetails,t.from,t.to,t.start,t.end,t.status,t.instructions,t.notes].join(" "), `
+      const redundantHotelActivityIds = new Set(["travel-42","travel-54"]);
+      activities.filter(t => !redundantHotelActivityIds.has(t.id)).forEach(t => addRecord(activityTravelCategory(t), timelineTransportation(t), t.date, t.start, [t.title,t.itemType,t.transportation,t.transportationDetails,t.from,t.to,t.start,t.end,t.status,t.instructions,t.notes].join(" "), `
         <div class="card travel-card activity-card" data-travel-id="${escapeHtml(t.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || t.itemType)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${(t.from || t.to) ? travelRouteBlock(t.from,t.start,t.to,t.end) : `<div class="travel-chip-row">${t.start ? `<span class="travel-chip">🕒 ${escapeHtml(t.start)}${t.end ? "–"+escapeHtml(t.end) : ""}</span>` : ""}</div>`}<div class="travel-chip-row"><span class="travel-chip">${escapeHtml(t.itemType)}</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Instructions", t.instructions)}${travelDetailPanel("Travel note", t.notes)}${cphPassportWaitTracker(t.id)}`, `${seeInTimelineButton("travel",t.id)}${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit ${escapeHtml(t.itemType)}</button>`)}</div></div>`, t.title || t.itemType));
 
 
       let filtered = records.filter(r => travelTypeFilter === "all" || r.category === travelTypeFilter);
+      if (travelDateFilter !== "all") filtered = filtered.filter(r => r.date === travelDateFilter);
       if (travelTransportationFilter !== "all") filtered = filtered.filter(r => r.transportation === travelTransportationFilter);
       if (travelSearch) filtered = filtered.filter(r => r.searchText.includes(travelSearch));
       filtered.sort((a,b) => a.sortKey.localeCompare(b.sortKey));
@@ -5036,6 +5123,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
 
       const results = document.getElementById("travelResults");
       if (results) results.innerHTML = filtered.length ? filtered.map(r => r.html).join("") : `<div class="travel-empty"><div style="font-size:1.5rem;margin-bottom:6px;">🔎</div><strong>No travel items found</strong><div class="text-sm" style="margin-top:5px;">Try another filter or search term.</div></div>`;
+      setupTravelSwipe();
+      if(viewportAnchor) { restoreTravelViewport(viewportAnchor); travelViewportAnchor=null; }
     }
 
     function packingOwner(traveler) {

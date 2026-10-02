@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v11-0-3-tour-vouchers';
+const CACHE = 'italy-2026-github-v12-0-0-final-itinerary';
 const APP_SHELL = [
   './',
   './index.html',

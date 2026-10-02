@@ -1,3 +1,14 @@
+# Version 12.0.0 — October 2, 2026
+
+Build prepared on `develop` October 2, 2026 at 3:16 PM EDT. Production `main` has not been changed by this patch.
+
+- Reconciled the final Oct 5–15 itinerary with the approved JLFC/PSA agenda decisions.
+- Replaced Oct 7 free dinner/Da Danilo with the booked Twilight Trastevere Rome Food Tour and direct Colosseum→Tiber Island transfer.
+- Added the Oct 7 ticket offline, planned $332.46 charge, booking/reservation/confirmation details, and time-critical transfer guide.
+- Corrected Oct 8 Train 10 luggage/group sequence; Oct 10 PSA luggage/wait-for-PSA sequence; Oct 11 Murano/Burano TBD timing; Oct 12 central-Venice default; Oct 13 stay-in-Venice warning; Oct 14 open Venice/check-in reminder; Oct 15 through-to-TPA baggage plan.
+- Travel Details now preserves deliberate phone edits, restores the edited card position, and supports compact day filtering with previous/next and swipe navigation.
+- Preserved stable IDs and backup schema compatibility.
+
 ## Version 11.0.3 — September 30, 2026
 
 Build prepared on `develop` September 30, 2026 at 5:57 PM EDT. Production `main` has not been changed by this patch.
