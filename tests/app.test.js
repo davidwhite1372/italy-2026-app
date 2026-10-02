@@ -928,7 +928,7 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
   assert.equal(document.querySelector(`#mapsFeaturedGuides a[href="https://cphsecuritywait.dk/en/passport-control"]`)?.textContent.trim(), "Live passport wait times →");
   assert.equal(document.querySelector(`#mapsAirports a[href="https://cphsecuritywait.dk/en/passport-control"]`)?.textContent.trim(), "Passport wait times →");
   const libraryCards=[...document.querySelectorAll("#mapsGuideLibrary .maps-feature-card")];
-  assert.equal(libraryCards.length, 18);
+  assert.equal(libraryCards.length, 19);
   assert.deepEqual(libraryCards.map(card=>card.querySelector("h3").textContent),[
     "Italy Camera Cheat Sheet · Samsung Galaxy S23 Ultra",
     "Luggage Lock Instructions",
@@ -936,6 +936,7 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
     "CPH Outbound Connection Guide",
     "FCO Arrival → Train Station",
     "Anantara → Vatican Tour Transit Guide",
+    "Colosseum → Tiber Island Food-Tour Transfer",
     "Colosseum → Anantara Return Guide",
     "Laundry King Florence Guide",
     "W Florence → Accademia Tour Guide",
@@ -1146,7 +1147,7 @@ test("approved August 15 phone changes are permanent and conflicting expenses no
   const travel=JSON.parse(window.eval("JSON.stringify(SHARED_TRAVEL_ITEMS)"));
   assert.equal(travel.find(item=>item.id==="travel-17").status,"Confirmed");
   assert.equal(travel.find(item=>item.id==="travel-19").status,"Partial");
-  assert.equal(travel.find(item=>item.id==="travel-13").itemType,"Event");
+  assert.equal(travel.find(item=>item.id==="travel-13").itemType,"Hotel / Check-in");
   assert.equal(travel.find(item=>item.id==="travel-27").itemType,"Meal");
   assert.equal(travel.find(item=>item.id==="travel-27").transportation,"Walk");
   assert.equal(travel.find(item=>item.id==="travel-42").itemType,"Event");
