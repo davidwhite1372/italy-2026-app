@@ -255,7 +255,7 @@ test("Oct 8 Train 10 agenda block replaces stale PSA train details", async t => 
   assert.match(data.reservation.notes,/10:45 AM/);
   assert.match(data.reservation.notes,/11:00 AM/);
   assert.match(data.reservation.notes,/12:05 PM.*1 hour 40 minutes.*1:45 PM/i);
-  assert.match(data.day.dining,/No confirmed Oct 8 dinner.*current group instructions/i);
+  assert.match(data.day.dining,/Trattoria Da Burde.*7:00 PM.*unconfirmed/i);
   assert.match(data.mapRoute.note,/10:45 AM/);
   window.showPage("timeline");
   window.document.querySelector("#timelineDayFilter").value="2026-10-08";
