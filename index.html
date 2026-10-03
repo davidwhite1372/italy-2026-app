@@ -1443,10 +1443,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "12.0.2",
-      build: "12.0.2",
+      version: "12.0.3",
+      build: "12.0.3",
       backupSchema: 6,
-      lastEdited: "October 3, 2026 at 11:22 AM EDT"
+      lastEdited: "October 3, 2026 at 11:42 AM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -2432,8 +2432,17 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           if (times.end.includes(edit.end)) edit.end = times.nextEnd;
         });
       }
+      // David chose 13:30 after checking the Oct 5 arrival/dinner sequence.
+      // Correct the reviewed earlier starts once; preserve other and later edits.
+      const registrationUpdateKey = "italy2026_registration_1330_v12_0_3";
+      const needsRegistrationUpdate = !localStorage.getItem(registrationUpdateKey);
+      if (needsRegistrationUpdate) {
+        const registration = normalized.sharedTravel && normalized.sharedTravel["travel-13"];
+        if (registration && ["13:00","13:01"].includes(registration.start)) registration.start = "13:30";
+      }
       if (JSON.stringify(normalized) !== JSON.stringify(raw)) localStorage.setItem("italy2026_live", JSON.stringify(normalized));
       if (needsDepartureUpdate) localStorage.setItem(departureUpdateKey, "1");
+      if (needsRegistrationUpdate) localStorage.setItem(registrationUpdateKey, "1");
       return normalized;
     }
     function setLive(obj) {

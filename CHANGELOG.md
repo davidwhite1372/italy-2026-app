@@ -1,3 +1,13 @@
+# Version 12.0.3 — October 3, 2026
+
+Build prepared on `develop` October 3, 2026 at 11:42 AM EDT. Production `main` remains v12.0.0 pending David's reviewed release instruction.
+
+- David chose 1:30 PM for Oct 5 PSA registration provided it fits adjacent cards. The hotel walk ends at 1:20 PM and the following dinner begins at 5:30 PM; the choice fits the existing sequence and desk's 1:00–5:00 PM availability window.
+- Set the permanent registration start to 13:30 and describe 5:00 PM as desk closing time, not registration duration. Preserve the closing time, hotel check-in at 3:00 PM, and every other itinerary record.
+- Reconcile only the reviewed old registration starts 13:00 / 13:01 once on first load. Private notes, different custom times, and later deliberate Save/reload edits survive.
+- Retain the approved v12.0.2 departure sequence and v12.0.1 five-page Rome guide/PDF. Stable IDs, schema 6, and local-only photo storage are unchanged.
+- App/build/package/lockfile/manifest/cache metadata, timestamp, README, and project handoff updated together. Automated and separate phone-preservation checks are recorded in docs/RELEASE-CHECKLIST.md; physical-phone review remains pending.
+
 # Version 12.0.2 — October 3, 2026
 
 Build prepared on `develop` October 3, 2026 at 11:22 AM EDT. Production `main` remains v12.0.0 pending David's reviewed release instruction.

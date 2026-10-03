@@ -1,3 +1,34 @@
+# Version 12.0.3 Release Checklist
+
+Prepared October 3, 2026 at 11:42 AM EDT from clean develop b92da89. Production main remains v12.0.0.
+
+## Automated and source checks
+- [x] All 46 npm tests pass, including actual Timeline order, reviewed registration override correction, different custom starts, and later Save/reload preservation.
+- [x] Both Oct 3 labeled phone simulations show 13:30 registration between the 13:20 walk finish and 17:30 dinner, with the 17:00 desk closing time unchanged.
+- [x] Every unrelated normalized exported value matches the separately preserved v12.0.0 baseline after allowing only the approved bag-drop/security and registration clock fields. Merge round trips are idempotent.
+- [x] Only travel-13 / tl-0013 master registration start and planning text changed from v12.0.2. All other master cards, stable IDs, and schema 6 are unchanged.
+- [x] Five-page Rome guide/PDF and all required offline assets are retained; service-worker behavior is unchanged apart from the versioned cache name.
+- [x] Version/build/package/lockfile/manifest/cache metadata and current timestamp use 12.0.3 consistently.
+
+## Phone-only review after approved production release
+- [ ] Open the existing app online, confirm About shows 12.0.3, and check registration at 1:30 PM in Timeline and Travel Details on both phones.
+- [ ] Confirm the Oct 5 order: hotel walk ends 1:20 PM, registration 1:30 PM, hotel room check-in from 3:00 PM, dinner 5:30 PM. The desk remains open 1:00–5:00 PM.
+- [ ] Confirm existing notes, flights, expenses, packing, and locally attached photos remain visible; no phone import/reset is required.
+- [ ] Confirm Oct 4 bag drop 9:30–9:55 / security 9:55–10:30 and the five-page Rome guide/PDF still work after complete online loading, then in airplane mode.
+
+## Next individual decisions
+- Oct 4 bag-drop sequence: resolved in v12.0.2; other departure-phone edits remain separate.
+- Oct 5 PSA registration: resolved at 1:30 PM in v12.0.3; current cards fit.
+- Oct 9 Uffizi return: personal 2:30–3:30 PM versus work 3:30–4:30 PM.
+- Oct 11 Murano/Burano: personal 8:00 AM–5:00 PM versus work-phone Time TBD.
+- Oct 15 VCE check-in: phone 7:00 AM overlaps master bus 7:00–8:00 AM.
+
+## Develop and production
+- Verify the exact develop commit's GitHub Actions run after push; the session handoff records the result.
+- Merge/release main only after David directs the reviewed release, then verify live source and physical phones.
+
+---
+
 # Version 12.0.2 Release Checklist
 
 Prepared October 3, 2026 at 11:22 AM EDT from clean develop 41f1dd0. Initial live main remains v12.0.0.
@@ -22,7 +53,7 @@ Prepared October 3, 2026 at 11:22 AM EDT from clean develop 41f1dd0. Initial liv
 - Oct 15 VCE check-in: phone 7:00 AM overlaps the 7:00–8:00 AM master bus window.
 
 ## Develop and production
-- [ ] Commit/push the tested increment to develop and verify its GitHub Actions run.
+- [x] v12.0.2 committed to develop at b92da89042475b0742d75e6ac1169c93b0d2c8c3; GitHub Actions run 37133500974 succeeded.
 - [ ] Merge/release main only when David directs the reviewed release; then verify live source and physical phones.
 
 ---
@@ -57,7 +88,7 @@ Prepared October 3, 2026 at 10:43 AM EDT from fresh clean `develop` at 140894a. 
 - Other event/status edits and inherited older notes remain separate from this guide increment; do not blindly merge two exports or replace newer master facts with older notes.
 
 ## Develop and production
-- [ ] Commit/push the tested guide change to develop and verify GitHub Actions.
+- [x] v12.0.1 committed to develop at 41f1dd05eae0afd6a4969905caffe1a36c418b1e; GitHub Actions run 37131498655 succeeded.
 - [ ] David directs any main release after reviewing the exact change. No main merge is implied by a phone-export upload.
 - [ ] Verify live source and both physical phones after an approved release, then tag the verified production version.
 

@@ -1,6 +1,6 @@
 # Italy 2026 Travel Companion — Project Handoff
 
-Updated October 3, 2026 for the v12.0.2 bag-drop sequence candidate. Original continuity guide prepared August 23, 2026 for account transfer.
+Updated October 3, 2026 for the v12.0.3 registration candidate. Original continuity guide prepared August 23, 2026 for account transfer.
 
 ## Start here
 
@@ -22,8 +22,8 @@ Moving or losing a ChatGPT conversation does **not** delete the GitHub repositor
 
 - Product: Italy 2026 Travel Companion
 - Repository: <https://github.com/davidwhite1372/italy-2026-app>
-- Fresh develop baseline: 12.0.1, commit 41f1dd05eae0afd6a4969905caffe1a36c418b1e; main remains 12.0.0 at 140894a.
-- Current candidate: 12.0.2, prepared October 3, 2026 at 11:22 AM EDT.
+- Fresh develop baseline: 12.0.2, commit b92da89042475b0742d75e6ac1169c93b0d2c8c3; main remains 12.0.0 at 140894a.
+- Current candidate: 12.0.3, prepared October 3, 2026 at 11:42 AM EDT.
 - Backup schema: 6, unchanged.
 - Production branch: main; working branch: develop.
 - Hosting: existing GitHub Pages. Live source was independently checked October 3 and shows 12.0.0, last edited October 2 at 7:33 PM EDT. The current candidate is for develop only; main release requires David’s instruction.
@@ -31,17 +31,25 @@ Moving or losing a ChatGPT conversation does **not** delete the GitHub repositor
 - No cloud sync, backend, or transmission of trip data. Preserve local/offline behavior.
 - Original Aug 23 statements about v10.10.1 and future Version 11 are historical and superseded by the fresh source.
 
+## October 3 approved registration update
+
+- David chose 1:30 PM unless it conflicts with surrounding cards. Both labeled exports and clean master place the preceding hotel walk at 1:00–1:20 PM and the next dinner at 5:30 PM. Registration at 1:30 PM fits the current plan.
+- The registration desk's opening window remains 1:00–5:00 PM. The 5:00 PM field is the desk closing time, not a planned three-and-a-half-hour registration activity. Hotel room check-in remains available from 3:00 PM.
+- Permanent travel-13 / tl-0013 starts at 13:30. One-time reconciliation replaces only reviewed old 13:00 / 13:01 saved starts; unrelated fields, other custom starts, and subsequent edits are preserved.
+- Version 12.0.3 was prepared October 3, 2026 at 11:42 AM EDT. Source tests and both separate phone simulations pass; physical-phone review remains pending after an approved main release.
+- Next individual decision: Oct 9 Uffizi return, personal phone 2:30–3:30 PM versus work phone 3:30–4:30 PM. Do not merge the two phone exports to settle it.
+
 ## October 3 approved departure update
 
 - David directed “Move bag drop to 09:30.” The existing 25-minute allowance ends 9:55 AM; the following security/gate card is 9:55–10:30 AM.
 - First-load reconciliation updates only reviewed old clock fields for travel-3 and travel-4. Other notes and fields survive; a one-time device marker lets subsequent deliberate edits survive Save and reload. It changes neither JSON schema nor local-only photo storage.
-- The Oct 4 bag-drop sequence decision is resolved. Do not import or merge the two phone backups to apply this code update. Registration, Uffizi return, Murano/Burano, VCE check-in, and other phone edits remain pending individual review.
+- The Oct 4 bag-drop sequence decision is resolved. Do not import or merge the two phone backups to apply this code update. Registration is resolved in the approved update above. Uffizi return, Murano/Burano, VCE check-in, and other phone edits remain pending individual review.
 
 ## October 3 guide increment and pending phone review
 
 - Replaces the Oct 7 Colosseum-to-Tiber-Island guide with David’s original five-page PDF and five matching page images; preserves the existing guide order and travel/timeline IDs.
 - Travel Details and All Guides use the same swipeable gallery. The PDF and all five page images must be cached before the worker activates.
-- This increment preserves all itinerary records and phone overrides. Registration and Uffizi return times conflict across exports. Departure-day and VCE check-in edits create sequence overlaps; Murano/Burano time is marked TBD on the work phone. Review these individually before promoting phone edits.
+- This increment preserves all itinerary records and phone overrides. The registration conflict is resolved above; Uffizi return times still conflict across exports. Departure-day and VCE check-in edits create sequence overlaps; Murano/Burano time is marked TBD on the work phone. Review these individually before promoting phone edits.
 - Phone-only work is supported through direct GitHub develop commits. No PC or destructive phone import is required. Original phone JSON files and locally attached photos remain separate assets.
 - See docs/RELEASE-CHECKLIST.md for automated verification and pending physical-phone checks. Main remains the reviewed production branch.
 
