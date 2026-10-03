@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.7");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.7");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.8");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.8");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 3, 2026 at 12:55 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 3, 2026 at 2:52 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -537,7 +537,7 @@ test("Version 12 itinerary cards, clickable routes, and offline guides match the
     pretrip:PRETRIP.flatMap(group=>group.items),
     release:APP_METADATA
   })`));
-  assert.equal(data.release.version,"12.0.7");
+  assert.equal(data.release.version,"12.0.8");
   assert.equal(data.release.backupSchema,6);
   assert.equal(data.routes.find(route=>route.order===15).start,"After 11:55 AM train");
   assert.equal(data.routes.find(route=>route.order===15).duration,"Per PSA group schedule");
@@ -883,7 +883,56 @@ test("updated flight seats and Boston transfer guide match the supplied records"
   assert.ok(boston);
   assert.match(boston.note, /5:40 PM/);
   window.showPage("maps");
-  assert.match(window.document.querySelector("#mapsFeaturedGuides").textContent, /3:45–4:25 PM/);
+  assert.match(window.document.querySelector("#mapsFeaturedGuides").textContent, /Confirmed Delta airside transfer/);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("Boston uses the confirmed airside route and both guide formats open everywhere", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const {window} = app;
+  const document = window.document;
+  const transfer = window.sharedTravelById("travel-6");
+  assert.equal(transfer.status, "Confirmed");
+  assert.equal(transfer.transportation, "Bus / Coach");
+  assert.deepEqual([transfer.start, transfer.end], ["14:55", "17:00"]);
+  assert.match(transfer.instructions, /Stay inside security.*A13–A22.*A17–A18.*airside bus.*E13.*No TSA reentry/);
+  assert.match(transfer.notes, /confirmed through to Rome \(FCO\)/);
+  assert.match(transfer.notes, /4:45 PM/);
+  const timeline = window.liveTimeline().find(item=>item.id==="tl-0006");
+  assert.equal(timeline.travelId, "travel-6");
+  assert.equal(timeline.instructions, transfer.instructions);
+  const sources = JSON.parse(window.eval(`JSON.stringify({
+    route:MAP_DOOR_ROUTES.find(item=>item.order===4),airport:MAP_AIRPORTS.find(item=>item.code==="BOS"),
+    day:DAYS.find(item=>item.date==="2026-10-04"),flight:FLIGHTS.find(item=>item.id==="flight-dl2706"),booking:AIR_BOOKING
+  })`));
+  assert.equal(sources.route.status, "Confirmed");
+  assert.match(sources.route.link, /delta\.com.*boston-airport-update/);
+  assert.match(sources.airport.secondary, /delta\.com.*boston-airport-update/);
+  assert.match(sources.airport.concern, /no TSA reentry/);
+  assert.doesNotMatch(JSON.stringify({transfer,sources}), /Massport shuttle|ground transportation|re-clear TSA|clear TSA|Terminal E security|3:45–4:25/);
+  const png="assets/guides/boston-terminal-a-to-e.png", pdf="assets/guides/boston-terminal-a-to-e.pdf";
+  const details=document.createElement("div");
+  details.innerHTML=window.guideActionsForTravel("travel-6");
+  document.body.appendChild(details);
+  window.showPage("maps");
+  const bostonCards=[...document.querySelectorAll("#mapsGuideLibrary .maps-feature-card")].filter(card=>card.querySelector("h3").textContent.includes("Boston"));
+  assert.equal(bostonCards.length, 1, "All Guides must contain only the replacement Boston guide");
+  const library=bostonCards[0];
+  const featured=[...document.querySelectorAll("#mapsFeaturedGuides .maps-feature-card")].find(card=>card.querySelector("h3").textContent.includes("Boston"));
+  for(const card of [details,library,featured]) {
+    assert.ok(card);
+    assert.match(card.textContent, /no TSA reentry/i);
+    assert.match(card.textContent, /confirmed through to Rome \(FCO\)/i);
+    const buttons=card.querySelectorAll("button");
+    assert.equal(buttons.length, 2);
+    buttons[0].click();
+    assert.equal(document.querySelector("#imageViewerImage").getAttribute("src"), png);
+    window.closeImageViewer(true);
+    buttons[1].click();
+    assert.equal(document.querySelector("#pdfViewerFrame").getAttribute("src"), pdf);
+    window.closePdfViewer(true);
+  }
   assert.deepEqual(app.runtimeErrors, []);
 });
 
@@ -1265,7 +1314,7 @@ test("Maps page prioritizes quick guides and avoids duplicate itinerary sections
   assert.match(document.querySelector("#mapsGuideFilters").textContent, /Key trip guides/);
   assert.match(document.querySelector("#page-maps").textContent, /Key Trip Guides/);
   assert.match(document.querySelector("#mapsFeaturedGuides").textContent, /Copenhagen connection[\s\S]*FCO arrival[\s\S]*Venice Vaporetto map/);
-  assert.equal(document.querySelectorAll("#mapsFeaturedGuides button").length, 6);
+  assert.equal(document.querySelectorAll("#mapsFeaturedGuides button").length, 7);
   assert.match(document.querySelector("#mapsFeaturedGuides").innerHTML, /venice-vaporetto-map-2026\.png/);
   assert.match(document.querySelector("#mapsFeaturedGuides").innerHTML, /cph-connection-guide-outbound\.png/);
   assert.equal(document.querySelector(`#mapsFeaturedGuides a[href="https://cphsecuritywait.dk/en/passport-control"]`)?.textContent.trim(), "Live passport wait times →");
@@ -1574,7 +1623,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"12.0.7");
+  assert.equal(payload.appVersion,"12.0.8");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note",transportationDetails:"Train"},"travel-42":{itemType:"Event",transportationDetails:"Event"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -1614,7 +1663,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "12.0.7");
+  assert.equal(payload.appVersion, "12.0.8");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -1633,10 +1682,10 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"12.0.7");
-  assert.match(manifest.description,/Version 12\.0\.7/);
-  assert.match(worker,/v12-0-7-venice-times/);
-  ["boston-terminal-a-to-e.png","fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png","italy-camera-cheat-sheet-samsung-s23-ultra.png"].forEach(name=>{
+  assert.equal(packageData.version,"12.0.8");
+  assert.match(manifest.description,/Version 12\.0\.8/);
+  assert.match(worker,/v12-0-8-boston-airside/);
+  ["boston-terminal-a-to-e.png","boston-terminal-a-to-e.pdf","fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png","italy-camera-cheat-sheet-samsung-s23-ultra.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
   });
@@ -1706,6 +1755,7 @@ test("offline application shell lists every required local asset", async () => {
     "./assets/tides/rialto.png",
     "./assets/tides/santa-lucia.png",
     "./assets/guides/boston-terminal-a-to-e.png",
+    "./assets/guides/boston-terminal-a-to-e.pdf",
     "./assets/guides/italy-camera-cheat-sheet-samsung-s23-ultra.png",
     "./assets/guides/rome-colosseum-to-tiber-island-food-tour.png",
     "./assets/guides/rome-colosseum-to-tiber-island-food-tour-2.png",
@@ -1716,12 +1766,12 @@ test("offline application shell lists every required local asset", async () => {
     "./assets/guides/twilight-trastevere-food-tour-382969949.pdf"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v12-0-7-venice-times/);
+  assert.match(worker, /italy-2026-github-v12-0-8-boston-airside/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);
   const vm = require("node:vm");
-  for (const failed of [null, "./assets/guides/laundry-king-florence.png", "./data.js", "./assets/guides/rome-tour-voucher-1212654.pdf", "./assets/guides/twilight-trastevere-food-tour-382969949.pdf", ...required.filter(asset=>asset.includes("rome-colosseum"))]) {
+  for (const failed of [null, "./assets/guides/laundry-king-florence.png", "./data.js", "./assets/guides/rome-tour-voucher-1212654.pdf", "./assets/guides/twilight-trastevere-food-tour-382969949.pdf", ...required.filter(asset=>asset.includes("rome-colosseum") || asset.includes("boston-terminal"))]) {
     const handlers = {}, stored = [];
     let activated = false, installation;
     const context = vm.createContext({
@@ -1732,7 +1782,7 @@ test("offline application shell lists every required local asset", async () => {
     });
     vm.runInContext(worker, context);
     handlers.install({waitUntil: promise => {installation = promise;}});
-    if (failed === "./data.js" || (failed && (failed.includes("voucher") || failed.includes("382969949") || failed.includes("rome-colosseum")))) {
+    if (failed === "./data.js" || (failed && (failed.includes("voucher") || failed.includes("382969949") || failed.includes("rome-colosseum") || failed.includes("boston-terminal")))) {
       await assert.rejects(installation, /Required offline assets missing/);
       assert.equal(activated, false);
     } else {

@@ -1,3 +1,14 @@
+# Version 12.0.8 — October 3, 2026
+
+Build prepared on `develop` October 3, 2026 at 2:52 PM EDT from clean e1c2876. David explicitly authorized pushing the reviewed update to main on October 3 at 3:13 PM EDT. Release follows green develop checks and verifies main Actions and Pages.
+
+- Apply David's confirmed Boston plan: Delta's internal Terminal A–E airside shuttle with no TSA reentry, and luggage checked through to Rome (FCO). Remove the outside-shuttle route and repeated baggage-verification requests from all affected app instructions.
+- Align Timeline/Travel Details, Oct 4 summary, DL2706/booking notes, pre-departure checklist, door-to-door route, airport reference, All Guides, and Featured Guides. Use Delta's published A13–A22 satellite access and A17–A18 food-court pickup guidance; E access normally near E13, with the SAS gate taken from flight monitors.
+- Replace the old Boston image at its existing asset path with an exact-text one-page PNG and add a matching printable PDF. All Guides contains exactly one Boston entry, using the replacement. Both formats open at all three guide entry points and must cache before the new service worker activates; activation removes the previous cache. The reproducible PDF builder is included.
+- Retain 2:55 PM DL2706 arrival, 5:40 PM SK928 departure, the 14:55–17:00 transfer/gate-buffer card, all other itinerary clocks, stable IDs, schema 6, and local-only photo behavior. The 4:45 PM gate target is a plan; follow the actual SAS boarding pass deadline.
+- All 51 npm tests pass, including actual image/PDF taps at all three locations and failure of either required Boston cache asset. Both Oct 3 labeled phone simulations preserve all 19 saved sections exactly against the fresh 12.0.7 baseline, with idempotent Merge round trips and no runtime errors. No new saved-data migration is added.
+- App/build/package/lockfile/manifest/cache metadata, timestamp, README, handoff, and release checklist updated together. Physical-phone and airplane-mode review remain pending after an approved main release.
+
 # Version 12.0.7 — October 3, 2026
 
 Build prepared on `develop` October 3, 2026 at 12:55 PM EDT from clean 2f46e00. Production `main` remains v12.0.0 pending David's reviewed release instruction.

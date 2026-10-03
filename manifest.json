@@ -1,7 +1,7 @@
 {
   "name": "Italy 2026 Travel Companion",
   "short_name": "Italy 2026",
-  "description": "David and Melody Italy 2026 Travel Companion - Version 12.0.7 sets Murano and Burano to 8 AM–5 PM and Hotel Antiche Figure departure to 7 AM, retaining hotel website links, copy fixes, and the offline Rome guide",
+  "description": "David and Melody Italy 2026 Travel Companion - Version 12.0.8 uses the confirmed Delta airside Boston transfer with no TSA reentry and luggage checked through to Rome, retaining approved trip times and offline guides",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#8B1E3F",

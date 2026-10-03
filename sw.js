@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v12-0-7-venice-times';
+const CACHE = 'italy-2026-github-v12-0-8-boston-airside';
 const APP_SHELL = [
   './',
   './index.html',
@@ -35,6 +35,7 @@ const APP_SHELL = [
   ,'./assets/guides/venice-vaporetto-map-2026.png'
   ,'./assets/guides/laundry-king-florence.png'
   ,'./assets/guides/boston-terminal-a-to-e.png'
+  ,'./assets/guides/boston-terminal-a-to-e.pdf'
   ,'./assets/guides/italy-camera-cheat-sheet-samsung-s23-ultra.png',
   './assets/guides/cph-connection-guide-return.png',
   './assets/guides/cph-connection-guide-return.pdf',
@@ -56,9 +57,11 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE)
       .then(async cache => {
-        // Core app files AND admission vouchers must be available before activation.
+        // Core app files, admission vouchers, and required transfer guides must be available before activation.
         // A failed optional guide must not prevent a working offline installation.
         const required = new Set(['./', './index.html', './data.js', './manifest.json',
+          './assets/guides/boston-terminal-a-to-e.png',
+          './assets/guides/boston-terminal-a-to-e.pdf',
           './assets/guides/rome-tour-voucher-1212654.pdf',
           './assets/guides/florence-tour-voucher-1212654.pdf',
           './assets/guides/rome-colosseum-to-tiber-island-food-tour.png',

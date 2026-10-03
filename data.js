@@ -34,7 +34,7 @@
 
     const DAYS = [
       { date: "2026-10-04", theme: "Departure Day", city: "Tampa → Boston → Copenhagen", hotel: "Overnight in flight",
-        schedule: "6:00 AM leave Spring Hill; park at TPA; check bags to FCO; DL2706 to Boston; transfer to Terminal E; SK928 overnight to Copenhagen.",
+        schedule: "6:00 AM leave Spring Hill; park at TPA; bags confirmed through to Rome (FCO); DL2706 to Boston; Delta airside shuttle to Terminal E with no TSA reentry; SK928 overnight to Copenhagen.",
         transport: "Personal vehicle, SkyConnect, Delta DL2706, terminal transfer, SAS SK928.",
         dining: "Eat before the overnight flight; hydrate and sleep after the main meal.",
         tip: "Photograph the parking location and baggage tags. Keep passports, medication and power bank in the carry-on.",
@@ -122,10 +122,10 @@
     const TIMELINE = [
       { id:"tl-0001", travelId:"travel-1", date:"2026-10-04", start:"06:00", end:"07:45", itemType:"Car / Drive", title:"Drive to TPA Economy Parking", from:"Spring Hill, FL", to:"TPA Economy Parking", mode:"Drive", time:"75-105 min", status:"Confirmed", instructions:"Leave Spring Hill at 06:00. Drive via FL-589 / Veterans Expressway. Photograph parking location.", notes:"Estimated parking arrival is 07:15–07:45; leave extra time for traffic and parking." },
       { id:"tl-0002", travelId:"travel-2", date:"2026-10-04", start:"08:00", end:"08:15", itemType:"Train", title:"Take SkyConnect to the Main Terminal", from:"TPA Economy Parking", to:"TPA Main Terminal", mode:"Train", time:"10-20 min", status:"Confirmed", instructions:"Elevator to Level 1, then SkyConnect to Main Terminal.", notes:"Keep luggage together." },
-      { id:"tl-0003", travelId:"travel-3", date:"2026-10-04", start:"09:30", end:"09:55", itemType:"Information", title:"TPA Main Terminal → Delta check-in / bag drop", from:"TPA Main Terminal", to:"Delta check-in / bag drop", mode:"Walk", time:"15-25 min", status:"Confirmed", instructions:"Check bags through to FCO. Photograph baggage tags.", notes:"Verify final destination reads FCO." },
+      { id:"tl-0003", travelId:"travel-3", date:"2026-10-04", start:"09:30", end:"09:55", itemType:"Information", title:"TPA Main Terminal → Delta check-in / bag drop", from:"TPA Main Terminal", to:"Delta check-in / bag drop", mode:"Walk", time:"15-25 min", status:"Confirmed", instructions:"Bags are confirmed checked through to Rome (FCO). Drop them with Delta and photograph the baggage tags.", notes:"Keep the bag receipts. Collect checked bags in Rome." },
       { id:"tl-0004", travelId:"travel-4", date:"2026-10-04", start:"09:55", end:"10:30", itemType:"Information", title:"Delta check-in → TPA departure gate", from:"Delta check-in", to:"TPA departure gate", mode:"Walk", time:"20-30 min", status:"Confirmed", instructions:"Clear TSA and proceed to gate.", notes:"Boarding pass and passports accessible." },
       { id:"tl-0005", date:"2026-10-04", start:"11:39", end:"14:55", itemType:"Flight", flightId:"flight-dl2706", title:"TPA Airport → BOS - Boston Logan Airport Terminal A", from:"TPA Airport", to:"BOS - Boston Logan Airport Terminal A", mode:"Flight DL2706", time:"3h 16m", status:"Confirmed", instructions:"Economy.", notes:"" },
-      { id:"tl-0006", travelId:"travel-6", date:"2026-10-04", start:"14:55", end:"17:00", itemType:"Transfer", title:"BOS Terminal A → Terminal E / clear TSA", from:"BOS - Boston Logan Airport Terminal A", to:"BOS - Boston Logan Airport Terminal E security", mode:"Free terminal shuttle + walk + TSA", time:"About 2 hr 5 min to gate", status:"Verify Day-Of", instructions:"Exit to ground transportation without collecting checked bags. Take the free Massport shuttle to Terminal E, re-clear TSA, and follow live signs to the assigned SAS gate.", notes:"The updated guide's plan: DL2706 arrives 2:55 PM; take the shuttle about 3:10–3:25 PM; reach Terminal E around 3:25–3:35 PM; clear TSA about 3:45–4:25 PM; aim to reach the gate by 5:00 PM for SK928 at 5:40 PM." },
+      { id:"tl-0006", travelId:"travel-6", date:"2026-10-04", start:"14:55", end:"17:00", itemType:"Transfer", title:"BOS Terminal A → Terminal E / Delta airside shuttle", from:"BOS - Boston Logan Airport Terminal A", to:"BOS - Boston Logan Airport Terminal E SAS gate", mode:"Delta airside shuttle + gate walk", time:"Transfer + gate buffer; 2h 45m connection", status:"Confirmed", instructions:"Stay inside security after DL2706. Follow internal signs toward Delta's satellite concourse, gates A13–A22. Near the food court at A17–A18, follow Delta shuttle / Terminal E signs and board the internal airside bus. It normally arrives near E13. Check the monitors for SK928 to Copenhagen and walk to the assigned SAS gate. No TSA reentry.", notes:"Checked luggage is confirmed through to Rome (FCO); collect it in Rome. DL2706 arrives at 2:55 PM and SK928 departs at 5:40 PM. Move directly to the shuttle and aim to be at the SAS gate by 4:45 PM. Follow the boarding time and deadline on your SAS boarding pass; 5:40 PM is departure time. The card window includes transfer and gate buffer, not bus ride duration." },
       { id:"tl-0007", date:"2026-10-04", start:"17:40", end:"07:00+1", itemType:"Flight", flightId:"flight-sk928", title:"BOS - Boston Logan Airport Terminal E → CPH - Copenhagen Airport", from:"BOS - Boston Logan Airport Terminal E", to:"CPH - Copenhagen Airport", mode:"Flight SK928", time:"7h 20m", status:"Confirmed", instructions:"Premium Economy; set devices to Rome time, hydrate, sleep after meal.", notes:"Arrival is Oct 5." },
       { id:"tl-0008", travelId:"travel-8", date:"2026-10-05", start:"07:00", end:"08:30", itemType:"Walk", title:"CPH - Copenhagen Airport arrival gate → CPH - Copenhagen Airport Rome departure gate", from:"CPH - Copenhagen Airport arrival gate", to:"CPH - Copenhagen Airport Rome departure gate", mode:"Airport connection / passport control", time:"90 min scheduled connection", status:"Confirmed", instructions:"Stay airside. Follow Transfer / Omstigning signs and staff directions for mandatory first-entry EES enrollment (passport scan, facial photo and fingerprints) and passport control. Check the live screen for SK681 and proceed directly to its assigned gate.", notes:"SK928 arrives 07:00; SK681 departs 08:30. Aim to reach the gate by 08:10; boarding may close before departure." },
       { id:"tl-0009", date:"2026-10-05", start:"08:30", end:"11:05", itemType:"Flight", flightId:"flight-sk681", title:"CPH - Copenhagen Airport → FCO - Rome Fiumicino Airport Terminal 1", from:"CPH - Copenhagen Airport", to:"FCO - Rome Fiumicino Airport Terminal 1", mode:"Flight SK681", time:"2h 35m", status:"Confirmed", instructions:"Premium Economy.", notes:"Seat selection remains open until check-in; confirm or choose a seat then if available." },
@@ -194,7 +194,7 @@
       "tl-0003": {itemType:"Transfer",transportation:"Walk"},
       "tl-0004": {itemType:"Transfer",transportation:"Walk"},
       "tl-0005": {itemType:"Flight",transportation:"Plane"},
-      "tl-0006": {itemType:"Transfer",transportation:"Walk"},
+      "tl-0006": {itemType:"Transfer",transportation:"Bus / Coach"},
       "tl-0007": {itemType:"Flight",transportation:"Plane"},
       "tl-0008": {itemType:"Transfer",transportation:"Walk"},
       "tl-0009": {itemType:"Flight",transportation:"Plane"},
@@ -418,11 +418,11 @@
       deltaLocator:"GQMVQK",
       sasLocator:"AZ3BUA",
       recordLocators:["H9BVBD","GQMVQK","AZ3BUA"],
-      notes:"Store itinerary PDFs offline on both phones. Confirm checked bags are tagged to FCO outbound and TPA on return."
+      notes:"Store itinerary PDFs offline on both phones. Outbound luggage is confirmed checked through to Rome (FCO); collect it in Rome. Confirm checked bags are tagged to TPA on return."
     };
 
     const FLIGHTS = [
-      {id:"flight-dl2706",bookingId:"air-main",date:"2026-10-04",flight:"DL2706",op:"Delta",from:"TPA - Tampa International Airport",dep:"11:39 AM",to:"BOS - Boston Logan Airport Terminal A",arr:"2:55 PM",dur:"3h 16m",cabin:"Economy",seats:"29F, 29E",status:"Confirmed",notes:"Confirm bags tagged to FCO. Seat screenshot shows 29F and 29E; traveler order is not identified.",timelineNotes:""},
+      {id:"flight-dl2706",bookingId:"air-main",date:"2026-10-04",flight:"DL2706",op:"Delta",from:"TPA - Tampa International Airport",dep:"11:39 AM",to:"BOS - Boston Logan Airport Terminal A",arr:"2:55 PM",dur:"3h 16m",cabin:"Economy",seats:"29F, 29E",status:"Confirmed",notes:"Luggage confirmed checked through to Rome (FCO). Use Delta's internal airside shuttle in Boston; no TSA reentry. Seat screenshot shows 29F and 29E; traveler order is not identified.",timelineNotes:""},
       {id:"flight-sk928",bookingId:"air-main",date:"2026-10-04",flight:"SK928",op:"SAS",from:"BOS - Boston Logan Airport Terminal E",dep:"5:40 PM",to:"CPH - Copenhagen Airport",arr:"7:00 AM +1",dur:"7h 20m",cabin:"Premium Economy",seats:"27E, 27D",status:"Confirmed",notes:"Set devices to Rome time, hydrate, and sleep after the meal. Seat screenshot shows 27E and 27D; traveler order is not identified.",timelineNotes:"Arrival is Oct 5."},
       {id:"flight-sk681",bookingId:"air-main",date:"2026-10-05",flight:"SK681",op:"SAS",from:"CPH - Copenhagen Airport",dep:"8:30 AM",to:"FCO - Rome Fiumicino Airport Terminal 1",arr:"11:05 AM",dur:"2h 35m",cabin:"Premium Economy",status:"Confirmed",notes:"Collect checked bags in Rome. Seat selection remains open until check-in; confirm or choose a seat then if available.",timelineNotes:""},
       {id:"flight-sk2692",bookingId:"air-main",date:"2026-10-15",flight:"SK2692",op:"SAS Connect",from:"VCE - Venice Marco Polo Airport",dep:"11:00 AM",to:"CPH - Copenhagen Airport",arr:"1:05 PM",dur:"2h 5m",cabin:"Premium Economy",status:"Confirmed",notes:"Confirm bags tagged to TPA.",timelineNotes:"Connection 1h 15m."},
@@ -802,7 +802,7 @@ const MAP_DOOR_ROUTES = [
     "link": "https://www.delta.com/",
     "backupLink": "",
     "status": "Ready",
-    "note": "Confirm bags tagged through to FCO",
+    "note": "Luggage confirmed checked through to Rome (FCO)",
     "secondaryNote": "",
     "from": "TPA"
   },
@@ -812,13 +812,13 @@ const MAP_DOOR_ROUTES = [
     "start": "14:55",
     "date": "Oct 4",
     "to": "BOS - Boston Logan Airport Terminal E",
-    "mode": "Free Massport shuttle / walk + TSA",
-    "duration": "45–90 min",
-    "link": "https://www.massport.com/logan-airport/getting-to-logan/on-airport-shuttle/",
+    "mode": "Delta airside shuttle + gate walk",
+    "duration": "Transfer + gate buffer",
+    "link": "https://www.delta.com/us/en/advisories/airports/boston-airport-update",
     "backupLink": "",
-    "status": "Verify day-of",
-    "note": "Updated transfer guide: DL2706 arrives 2:55 PM; shuttle about 3:10–3:25 PM; Terminal E around 3:25–3:35 PM; TSA about 3:45–4:25 PM; reach the SK928 gate by 5:00 PM for its 5:40 PM departure.",
-    "secondaryNote": "Do not collect checked bags in Boston. Re-clear TSA in Terminal E and check live shuttle signs, flight monitors, and gate assignment.",
+    "status": "Confirmed",
+    "note": "Stay inside security. Follow internal signs toward A13–A22, then Delta shuttle / Terminal E signs near the A17–A18 food court. Take Delta's airside bus to E, normally near E13, and follow the monitors to the SK928 gate. No TSA reentry.",
+    "secondaryNote": "Luggage confirmed through to Rome (FCO). Scheduled connection: 2:55 PM arrival to 5:40 PM departure, 2h 45m. Aim for the SAS gate by 4:45 PM and follow your boarding pass deadline.",
     "from": "BOS - Boston Logan Airport Terminal A"
   },
   {
@@ -1324,10 +1324,10 @@ const MAP_AIRPORTS = [
     "code": "BOS",
     "tripUse": "Domestic-to-international connection",
     "official": "https://www.massport.com/logan-airport",
-    "secondary": "https://www.massport.com/logan-airport/getting-to-logan/on-airport-shuttle/",
-    "concern": "Terminal A to E + TSA",
-    "action": "Confirm gate immediately after landing",
-    "status": "Verify day-of"
+    "secondary": "https://www.delta.com/us/en/advisories/airports/boston-airport-update",
+    "concern": "Delta airside shuttle A → E; no TSA reentry",
+    "action": "Stay inside security; follow Delta shuttle signs near A17–A18, then monitors to the SK928 gate. Luggage confirmed through to Rome (FCO).",
+    "status": "Confirmed"
   },
   {
     "name": "Copenhagen Airport",

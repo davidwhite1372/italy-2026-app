@@ -4,8 +4,10 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 
 ## Current development build
 
-**Version 12.0.7 — Murano and Venice departure times**
-Last edited October 3, 2026 at 12:55 PM EDT. Murano/Burano is 8:00 AM–5:00 PM; flexible breakfast sorts before the excursion and dinner stays at 7:00 PM. On Oct 15, leave Hotel Antiche Figure at 7:00 AM, allow walk/tickets through 7:30 AM, bus/wait through 8:30 AM, then airport check-in/security through 10:15 AM before the unchanged 11:00 AM flight. Exact ATVO service is pending; use the next suitable bus and begin check-in earlier if possible. Narrow one-time phone corrections preserve private data and later edits. All 50 tests pass, and separate phone simulations preserve every unrelated saved value. Hotel websites/copy controls, schema 6, local photos, and all guide assets remain intact. Physical-phone and airplane-mode review remain pending.
+**Version 12.0.8 — Confirmed Delta airside Boston transfer**
+Last edited October 3, 2026 at 2:52 PM EDT. All Boston instructions now use Delta's internal Terminal A–E shuttle, staying inside security with no TSA reentry. Luggage is confirmed checked through to Rome (FCO). The remade one-page PNG/PDF guide opens from Travel Details, All Guides, and Featured Guides, and both formats are required in the offline cache. Aim for the SK928 gate by 4:45 PM for the unchanged 5:40 PM departure; follow the boarding pass deadline. All 51 tests pass. Both labeled Oct 3 phone simulations preserve all 19 saved sections exactly, with idempotent Merge round trips. No new saved-data migration is added. Physical-phone and airplane-mode review remain pending after an approved release.
+
+Version 12.0.7 set Murano/Burano to 8:00 AM–5:00 PM, with flexible breakfast before the excursion and dinner at 7:00 PM. On Oct 15, leave Hotel Antiche Figure at 7:00 AM, allow walk/tickets through 7:30 AM, bus/wait through 8:30 AM, then airport check-in/security through 10:15 AM before the unchanged 11:00 AM flight. Exact ATVO service remains pending; use the next suitable bus and begin check-in earlier if possible. All approved times, hotel websites/copy controls, schema 6, local photos, and other guide assets are retained in 12.0.8.
 
 Version 12.0.0 replaces the Rome and Florence tour booking numbers with 1212654, adds supplied offline vouchers and $656.08 in company-paid expenses awaiting a work report, and makes narrow travel-data, pronunciation, install-sheet, budget-caption, and offline-cache fixes. Dates, tour times, existing IDs, schema 6, and the page layout are preserved.
 
@@ -19,7 +21,7 @@ User-entered information is stored locally on each phone. Changes made on one ph
 
 - Export a fresh backup before changing devices, clearing browser data, or reinstalling the app.
 - Backup schema numbers describe file compatibility; they are separate from the app version.
-- Version 12.0.7 creates schema 6 backups and continues importing schema 5, schema 4, and older supported backups.
+- Version 12.0.8 creates schema 6 backups and continues importing schema 5, schema 4, and older supported backups.
 - Both Sep 30 device-labeled schema 6 exports were reviewed for conflicts. Preserve device-specific notes, flights, expenses, and local photos.
 - Shared cloud data is still an evaluation item; this release adds no account, backend, or online synchronization.
 - Online receipt recognition and the AI Italian tutor / microphone workflow remain unbuilt; provider, privacy, offline, and interaction requirements still need a product decision.

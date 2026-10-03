@@ -1443,10 +1443,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "12.0.7",
-      build: "12.0.7",
+      version: "12.0.8",
+      build: "12.0.8",
       backupSchema: 6,
-      lastEdited: "October 3, 2026 at 12:55 PM EDT"
+      lastEdited: "October 3, 2026 at 2:52 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -4211,8 +4211,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         { id: "m2", text: "Screenshot boarding passes / download airline apps offline" },
         { id: "m3", text: "Plan 6:00 AM leave Spring Hill → TPA Economy Parking" },
         { id: "m4", text: "Remember: photograph parking location and bag tags" },
-        { id: "m5", text: "Confirm bags tagged through to FCO at Delta" },
-        { id: "m6", text: "Know BOS A→E connection plan for SK928" }
+        { id: "m5", text: "Luggage confirmed through to Rome (FCO); keep the Delta bag receipts" },
+        { id: "m6", text: "Use confirmed Delta airside shuttle BOS A→E for SK928; no TSA reentry; bags through to Rome" }
       ]},
       { id: "p5", group: "Before Oct 15 return", items: [
         { id: "r1", text: "Buy/stage ATVO or ACTV airport bus tickets on Oct 14" },
@@ -5006,7 +5006,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       "travel-16":[{src:"assets/guides/rome-tour-voucher-1212654.pdf",title:"Rome tour voucher · Booking 1212654",secondary:true,voucher:true,verified:"Sep 30, 2026"},{src:"assets/guides/tour-payment-confirmation-1212654.png",title:"Tour payment confirmation · Minuteman expense report",verified:"Sep 30, 2026"}],
       "travel-21":[{src:"assets/guides/florence-tour-voucher-1212654.pdf",title:"Florence tour voucher · Booking 1212654",secondary:true,voucher:true,verified:"Sep 30, 2026"},{src:"assets/guides/tour-payment-confirmation-1212654.png",title:"Tour payment confirmation · Minuteman expense report",verified:"Sep 30, 2026"}],
       "travel-6":[
-        {src:"assets/guides/boston-terminal-a-to-e.png",title:"Boston Terminal A → E transfer guide",verified:"Sep 23, 2026",note:"Updated guide timings: shuttle about 3:10–3:25 PM, Terminal E around 3:25–3:35 PM, TSA about 3:45–4:25 PM. Reach the SK928 gate by 5:00 PM for the 5:40 PM departure."}
+        {src:"assets/guides/boston-terminal-a-to-e.png",title:"Boston Terminal A → E transfer guide",verified:"Oct 3, 2026",note:"Confirmed Delta airside shuttle; stay inside security with no TSA reentry. Luggage confirmed through to Rome (FCO). Aim for the SK928 gate by 4:45 PM; departure is 5:40 PM. Follow your SAS boarding pass deadline."},
+        {src:"assets/guides/boston-terminal-a-to-e.pdf",title:"Boston Terminal A → E transfer guide · PDF",secondary:true,verified:"Oct 3, 2026"}
       ],
       "travel-8":[
         {src:"assets/guides/cph-connection-guide-outbound.png",title:"CPH Outbound Connection Guide",verified:"Sep 13, 2026"},
@@ -5058,7 +5059,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     const MAP_GUIDE_LIBRARY = Object.freeze([
       {src:"assets/guides/italy-camera-cheat-sheet-samsung-s23-ultra.png",title:"Italy Camera Cheat Sheet · Samsung Galaxy S23 Ultra",category:"Before departure · Photography"},
       {src:"assets/guides/luggage-lock-instructions.jpg",title:"Luggage Lock Instructions",category:"Before departure · Packing reference"},
-      {src:"assets/guides/boston-terminal-a-to-e.png",title:"Boston Terminal A → E transfer guide",category:"Oct 4 · Airport connection",verified:"Sep 23, 2026",note:"Updated guide timings: shuttle about 3:10–3:25 PM, Terminal E around 3:25–3:35 PM, TSA about 3:45–4:25 PM. Reach the SK928 gate by 5:00 PM for the 5:40 PM departure."},
+      {src:"assets/guides/boston-terminal-a-to-e.png",pdf:"assets/guides/boston-terminal-a-to-e.pdf",title:"Boston Terminal A → E transfer guide",category:"Oct 4 · Airport connection",verified:"Oct 3, 2026",note:"Confirmed Delta airside shuttle; stay inside security with no TSA reentry. Luggage confirmed through to Rome (FCO). Aim for the SK928 gate by 4:45 PM; departure is 5:40 PM. Follow your SAS boarding pass deadline."},
       {src:"assets/guides/cph-connection-guide-outbound.png",pdf:"assets/guides/cph-connection-guide-outbound.pdf",title:"CPH Outbound Connection Guide",category:"Oct 5 · Airport connection",verified:"Sep 13, 2026"},
       {gallery:[
         {src:"assets/guides/fco-arrival-to-train-1.png",title:"FCO Arrival → Train Station · Page 1"},
@@ -5825,8 +5826,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       setMapsSection("mapsFeaturedGuides", `
         <div class="maps-feature-card">
           <h3>✈️ Boston Terminal A → E</h3>
-          <p>Free Massport shuttle; exit security, transfer to Terminal E, then re-clear TSA. The updated guide targets Terminal E around 3:25–3:35 PM, TSA from 3:45–4:25 PM, and the gate by 5:00 PM for the 5:40 PM SK928 departure.</p>
+          <p>Confirmed Delta airside transfer: stay inside security. Follow internal signs to A13–A22 and Delta shuttle / Terminal E signs near the A17–A18 food court. Take the internal bus to E, normally near E13, then follow the monitors to SK928. No TSA reentry. Luggage is confirmed through to Rome (FCO). Aim for the SAS gate by 4:45 PM; departure is 5:40 PM. Follow your boarding pass deadline.</p>
           <button type="button" class="link-btn" onclick='openImageViewer("assets/guides/boston-terminal-a-to-e.png","Boston Terminal A → E transfer guide · DL2706 / SK928")'>Open guide →</button>
+          <button type="button" class="link-btn map-secondary-btn" onclick='openPdfViewer("assets/guides/boston-terminal-a-to-e.pdf","Boston Terminal A → E transfer guide · PDF")'>PDF / print version</button>
         </div>
         <div class="maps-feature-card">
           <h3>✈️ Copenhagen connection</h3>

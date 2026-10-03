@@ -1,3 +1,33 @@
+# Version 12.0.8 Release Checklist
+
+Prepared October 3, 2026 at 2:52 PM EDT from clean develop e1c2876e62c29b32227d6cb53aa1c9032e91cde9. David authorized pushing the tested update to main on October 3 at 3:13 PM EDT.
+
+## Automated and source checks
+
+- [x] All 51 npm tests pass, including Boston route consistency, real image/PDF taps in Travel Details, All Guides, and Featured Guides, and existing itinerary/photo/backup regressions.
+- [x] Boston instructions use only the user-confirmed Delta airside A–E transfer, staying inside security with no TSA reentry. Luggage is confirmed checked through to Rome (FCO).
+- [x] Published Delta wayfinding checked Oct 3: A13–A22 satellite access, food court near A17–A18, and normal E13 access. Actual SAS gate comes from monitors; route eligibility and through baggage are David's confirmed facts.
+- [x] One-page PDF rendered to a matching 300-dpi PNG; visually checked for clipping and overlap. Exact-text check verifies flight times, gate target, airside wording, Rome baggage, and version.
+- [x] The new cache requires both Boston formats before activation; simulated failure of either rejects installation. No outside-transfer contingency is present in current app or guide instructions.
+- [x] All Guides contains exactly one Boston entry. Its old image file has been replaced, and both guide buttons open the current airside PNG/PDF. The worker removes the previous offline cache on activation.
+- [x] Both Oct 3 phone simulations preserve all 19 saved sections exactly against their own normalized 12.0.7 baselines. Merge round trips are idempotent, and no runtime errors occur.
+- [x] All 62 timeline IDs and start/end clocks are unchanged. Other master timeline records, schema 6, private notes, custom times, prior approved timings, hotel copy controls, local photos, and other guides are retained.
+- [x] Version 12.0.8 metadata and the October 3, 2:52 PM EDT timestamp are consistent. JavaScript syntax checks and offline app boot pass. No new migration or phone import/reset is required.
+
+## Physical phones after approved release
+
+- [ ] Confirm About shows 12.0.8 on both installed phones, then review the Oct 4 Boston transfer card and updated pre-departure wording.
+- [ ] Open the Boston image and PDF from Travel Details and All Guides; let online loading complete, then verify both in airplane mode.
+- [ ] Confirm existing notes, expenses, packing, flights, and local photos are visible on each phone.
+
+## Develop and production
+
+- Check the exact develop commit's GitHub Actions after push; the handoff reports the result.
+- David's explicit October 3 approval resolves the earlier push block and authorizes main release after green develop checks. The complete 15-file ZIP remains available.
+- Verify main Actions/Pages and the live image/PDF bytes after promotion. Installed-phone and airplane-mode checks remain manual.
+
+---
+
 # Version 12.0.7 Release Checklist
 
 Prepared October 3, 2026 at 12:55 PM EDT from clean develop 2f46e008d09e77c9db5fd236d75e8bb6876ba6ff. Production main remains v12.0.0.

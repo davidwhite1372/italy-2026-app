@@ -1,6 +1,6 @@
 # Italy 2026 Travel Companion — Project Handoff
 
-Updated October 3, 2026 for the v12.0.7 Venice timing candidate. Original continuity guide prepared August 23, 2026 for account transfer.
+Updated October 3, 2026 for the approved v12.0.8 Boston airside transfer release. Original continuity guide prepared August 23, 2026 for account transfer.
 
 ## Start here
 
@@ -22,22 +22,31 @@ Moving or losing a ChatGPT conversation does **not** delete the GitHub repositor
 
 - Product: Italy 2026 Travel Companion
 - Repository: <https://github.com/davidwhite1372/italy-2026-app>
-- Fresh develop baseline: 12.0.6, commit 2f46e008d09e77c9db5fd236d75e8bb6876ba6ff; main remains 12.0.0 at 140894a.
-- Current candidate: 12.0.7, prepared October 3, 2026 at 12:55 PM EDT.
+- Fresh develop baseline: 12.0.7, commit e1c2876e62c29b32227d6cb53aa1c9032e91cde9; main was independently checked at the same commit.
+- Approved release: 12.0.8, prepared October 3, 2026 at 2:52 PM EDT. David explicitly authorized the GitHub push and main release on October 3 at 3:13 PM EDT after reviewing the guide and completed changes.
+- The earlier upload-authorization block is resolved by David's explicit approval. Push develop, verify its exact commit's Actions, then fast-forward main and verify main Actions/Pages. Recheck actual branch and live state at the start of future work; completed verification is recorded in docs/UPDATE-12.0.8.md.
 - Backup schema: 6, unchanged.
 - Production branch: main; working branch: develop.
-- Hosting: existing GitHub Pages. Live source was independently checked October 3 and shows 12.0.0, last edited October 2 at 7:33 PM EDT. The current candidate is for develop only; main release requires David’s instruction.
+- Hosting: existing GitHub Pages. Before this release, the October 3 live check showed 12.0.7, last edited at 12:55 PM EDT. The approved production target is 12.0.8, last edited at 2:52 PM EDT. Verify version and replacement guide bytes after deployment; actual installed-phone checks remain separate.
 - Both October 3 labeled schema 6 / app 12.0.0 phone exports were reviewed separately: David Cell and David Work Cell. They are not interchangeable.
 - No cloud sync, backend, or transmission of trip data. Preserve local/offline behavior.
 - Original Aug 23 statements about v10.10.1 and future Version 11 are historical and superseded by the fresh source.
 
-## October 3 approved Venice times
+## October 3 confirmed Boston transfer and luggage
+
+- David explicitly confirmed that luggage is checked through to Rome and the correct Boston transfer is Delta's internal airside shuttle, with no security reentry. Use this as the approved plan; no outside-transfer contingency is requested.
+- Version 12.0.8 replaces the old Boston instructions across Timeline/Travel Details, day summary, flight/booking notes, pre-departure checklist, door-to-door route, airport reference, All Guides, and Featured Guides. Stay inside security, follow internal signs toward A13–A22 and Delta shuttle signs near the A17–A18 food court, take the bus to E (normally E13), then use monitors for the assigned SK928 gate.
+- The guide is rebuilt as a sharp one-page PNG plus printable PDF. Both are required offline assets before the new service worker activates. DL2706 arrival 2:55 PM and SK928 departure 5:40 PM remain unchanged; gate target 4:45 PM is a planning target, with the actual boarding pass deadline authoritative.
+- Both Oct 3 labeled phone exports were simulated separately against the fresh 12.0.7 baseline. All 19 saved sections are identical after upgrade; Merge is idempotent. All 62 timeline IDs and clocks remain. No new migration, import/reset, or photo-storage change is introduced.
+- All 51 npm tests pass, including real taps on Boston image/PDF buttons at all three guide locations, exactly one Boston entry in All Guides, and required-cache failure checks. The old image file is replaced at the existing path and the previous cache is removed on activation. The handoff is docs/UPDATE-12.0.8.md. David approved the main release; actual phone/offline checks remain pending.
+
+## October 3 approved Venice times (v12.0.7 history)
 
 - David chose Murano/Burano 8:00 AM–5:00 PM and Oct 15 departure from Hotel Antiche Figure at 7:00 AM. These resolve the two previously open timing choices.
 - Flexible breakfast sorts before the excursion without an invented clock; dinner remains at 7:00 PM. Day summaries, excursion confirmation/open-item text, and airport route match the approved plan.
 - Airport sequence uses the existing buffers shifted coherently: walk/tickets 07:00–07:30, bus/wait 07:30–08:30, airport check-in/security 08:30–10:15, flight 11:00 unchanged. Exact ATVO departure remains pending; aim for VCE around 08:00 if service allows and start check-in immediately on arrival.
 - Version 12.0.7 corrects only reviewed old saved clocks and the exact stock Murano Time TBD note once. Private notes, other custom times, and subsequent edits remain. Both phone simulations match the preserved baseline except approved redundant fields; Merge is idempotent, and all 50 npm tests pass.
-- All guide assets, hotel website/copy fixes, prior approved times, stable IDs, schema 6, and local-only photo behavior remain intact. The current development handoff is docs/UPDATE-12.0.7.md. Physical-phone and airplane-mode checks remain pending; main has not changed.
+- All guide assets, hotel website/copy fixes, prior approved times, stable IDs, schema 6, and local-only photo behavior remained intact. The development handoff was docs/UPDATE-12.0.7.md. The subsequent fresh branch/live check confirms 12.0.7 on main; physical-phone and airplane-mode checks remain pending.
 
 ## October 3 final wallet-copy check (v12.0.6 history)
 
@@ -204,4 +213,3 @@ Avoid uploading screenshots and obsolete patch ZIPs unless they are needed to ex
 - This document summarizes the decisions from the long development conversation; it is not a verbatim transcript.
 - Old searches from unrelated chats cannot be discovered automatically from inside this one conversation. Use the topic inventory above to find them while the work account is still accessible.
 - Trip dates, times, reservations, and agenda details must be verified against the forthcoming final agenda and current app data before bulk updates.
-
