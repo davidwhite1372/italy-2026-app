@@ -1,6 +1,6 @@
 # Italy 2026 Travel Companion — Project Handoff
 
-Updated September 30, 2026 for the v11.0.3 maintenance candidate. Original continuity guide prepared August 23, 2026 for account transfer.
+Updated October 3, 2026 for the v12.0.1 Rome walking-guide candidate. Original continuity guide prepared August 23, 2026 for account transfer.
 
 ## Start here
 
@@ -22,14 +22,22 @@ Moving or losing a ChatGPT conversation does **not** delete the GitHub repositor
 
 - Product: Italy 2026 Travel Companion
 - Repository: <https://github.com/davidwhite1372/italy-2026-app>
-- Supplied fresh develop baseline: 11.0.2, home-PC commit ac59e06.
-- Current local maintenance candidate: 11.0.3 (see APP_METADATA and release checklist for timestamp).
+- Fresh develop/main baseline: 12.0.0, commit 140894a6084c6baae3b9aa4efea0ff73d4a68637.
+- Current guide candidate: 12.0.1, prepared October 3, 2026 at 10:43 AM EDT.
 - Backup schema: 6, unchanged.
 - Production branch: main; working branch: develop.
-- Hosting: existing GitHub Pages. No remote branch, live site, or phone installation was changed by this work. Production has not been independently checked in this session.
-- Both Sep 30 labeled phone exports were reviewed and tested separately. They are not interchangeable.
+- Hosting: existing GitHub Pages. Live source was independently checked October 3 and shows 12.0.0, last edited October 2 at 7:33 PM EDT. The guide candidate is for develop only; main release requires David’s instruction.
+- Both October 3 labeled schema 6 / app 12.0.0 phone exports were reviewed separately: David Cell and David Work Cell. They are not interchangeable.
 - No cloud sync, backend, or transmission of trip data. Preserve local/offline behavior.
 - Original Aug 23 statements about v10.10.1 and future Version 11 are historical and superseded by the fresh source.
+
+## October 3 guide increment and pending phone review
+
+- Replaces the Oct 7 Colosseum-to-Tiber-Island guide with David’s original five-page PDF and five matching page images; preserves the existing guide order and travel/timeline IDs.
+- Travel Details and All Guides use the same swipeable gallery. The PDF and all five page images must be cached before the worker activates.
+- This increment preserves all itinerary records and phone overrides. Registration and Uffizi return times conflict across exports. Departure-day and VCE check-in edits create sequence overlaps; Murano/Burano time is marked TBD on the work phone. Review these individually before promoting phone edits.
+- Phone-only work is supported through direct GitHub develop commits. No PC or destructive phone import is required. Original phone JSON files and locally attached photos remain separate assets.
+- See docs/RELEASE-CHECKLIST.md for automated verification and pending physical-phone checks. Main remains the reviewed production branch.
 
 ## September 30 maintenance scope
 

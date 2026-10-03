@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v12-0-0-final-itinerary';
+const CACHE = 'italy-2026-github-v12-0-1-rome-walking-guide';
 const APP_SHELL = [
   './',
   './index.html',
@@ -7,6 +7,11 @@ const APP_SHELL = [
   './assets/guides/florence-tour-voucher-1212654.pdf',
   './assets/guides/tour-payment-confirmation-1212654.png',
   './assets/guides/rome-colosseum-to-tiber-island-food-tour.png',
+  './assets/guides/rome-colosseum-to-tiber-island-food-tour-2.png',
+  './assets/guides/rome-colosseum-to-tiber-island-food-tour-3.png',
+  './assets/guides/rome-colosseum-to-tiber-island-food-tour-4.png',
+  './assets/guides/rome-colosseum-to-tiber-island-food-tour-5.png',
+  './assets/guides/rome-colosseum-to-tiber-island-food-tour.pdf',
   './assets/guides/twilight-trastevere-food-tour-382969949.pdf',
   './manifest.json',
   './icon-192.png',
@@ -57,6 +62,11 @@ self.addEventListener('install', event => {
           './assets/guides/rome-tour-voucher-1212654.pdf',
           './assets/guides/florence-tour-voucher-1212654.pdf',
           './assets/guides/rome-colosseum-to-tiber-island-food-tour.png',
+          './assets/guides/rome-colosseum-to-tiber-island-food-tour-2.png',
+          './assets/guides/rome-colosseum-to-tiber-island-food-tour-3.png',
+          './assets/guides/rome-colosseum-to-tiber-island-food-tour-4.png',
+          './assets/guides/rome-colosseum-to-tiber-island-food-tour-5.png',
+          './assets/guides/rome-colosseum-to-tiber-island-food-tour.pdf',
           './assets/guides/twilight-trastevere-food-tour-382969949.pdf']);
         const failures = [];
         await Promise.all(APP_SHELL.map(async asset => {

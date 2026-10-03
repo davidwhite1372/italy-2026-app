@@ -1443,10 +1443,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "12.0.0",
-      build: "12.0.0",
+      version: "12.0.1",
+      build: "12.0.1",
       backupSchema: 6,
-      lastEdited: "October 2, 2026 at 7:33 PM EDT"
+      lastEdited: "October 3, 2026 at 10:43 AM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -4926,6 +4926,13 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       return `<a class="link-btn travel-map-btn" href="${googleMapSearchUrl(destination)}" target="_blank" rel="noopener">🗺️ Google Place</a><a class="link-btn travel-map-btn" href="${appleMapSearchUrl(destination)}" target="_blank" rel="noopener">📍 Apple Place</a><a class="link-btn travel-map-btn" href="${mapsLinkFor(from&&to?from:"",destination)}" target="_blank" rel="noopener">➡️ Directions</a>`;
     }
 
+    const ROME_FOOD_TOUR_GUIDE_PAGES = Object.freeze([
+      {src:"assets/guides/rome-colosseum-to-tiber-island-food-tour.png",title:"Colosseum → Tiber Island Food-Tour Transfer · Page 1"},
+      {src:"assets/guides/rome-colosseum-to-tiber-island-food-tour-2.png",title:"Colosseum → Tiber Island Food-Tour Transfer · Page 2"},
+      {src:"assets/guides/rome-colosseum-to-tiber-island-food-tour-3.png",title:"Colosseum → Tiber Island Food-Tour Transfer · Page 3"},
+      {src:"assets/guides/rome-colosseum-to-tiber-island-food-tour-4.png",title:"Colosseum → Tiber Island Food-Tour Transfer · Page 4"},
+      {src:"assets/guides/rome-colosseum-to-tiber-island-food-tour-5.png",title:"Colosseum → Tiber Island Food-Tour Transfer · Page 5"}
+    ]);
     const TRAVEL_GUIDES_BY_ID = Object.freeze({
       "travel-16":[{src:"assets/guides/rome-tour-voucher-1212654.pdf",title:"Rome tour voucher · Booking 1212654",secondary:true,voucher:true,verified:"Sep 30, 2026"},{src:"assets/guides/tour-payment-confirmation-1212654.png",title:"Tour payment confirmation · Minuteman expense report",verified:"Sep 30, 2026"}],
       "travel-21":[{src:"assets/guides/florence-tour-voucher-1212654.pdf",title:"Florence tour voucher · Booking 1212654",secondary:true,voucher:true,verified:"Sep 30, 2026"},{src:"assets/guides/tour-payment-confirmation-1212654.png",title:"Tour payment confirmation · Minuteman expense report",verified:"Sep 30, 2026"}],
@@ -4945,7 +4952,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         {src:"assets/guides/rome-metro-transfer-guide.pdf",title:"Anantara → Vatican tour transit guide · PDF",secondary:true,verified:"Sep 29, 2026"}
       ],
       "travel-57":[
-        {src:"assets/guides/rome-colosseum-to-tiber-island-food-tour.png",title:"Colosseum → Tiber Island food-tour transfer guide",verified:"Oct 2, 2026"}
+        ...ROME_FOOD_TOUR_GUIDE_PAGES.map(page=>({...page,verified:"Oct 3, 2026"})),
+        {src:"assets/guides/rome-colosseum-to-tiber-island-food-tour.pdf",title:"Colosseum → Tiber Island food-tour walking guide · PDF",secondary:true,verified:"Oct 3, 2026"}
       ],
       "travel-62":[
         {src:"assets/guides/twilight-trastevere-food-tour-382969949.pdf",title:"Twilight Trastevere food-tour ticket · Booking 382969949",secondary:true,verified:"Oct 2, 2026"}
@@ -4988,7 +4996,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         {src:"assets/guides/fco-arrival-to-train-2.png",title:"FCO Arrival → Train Station · Page 2"}
       ],title:"FCO Arrival → Train Station",category:"Oct 5 · Airport arrival",verified:"Sep 13, 2026"},
       {src:"assets/guides/rome-metro-transfer-guide.png",pdf:"assets/guides/rome-metro-transfer-guide.pdf",title:"Anantara → Vatican Tour Transit Guide",category:"Oct 7 · Rome tour transfer",verified:"Sep 29, 2026"},
-      {src:"assets/guides/rome-colosseum-to-tiber-island-food-tour.png",title:"Colosseum → Tiber Island Food-Tour Transfer",category:"Oct 7 · Time-critical food-tour transfer",verified:"Oct 2, 2026"},
+      {gallery:ROME_FOOD_TOUR_GUIDE_PAGES,pdf:"assets/guides/rome-colosseum-to-tiber-island-food-tour.pdf",title:"Colosseum → Tiber Island Food-Tour Transfer",category:"Oct 7 · Time-critical food-tour transfer",verified:"Oct 3, 2026"},
       {src:"assets/guides/laundry-king-florence.png",title:"Laundry King Florence Guide",category:"Oct 8–10 · Florence practical guide",verified:"Sep 13, 2026"},
       {src:"assets/guides/florence-tour-outbound-guide.png",pdf:"assets/guides/florence-tour-outbound-guide.pdf",title:"W Florence → Accademia Tour Guide",category:"Oct 9 · Florence tour transfer",verified:"Sep 29, 2026"},
       {src:"assets/guides/florence-tour-return-guide.png",pdf:"assets/guides/florence-tour-return-guide.pdf",title:"Uffizi → W Florence Return Guide",category:"Oct 9 · Florence tour return",verified:"Sep 29, 2026"},
@@ -5003,7 +5011,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
     ]);
     function guideActionsForTravel(id){
       const guides=TRAVEL_GUIDES_BY_ID[id]||[];
-      const gallery=id==="travel-10" ? guides.filter(guide=>!guide.secondary).map(({src,title})=>({src,title})) : null;
+      const pages=guides.filter(guide=>!guide.secondary).map(({src,title})=>({src,title}));
+      const gallery=pages.length>1 ? pages : null;
       const buttons=guides.map((guide,index)=>guide.secondary
         ? `<button type="button" class="link-btn guide-secondary" onclick='openPdfViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})'>📄 ${guide.voucher ? "Open tour voucher · 1212654" : "Open PDF version"} →</button>`
         : `<button type="button" class="link-btn" onclick='${gallery ? `openImageGallery(${JSON.stringify(gallery)},${index})` : `openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})`}'>🖼️ Open ${escapeHtml(guide.title)}</button>`).join("");

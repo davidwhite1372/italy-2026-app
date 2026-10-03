@@ -4,8 +4,8 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 
 ## Current development build
 
-**Version 12.0.0 — Final itinerary reconciliation**
-Last edited October 2, 2026 at 7:33 PM EDT. Backup schema 6 remains unchanged. The Oct 7 pedicab Quick Reference phrase remains promoted into V12 master data. Final meal classifications, the Oct 8 Da Burde dinner, the Oct 11 tentative dinner placeholder, and return-baggage wording are reconciled.
+**Version 12.0.1 — Rome walking guide replacement**
+Last edited October 3, 2026 at 10:43 AM EDT. Backup schema 6 remains unchanged. David’s supplied five-page Colosseum-to-Tiber-Island walking guide now opens as a swipeable gallery and original PDF from Travel Details and All Guides. All six guide assets are cached before the new worker activates. The Oct 3 phone-export time conflicts remain pending individual review; this increment changes guide content only.
 
 Version 12.0.0 replaces the Rome and Florence tour booking numbers with 1212654, adds supplied offline vouchers and $656.08 in company-paid expenses awaiting a work report, and makes narrow travel-data, pronunciation, install-sheet, budget-caption, and offline-cache fixes. Dates, tour times, existing IDs, schema 6, and the page layout are preserved.
 
@@ -19,7 +19,7 @@ User-entered information is stored locally on each phone. Changes made on one ph
 
 - Export a fresh backup before changing devices, clearing browser data, or reinstalling the app.
 - Backup schema numbers describe file compatibility; they are separate from the app version.
-- Version 12.0.0 creates schema 6 backups and continues importing schema 5, schema 4, and older supported backups.
+- Version 12.0.1 creates schema 6 backups and continues importing schema 5, schema 4, and older supported backups.
 - Both Sep 30 device-labeled schema 6 exports were reviewed for conflicts. Preserve device-specific notes, flights, expenses, and local photos.
 - Shared cloud data is still an evaluation item; this release adds no account, backend, or online synchronization.
 - Online receipt recognition and the AI Italian tutor / microphone workflow remain unbuilt; provider, privacy, offline, and interaction requirements still need a product decision.

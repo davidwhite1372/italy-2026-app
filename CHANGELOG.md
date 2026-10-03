@@ -1,3 +1,14 @@
+# Version 12.0.1 — October 3, 2026
+
+Build prepared on `develop` October 3, 2026 at 10:43 AM EDT. Production `main` remains v12.0.0 pending David's reviewed release instruction.
+
+- Replaced the Colosseum-to-Tiber-Island image with page 1 of David's supplied five-page Rome walking guide. Added pages 2–5 and the original PDF, preserved byte-for-byte.
+- Travel Details and All Guides open the same five-page swipe/arrow/zoom gallery and original PDF. The existing Oct 7 guide position and travel/timeline IDs are unchanged.
+- All five pages and the PDF are required offline assets; a missing page prevents the new service worker from activating with an incomplete time-critical guide.
+- Version/build/package/manifest/cache metadata and last-edited timestamp updated together. Backup schema remains 6.
+- Reviewed both separately labeled Oct 3 phone exports. Conflicting or out-of-sequence time edits remain pending individual review; no phone overrides are promoted or removed in this guide-only increment.
+- Regression and separate phone-preservation checks are recorded in docs/RELEASE-CHECKLIST.md. Physical-phone PDF, swipe, and airplane-mode review remains required.
+
 # Version 12.0.0 — October 2, 2026
 
 Build prepared on `develop` October 2, 2026 at 7:33 PM EDT. Production `main` has not been changed by this patch.

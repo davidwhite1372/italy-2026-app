@@ -1,3 +1,39 @@
+# Version 12.0.1 Release Checklist
+
+Prepared October 3, 2026 at 10:43 AM EDT from fresh clean `develop` at 140894a. Initial live `main` is v12.0.0. This guide-only increment does not change itinerary or phone data.
+
+## Automated and source checks
+- [x] All 44 npm regression tests pass, including five-page Travel Details / All Guides navigation and PDF opening.
+- [x] Both October 3 phone-export simulations exactly match their separately normalized v12.0.0 baselines after the change and after a Merge round trip.
+- [x] Stable itinerary IDs and schema 6 unchanged; data.js is byte-for-byte unchanged.
+- [x] The supplied five-page PDF is preserved byte-for-byte. All five preview pages are rendered from that PDF.
+- [x] App/build/package/lockfile/manifest/cache versions and current timestamp consistently use 12.0.1.
+- [x] Missing any new guide page or PDF blocks worker activation; an unrelated optional-guide failure remains tolerated.
+
+## Phone-only review
+- [x] Fresh separately labeled October 3 David Cell and David Work Cell exports supplied.
+- [ ] Review the five-page guide and original PDF from the develop commit on the phone.
+- [ ] After an approved main release, open the installed app online and confirm About shows 12.0.1.
+- [ ] On each phone, open the Oct 7 transfer card: swipe forward/back through all five pages, zoom, and open the PDF.
+- [ ] Repeat from All Guides; confirm the guide remains in Oct 7 order.
+- [ ] Let the app finish loading online, then turn on airplane mode and repeat the gallery/PDF checks.
+- [ ] Confirm existing notes, expenses, packing, flights, and locally attached photos remain visible. Do not clear storage or uninstall.
+
+## Deferred phone-export decisions
+- Oct 5 PSA registration: David Cell 1:30 PM; David Work Cell 1:01 PM; master 1:00–5:00 PM registration window.
+- Oct 9 Uffizi return walk: David Cell 2:30–3:30 PM; David Work Cell 3:30–4:30 PM; master is flexible after the tour.
+- Oct 11 Murano/Burano: David Cell 8:00 AM–5:00 PM; work-phone note says Time TBD.
+- Oct 4: phone bag drop begins 8:45 AM while SkyConnect is 9:05–9:30 AM; sequence needs review.
+- Oct 15: phone VCE check-in starts 7:00 AM while the master airport bus is 7:00–8:00 AM; sequence needs review.
+- Other event/status edits and inherited older notes remain separate from this guide increment; do not blindly merge two exports or replace newer master facts with older notes.
+
+## Develop and production
+- [ ] Commit/push the tested guide change to develop and verify GitHub Actions.
+- [ ] David directs any main release after reviewing the exact change. No main merge is implied by a phone-export upload.
+- [ ] Verify live source and both physical phones after an approved release, then tag the verified production version.
+
+---
+
 # Version 11.0.3 Release Checklist
 
 Prepared September 30, 2026 at 5:57 PM EDT from the supplied fresh develop copy (home-PC source commit ac59e06). Work remains local on develop; no remote push, main merge, or deployment performed.
