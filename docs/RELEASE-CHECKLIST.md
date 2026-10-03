@@ -1,3 +1,32 @@
+# Version 12.0.2 Release Checklist
+
+Prepared October 3, 2026 at 11:22 AM EDT from clean develop 41f1dd0. Initial live main remains v12.0.0.
+
+## Automated and source checks
+- [x] All 45 npm tests pass, including the one-time clock correction and later Save/reload preservation.
+- [x] Both October 3 phone simulations show bag drop 9:30–9:55 AM and security 9:55–10:30 AM; every unrelated normalized exported value is unchanged.
+- [x] Changes are limited to the two departure clock windows and their reviewed saved overrides. Stable IDs and schema 6 are unchanged.
+- [x] Five-page Rome guide and original PDF remain identical to v12.0.1; all required offline assets are retained.
+- [x] Version/build/package/lockfile/manifest/cache metadata and current timestamp use 12.0.2 consistently.
+
+## Phone-only review after approved production release
+- [ ] Open the app online, confirm About shows 12.0.2, and inspect Oct 4 bag drop and security in Timeline and Travel Details on each phone.
+- [ ] Verify personal notes, expenses, packing, flights, and local photos remain visible. No JSON import, clearing storage, or uninstall is needed.
+- [ ] Verify the five-page Rome guide, PDF, and departure cards after loading finishes and airplane mode is enabled.
+
+## Next individual decisions
+- Oct 4 bag-drop sequence: resolved by David; retain other departure-phone edits for their separate review.
+- Oct 5 PSA registration: David Cell 1:30 PM versus David Work Cell 1:01 PM.
+- Oct 9 Uffizi return: David Cell 2:30–3:30 PM versus David Work Cell 3:30–4:30 PM.
+- Oct 11 Murano/Burano: David Cell 8:00 AM–5:00 PM versus work-phone Time TBD note.
+- Oct 15 VCE check-in: phone 7:00 AM overlaps the 7:00–8:00 AM master bus window.
+
+## Develop and production
+- [ ] Commit/push the tested increment to develop and verify its GitHub Actions run.
+- [ ] Merge/release main only when David directs the reviewed release; then verify live source and physical phones.
+
+---
+
 # Version 12.0.1 Release Checklist
 
 Prepared October 3, 2026 at 10:43 AM EDT from fresh clean `develop` at 140894a. Initial live `main` is v12.0.0. This guide-only increment does not change itinerary or phone data.

@@ -1,6 +1,6 @@
 # Italy 2026 Travel Companion — Project Handoff
 
-Updated October 3, 2026 for the v12.0.1 Rome walking-guide candidate. Original continuity guide prepared August 23, 2026 for account transfer.
+Updated October 3, 2026 for the v12.0.2 bag-drop sequence candidate. Original continuity guide prepared August 23, 2026 for account transfer.
 
 ## Start here
 
@@ -22,14 +22,20 @@ Moving or losing a ChatGPT conversation does **not** delete the GitHub repositor
 
 - Product: Italy 2026 Travel Companion
 - Repository: <https://github.com/davidwhite1372/italy-2026-app>
-- Fresh develop/main baseline: 12.0.0, commit 140894a6084c6baae3b9aa4efea0ff73d4a68637.
-- Current guide candidate: 12.0.1, prepared October 3, 2026 at 10:43 AM EDT.
+- Fresh develop baseline: 12.0.1, commit 41f1dd05eae0afd6a4969905caffe1a36c418b1e; main remains 12.0.0 at 140894a.
+- Current candidate: 12.0.2, prepared October 3, 2026 at 11:22 AM EDT.
 - Backup schema: 6, unchanged.
 - Production branch: main; working branch: develop.
-- Hosting: existing GitHub Pages. Live source was independently checked October 3 and shows 12.0.0, last edited October 2 at 7:33 PM EDT. The guide candidate is for develop only; main release requires David’s instruction.
+- Hosting: existing GitHub Pages. Live source was independently checked October 3 and shows 12.0.0, last edited October 2 at 7:33 PM EDT. The current candidate is for develop only; main release requires David’s instruction.
 - Both October 3 labeled schema 6 / app 12.0.0 phone exports were reviewed separately: David Cell and David Work Cell. They are not interchangeable.
 - No cloud sync, backend, or transmission of trip data. Preserve local/offline behavior.
 - Original Aug 23 statements about v10.10.1 and future Version 11 are historical and superseded by the fresh source.
+
+## October 3 approved departure update
+
+- David directed “Move bag drop to 09:30.” The existing 25-minute allowance ends 9:55 AM; the following security/gate card is 9:55–10:30 AM.
+- First-load reconciliation updates only reviewed old clock fields for travel-3 and travel-4. Other notes and fields survive; a one-time device marker lets subsequent deliberate edits survive Save and reload. It changes neither JSON schema nor local-only photo storage.
+- The Oct 4 bag-drop sequence decision is resolved. Do not import or merge the two phone backups to apply this code update. Registration, Uffizi return, Murano/Burano, VCE check-in, and other phone edits remain pending individual review.
 
 ## October 3 guide increment and pending phone review
 

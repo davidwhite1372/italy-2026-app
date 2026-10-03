@@ -1,3 +1,12 @@
+# Version 12.0.2 — October 3, 2026
+
+Build prepared on `develop` October 3, 2026 at 11:22 AM EDT. Production `main` remains v12.0.0 pending David's reviewed release instruction.
+
+- David approved moving Oct 4 Delta check-in / bag drop to 9:30 AM. Allow the existing 25-minute planning window through 9:55 AM, then security / gate walk from 9:55 to the phone's existing 10:30 AM target.
+- On first load, reconcile only the reviewed old bag-drop/security clock fields in saved travel overrides. Keep all other fields and records. A device-local completion marker prevents later intentional edits from being overwritten on Save or reload.
+- Stable IDs and schema 6 are unchanged. Retain the v12.0.1 five-page Rome guide and original PDF without asset changes. Other phone-export decisions remain pending.
+- App/build/package/lockfile/manifest/cache metadata, timestamp, README, and project handoff updated together. Verification is recorded in docs/RELEASE-CHECKLIST.md.
+
 # Version 12.0.1 — October 3, 2026
 
 Build prepared on `develop` October 3, 2026 at 10:43 AM EDT. Production `main` remains v12.0.0 pending David's reviewed release instruction.

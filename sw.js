@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v12-0-1-rome-walking-guide';
+const CACHE = 'italy-2026-github-v12-0-2-bagdrop-0930';
 const APP_SHELL = [
   './',
   './index.html',
