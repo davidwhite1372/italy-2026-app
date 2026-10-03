@@ -1,3 +1,12 @@
+# Version 12.0.6 — October 3, 2026
+
+Build prepared on `develop` October 3, 2026 at 12:34 PM EDT. Production `main` remains v12.0.0 pending David's reviewed release instruction.
+
+- Corrected all four hotel Copy number buttons in Confirmation Wallet. Unescaped JSON quotes previously truncated the inline click handler, so tapping the visible button failed. Escape the confirmation string for its HTML attribute before rendering it.
+- Added a functional regression check that actually clicks all four buttons and verifies the copied values. Also verify the fallback copy path and an edited confirmation containing quotes, an apostrophe, and an ampersand.
+- Retain the four official website links, prominent confirmation numbers, shared wallet text, all itinerary cards and approved times, schema 6, local photos, and guide assets. No saved-data migration or itinerary decision is added.
+- App/build/package/lockfile/manifest/cache metadata, timestamp, README, and handoff updated together. Full regression and exact phone-baseline preservation are recorded in docs/RELEASE-CHECKLIST.md. Physical-phone/offline review and two timing decisions remain pending.
+
 # Version 12.0.5 — October 3, 2026
 
 Build prepared on `develop` October 3, 2026 at 12:14 PM EDT. Production `main` remains v12.0.0 pending David's reviewed release instruction.

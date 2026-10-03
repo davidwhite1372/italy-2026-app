@@ -1,6 +1,6 @@
 # Italy 2026 Travel Companion — Project Handoff
 
-Updated October 3, 2026 for the v12.0.5 hotel-wallet candidate. Original continuity guide prepared August 23, 2026 for account transfer.
+Updated October 3, 2026 for the v12.0.6 wallet-copy candidate. Original continuity guide prepared August 23, 2026 for account transfer.
 
 ## Start here
 
@@ -22,14 +22,21 @@ Moving or losing a ChatGPT conversation does **not** delete the GitHub repositor
 
 - Product: Italy 2026 Travel Companion
 - Repository: <https://github.com/davidwhite1372/italy-2026-app>
-- Fresh develop baseline: 12.0.4, commit a33dd82e7c03b9f4edbd964cb481827911f30007; main remains 12.0.0 at 140894a.
-- Current candidate: 12.0.5, prepared October 3, 2026 at 12:14 PM EDT.
+- Fresh develop baseline: 12.0.5, commit ecbfb89970cd74bcde3d365f2a23cf5fea43b338; main remains 12.0.0 at 140894a.
+- Current candidate: 12.0.6, prepared October 3, 2026 at 12:34 PM EDT.
 - Backup schema: 6, unchanged.
 - Production branch: main; working branch: develop.
 - Hosting: existing GitHub Pages. Live source was independently checked October 3 and shows 12.0.0, last edited October 2 at 7:33 PM EDT. The current candidate is for develop only; main release requires David’s instruction.
 - Both October 3 labeled schema 6 / app 12.0.0 phone exports were reviewed separately: David Cell and David Work Cell. They are not interchangeable.
 - No cloud sync, backend, or transmission of trip data. Preserve local/offline behavior.
 - Original Aug 23 statements about v10.10.1 and future Version 11 are historical and superseded by the fresh source.
+
+## October 3 final wallet-copy check
+
+- Functional release review found that the four hotel Copy number click handlers were truncated by unescaped JSON quotes in the HTML attribute. Their earlier display/data checks passed but did not exercise a tap.
+- Version 12.0.6 fixes the attribute escaping and adds actual-click verification for all four numbers, clipboard/fallback paths, and an edited value with special characters. Prepared October 3, 2026 at 12:34 PM EDT.
+- Hotel URLs, all itinerary cards and approved times, data.js, schema 6, local photos, and guide assets are unchanged. Both phone-export simulations exactly match their v12.0.4 baselines; all 48 tests pass.
+- Current release review still distinguishes automated green checks from pending physical-phone/airplane-mode review and unresolved Oct 11 Murano/Burano and Oct 15 VCE check-in choices. Do not describe the whole trip as 100% verified.
 
 ## October 3 hotel website wallet update
 

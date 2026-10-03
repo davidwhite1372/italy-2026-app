@@ -1,3 +1,30 @@
+# Version 12.0.6 Release Checklist
+
+Prepared October 3, 2026 at 12:34 PM EDT from clean develop ecbfb89. Production main remains v12.0.0.
+
+## Automated and source checks
+- [x] All 48 npm tests pass, including actual clicks on all four hotel Copy number buttons.
+- [x] Clipboard/fallback copy paths preserve exact confirmation values, including quotes, an apostrophe, and an ampersand. No JavaScript errors occur on the tested clicks.
+- [x] Both labeled Oct 3 phone simulations exactly match normalized v12.0.4 baselines; all saved sections and Merge round trips are unchanged.
+- [x] data.js, all itinerary cards and approved times, official hotel URLs, schema 6, local-photo behavior, Rome guide/PDF, and required offline assets are unchanged from v12.0.5.
+- [x] App/build/package/lockfile/manifest/cache metadata and current timestamp consistently use 12.0.6.
+- [x] main-to-develop comparison before the fix shows no divergence; the branch allows a fast-forward. This is not a deployment or a physical-phone result.
+
+## Physical phones / offline after approved release
+- [ ] Confirm About shows 12.0.6. Tap each hotel Copy number button, paste, and verify the complete number; open each official website and return to the app.
+- [ ] Confirm notes, flights, expenses, packing, and local photos remain visible, with prior approved card times intact.
+- [ ] After online loading completes, verify core pages, wallet, Rome gallery/PDF, and affected cards in airplane mode. Hotel websites require internet.
+
+## Unresolved itinerary decisions
+- [ ] Oct 11 Murano/Burano: confirm PSA pickup/return; personal 08:00–17:00 versus work-phone Time TBD remains unreviewed.
+- [ ] Oct 15 VCE check-in: resolve personal-phone 07:00 start against the master 07:00–08:00 bus window.
+
+## Develop and production
+- Verify the exact develop commit's GitHub Actions after push; the handoff records the result.
+- Main remains v12.0.0. A release must use David's reviewed candidate, then verify GitHub Actions/Pages and both phones. Do not claim 100% verification while the checks and decisions above remain open.
+
+---
+
 # Version 12.0.5 Release Checklist
 
 Prepared October 3, 2026 at 12:14 PM EDT from clean develop a33dd82. Production main remains v12.0.0.
@@ -22,7 +49,7 @@ Prepared October 3, 2026 at 12:14 PM EDT from clean develop a33dd82. Production 
 - Other unreviewed device-specific edits remain separate; do not bulk merge phone exports.
 
 ## Develop and production
-- Verify the exact develop commit's GitHub Actions after push; the session handoff records the result.
+- [x] v12.0.5 committed to develop at ecbfb89970cd74bcde3d365f2a23cf5fea43b338; GitHub Actions run 37136393257 succeeded.
 - Merge/release main only after David directs the reviewed release, then verify live source and physical phones.
 
 ---

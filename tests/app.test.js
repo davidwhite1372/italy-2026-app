@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.5");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.5");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.6");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.6");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 3, 2026 at 12:14 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 3, 2026 at 12:34 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -458,7 +458,7 @@ test("Version 12 itinerary cards, clickable routes, and offline guides match the
     pretrip:PRETRIP.flatMap(group=>group.items),
     release:APP_METADATA
   })`));
-  assert.equal(data.release.version,"12.0.5");
+  assert.equal(data.release.version,"12.0.6");
   assert.equal(data.release.backupSchema,6);
   assert.equal(data.routes.find(route=>route.order===15).start,"After 11:55 AM train");
   assert.equal(data.routes.find(route=>route.order===15).duration,"Per PSA group schedule");
@@ -1079,6 +1079,41 @@ test("SK681 stays confirmed while its seat follow-up remains open until check-in
   assert.deepEqual(app.runtimeErrors, []);
 });
 
+test("hotel confirmation Copy number taps use the correct values with clipboard and fallback", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const {window} = app;
+  const copied = [];
+  Object.defineProperty(window.navigator, "clipboard", {configurable:true,value:{
+    writeText(value) { copied.push(value); return Promise.resolve(); }
+  }});
+  const copyButtons = () => {
+    const card = Array.from(window.document.querySelectorAll("#walletContent .card")).find(node=>node.textContent.includes("🏨 Hotels"));
+    return Array.from(card.querySelectorAll("button")).filter(node=>node.textContent==="Copy number");
+  };
+  window.renderWallet();
+  const buttons = copyButtons();
+  assert.equal(buttons.length, 4);
+  buttons.forEach(button=>button.click());
+  await Promise.resolve();
+  assert.deepEqual(copied, ["203390136","186071359","187185636","PO55JT57ZW"]);
+  const special = 'REF "quoted" & O\'Connor';
+  const live = window.getLive();
+  live.hotels = {...live.hotels,"hotel-venice-antiche":{conf:special}};
+  window.setLive(live);
+  delete window.navigator.clipboard;
+  let fallback = null;
+  window.document.execCommand = command => {
+    assert.equal(command, "copy");
+    fallback = window.document.querySelector("body > textarea").value;
+    return true;
+  };
+  window.renderWallet();
+  copyButtons()[3].click();
+  assert.equal(fallback, special);
+  assert.deepEqual(app.runtimeErrors, []);
+});
+
 test("event hotel confirmations are visible while stale placeholders and other phone edits are preserved", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
@@ -1460,7 +1495,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"12.0.5");
+  assert.equal(payload.appVersion,"12.0.6");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note",transportationDetails:"Train"},"travel-42":{itemType:"Event",transportationDetails:"Event"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -1500,7 +1535,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "12.0.5");
+  assert.equal(payload.appVersion, "12.0.6");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -1519,9 +1554,9 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"12.0.5");
-  assert.match(manifest.description,/Version 12\.0\.5/);
-  assert.match(worker,/v12-0-5-wallet-hotel-websites/);
+  assert.equal(packageData.version,"12.0.6");
+  assert.match(manifest.description,/Version 12\.0\.6/);
+  assert.match(worker,/v12-0-6-wallet-copy-fix/);
   ["boston-terminal-a-to-e.png","fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png","italy-camera-cheat-sheet-samsung-s23-ultra.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
@@ -1602,7 +1637,7 @@ test("offline application shell lists every required local asset", async () => {
     "./assets/guides/twilight-trastevere-food-tour-382969949.pdf"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v12-0-5-wallet-hotel-websites/);
+  assert.match(worker, /italy-2026-github-v12-0-6-wallet-copy-fix/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);

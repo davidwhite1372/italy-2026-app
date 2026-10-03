@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v12-0-5-wallet-hotel-websites';
+const CACHE = 'italy-2026-github-v12-0-6-wallet-copy-fix';
 const APP_SHELL = [
   './',
   './index.html',
