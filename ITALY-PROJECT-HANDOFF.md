@@ -1,6 +1,6 @@
 # Italy 2026 Travel Companion — Project Handoff
 
-Updated October 3, 2026 for the v12.0.6 wallet-copy candidate. Original continuity guide prepared August 23, 2026 for account transfer.
+Updated October 3, 2026 for the v12.0.7 Venice timing candidate. Original continuity guide prepared August 23, 2026 for account transfer.
 
 ## Start here
 
@@ -22,8 +22,8 @@ Moving or losing a ChatGPT conversation does **not** delete the GitHub repositor
 
 - Product: Italy 2026 Travel Companion
 - Repository: <https://github.com/davidwhite1372/italy-2026-app>
-- Fresh develop baseline: 12.0.5, commit ecbfb89970cd74bcde3d365f2a23cf5fea43b338; main remains 12.0.0 at 140894a.
-- Current candidate: 12.0.6, prepared October 3, 2026 at 12:34 PM EDT.
+- Fresh develop baseline: 12.0.6, commit 2f46e008d09e77c9db5fd236d75e8bb6876ba6ff; main remains 12.0.0 at 140894a.
+- Current candidate: 12.0.7, prepared October 3, 2026 at 12:55 PM EDT.
 - Backup schema: 6, unchanged.
 - Production branch: main; working branch: develop.
 - Hosting: existing GitHub Pages. Live source was independently checked October 3 and shows 12.0.0, last edited October 2 at 7:33 PM EDT. The current candidate is for develop only; main release requires David’s instruction.
@@ -31,12 +31,20 @@ Moving or losing a ChatGPT conversation does **not** delete the GitHub repositor
 - No cloud sync, backend, or transmission of trip data. Preserve local/offline behavior.
 - Original Aug 23 statements about v10.10.1 and future Version 11 are historical and superseded by the fresh source.
 
-## October 3 final wallet-copy check
+## October 3 approved Venice times
+
+- David chose Murano/Burano 8:00 AM–5:00 PM and Oct 15 departure from Hotel Antiche Figure at 7:00 AM. These resolve the two previously open timing choices.
+- Flexible breakfast sorts before the excursion without an invented clock; dinner remains at 7:00 PM. Day summaries, excursion confirmation/open-item text, and airport route match the approved plan.
+- Airport sequence uses the existing buffers shifted coherently: walk/tickets 07:00–07:30, bus/wait 07:30–08:30, airport check-in/security 08:30–10:15, flight 11:00 unchanged. Exact ATVO departure remains pending; aim for VCE around 08:00 if service allows and start check-in immediately on arrival.
+- Version 12.0.7 corrects only reviewed old saved clocks and the exact stock Murano Time TBD note once. Private notes, other custom times, and subsequent edits remain. Both phone simulations match the preserved baseline except approved redundant fields; Merge is idempotent, and all 50 npm tests pass.
+- All guide assets, hotel website/copy fixes, prior approved times, stable IDs, schema 6, and local-only photo behavior remain intact. The current development handoff is docs/UPDATE-12.0.7.md. Physical-phone and airplane-mode checks remain pending; main has not changed.
+
+## October 3 final wallet-copy check (v12.0.6 history)
 
 - Functional release review found that the four hotel Copy number click handlers were truncated by unescaped JSON quotes in the HTML attribute. Their earlier display/data checks passed but did not exercise a tap.
 - Version 12.0.6 fixes the attribute escaping and adds actual-click verification for all four numbers, clipboard/fallback paths, and an edited value with special characters. Prepared October 3, 2026 at 12:34 PM EDT.
 - Hotel URLs, all itinerary cards and approved times, data.js, schema 6, local photos, and guide assets are unchanged. Both phone-export simulations exactly match their v12.0.4 baselines; all 48 tests pass.
-- Current release review still distinguishes automated green checks from pending physical-phone/airplane-mode review and unresolved Oct 11 Murano/Burano and Oct 15 VCE check-in choices. Do not describe the whole trip as 100% verified.
+- At v12.0.6, physical-phone/airplane-mode review and the Oct 11/15 timing choices were pending. David subsequently resolved the timing choices for v12.0.7 above; physical-device checks and operator details remain pending. Do not describe the whole trip as 100% verified.
 
 ## October 3 hotel website wallet update
 

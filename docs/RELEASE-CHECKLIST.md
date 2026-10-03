@@ -1,3 +1,29 @@
+# Version 12.0.7 Release Checklist
+
+Prepared October 3, 2026 at 12:55 PM EDT from clean develop 2f46e008d09e77c9db5fd236d75e8bb6876ba6ff. Production main remains v12.0.0.
+
+## Automated and source checks
+- [x] All 50 npm tests pass, including actual hotel Copy number taps, prior approved timings, and the two new Venice timing/order regressions.
+- [x] Murano/Burano 08:00–17:00; flexible breakfast before excursion; dinner 19:00. No fabricated breakfast clock or independent hotel shuttle.
+- [x] Oct 15: hotel departure 07:00; walk/tickets through 07:30; bus/wait through 08:30; check-in/security 08:30–10:15; flight 11:00 unchanged.
+- [x] Exact ATVO departure remains pending. The bus card explicitly describes a planning window; aim for VCE around 08:00 if service allows, and start check-in on arrival.
+- [x] Both Oct 3 phone simulations show the approved clocks and card order. Relative to the preserved v12.0.4 export baselines, only reviewed redundant Murano clocks/stock note and the corrected check-in clock change; every unrelated exported value is identical. Merge round trips are idempotent.
+- [x] Private notes, custom times, subsequent Save/reload edits, stable IDs, schema 6, photos, prior approved times, hotel website/copy controls, and all guide assets are preserved.
+- [x] App/build/package/lockfile/manifest/cache metadata use 12.0.7 consistently; offline boot and asset-list checks pass.
+
+## Physical phones / operational checks
+- [ ] After approved main release, confirm About shows 12.0.7 on both phones; review Oct 11 and Oct 15 cards, Copy number buttons, and Hotel website links.
+- [ ] Confirm notes, flights, expenses, packing, and local photos remain visible. No reset, uninstall, clearing, or JSON import is required.
+- [ ] After online loading completes, verify core pages, wallet, Rome gallery/PDF, and affected cards in airplane mode. Hotel websites require internet.
+- [ ] Confirm PSA pickup point/pier/inclusions and the Oct 15 ATVO timetable/ticket. Follow flight-specific SAS deadlines; begin check-in as soon as you reach the airport.
+
+## Develop and production
+- Verify the exact develop commit's GitHub Actions after push; the handoff records the result.
+- The two requested timing choices are resolved. Main remains v12.0.0 until David directs release of the tested candidate.
+- After an approved main release, verify GitHub Actions/Pages and the installed phones. Automated green does not establish physical-device/offline behavior or a guaranteed bus service.
+
+---
+
 # Version 12.0.6 Release Checklist
 
 Prepared October 3, 2026 at 12:34 PM EDT from clean develop ecbfb89. Production main remains v12.0.0.

@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v12-0-6-wallet-copy-fix';
+const CACHE = 'italy-2026-github-v12-0-7-venice-times';
 const APP_SHELL = [
   './',
   './index.html',

@@ -1443,10 +1443,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "12.0.6",
-      build: "12.0.6",
+      version: "12.0.7",
+      build: "12.0.7",
       backupSchema: 6,
-      lastEdited: "October 3, 2026 at 12:34 PM EDT"
+      lastEdited: "October 3, 2026 at 12:55 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -2451,10 +2451,35 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
           returnWalk.end = "16:30";
         }
       }
+      // David selected the Murano window and 07:00 hotel departure on Oct 3.
+      // Reconcile reviewed old clocks/stock notes once, retaining private edits.
+      const veniceUpdateKey = "italy2026_venice_times_v12_0_7";
+      const needsVeniceUpdate = !localStorage.getItem(veniceUpdateKey);
+      if (needsVeniceUpdate) {
+        const edits = normalized.sharedTravel || {};
+        const reviewedTimes = {
+          "travel-28":{start:["Day"],end:[""],nextStart:"08:00",nextEnd:"17:00"},
+          "travel-34":{start:["06:30"],end:["07:00"],nextStart:"07:00",nextEnd:"07:30"},
+          "travel-50":{start:["07:00"],end:["08:00"],nextStart:"07:30",nextEnd:"08:30"},
+          "travel-49":{start:["07:00","08:00"],end:[],nextStart:"08:30"}
+        };
+        Object.entries(reviewedTimes).forEach(([id,times])=>{
+          const edit = edits[id];
+          if (!edit || (edit.start !== undefined && !times.start.includes(edit.start))) return;
+          if (times.start.includes(edit.start)) edit.start = times.nextStart;
+          if (times.end.includes(edit.end)) edit.end = times.nextEnd;
+        });
+        const excursion = edits["travel-28"];
+        const oldExcursionNotes = "Confirm pickup time, pier, expected return time, and whether meals or glass demonstrations are included.";
+        if (excursion && [oldExcursionNotes,oldExcursionNotes+"\n\nTime TBD"].includes(excursion.notes)) {
+          excursion.notes = "Confirm pickup point, pier, and whether meals or glass demonstrations are included.";
+        }
+      }
       if (JSON.stringify(normalized) !== JSON.stringify(raw)) localStorage.setItem("italy2026_live", JSON.stringify(normalized));
       if (needsDepartureUpdate) localStorage.setItem(departureUpdateKey, "1");
       if (needsRegistrationUpdate) localStorage.setItem(registrationUpdateKey, "1");
       if (needsUffiziUpdate) localStorage.setItem(uffiziUpdateKey, "1");
+      if (needsVeniceUpdate) localStorage.setItem(veniceUpdateKey, "1");
       return normalized;
     }
     function setLive(obj) {
@@ -4329,6 +4354,12 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       const m = start.match(/(\d{1,2}):(\d{2})/);
       let mins = 24 * 60; // flexible / unknown → end of day
       if (m) mins = (+m[1]) * 60 + (+m[2]) + dayOffset * 24 * 60;
+      else if (t.sortBeforeTimelineId) {
+        const next = TIMELINE.find(item => item.id === t.sortBeforeTimelineId && item.date === date);
+        const effective = next && next.travelId ? sharedTravelById(next.travelId) : next;
+        const nextStart = String(effective && effective.start || "").match(/(\d{1,2}):(\d{2})/);
+        if (nextStart) mins = Math.max(0,(+nextStart[1]) * 60 + (+nextStart[2]) - 1);
+      }
       else if (t.sortAfterTimelineId) {
         const prior = TIMELINE.find(item => item.id === t.sortAfterTimelineId && item.date === date);
         const priorStart = String(prior && prior.start || "").match(/(\d{1,2}):(\d{2})/);

@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.6");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.6");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.7");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.7");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 3, 2026 at 12:34 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 3, 2026 at 12:55 PM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -241,6 +241,85 @@ test("work-phone Uffizi return window fixes only the reviewed pair and preserves
   t.after(() => custom.dom.window.close());
   assert.equal(custom.window.sharedTravelById("travel-59").start, "14:30");
   assert.equal(custom.window.sharedTravelById("travel-59").end, "16:00");
+  assert.deepEqual(custom.runtimeErrors, []);
+});
+
+test("Murano 8–5 removes the reviewed TBD note and keeps breakfast before the excursion", async t => {
+  const oldNotes = "Confirm pickup time, pier, expected return time, and whether meals or glass demonstrations are included.";
+  const app = await bootApp({italy2026_live:{sharedTravel:{
+    "travel-28":{start:"Day",end:"",notes:oldNotes+"\n\nTime TBD"}
+  }}});
+  t.after(() => app.dom.window.close());
+  const {window} = app;
+  const excursion = window.sharedTravelById("travel-28");
+  assert.deepEqual([excursion.start,excursion.end], ["08:00","17:00"]);
+  assert.equal(excursion.notes, "Confirm pickup point, pier, and whether meals or glass demonstrations are included.");
+  assert.match(excursion.instructions, /8:00 AM to 5:00 PM/);
+  const day = window.liveTimeline().filter(item=>item.date==="2026-10-11");
+  assert.equal(day.find(item=>item.id==="tl-0027").start, "Morning");
+  assert.equal(day.find(item=>item.id==="tl-0029").start, "19:00");
+  window.showPage("timeline");
+  let cards = Array.from(window.document.querySelectorAll("#timelineList .tl-step[data-timeline-id]"),node=>node.dataset.timelineId);
+  assert.ok(cards.indexOf("tl-0027")<cards.indexOf("tl-0028"));
+  assert.ok(cards.indexOf("tl-0028")<cards.indexOf("tl-0029"));
+  assert.doesNotMatch(window.document.querySelector('[data-timeline-id="tl-0028"]').textContent, /Time TBD/);
+  window.saveSharedTravelEdit("travel-28", {...excursion,start:"07:00",end:"16:00",notes:"My pickup note\n\nTime TBD"});
+  const storage = Object.fromEntries(Object.keys(window.localStorage).map(key=>[key,window.localStorage.getItem(key)]));
+  const reload = await bootApp(storage);
+  t.after(() => reload.dom.window.close());
+  const edited = reload.window.sharedTravelById("travel-28");
+  assert.deepEqual([edited.start,edited.end,edited.notes], ["07:00","16:00","My pickup note\n\nTime TBD"]);
+  reload.window.showPage("timeline");
+  cards = Array.from(reload.window.document.querySelectorAll("#timelineList .tl-step[data-timeline-id]"),node=>node.dataset.timelineId);
+  assert.ok(cards.indexOf("tl-0027")<cards.indexOf("tl-0028"));
+  const custom = await bootApp({italy2026_live:{sharedTravel:{"travel-28":{start:"10:00",end:"18:00",notes:"Private excursion note"}}}});
+  t.after(() => custom.dom.window.close());
+  assert.deepEqual([custom.window.sharedTravelById("travel-28").start,custom.window.sharedTravelById("travel-28").end,custom.window.sharedTravelById("travel-28").notes], ["10:00","18:00","Private excursion note"]);
+  for (const result of [app,reload,custom]) assert.deepEqual(result.runtimeErrors, []);
+});
+
+test("7 AM hotel departure gives a coherent VCE sequence and corrects reviewed check-in clocks once", async t => {
+  for (const oldCheckIn of ["07:00","08:00"]) {
+    const app = await bootApp({italy2026_live:{sharedTravel:{
+      "travel-34":{start:"06:30",end:"07:00",notes:"Private walk note"},
+      "travel-50":{start:"07:00",end:"08:00",notes:"Private bus note"},
+      "travel-49":{start:oldCheckIn,end:"10:15",notes:"Private check-in note"}
+    }}});
+    t.after(() => app.dom.window.close());
+    const {window} = app;
+    const walk = window.sharedTravelById("travel-34");
+    const bus = window.sharedTravelById("travel-50");
+    const checkIn = window.sharedTravelById("travel-49");
+    assert.deepEqual([walk.start,walk.end,bus.start,bus.end,checkIn.start,checkIn.end], ["07:00","07:30","07:30","08:30","08:30","10:15"]);
+    assert.deepEqual([walk.notes,bus.notes,checkIn.notes], ["Private walk note","Private bus note","Private check-in note"]);
+    assert.match(bus.status, /Timetable Pending/);
+    assert.match(bus.instructions, /planning start, not a confirmed bus departure/);
+    const flight = window.liveTimeline().find(item=>item.id==="tl-0035");
+    assert.equal(flight.start, "11:00");
+    assert.ok(walk.end<=bus.start && bus.end<=checkIn.start && checkIn.end<flight.start);
+    assert.equal(JSON.parse(window.eval('JSON.stringify(MAP_DOOR_ROUTES.find(item=>item.order===17))')).start, "07:00");
+    assert.match(window.eval('DAYS.find(item=>item.date==="2026-10-15").schedule'), /at 7:00 AM/);
+    window.showPage("timeline");
+    const cards = Array.from(window.document.querySelectorAll("#timelineList .tl-step[data-timeline-id]"),node=>node.dataset.timelineId);
+    assert.ok(cards.indexOf("tl-0034")<cards.indexOf("tl-0050"));
+    assert.ok(cards.indexOf("tl-0050")<cards.indexOf("tl-0049"));
+    assert.ok(cards.indexOf("tl-0049")<cards.indexOf("tl-0035"));
+    window.saveSharedTravelEdit("travel-49", {...checkIn,start:oldCheckIn});
+    const storage = Object.fromEntries(Object.keys(window.localStorage).map(key=>[key,window.localStorage.getItem(key)]));
+    const reload = await bootApp(storage);
+    t.after(() => reload.dom.window.close());
+    assert.equal(reload.window.sharedTravelById("travel-49").start, oldCheckIn);
+    assert.equal(reload.window.sharedTravelById("travel-49").notes, "Private check-in note");
+    assert.deepEqual(app.runtimeErrors, []);
+    assert.deepEqual(reload.runtimeErrors, []);
+  }
+  const custom = await bootApp({italy2026_live:{sharedTravel:{
+    "travel-34":{start:"06:10",end:"06:40"},
+    "travel-50":{start:"06:40",end:"07:10"},
+    "travel-49":{start:"09:00",end:"10:30"}
+  }}});
+  t.after(() => custom.dom.window.close());
+  assert.deepEqual(["travel-34","travel-50","travel-49"].map(id=>custom.window.sharedTravelById(id).start), ["06:10","06:40","09:00"]);
   assert.deepEqual(custom.runtimeErrors, []);
 });
 
@@ -458,7 +537,7 @@ test("Version 12 itinerary cards, clickable routes, and offline guides match the
     pretrip:PRETRIP.flatMap(group=>group.items),
     release:APP_METADATA
   })`));
-  assert.equal(data.release.version,"12.0.6");
+  assert.equal(data.release.version,"12.0.7");
   assert.equal(data.release.backupSchema,6);
   assert.equal(data.routes.find(route=>route.order===15).start,"After 11:55 AM train");
   assert.equal(data.routes.find(route=>route.order===15).duration,"Per PSA group schedule");
@@ -1495,7 +1574,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"12.0.6");
+  assert.equal(payload.appVersion,"12.0.7");
   assert.equal(payload.referenceNotesMode,"delta");
   assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note",transportationDetails:"Train"},"travel-42":{itemType:"Event",transportationDetails:"Event"}}});
   assert.deepEqual(payload.customrestaurants,[]);
@@ -1535,7 +1614,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "12.0.6");
+  assert.equal(payload.appVersion, "12.0.7");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -1554,9 +1633,9 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"12.0.6");
-  assert.match(manifest.description,/Version 12\.0\.6/);
-  assert.match(worker,/v12-0-6-wallet-copy-fix/);
+  assert.equal(packageData.version,"12.0.7");
+  assert.match(manifest.description,/Version 12\.0\.7/);
+  assert.match(worker,/v12-0-7-venice-times/);
   ["boston-terminal-a-to-e.png","fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png","italy-camera-cheat-sheet-samsung-s23-ultra.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
@@ -1637,7 +1716,7 @@ test("offline application shell lists every required local asset", async () => {
     "./assets/guides/twilight-trastevere-food-tour-382969949.pdf"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v12-0-6-wallet-copy-fix/);
+  assert.match(worker, /italy-2026-github-v12-0-7-venice-times/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);

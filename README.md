@@ -4,8 +4,8 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 
 ## Current development build
 
-**Version 12.0.6 — Hotel confirmation copy fix**
-Last edited October 3, 2026 at 12:34 PM EDT. Corrects the hotel Copy number click handlers in Confirmation Wallet so all four numbers copy correctly, including edited values with quotes or ampersands. Retain the four official hotel website buttons and shared URLs. All itinerary cards, approved times, schema 6, saved phone data, local photos, and the offline five-page Rome guide/PDF are unchanged. Physical-phone and airplane-mode review remain pending. Murano/Burano and the VCE check-in time conflict remain separate unresolved decisions.
+**Version 12.0.7 — Murano and Venice departure times**
+Last edited October 3, 2026 at 12:55 PM EDT. Murano/Burano is 8:00 AM–5:00 PM; flexible breakfast sorts before the excursion and dinner stays at 7:00 PM. On Oct 15, leave Hotel Antiche Figure at 7:00 AM, allow walk/tickets through 7:30 AM, bus/wait through 8:30 AM, then airport check-in/security through 10:15 AM before the unchanged 11:00 AM flight. Exact ATVO service is pending; use the next suitable bus and begin check-in earlier if possible. Narrow one-time phone corrections preserve private data and later edits. All 50 tests pass, and separate phone simulations preserve every unrelated saved value. Hotel websites/copy controls, schema 6, local photos, and all guide assets remain intact. Physical-phone and airplane-mode review remain pending.
 
 Version 12.0.0 replaces the Rome and Florence tour booking numbers with 1212654, adds supplied offline vouchers and $656.08 in company-paid expenses awaiting a work report, and makes narrow travel-data, pronunciation, install-sheet, budget-caption, and offline-cache fixes. Dates, tour times, existing IDs, schema 6, and the page layout are preserved.
 
@@ -19,7 +19,7 @@ User-entered information is stored locally on each phone. Changes made on one ph
 
 - Export a fresh backup before changing devices, clearing browser data, or reinstalling the app.
 - Backup schema numbers describe file compatibility; they are separate from the app version.
-- Version 12.0.6 creates schema 6 backups and continues importing schema 5, schema 4, and older supported backups.
+- Version 12.0.7 creates schema 6 backups and continues importing schema 5, schema 4, and older supported backups.
 - Both Sep 30 device-labeled schema 6 exports were reviewed for conflicts. Preserve device-specific notes, flights, expenses, and local photos.
 - Shared cloud data is still an evaluation item; this release adds no account, backend, or online synchronization.
 - Online receipt recognition and the AI Italian tutor / microphone workflow remain unbuilt; provider, privacy, offline, and interaction requirements still need a product decision.

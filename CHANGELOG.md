@@ -1,3 +1,14 @@
+# Version 12.0.7 — October 3, 2026
+
+Build prepared on `develop` October 3, 2026 at 12:55 PM EDT from clean 2f46e00. Production `main` remains v12.0.0 pending David's reviewed release instruction.
+
+- David selected Oct 11 Murano/Burano 08:00–17:00 and Oct 15 Hotel Antiche Figure departure at 07:00. Remove stale Time TBD/independent-08:00 warnings; keep PSA pickup point, pier, and inclusions pending.
+- Place flexible breakfast before the excursion without assigning it a clock. Keep dinner at 19:00. Numeric custom times continue to sort chronologically; later excursion edits still anchor the untimed breakfast.
+- Preserve the airport transfer's existing buffers: walk/tickets 07:00–07:30, bus/wait 07:30–08:30, airport check-in/security 08:30–10:15, then the unchanged 11:00 SK2692 flight. The exact bus is unconfirmed; aim for VCE around 08:00 when service allows and start check-in on arrival.
+- Align affected day summaries, reservation/open-item text, and the airport door-to-door route. Reconcile only reviewed old clock fields and the exact stock Murano note once; later edits and all unrelated private fields survive. Redundant values matching the new master are omitted from schema 6 delta exports as usual.
+- All 50 npm tests pass. Both Oct 3 phone simulations verify times/card order, exact preservation of every unrelated exported value, and idempotent Merge round trips. Local photos, hotel website/copy fixes, prior approved times, stable IDs, and all guide assets are unchanged.
+- App/build/package/lockfile/manifest/cache metadata and timestamp updated together. Physical-phone/offline review and the exact Oct 15 ATVO service remain pending; the two user timing decisions are resolved.
+
 # Version 12.0.6 — October 3, 2026
 
 Build prepared on `develop` October 3, 2026 at 12:34 PM EDT. Production `main` remains v12.0.0 pending David's reviewed release instruction.
