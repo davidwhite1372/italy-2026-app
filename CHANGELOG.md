@@ -1,3 +1,13 @@
+# Version 12.0.4 — October 3, 2026
+
+Build prepared on `develop` October 3, 2026 at 12:01 PM EDT. Production `main` remains v12.0.0 pending David's reviewed release instruction.
+
+- David selected the work-phone Oct 9 Uffizi → W Florence return window, 3:30–4:30 PM. It finishes 1 hour 45 minutes before the unchanged 6:15 PM Cucina dinner.
+- Set permanent travel-59 / tl-0059 to 15:30–16:30, and label it as a planning window. Retain the 15–20 minute walk estimate, route, and unconfirmed tour finish; no tour end is invented.
+- On first load, replace only the reviewed personal-phone pair 14:30–15:30 with 15:30–16:30. Keep other custom pairs, statuses, notes, and subsequent deliberate edits through Save/reload.
+- Retain the approved registration/bag-drop updates and five-page Rome guide/PDF. All other master itinerary cards, stable IDs, schema 6, and local-only photos are unchanged.
+- App/build/package/lockfile/manifest/cache metadata, timestamp, README, and project handoff updated together. Verification is recorded in docs/RELEASE-CHECKLIST.md; physical-phone and airplane-mode review remain pending.
+
 # Version 12.0.3 — October 3, 2026
 
 Build prepared on `develop` October 3, 2026 at 11:42 AM EDT. Production `main` remains v12.0.0 pending David's reviewed release instruction.

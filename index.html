@@ -1443,10 +1443,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "12.0.3",
-      build: "12.0.3",
+      version: "12.0.4",
+      build: "12.0.4",
       backupSchema: 6,
-      lastEdited: "October 3, 2026 at 11:42 AM EDT"
+      lastEdited: "October 3, 2026 at 12:01 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -2440,9 +2440,21 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         const registration = normalized.sharedTravel && normalized.sharedTravel["travel-13"];
         if (registration && ["13:00","13:01"].includes(registration.start)) registration.start = "13:30";
       }
+      // David selected the work-phone Uffizi return window. Replace only the
+      // reviewed earlier pair once; other custom times and later saves still win.
+      const uffiziUpdateKey = "italy2026_uffizi_return_1530_v12_0_4";
+      const needsUffiziUpdate = !localStorage.getItem(uffiziUpdateKey);
+      if (needsUffiziUpdate) {
+        const returnWalk = normalized.sharedTravel && normalized.sharedTravel["travel-59"];
+        if (returnWalk && returnWalk.start === "14:30" && returnWalk.end === "15:30") {
+          returnWalk.start = "15:30";
+          returnWalk.end = "16:30";
+        }
+      }
       if (JSON.stringify(normalized) !== JSON.stringify(raw)) localStorage.setItem("italy2026_live", JSON.stringify(normalized));
       if (needsDepartureUpdate) localStorage.setItem(departureUpdateKey, "1");
       if (needsRegistrationUpdate) localStorage.setItem(registrationUpdateKey, "1");
+      if (needsUffiziUpdate) localStorage.setItem(uffiziUpdateKey, "1");
       return normalized;
     }
     function setLive(obj) {
