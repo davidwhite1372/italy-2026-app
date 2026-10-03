@@ -1,6 +1,6 @@
 # Italy 2026 Travel Companion — Project Handoff
 
-Updated October 3, 2026 for the v12.0.4 Uffizi return candidate. Original continuity guide prepared August 23, 2026 for account transfer.
+Updated October 3, 2026 for the v12.0.5 hotel-wallet candidate. Original continuity guide prepared August 23, 2026 for account transfer.
 
 ## Start here
 
@@ -22,14 +22,22 @@ Moving or losing a ChatGPT conversation does **not** delete the GitHub repositor
 
 - Product: Italy 2026 Travel Companion
 - Repository: <https://github.com/davidwhite1372/italy-2026-app>
-- Fresh develop baseline: 12.0.3, commit d7043d7f5584b88777c0b613c9baab043fc15d94; main remains 12.0.0 at 140894a.
-- Current candidate: 12.0.4, prepared October 3, 2026 at 12:01 PM EDT.
+- Fresh develop baseline: 12.0.4, commit a33dd82e7c03b9f4edbd964cb481827911f30007; main remains 12.0.0 at 140894a.
+- Current candidate: 12.0.5, prepared October 3, 2026 at 12:14 PM EDT.
 - Backup schema: 6, unchanged.
 - Production branch: main; working branch: develop.
 - Hosting: existing GitHub Pages. Live source was independently checked October 3 and shows 12.0.0, last edited October 2 at 7:33 PM EDT. The current candidate is for develop only; main release requires David’s instruction.
 - Both October 3 labeled schema 6 / app 12.0.0 phone exports were reviewed separately: David Cell and David Work Cell. They are not interchangeable.
 - No cloud sync, backend, or transmission of trip data. Preserve local/offline behavior.
 - Original Aug 23 statements about v10.10.1 and future Version 11 are historical and superseded by the fresh source.
+
+## October 3 hotel website wallet update
+
+- David requested hotel web links in Confirmation Wallet. The four existing hotel entries now have official website buttons; confirmation numbers and copy controls remain prominent. Shared wallet text includes the same URLs.
+- Website URLs are stored on the stable master hotel records and verified against official Anantara, Marriott, and Antiche Figure property pages on Oct 3. No new hotel or reservation record was created.
+- Version 12.0.5 was prepared October 3, 2026 at 12:14 PM EDT. This increment changes no itinerary card or saved phone data; all prior approved time updates and guide assets remain intact. Website browsing needs internet; wallet confirmations remain available offline.
+- Both labeled phone-export simulations exactly match their separately normalized v12.0.4 baselines; Merge round trips are idempotent. Physical-phone tap/back and offline-wallet review remain pending after an approved main release.
+- Murano/Burano and VCE check-in decisions remain pending; this request does not resolve or change those times.
 
 ## October 3 approved Uffizi return update
 

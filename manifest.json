@@ -1,7 +1,7 @@
 {
   "name": "Italy 2026 Travel Companion",
   "short_name": "Italy 2026",
-  "description": "David and Melody Italy 2026 Travel Companion - Version 12.0.4 plans the Uffizi return at 3:30–4:30 PM and retains the approved registration, bag-drop sequence, and offline five-page Rome walking guide",
+  "description": "David and Melody Italy 2026 Travel Companion - Version 12.0.5 adds official hotel website links to the confirmation wallet and retains the approved itinerary updates and offline Rome guide",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#8B1E3F",

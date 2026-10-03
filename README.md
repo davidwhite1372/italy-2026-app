@@ -4,8 +4,8 @@ Private, offline-capable travel companion for David and Melody's 2026 Italy trip
 
 ## Current development build
 
-**Version 12.0.4 — 3:30–4:30 PM Uffizi return**
-Last edited October 3, 2026 at 12:01 PM EDT. Backup schema 6 remains unchanged. Oct 9 Uffizi → W Florence return uses David's selected work-phone planning window, 3:30–4:30 PM, before the 6:15 PM Cucina dinner. The walk estimate remains 15–20 minutes; the tour finish is not confirmed. The reviewed earlier personal-phone return pair is corrected once, preserving later deliberate edits. Retain Oct 5 registration at 1:30 PM, Oct 4 bag drop/security at 9:30–9:55 / 9:55–10:30 AM, and the offline five-page Rome walking guide/PDF. Other phone-export conflicts remain pending individual review.
+**Version 12.0.5 — Hotel websites in Confirmation Wallet**
+Last edited October 3, 2026 at 12:14 PM EDT. Each of the four existing hotel entries has an official Hotel website button, and shared wallet text includes the same URL. Confirmation numbers and Copy number controls remain prominent. All itinerary cards and prior approved time updates are unchanged; the five-page Rome guide/PDF remains cached offline. Hotel websites require an internet connection; the wallet itself remains available offline. Backup schema 6 and phone data are unchanged. Murano/Burano, VCE check-in, and other phone-export decisions remain pending individual review.
 
 Version 12.0.0 replaces the Rome and Florence tour booking numbers with 1212654, adds supplied offline vouchers and $656.08 in company-paid expenses awaiting a work report, and makes narrow travel-data, pronunciation, install-sheet, budget-caption, and offline-cache fixes. Dates, tour times, existing IDs, schema 6, and the page layout are preserved.
 
@@ -19,7 +19,7 @@ User-entered information is stored locally on each phone. Changes made on one ph
 
 - Export a fresh backup before changing devices, clearing browser data, or reinstalling the app.
 - Backup schema numbers describe file compatibility; they are separate from the app version.
-- Version 12.0.4 creates schema 6 backups and continues importing schema 5, schema 4, and older supported backups.
+- Version 12.0.5 creates schema 6 backups and continues importing schema 5, schema 4, and older supported backups.
 - Both Sep 30 device-labeled schema 6 exports were reviewed for conflicts. Preserve device-specific notes, flights, expenses, and local photos.
 - Shared cloud data is still an evaluation item; this release adds no account, backend, or online synchronization.
 - Online receipt recognition and the AI Italian tutor / microphone workflow remain unbuilt; provider, privacy, offline, and interaction requirements still need a product decision.

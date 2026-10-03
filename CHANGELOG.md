@@ -1,3 +1,12 @@
+# Version 12.0.5 — October 3, 2026
+
+Build prepared on `develop` October 3, 2026 at 12:14 PM EDT. Production `main` remains v12.0.0 pending David's reviewed release instruction.
+
+- Added a Hotel website button to each existing hotel entry in Confirmation Wallet: Anantara Palazzo Naiadi, W Florence, JW Marriott Venice Resort & Spa, and Hotel Antiche Figure. Verified the official property pages on Oct 3.
+- Store each website once on its stable master hotel record. Buttons open the official site in a new tab; shared wallet text includes the same URLs. Confirmation numbers, Copy number controls, dates, and personal hotel edits are unchanged.
+- No itinerary or saved-data migration in this increment. Preserve all prior approved times, stable IDs, schema 6, locally attached photos, the five-page Rome guide/PDF, and offline wallet use. External hotel pages require internet.
+- App/build/package/lockfile/manifest/cache metadata, timestamp, README, and project handoff updated together. Automated checks and separate phone-preservation verification are recorded in docs/RELEASE-CHECKLIST.md.
+
 # Version 12.0.4 — October 3, 2026
 
 Build prepared on `develop` October 3, 2026 at 12:01 PM EDT. Production `main` remains v12.0.0 pending David's reviewed release instruction.

@@ -1,3 +1,32 @@
+# Version 12.0.5 Release Checklist
+
+Prepared October 3, 2026 at 12:14 PM EDT from clean develop a33dd82. Production main remains v12.0.0.
+
+## Automated and source checks
+- [x] All 47 existing npm tests pass; only expected release metadata assertions changed in the tests.
+- [x] Wallet DOM review verifies four Hotel website buttons with the verified official property targets, new-tab behavior, and accessible hotel-specific labels.
+- [x] All four prominent hotel confirmation numbers and Copy number controls remain visible. Shared wallet text includes all four matching URLs; an existing private hotel note is preserved.
+- [x] Both Oct 3 phone simulations exactly match separately normalized v12.0.4 baselines, including all 19 saved sections. Merge round trips are idempotent.
+- [x] Only the four master hotel website fields and wallet render/share behavior changed. All itinerary cards, approved times, stable IDs, schema 6, local-photo storage, Rome guide/PDF, and required offline assets are unchanged.
+- [x] App/build/package/lockfile/manifest/cache metadata and current timestamp use 12.0.5 consistently. Offline boot and wallet rendering pass with fetch unavailable.
+
+## Phone-only review after approved production release
+- [ ] Confirm About shows 12.0.5 on both existing phone installations. In Confirmation Wallet, tap each Hotel website button and check the correct property page opens; return to the app.
+- [ ] Confirm the prominent hotel confirmation numbers and Copy number buttons still work; shared wallet text includes the official URLs.
+- [ ] Confirm existing notes, expenses, packing, flights, and locally attached photos remain visible; no phone import/reset is required.
+- [ ] After online loading completes, verify wallet confirmations and the five-page Rome guide/PDF in airplane mode. External hotel websites need internet.
+
+## Separate unresolved phone timing decisions
+- Oct 11 Murano/Burano: personal phone 8:00 AM–5:00 PM versus work-phone Time TBD; await PSA confirmation before setting an independent 8:00 AM departure.
+- Oct 15 VCE check-in: phone 7:00 AM overlaps master bus 7:00–8:00 AM.
+- Other unreviewed device-specific edits remain separate; do not bulk merge phone exports.
+
+## Develop and production
+- Verify the exact develop commit's GitHub Actions after push; the session handoff records the result.
+- Merge/release main only after David directs the reviewed release, then verify live source and physical phones.
+
+---
+
 # Version 12.0.4 Release Checklist
 
 Prepared October 3, 2026 at 12:01 PM EDT from clean develop d7043d7. Production main remains v12.0.0.
@@ -22,7 +51,7 @@ Prepared October 3, 2026 at 12:01 PM EDT from clean develop d7043d7. Production 
 - Oct 15 VCE check-in: phone 7:00 AM overlaps master bus 7:00–8:00 AM.
 
 ## Develop and production
-- Verify the exact develop commit's GitHub Actions after push; the session handoff records the result.
+- [x] v12.0.4 committed to develop at a33dd82e7c03b9f4edbd964cb481827911f30007; GitHub Actions run 37135543581 succeeded.
 - Merge/release main only after David directs the reviewed release, then verify live source and physical phones.
 
 ---

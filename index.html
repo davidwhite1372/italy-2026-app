@@ -1443,10 +1443,10 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "12.0.4",
-      build: "12.0.4",
+      version: "12.0.5",
+      build: "12.0.5",
       backupSchema: 6,
-      lastEdited: "October 3, 2026 at 12:01 PM EDT"
+      lastEdited: "October 3, 2026 at 12:14 PM EDT"
     });
     const APP_VERSION = APP_METADATA.version;
     const BUILD_VERSION = APP_METADATA.build;
@@ -4281,7 +4281,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         <div class="card">
           <div class="row space-between"><div class="card-title">🏨 Hotels</div><span class="text-muted">Tap Copy to copy a confirmation</span></div>
           <div class="text-sm" style="line-height:1.85;">
-            ${liveHotels().map(h => `<div style="padding:10px 0;border-bottom:1px solid var(--border);"><strong>${escapeHtml(h.city)} ${escapeHtml(h.dates)}:</strong> ${escapeHtml(h.name)} <button class="edit-btn" onclick="editHotelById('${h.id}')">Edit</button><br>${escapeHtml(h.address)}<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0;"><strong>Confirmation:</strong><span class="wallet-key" style="display:inline-block;margin:2px 0;">${escapeHtml(h.conf)}</span><button class="edit-btn" onclick="copyTextValue(${JSON.stringify(h.conf)},'Hotel confirmation copied')">Copy number</button></div>${h.room?`<span class="text-muted">Room: ${escapeHtml(h.room)}</span>`:""}${h.payment?` · ${escapeHtml(h.payment)}`:""}${h.tax?` · ${escapeHtml(h.tax)}`:""}${h.breakfast?`<br>${escapeHtml(h.breakfast)}`:""}</div>`).join("")}
+            ${liveHotels().map(h => `<div style="padding:10px 0;border-bottom:1px solid var(--border);"><strong>${escapeHtml(h.city)} ${escapeHtml(h.dates)}:</strong> ${escapeHtml(h.name)} <button class="edit-btn" onclick="editHotelById('${h.id}')">Edit</button><br>${escapeHtml(h.address)}<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0;"><strong>Confirmation:</strong><span class="wallet-key" style="display:inline-block;margin:2px 0;">${escapeHtml(h.conf)}</span><button class="edit-btn" onclick="copyTextValue(${JSON.stringify(h.conf)},'Hotel confirmation copied')">Copy number</button></div>${h.room?`<span class="text-muted">Room: ${escapeHtml(h.room)}</span>`:""}${h.payment?` · ${escapeHtml(h.payment)}`:""}${h.tax?` · ${escapeHtml(h.tax)}`:""}${h.breakfast?`<br>${escapeHtml(h.breakfast)}`:""}${h.website?`<div class="quick-action-row" style="margin-top:6px;"><a class="link-btn" href="${escapeHtml(h.website)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(h.name)} official website">Hotel website ↗</a></div>`:""}</div>`).join("")}
           </div>
         </div>
         <div class="card"><div class="card-title">🎫 Conference / PSA</div><div class="text-sm" style="line-height:1.85;"><strong>Rom/Flo:</strong> ${TRIP.confRomeFlo}<br><strong>Ven:</strong> ${TRIP.confVen}<br><span class="text-muted">Registration confirmed; add final agenda offline when available.</span></div></div>
@@ -4304,7 +4304,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         `SAS EuroBonus — David: ${travelerIdentifierText(TRAVELER_IDENTIFIERS.David.sasEuroBonus)} · Melody: ${travelerIdentifierText(TRAVELER_IDENTIFIERS.Melody.sasEuroBonus)}`,
         "",
         `Italo 8904: ${TRIP.italo} Coach 1 seats 13 & 16 (9:39–11:55)`,
-        ...liveHotels().map(h => `${h.name}: ${h.conf} · ${h.dates} · ${h.address}`),
+        ...liveHotels().map(h => `${h.name}: ${h.conf} · ${h.dates} · ${h.address}${h.website ? ` · ${h.website}` : ""}`),
         `PSA Rom/Flo: ${TRIP.confRomeFlo}`,
         `PSA Ven: ${TRIP.confVen}`,
         "",
