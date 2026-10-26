@@ -582,7 +582,9 @@ test("Version 12 itinerary cards, clickable routes, and offline guides match the
   assert.equal(data.open.find(item=>item.id==="open-0018").status,"Pending");
   assert.equal(data.open.find(item=>item.id==="open-0020"),undefined);
   assert.equal(data.open.length,7);
-  assert.ok(data.open.every(item=>item.status==="Pending"));
+  assert.ok(data.open.every(item=>["Pending","Superseded","Recorded on work phone"].includes(item.status)));
+  assert.equal(data.open.find(item=>item.id==="open-0006").status,"Superseded");
+  assert.equal(data.open.find(item=>item.id==="open-0013").status,"Recorded on work phone");
   assert.ok(!data.open.some(item=>/Villa Miani|awards dinner|Italo.*reconfirm|restaurant reservations/i.test(item.item)));
   assert.match(data.pretrip.find(item=>item.id==="h1v11").text,/Oct 6.*€620.*pay when it arrives/);
   const orders=JSON.parse(window.eval(`JSON.stringify(Object.fromEntries(Object.entries(TIMELINE_ROUTE_MAP).filter(([id])=>["tl-0014","tl-0051","tl-0056","tl-0016","tl-0057","tl-0062","tl-0058","tl-0021","tl-0059","tl-0030","tl-0060","tl-0061","tl-0026","tl-0045","tl-0053"].includes(id))))`));
