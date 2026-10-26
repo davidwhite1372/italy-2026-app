@@ -291,6 +291,8 @@ test("historical Venice water taxi preserves private phone notes and corrected r
   const checkIn=window.sharedTravelById("travel-49");
   assert.equal(oldBus.status,"Superseded");
   assert.equal(taxi.status,"Recorded on work phone");
+  assert.equal(taxi.itemType,"Transfer");
+  assert.equal(taxi.transportation,"Boat / Ferry");
   assert.deepEqual([taxi.start,taxi.end,checkIn.start],["08:15","09:15","09:15"]);
   assert.match(taxi.instructions,/hotel arranged the water taxi/i);
   assert.deepEqual([oldBus.notes,taxi.notes,checkIn.notes],["Private walk note","Private bus note","Private check-in note"]);
