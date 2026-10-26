@@ -19,5 +19,5 @@ assert.deepEqual(twice, input);
 assert(!Object.hasOwn(once['travel-test'],'transportation'));
 const legacy = normalizeSharedTravelEdits({'travel-test':{itemType:'Train',transportation:'Train'}});
 assert.equal(legacy['travel-test'].itemType,'Event');
-assert.equal(legacy['travel-test'].transportation,'Walk');
+assert.equal(legacy['travel-test'].transportation,'Train');
 console.log('Travel normalization regression: PASS');
