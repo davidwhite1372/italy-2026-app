@@ -1443,8 +1443,8 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "12.0.8",
-      build: "12.0.8",
+      version: "12.0.9",
+      build: "12.0.9",
       backupSchema: 6,
       lastEdited: "October 3, 2026 at 2:52 PM EDT"
     });
@@ -2342,16 +2342,16 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         if(!value||typeof value!=="object"||Array.isArray(value)) return out;
         const base=SHARED_TRAVEL_ITEMS.find(item=>item.id===id);
         const next={...value};
-        const legacy=!TRANSPORTATION_OPTIONS.includes(next.transportation);
+        // A partial V12 edit may omit transportation entirely. Absence is not a
+        // legacy transport value: never reset a modern Meal/Shopping/etc. type.
+        const legacy=(next.transportation!==undefined&&!TRANSPORTATION_OPTIONS.includes(next.transportation))||next.mode!==undefined;
         if(legacy) {
           next.transportation=inferLegacyTransportation(next.itemType,next.transportationDetails||next.mode,base&&base.transportation);
-          // Version 10.9 and earlier used movement methods as Item Types. Preserve
-          // intentional Event/Tour choices and use the new canonical purpose otherwise.
-          next.itemType=["Event","Tour"].includes(next.itemType) ? next.itemType : (base&&base.itemType)||"Information";
+          if(next.itemType!==undefined&&!ITEM_TYPE_OPTIONS.includes(next.itemType)) next.itemType=(base&&base.itemType)||"Information";
         }
-        if(!ITEM_TYPE_OPTIONS.includes(next.itemType)) next.itemType=(base&&base.itemType)||"Information";
-        if(!TRANSPORTATION_OPTIONS.includes(next.transportation)) next.transportation=(base&&base.transportation)||"Other";
-        if(next.transportationDetails===undefined) next.transportationDetails=next.mode||((base&&base.transportationDetails)||"");
+        if(next.itemType!==undefined&&!ITEM_TYPE_OPTIONS.includes(next.itemType)) next.itemType=(base&&base.itemType)||"Information";
+        if(next.transportation!==undefined&&!TRANSPORTATION_OPTIONS.includes(next.transportation)) next.transportation=(base&&base.transportation)||"Other";
+        if(next.transportationDetails===undefined&&next.mode!==undefined) next.transportationDetails=next.mode;
         delete next.mode;
         // V12: preserve current phone edits. Earlier releases removed fields listed in
         // CANONICAL_SHARED_TRAVEL_FIELDS here, which could erase a deliberate edit
@@ -2403,6 +2403,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         notes:[old.seats,old.conf,old.notes].filter(Boolean).join(" · ")||current.notes
       }));
       migrateIndexedTravel("transfers",["travel-1","travel-2","travel-6","travel-8","travel-11","travel-12","travel-17","travel-19","travel-22","travel-24","travel-34","travel-43","travel-37","travel-39"],(old,current)=>({
+        transportation:old.mode?inferLegacyTransportation(undefined,old.mode,current.transportation):current.transportation,
         transportationDetails:old.mode||current.transportationDetails,duration:old.time||current.duration,status:old.status||current.status,
         instructions:old.steps||current.instructions,notes:[old.backup,old.mistake].filter(Boolean).join(" · ")||current.notes
       }));

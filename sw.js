@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v12-0-8-boston-airside';
+const CACHE = 'italy-2026-github-v12-0-9-offline-shell';
 const APP_SHELL = [
   './',
   './index.html',
@@ -59,18 +59,9 @@ self.addEventListener('install', event => {
       .then(async cache => {
         // Core app files, admission vouchers, and required transfer guides must be available before activation.
         // A failed optional guide must not prevent a working offline installation.
-        const required = new Set(['./', './index.html', './data.js', './manifest.json',
-          './assets/guides/boston-terminal-a-to-e.png',
-          './assets/guides/boston-terminal-a-to-e.pdf',
-          './assets/guides/rome-tour-voucher-1212654.pdf',
-          './assets/guides/florence-tour-voucher-1212654.pdf',
-          './assets/guides/rome-colosseum-to-tiber-island-food-tour.png',
-          './assets/guides/rome-colosseum-to-tiber-island-food-tour-2.png',
-          './assets/guides/rome-colosseum-to-tiber-island-food-tour-3.png',
-          './assets/guides/rome-colosseum-to-tiber-island-food-tour-4.png',
-          './assets/guides/rome-colosseum-to-tiber-island-food-tour-5.png',
-          './assets/guides/rome-colosseum-to-tiber-island-food-tour.pdf',
-          './assets/guides/twilight-trastevere-food-tour-382969949.pdf']);
+        // Only the app shell is mandatory. A missing voucher, guide or image
+        // must never prevent the installed app from starting offline.
+        const required = new Set(['./index.html', './data.js']);
         const failures = [];
         await Promise.all(APP_SHELL.map(async asset => {
           try {

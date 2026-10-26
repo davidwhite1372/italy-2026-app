@@ -1,0 +1,23 @@
+// Regression for partial modern travel overrides. Run: node tests/travel-normalization.test.js
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const source = fs.readFileSync(require('node:path').join(__dirname, '..', 'index.html'), 'utf8');
+const start = source.indexOf('function normalizeSharedTravelEdits(obj) {');
+const end = source.indexOf('function normalizeLiveState(obj) {', start);
+assert(start >= 0 && end > start, 'Normalization function found');
+const ITEM_TYPE_OPTIONS = ['Flight','Transfer','Event','Tour','Hotel / Check-in','Meal','Shopping','To-do','Information'];
+const TRANSPORTATION_OPTIONS = ['None / Not applicable','Walk','Plane','Train','Boat / Ferry','Bus / Coach','Taxi / Rideshare','Car','Mixed / Multiple','Other'];
+const SHARED_TRAVEL_ITEMS = [{id:'travel-test',itemType:'Event',transportation:'Walk',end:'15:00'}];
+const PROMOTED_SHARED_TRAVEL_IDS = new Set();
+const inferLegacyTransportation = () => 'Walk';
+const normalizeSharedTravelEdits = new Function('ITEM_TYPE_OPTIONS','TRANSPORTATION_OPTIONS','SHARED_TRAVEL_ITEMS','PROMOTED_SHARED_TRAVEL_IDS','inferLegacyTransportation','return ('+source.slice(start,end).trim().replace(/\s*$/, '').replace(/^function /,'function ')+')')(ITEM_TYPE_OPTIONS,TRANSPORTATION_OPTIONS,SHARED_TRAVEL_ITEMS,PROMOTED_SHARED_TRAVEL_IDS,inferLegacyTransportation);
+const input = {'travel-test': {itemType:'Meal',end:'16:30'}};
+const once = normalizeSharedTravelEdits(input);
+const twice = normalizeSharedTravelEdits(once);
+assert.deepEqual(once, input);
+assert.deepEqual(twice, input);
+assert(!Object.hasOwn(once['travel-test'],'transportation'));
+const legacy = normalizeSharedTravelEdits({'travel-test':{itemType:'Train',transportation:'Train'}});
+assert.equal(legacy['travel-test'].itemType,'Event');
+assert.equal(legacy['travel-test'].transportation,'Train');
+console.log('Travel normalization regression: PASS');
