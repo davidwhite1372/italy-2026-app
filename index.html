@@ -2344,7 +2344,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         const next={...value};
         // A partial V12 edit may omit transportation entirely. Absence is not a
         // legacy transport value: never reset a modern Meal/Shopping/etc. type.
-        const legacy=next.transportation!==undefined&&!TRANSPORTATION_OPTIONS.includes(next.transportation);
+        const legacy=(next.transportation!==undefined&&!TRANSPORTATION_OPTIONS.includes(next.transportation))||next.mode!==undefined;
         if(legacy) {
           next.transportation=inferLegacyTransportation(next.itemType,next.transportationDetails||next.mode,base&&base.transportation);
           if(next.itemType!==undefined&&!ITEM_TYPE_OPTIONS.includes(next.itemType)) next.itemType=(base&&base.itemType)||"Information";
