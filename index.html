@@ -2342,16 +2342,16 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         if(!value||typeof value!=="object"||Array.isArray(value)) return out;
         const base=SHARED_TRAVEL_ITEMS.find(item=>item.id===id);
         const next={...value};
-        const legacy=!TRANSPORTATION_OPTIONS.includes(next.transportation);
+        // A partial V12 edit may omit transportation entirely. Absence is not a
+        // legacy transport value: never reset a modern Meal/Shopping/etc. type.
+        const legacy=next.transportation!==undefined&&!TRANSPORTATION_OPTIONS.includes(next.transportation);
         if(legacy) {
           next.transportation=inferLegacyTransportation(next.itemType,next.transportationDetails||next.mode,base&&base.transportation);
-          // Version 10.9 and earlier used movement methods as Item Types. Preserve
-          // intentional Event/Tour choices and use the new canonical purpose otherwise.
-          next.itemType=["Event","Tour"].includes(next.itemType) ? next.itemType : (base&&base.itemType)||"Information";
+          if(next.itemType!==undefined&&!ITEM_TYPE_OPTIONS.includes(next.itemType)) next.itemType=(base&&base.itemType)||"Information";
         }
-        if(!ITEM_TYPE_OPTIONS.includes(next.itemType)) next.itemType=(base&&base.itemType)||"Information";
-        if(!TRANSPORTATION_OPTIONS.includes(next.transportation)) next.transportation=(base&&base.transportation)||"Other";
-        if(next.transportationDetails===undefined) next.transportationDetails=next.mode||((base&&base.transportationDetails)||"");
+        if(next.itemType!==undefined&&!ITEM_TYPE_OPTIONS.includes(next.itemType)) next.itemType=(base&&base.itemType)||"Information";
+        if(next.transportation!==undefined&&!TRANSPORTATION_OPTIONS.includes(next.transportation)) next.transportation=(base&&base.transportation)||"Other";
+        if(next.transportationDetails===undefined&&next.mode!==undefined) next.transportationDetails=next.mode;
         delete next.mode;
         // V12: preserve current phone edits. Earlier releases removed fields listed in
         // CANONICAL_SHARED_TRAVEL_FIELDS here, which could erase a deliberate edit
