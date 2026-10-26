@@ -1443,8 +1443,8 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "12.0.12",
-      build: "12.0.12",
+      version: "12.0.13",
+      build: "12.0.13",
       backupSchema: 6,
       lastEdited: "October 26, 2026 at 8:02 AM EDT"
     });
@@ -1698,6 +1698,7 @@
     let travelDateFilter = "all";
     let travelSearch = "";
     let travelViewportAnchor = null;
+    let travelReturnViewportAnchor = null;
     let restCityFilter = "all";
     let restAteFilter = "all";
     let restQuickFilter = "all";
@@ -3241,9 +3242,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         duration:(data.duration || "").trim(), status:data.status || "Confirmed",
         instructions:(data.instructions || "").trim(), notes:(data.notes || "").trim()
       };
-      // Remove obsolete duplicated timeline fields for this linked record.
-      const base = SHARED_TRAVEL_ITEMS.find(x => x.id === id);
-      if (base && live.timeline && live.timeline[base.timelineId]) delete live.timeline[base.timelineId];
+      // Shared travel fields take precedence in the Timeline. Preserve all existing
+      // phone-local timeline overrides; deleting the entire record loses unrelated edits.
       setLive(live);
     }
 
@@ -3267,7 +3267,6 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         {key:"notes",label:"Notes",type:"textarea",value:x.notes || ""}
       ], data => {
         saveSharedTravelEdit(id,data);
-        closeSheet();
         renderHome(); renderToday(); renderTimeline(); renderTransport(true); renderMaps();
         showToast("Travel item updated everywhere");
       });
@@ -6399,6 +6398,8 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
 
     function showPage(id, fromHistory, navigationState={}) {
       if (!document.getElementById("page-" + id)) id = "home";
+      // Capture before switching pages so Back can restore the same Travel Details card.
+      if (currentPage === "transport" && id !== "transport") travelReturnViewportAnchor = captureTravelViewport();
       if (id === "prep" && navigationState.prepTab) {
         prepTab=["packing","phrases","safety"].includes(navigationState.prepTab) ? navigationState.prepTab : "packing";
       }
@@ -6450,7 +6451,13 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       if (id === "wallet") renderWallet();
 
       currentPage = id;
-      if (id !== "timeline") window.scrollTo(0,0);
+      if (id !== "timeline") {
+        window.scrollTo(0,0);
+        if (id === "transport" && !navigationState.fromTimelineId && travelReturnViewportAnchor) {
+          restoreTravelViewport(travelReturnViewportAnchor);
+          travelReturnViewportAnchor = null;
+        }
+      }
 
       // Each page visit becomes a real history entry. The phone Back button
       // therefore returns to the page that was actually viewed previously.
