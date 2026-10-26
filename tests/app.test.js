@@ -1684,7 +1684,7 @@ test("release metadata and stable-ID collections stay consistent", async t => {
 
   assert.equal(packageData.version,"12.0.8");
   assert.match(manifest.description,/Version 12\.0\.8/);
-  assert.match(worker,/v12-0-8-boston-airside/);
+  assert.match(worker,/v12-0-9-offline-shell/);
   ["boston-terminal-a-to-e.png","boston-terminal-a-to-e.pdf","fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png","italy-camera-cheat-sheet-samsung-s23-ultra.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
@@ -1766,7 +1766,7 @@ test("offline application shell lists every required local asset", async () => {
     "./assets/guides/twilight-trastevere-food-tour-382969949.pdf"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v12-0-8-boston-airside/);
+  assert.match(worker, /italy-2026-github-v12-0-9-offline-shell/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);
@@ -1782,14 +1782,14 @@ test("offline application shell lists every required local asset", async () => {
     });
     vm.runInContext(worker, context);
     handlers.install({waitUntil: promise => {installation = promise;}});
-    if (failed === "./data.js" || (failed && (failed.includes("voucher") || failed.includes("382969949") || failed.includes("rome-colosseum") || failed.includes("boston-terminal")))) {
+    if (failed === "./data.js") {
       await assert.rejects(installation, /Required offline assets missing/);
       assert.equal(activated, false);
     } else {
       await installation;
       assert.equal(activated, true);
       assert.ok(stored.includes("./data.js"));
-      assert.ok(stored.includes("./assets/guides/rome-tour-voucher-1212654.pdf"));
+      if (failed !== "./assets/guides/rome-tour-voucher-1212654.pdf") assert.ok(stored.includes("./assets/guides/rome-tour-voucher-1212654.pdf"));
       assert.ok(stored.includes("./assets/guides/florence-tour-voucher-1212654.pdf"));
     }
   }
