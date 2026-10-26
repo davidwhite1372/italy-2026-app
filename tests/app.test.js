@@ -1625,7 +1625,7 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   assert.equal(payload.version,6);
   assert.equal(payload.appVersion,"12.0.9");
   assert.equal(payload.referenceNotesMode,"delta");
-  assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note",transportationDetails:"Train"},"travel-42":{itemType:"Event",transportationDetails:"Event"}}});
+  assert.deepEqual(payload.live,{sharedTravel:{"travel-8":{transportationDetails:"Airport connection / passport control"},"travel-18":{notes:"Phone-only note",transportationDetails:"Train"},"travel-42":{itemType:"Event",transportationDetails:"Event"}}});
   assert.deepEqual(payload.customrestaurants,[]);
   assert.deepEqual(payload.routeedits,{});
   assert.deepEqual(payload.packcatalog,{edits:{},custom:{},deleted:{}});
