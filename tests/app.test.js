@@ -83,7 +83,7 @@ test("app boots with current metadata and valid master data", async t => {
   assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.10");
   assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.10");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 3, 2026 at 2:52 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 26, 2026 at 8:02 AM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -1667,7 +1667,7 @@ test("release metadata and stable-ID collections stay consistent", async t => {
   })`));
 
   assert.equal(packageData.version,"12.0.10");
-  assert.match(manifest.description,/Version 12\.0\.9/);
+  assert.match(manifest.description,/Version 12\.0\.10/);
   assert.match(worker,/v12-0-10-offline-shell/);
   ["boston-terminal-a-to-e.png","boston-terminal-a-to-e.pdf","fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png","italy-camera-cheat-sheet-samsung-s23-ultra.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
