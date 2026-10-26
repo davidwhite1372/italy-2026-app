@@ -541,7 +541,7 @@ test("Version 12 itinerary cards, clickable routes, and offline guides match the
   assert.equal(data.release.backupSchema,6);
   assert.equal(data.routes.find(route=>route.order===15).start,"After 11:55 AM train");
   assert.equal(data.routes.find(route=>route.order===15).duration,"Per PSA group schedule");
-  assert.equal(data.routes.find(route=>route.order===17).status,"Pending timetable");
+  assert.equal(data.routes.find(route=>route.order===17).status,"Recorded on work phone");
   const byId=Object.fromEntries(data.timeline.map(item=>[item.id,item]));
   assert.match(byId["tl-0011"].instructions,/12:23 PM.*placeholder.*next available.*Trenitalia app/i);
   assert.match(byId["tl-0014"].title,/Nerone/);
