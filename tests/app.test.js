@@ -1833,3 +1833,19 @@ test("expense receipt photos stay local and keep receipt status accurate", async
   assert.equal(window.getExpenses().find(item => item.id === expense.id).receipt, false);
   assert.deepEqual(app.runtimeErrors, []);
 });
+
+test("historical outbound flights sort after Tampa check-in and unflown CPH cards stay archived", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const {window} = app;
+  const parsed = window.eval('timelineTimeFromDisplay("6:55 PM (original schedule)")');
+  assert.equal(parsed, "18:55");
+  assert.equal(window.eval('timelineTimeFromDisplay("8:40 AM +1 (original schedule)")'), "08:40+1");
+  const ordered = JSON.parse(window.eval('JSON.stringify(liveTimeline().filter(x=>x.date==="2026-10-04").sort((a,b)=>parseTimelineSortKey(a).localeCompare(parseTimelineSortKey(b))).map(x=>x.id))'));
+  assert.ok(ordered.indexOf("tl-0003") < ordered.indexOf("tl-0005"));
+  assert.ok(ordered.indexOf("tl-0005") < ordered.indexOf("tl-0007"));
+  window.renderTimeline();
+  const html = window.document.querySelector("#timelineList").innerHTML;
+  assert.doesNotMatch(html, /data-timeline-id="tl-0008"|data-timeline-id="tl-0009"/);
+  assert.equal(window.eval('TIMELINE.some(x=>x.id==="tl-0008") && TIMELINE.some(x=>x.id==="tl-0009")'), true);
+});
