@@ -2,6 +2,12 @@
 
 Updated October 3, 2026 for the approved v12.0.8 Boston airside transfer release. Original continuity guide prepared August 23, 2026 for account transfer.
 
+## October 25 historical archive work — v12.0.10 (unreleased)
+
+Production main is v12.0.9; David verified its basic offline launch in airplane mode. The working develop branch contains corrections for the actual Delta DL112 Boston to Rome flight (original SAS Copenhagen legs superseded), the October 15 hotel-booked Venice airport water taxi (work-phone export 08:15 to 09:15), return flight DL1636, and SK915 seats David 24H and Melody 24G. Actual DL112 departure and arrival times are not verified; preserve schedule versus delay estimates as such.
+
+Reported Burano lunch and Venice pre-tour lunch are recorded without guessed venue names. Luna Sentada and Cantinone Storico walking routes are recorded as requested routes, not verified completed walks. Preserve October 8 Rome to Florence transfer details and all stable IDs. A basic historical smoke test was committed, but the full test suite has not been verified. Do not merge to main or clear phone data. Keep the October 18 David Cell and David Work Cell exports distinct; local photos are separate assets.
+
 ## Start here
 
 This document is the continuity record for the Italy trip and its companion web app. Treat it as project context, not as a replacement for the live repository or fresh phone backups.
