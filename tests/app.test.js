@@ -1896,3 +1896,47 @@ test("Travel Details editor persists changed event types and clocks through navi
   assert.deepEqual(app.runtimeErrors,[]);
   assert.deepEqual(reload.runtimeErrors,[]);
 });
+
+
+test("saving a shared Travel Details item does not erase unrelated phone timeline overrides", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const {window} = app;
+  const item = window.sharedTravelById("travel-28");
+  assert.ok(item && item.timelineId);
+  const state = window.getLive();
+  state.timeline = state.timeline || {};
+  state.timeline[item.timelineId] = {notes:"Private phone note to preserve",privateMarker:"keep"};
+  window.setLive(state);
+  window.saveSharedTravelEdit(item.id,{...item,start:"08:30",end:"17:00"});
+  const saved = window.getLive();
+  assert.equal(saved.timeline[item.timelineId].privateMarker,"keep");
+  assert.equal(window.sharedTravelById(item.id).start,"08:30");
+  assert.equal(window.liveTimeline().find(t=>t.id===item.timelineId).start,"08:30");
+  assert.deepEqual(app.runtimeErrors,[]);
+});
+
+test("Travel Details Back navigation retains its viewport and editing closes the sheet", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const {window} = app;
+  window.showPage("transport");
+  const anchor = {id:"travel-28",top:180,scrollY:800};
+  const oldCapture = window.captureTravelViewport;
+  const oldRestore = window.restoreTravelViewport;
+  const restored = [];
+  window.captureTravelViewport = () => anchor;
+  window.restoreTravelViewport = value => restored.push(value);
+  window.showPage("home");
+  window.showPage("transport");
+  assert.deepEqual(restored,[anchor]);
+  window.captureTravelViewport = oldCapture;
+  window.restoreTravelViewport = oldRestore;
+  window.editSharedTravelById("travel-28");
+  assert.ok(window.document.getElementById("overlay").classList.contains("open"));
+  window.document.getElementById("ef_start").value = "08:10";
+  window.document.getElementById("efSave").click();
+  assert.equal(window.document.getElementById("overlay").classList.contains("open"),false);
+  assert.equal(window.sharedTravelById("travel-28").start,"08:10");
+  assert.deepEqual(app.runtimeErrors,[]);
+});
