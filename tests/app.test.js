@@ -80,10 +80,10 @@ test("app boots with current metadata and valid master data", async t => {
 
   app.window.openAppAbout();
   const document = app.window.document;
-  assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.9");
-  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.9");
+  assert.equal(document.querySelector("#aboutAppVersion").textContent, "12.0.10");
+  assert.equal(document.querySelector("#aboutBuildVersion").textContent, "12.0.10");
   assert.equal(document.querySelector("#aboutBackupSchema").textContent, "6");
-  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 3, 2026 at 2:52 PM EDT/);
+  assert.match(document.querySelector("#aboutLastEdited").textContent, /October 26, 2026 at 8:02 AM EDT/);
   assert.deepEqual(Array.from(app.window.collectDataIntegrityIssues()), []);
   assert.deepEqual(app.runtimeErrors, []);
 });
@@ -278,49 +278,31 @@ test("Murano 8–5 removes the reviewed TBD note and keeps breakfast before the 
   for (const result of [app,reload,custom]) assert.deepEqual(result.runtimeErrors, []);
 });
 
-test("7 AM hotel departure gives a coherent VCE sequence and corrects reviewed check-in clocks once", async t => {
-  for (const oldCheckIn of ["07:00","08:00"]) {
-    const app = await bootApp({italy2026_live:{sharedTravel:{
-      "travel-34":{start:"06:30",end:"07:00",notes:"Private walk note"},
-      "travel-50":{start:"07:00",end:"08:00",notes:"Private bus note"},
-      "travel-49":{start:oldCheckIn,end:"10:15",notes:"Private check-in note"}
-    }}});
-    t.after(() => app.dom.window.close());
-    const {window} = app;
-    const walk = window.sharedTravelById("travel-34");
-    const bus = window.sharedTravelById("travel-50");
-    const checkIn = window.sharedTravelById("travel-49");
-    assert.deepEqual([walk.start,walk.end,bus.start,bus.end,checkIn.start,checkIn.end], ["07:00","07:30","07:30","08:30","08:30","10:15"]);
-    assert.deepEqual([walk.notes,bus.notes,checkIn.notes], ["Private walk note","Private bus note","Private check-in note"]);
-    assert.match(bus.status, /Timetable Pending/);
-    assert.match(bus.instructions, /planning start, not a confirmed bus departure/);
-    const flight = window.liveTimeline().find(item=>item.id==="tl-0035");
-    assert.equal(flight.start, "11:00");
-    assert.ok(walk.end<=bus.start && bus.end<=checkIn.start && checkIn.end<flight.start);
-    assert.equal(JSON.parse(window.eval('JSON.stringify(MAP_DOOR_ROUTES.find(item=>item.order===17))')).start, "07:00");
-    assert.match(window.eval('DAYS.find(item=>item.date==="2026-10-15").schedule'), /at 7:00 AM/);
-    window.showPage("timeline");
-    const cards = Array.from(window.document.querySelectorAll("#timelineList .tl-step[data-timeline-id]"),node=>node.dataset.timelineId);
-    assert.ok(cards.indexOf("tl-0034")<cards.indexOf("tl-0050"));
-    assert.ok(cards.indexOf("tl-0050")<cards.indexOf("tl-0049"));
-    assert.ok(cards.indexOf("tl-0049")<cards.indexOf("tl-0035"));
-    window.saveSharedTravelEdit("travel-49", {...checkIn,start:oldCheckIn});
-    const storage = Object.fromEntries(Object.keys(window.localStorage).map(key=>[key,window.localStorage.getItem(key)]));
-    const reload = await bootApp(storage);
-    t.after(() => reload.dom.window.close());
-    assert.equal(reload.window.sharedTravelById("travel-49").start, oldCheckIn);
-    assert.equal(reload.window.sharedTravelById("travel-49").notes, "Private check-in note");
-    assert.deepEqual(app.runtimeErrors, []);
-    assert.deepEqual(reload.runtimeErrors, []);
-  }
-  const custom = await bootApp({italy2026_live:{sharedTravel:{
-    "travel-34":{start:"06:10",end:"06:40"},
-    "travel-50":{start:"06:40",end:"07:10"},
-    "travel-49":{start:"09:00",end:"10:30"}
+test("historical Venice water taxi preserves private phone notes and corrected route", async t => {
+  const app=await bootApp({italy2026_live:{sharedTravel:{
+    "travel-34":{notes:"Private walk note"},
+    "travel-50":{notes:"Private bus note"},
+    "travel-49":{notes:"Private check-in note"}
   }}});
-  t.after(() => custom.dom.window.close());
-  assert.deepEqual(["travel-34","travel-50","travel-49"].map(id=>custom.window.sharedTravelById(id).start), ["06:10","06:40","09:00"]);
-  assert.deepEqual(custom.runtimeErrors, []);
+  t.after(()=>app.dom.window.close());
+  const {window}=app;
+  const oldBus=window.sharedTravelById("travel-34");
+  const taxi=window.sharedTravelById("travel-50");
+  const checkIn=window.sharedTravelById("travel-49");
+  assert.equal(oldBus.status,"Superseded");
+  assert.equal(taxi.status,"Recorded on work phone");
+  assert.equal(taxi.itemType,"Transfer");
+  assert.equal(taxi.transportation,"Boat / Ferry");
+  assert.deepEqual([taxi.start,taxi.end,checkIn.start],["08:15","09:15","09:15"]);
+  assert.match(taxi.instructions,/hotel arranged the water taxi/i);
+  assert.deepEqual([oldBus.notes,taxi.notes,checkIn.notes],["Private walk note","Private bus note","Private check-in note"]);
+  const flight=window.liveTimeline().find(item=>item.id==="tl-0035");
+  assert.equal(flight.start,"11:00");
+  assert.ok(taxi.end<=checkIn.start && checkIn.end<flight.start);
+  const route=JSON.parse(window.eval('JSON.stringify(MAP_DOOR_ROUTES.find(item=>item.order===17))'));
+  assert.match(route.mode+" "+route.note+" "+route.status,/water taxi|work phone/i);
+  assert.match(window.eval('DAYS.find(item=>item.date==="2026-10-15").schedule'),/water taxi/i);
+  assert.deepEqual(app.runtimeErrors,[]);
 });
 
 test("formal greeting promotion removes its exact stale phone override", async t => {
@@ -416,12 +398,12 @@ test("10.14.6 replaces taxi phrases with the Venice vaporetto ticket phrase", as
   });
   assert.equal(phrases.some(item=>/taxi/i.test(`${item.en} ${item.it}`)),false);
   const airportPlan=JSON.stringify(window.eval(`JSON.stringify({timeline:TIMELINE.find(item=>item.id==="tl-0048"),open:OPEN_ITEMS.find(item=>item.id==="open-0013"),route:MAP_DOOR_ROUTES?.find?.(item=>item.order===17)})`));
-  assert.doesNotMatch(airportPlan,/water.?taxi/i);
-  assert.match(airportPlan,/ATVO|ACTV/);
+  assert.match(airportPlan,/water.?taxi/i);
+  assert.match(airportPlan,/hotel arranged|hotel-booked/i);
   assert.deepEqual(JSON.parse(JSON.stringify(window.getPhraseCatalogData())),{edits:{},custom:{},deleted:{}});
   const day=window.eval('DAYS.find(item=>item.date==="2026-10-14")');
   assert.match(day.phrase,/vaporetto/);
-  assert.doesNotMatch(JSON.stringify(window.eval('DAYS.filter(item=>item.date==="2026-10-05" || item.date==="2026-10-14" || item.date==="2026-10-15")')),/taxi/i);
+  assert.match(JSON.stringify(window.eval('DAYS.filter(item=>item.date==="2026-10-15")')),/water.?taxi/i);
   assert.deepEqual(app.runtimeErrors,[]);
 });
 
@@ -537,11 +519,11 @@ test("Version 12 itinerary cards, clickable routes, and offline guides match the
     pretrip:PRETRIP.flatMap(group=>group.items),
     release:APP_METADATA
   })`));
-  assert.equal(data.release.version,"12.0.9");
+  assert.equal(data.release.version,"12.0.10");
   assert.equal(data.release.backupSchema,6);
   assert.equal(data.routes.find(route=>route.order===15).start,"After 11:55 AM train");
   assert.equal(data.routes.find(route=>route.order===15).duration,"Per PSA group schedule");
-  assert.equal(data.routes.find(route=>route.order===17).status,"Pending timetable");
+  assert.equal(data.routes.find(route=>route.order===17).status,"Recorded on work phone");
   const byId=Object.fromEntries(data.timeline.map(item=>[item.id,item]));
   assert.match(byId["tl-0011"].instructions,/12:23 PM.*placeholder.*next available.*Trenitalia app/i);
   assert.match(byId["tl-0014"].title,/Nerone/);
@@ -602,7 +584,9 @@ test("Version 12 itinerary cards, clickable routes, and offline guides match the
   assert.equal(data.open.find(item=>item.id==="open-0018").status,"Pending");
   assert.equal(data.open.find(item=>item.id==="open-0020"),undefined);
   assert.equal(data.open.length,7);
-  assert.ok(data.open.every(item=>item.status==="Pending"));
+  assert.ok(data.open.every(item=>["Pending","Superseded","Recorded on work phone"].includes(item.status)));
+  assert.equal(data.open.find(item=>item.id==="open-0006").status,"Superseded");
+  assert.equal(data.open.find(item=>item.id==="open-0013").status,"Recorded on work phone");
   assert.ok(!data.open.some(item=>/Villa Miani|awards dinner|Italo.*reconfirm|restaurant reservations/i.test(item.item)));
   assert.match(data.pretrip.find(item=>item.id==="h1v11").text,/Oct 6.*€620.*pay when it arrives/);
   const orders=JSON.parse(window.eval(`JSON.stringify(Object.fromEntries(Object.entries(TIMELINE_ROUTE_MAP).filter(([id])=>["tl-0014","tl-0051","tl-0056","tl-0016","tl-0057","tl-0062","tl-0058","tl-0021","tl-0059","tl-0030","tl-0060","tl-0061","tl-0026","tl-0045","tl-0053"].includes(id))))`));
@@ -875,10 +859,10 @@ test("updated flight seats and Boston transfer guide match the supplied records"
   assert.deepEqual(seats, {
     DL2706:"29F, 29E",
     SK928:"27E, 27D",
-    SK915:"24G, 24F",
-    SK3438:"27A, 27B"
+    SK915:"24H (David), 24G (Melody)",
+    DL1636:"27A, 27B"
   });
-  assert.equal(window.eval("OPEN_ITEMS.find(item=>item.id==='open-0006').item"), "Confirm remaining flight seat for SK681");
+  assert.equal(window.eval("OPEN_ITEMS.find(item=>item.id==='open-0006').status"), "Superseded");
   const boston = window.eval("MAP_GUIDE_LIBRARY.find(guide=>guide.src==='assets/guides/boston-terminal-a-to-e.png')");
   assert.ok(boston);
   assert.match(boston.note, /5:40 PM/);
@@ -898,7 +882,7 @@ test("Boston uses the confirmed airside route and both guide formats open everyw
   assert.deepEqual([transfer.start, transfer.end], ["14:55", "17:00"]);
   assert.match(transfer.instructions, /Stay inside security.*A13–A22.*A17–A18.*airside bus.*E13.*No TSA reentry/);
   assert.match(transfer.notes, /confirmed through to Rome \(FCO\)/);
-  assert.match(transfer.notes, /4:45 PM/);
+  assert.match(transfer.notes, /6:55 PM/);
   const timeline = window.liveTimeline().find(item=>item.id==="tl-0006");
   assert.equal(timeline.travelId, "travel-6");
   assert.equal(timeline.instructions, transfer.instructions);
@@ -1191,7 +1175,7 @@ test("Oct 8 Florence evening restores the tentative Da Burde dinner", async t =>
   assert.deepEqual(app.runtimeErrors, []);
 });
 
-test("SK681 stays confirmed while its seat follow-up remains open until check-in", async t => {
+test("superseded SK681 and its historical seat record are retained without active follow-up", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
   const data = JSON.parse(app.window.eval(`JSON.stringify({
@@ -1199,11 +1183,11 @@ test("SK681 stays confirmed while its seat follow-up remains open until check-in
     followup:OPEN_ITEMS.find(item=>item.id==="open-0006"),
     map:MAP_SAVED_PENDING.find(item=>item.item==="Flight seat map links")
   })`));
-  assert.equal(data.flight.status,"Confirmed");
-  assert.equal(data.followup.status,"Pending");
-  assert.match(data.followup.why,/until online check-in/i);
-  assert.match(data.flight.notes,/until check-in/i);
-  assert.match(data.map.note,/online check-in/i);
+  assert.equal(data.flight.status,"Superseded");
+  assert.equal(data.followup.status,"Superseded");
+  assert.match(data.followup.why,/DL112/);
+  assert.match(data.flight.notes,/replaced by Delta DL112/i);
+  assert.match(data.map.note,/SK681 was superseded by DL112/);
   assert.deepEqual(app.runtimeErrors, []);
 });
 
@@ -1443,11 +1427,11 @@ test("CPH passport wait tracker appears on both Copenhagen layovers and reviewed
     assert.equal(card.querySelectorAll(`a[href="https://cphsecuritywait.dk/en/passport-control"]`).length, 1);
   });
   window.showPage("timeline");
-  ["tl-0008","tl-0043"].forEach(id => {
-    const card = document.querySelector(`[data-timeline-id="${id}"]`);
-    assert.ok(card, `${id} should be present in Timeline`);
-    assert.equal(card.querySelectorAll(`a[href="https://cphsecuritywait.dk/en/passport-control"]`).length, 1);
-  });
+  assert.equal(document.querySelector(`[data-timeline-id="tl-0008"]`), null, "superseded outbound CPH step is archived");
+  assert.equal(document.querySelector(`[data-timeline-id="tl-0009"]`), null, "superseded outbound CPH flight is archived");
+  const returnCard = document.querySelector(`[data-timeline-id="tl-0043"]`);
+  assert.ok(returnCard, "return CPH layover should remain in Timeline");
+  assert.equal(returnCard.querySelectorAll(`a[href="https://cphsecuritywait.dk/en/passport-control"]`).length, 1);
   assert.deepEqual(app.runtimeErrors, []);
 });
 
@@ -1623,9 +1607,9 @@ test("10.12.0 normalizes promoted phone data into clean schema 6 exports", async
   window.exportData();
   const payload=await blobJson(window,app.exportedBlob());
   assert.equal(payload.version,6);
-  assert.equal(payload.appVersion,"12.0.9");
+  assert.equal(payload.appVersion,"12.0.10");
   assert.equal(payload.referenceNotesMode,"delta");
-  assert.deepEqual(payload.live,{sharedTravel:{"travel-18":{notes:"Phone-only note",transportationDetails:"Train"},"travel-42":{itemType:"Event",transportationDetails:"Event"}}});
+  assert.deepEqual(payload.live,{sharedTravel:{"travel-8":{transportationDetails:"Airport connection / passport control"},"travel-18":{notes:"Phone-only note",transportationDetails:"Train"},"travel-42":{itemType:"Event",transportationDetails:"Event"}}});
   assert.deepEqual(payload.customrestaurants,[]);
   assert.deepEqual(payload.routeedits,{});
   assert.deepEqual(payload.packcatalog,{edits:{},custom:{},deleted:{}});
@@ -1663,7 +1647,7 @@ test("schema 6 backups use Timeline IDs and Version 4 backups remain importable"
   window.exportData();
   const payload = await blobJson(window, app.exportedBlob());
   assert.equal(payload.version, 6);
-  assert.equal(payload.appVersion, "12.0.9");
+  assert.equal(payload.appVersion, "12.0.10");
   assert.equal("dataVersion" in payload, false);
   assert.deepEqual(Object.keys(payload.tldone).sort(), ["tl-0001", "tl-custom-imported-custom-leg"]);
   assert.deepEqual(Object.keys(payload.tlhidden), ["tl-0002"]);
@@ -1682,15 +1666,15 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     budget:BUDGET_PLANNED.map(x=>x.id),packing:PACKING.map(x=>x.id),open:OPEN_ITEMS.map(x=>x.id)
   })`));
 
-  assert.equal(packageData.version,"12.0.9");
-  assert.match(manifest.description,/Version 12\.0\.9/);
-  assert.match(worker,/v12-0-9-offline-shell/);
+  assert.equal(packageData.version,"12.0.10");
+  assert.match(manifest.description,/Version 12\.0\.10/);
+  assert.match(worker,/v12-0-10-offline-shell/);
   ["boston-terminal-a-to-e.png","boston-terminal-a-to-e.pdf","fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png","italy-camera-cheat-sheet-samsung-s23-ultra.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
   });
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
-    timeline:62,restaurants:67,attractions:15,reservations:14,budget:21,packing:74,open:7
+    timeline:66,restaurants:67,attractions:15,reservations:14,budget:21,packing:74,open:7
   });
   Object.values(counts).forEach(ids=>{
     assert.equal(ids.every(Boolean),true);
@@ -1766,7 +1750,7 @@ test("offline application shell lists every required local asset", async () => {
     "./assets/guides/twilight-trastevere-food-tour-382969949.pdf"
   ];
   required.forEach(asset => assert.match(worker, new RegExp(asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
-  assert.match(worker, /italy-2026-github-v12-0-9-offline-shell/);
+  assert.match(worker, /italy-2026-github-v12-0-10-offline-shell/);
   assert.match(worker, /event\.request\.mode === 'navigate' \|\| isMutableAppFile/);
   assert.match(worker, /fetch\(event\.request\)/);
   assert.match(worker, /Cached copies remain the offline fallback/);
@@ -1848,4 +1832,20 @@ test("expense receipt photos stay local and keep receipt status accurate", async
   await window.setExpenseReceiptPhotos(expense.id, []);
   assert.equal(window.getExpenses().find(item => item.id === expense.id).receipt, false);
   assert.deepEqual(app.runtimeErrors, []);
+});
+
+test("historical outbound flights sort after Tampa check-in and unflown CPH cards stay archived", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const {window} = app;
+  const parsed = window.eval('timelineTimeFromDisplay("6:55 PM (original schedule)")');
+  assert.equal(parsed, "18:55");
+  assert.equal(window.eval('timelineTimeFromDisplay("8:40 AM +1 (original schedule)")'), "08:40+1");
+  const ordered = JSON.parse(window.eval('JSON.stringify(liveTimeline().filter(x=>x.date==="2026-10-04").sort((a,b)=>parseTimelineSortKey(a).localeCompare(parseTimelineSortKey(b))).map(x=>x.id))'));
+  assert.ok(ordered.indexOf("tl-0003") < ordered.indexOf("tl-0005"));
+  assert.ok(ordered.indexOf("tl-0005") < ordered.indexOf("tl-0007"));
+  window.renderTimeline();
+  const html = window.document.querySelector("#timelineList").innerHTML;
+  assert.doesNotMatch(html, /data-timeline-id="tl-0008"|data-timeline-id="tl-0009"/);
+  assert.equal(window.eval('TIMELINE.some(x=>x.id==="tl-0008") && TIMELINE.some(x=>x.id==="tl-0009")'), true);
 });

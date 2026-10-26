@@ -33,16 +33,16 @@
     });
 
     const DAYS = [
-      { date: "2026-10-04", theme: "Departure Day", city: "Tampa → Boston → Copenhagen", hotel: "Overnight in flight",
-        schedule: "6:00 AM leave Spring Hill; park at TPA; bags confirmed through to Rome (FCO); DL2706 to Boston; Delta airside shuttle to Terminal E with no TSA reentry; SK928 overnight to Copenhagen.",
-        transport: "Personal vehicle, SkyConnect, Delta DL2706, terminal transfer, SAS SK928.",
+      { date: "2026-10-04", theme: "Departure Day", city: "Tampa → Boston → Rome", hotel: "Overnight in flight",
+        schedule: "6:00 AM leave Spring Hill; park at TPA; bags confirmed through to Rome (FCO); DL2706 to Boston; Delta airside shuttle to Terminal E with no TSA reentry; replacement Delta DL112 nonstop overnight from Boston to Rome; original Copenhagen connection superseded.",
+        transport: "Personal vehicle, SkyConnect, Delta DL2706, Boston terminal transfer, Delta DL112.",
         dining: "Eat before the overnight flight; hydrate and sleep after the main meal.",
         tip: "Photograph the parking location and baggage tags. Keep passports, medication and power bank in the carry-on.",
         phrase: "Dov'è il gate? — Where is the gate?",
         checklist: ["Passports","Wallet","Phones","Boarding passes","Medication","Power bank"] },
       { date: "2026-10-05", theme: "Arrival in Rome", city: "Rome", hotel: "Anantara Palazzo Naiadi",
         schedule: "Arrive at FCO, collect bags, then buy the next available Leonardo Express ticket in the Trenitalia app. 12:23 PM is a planning placeholder only. Check in and register at Anantara; meet in the lobby for the Joe Lynch Group Dinner at Nerone at 5:30 PM (final timing by group text).",
-        transport: "SAS SK681, Leonardo Express, then walk to Piazza della Repubblica.",
+        transport: "Delta DL112 arrival at FCO, Leonardo Express, then walk to Piazza della Repubblica.",
         dining: "Joe Lynch Group Dinner at Nerone; lobby meeting at 5:30 PM, with final timing by group text.",
         tip: "Buy the Leonardo Express after collecting bags; 12:23 PM is not booked. Hydrate and stay awake until evening.",
         phrase: "Ho una prenotazione. — I have a reservation.",
@@ -111,8 +111,8 @@
         phrase: "Vorrei un biglietto per il vaporetto, per favore. — I would like a vaporetto ticket, please.",
         checklist: ["Flight check-in","Airport transfer","Pack","Two alarms","Passports staged"] },
       { date: "2026-10-15", theme: "Return Home", city: "Venice → Copenhagen → New York → Tampa", hotel: "Travel day",
-        schedule: "Leave Hotel Antiche Figure at 7:00 AM. Allow until 7:30 AM for the walk and tickets at Piazzale Roma, then until 8:30 AM for the next suitable ATVO bus and airport arrival. Begin airport check-in/security on arrival; SAS SK2692 departs at 11:00 AM. Continue VCE-CPH-JFK-TPA.",
-        transport: "Walk + airport bus, SAS SK2692, SAS SK915, JFK AirTrain, Delta-operated SK3438, SkyConnect.",
+        schedule: "Hotel-booked water taxi to VCE recorded in the October 18 David Work Cell export, 8:15–9:15 AM. Proceed to check-in and security for SAS SK2692 at 11:00 AM, then VCE–CPH–JFK–TPA. Exact actual taxi times remain unverified.",
+        transport: "Hotel-booked water taxi, SAS SK2692, SAS SK915, JFK AirTrain, Delta DL1636, SkyConnect.",
         dining: "Eat when practical during connections; at JFK continue through required U.S. arrival formalities and proceed directly to Terminal 4. Bags are planned to be checked through to TPA; do not plan a JFK baggage reclaim unless airline or airport staff direct otherwise.",
         tip: "The CPH and JFK connections are time-sensitive. Move directly between checkpoints and confirm bags are tagged to TPA.",
         phrase: "Dove devo ritirare i bagagli? — Where do I collect the luggage?",
@@ -125,11 +125,11 @@
       { id:"tl-0003", travelId:"travel-3", date:"2026-10-04", start:"09:30", end:"09:55", itemType:"Information", title:"TPA Main Terminal → Delta check-in / bag drop", from:"TPA Main Terminal", to:"Delta check-in / bag drop", mode:"Walk", time:"15-25 min", status:"Confirmed", instructions:"Bags are confirmed checked through to Rome (FCO). Drop them with Delta and photograph the baggage tags.", notes:"Keep the bag receipts. Collect checked bags in Rome." },
       { id:"tl-0004", travelId:"travel-4", date:"2026-10-04", start:"09:55", end:"10:30", itemType:"Information", title:"Delta check-in → TPA departure gate", from:"Delta check-in", to:"TPA departure gate", mode:"Walk", time:"20-30 min", status:"Confirmed", instructions:"Clear TSA and proceed to gate.", notes:"Boarding pass and passports accessible." },
       { id:"tl-0005", date:"2026-10-04", start:"11:39", end:"14:55", itemType:"Flight", flightId:"flight-dl2706", title:"TPA Airport → BOS - Boston Logan Airport Terminal A", from:"TPA Airport", to:"BOS - Boston Logan Airport Terminal A", mode:"Flight DL2706", time:"3h 16m", status:"Confirmed", instructions:"Economy.", notes:"" },
-      { id:"tl-0006", travelId:"travel-6", date:"2026-10-04", start:"14:55", end:"17:00", itemType:"Transfer", title:"BOS Terminal A → Terminal E / Delta airside shuttle", from:"BOS - Boston Logan Airport Terminal A", to:"BOS - Boston Logan Airport Terminal E SAS gate", mode:"Delta airside shuttle + gate walk", time:"Transfer + gate buffer; 2h 45m connection", status:"Confirmed", instructions:"Stay inside security after DL2706. Follow internal signs toward Delta's satellite concourse, gates A13–A22. Near the food court at A17–A18, follow Delta shuttle / Terminal E signs and board the internal airside bus. It normally arrives near E13. Check the monitors for SK928 to Copenhagen and walk to the assigned SAS gate. No TSA reentry.", notes:"Checked luggage is confirmed through to Rome (FCO); collect it in Rome. DL2706 arrives at 2:55 PM and SK928 departs at 5:40 PM. Move directly to the shuttle and aim to be at the SAS gate by 4:45 PM. Follow the boarding time and deadline on your SAS boarding pass; 5:40 PM is departure time. The card window includes transfer and gate buffer, not bus ride duration." },
-      { id:"tl-0007", date:"2026-10-04", start:"17:40", end:"07:00+1", itemType:"Flight", flightId:"flight-sk928", title:"BOS - Boston Logan Airport Terminal E → CPH - Copenhagen Airport", from:"BOS - Boston Logan Airport Terminal E", to:"CPH - Copenhagen Airport", mode:"Flight SK928", time:"7h 20m", status:"Confirmed", instructions:"Premium Economy; set devices to Rome time, hydrate, sleep after meal.", notes:"Arrival is Oct 5." },
-      { id:"tl-0008", travelId:"travel-8", date:"2026-10-05", start:"07:00", end:"08:30", itemType:"Walk", title:"CPH - Copenhagen Airport arrival gate → CPH - Copenhagen Airport Rome departure gate", from:"CPH - Copenhagen Airport arrival gate", to:"CPH - Copenhagen Airport Rome departure gate", mode:"Airport connection / passport control", time:"90 min scheduled connection", status:"Confirmed", instructions:"Stay airside. Follow Transfer / Omstigning signs and staff directions for mandatory first-entry EES enrollment (passport scan, facial photo and fingerprints) and passport control. Check the live screen for SK681 and proceed directly to its assigned gate.", notes:"SK928 arrives 07:00; SK681 departs 08:30. Aim to reach the gate by 08:10; boarding may close before departure." },
-      { id:"tl-0009", date:"2026-10-05", start:"08:30", end:"11:05", itemType:"Flight", flightId:"flight-sk681", title:"CPH - Copenhagen Airport → FCO - Rome Fiumicino Airport Terminal 1", from:"CPH - Copenhagen Airport", to:"FCO - Rome Fiumicino Airport Terminal 1", mode:"Flight SK681", time:"2h 35m", status:"Confirmed", instructions:"Premium Economy.", notes:"Seat selection remains open until check-in; confirm or choose a seat then if available." },
-      { id:"tl-0010", travelId:"travel-10", date:"2026-10-05", start:"11:05", end:"12:15", itemType:"Information", title:"FCO - Rome Fiumicino Airport aircraft → FCO Airport baggage claim / train station", from:"FCO - Rome Fiumicino Airport aircraft", to:"FCO Airport baggage claim / train station", mode:"Walk", time:"45-70 min", status:"Confirmed", instructions:"Collect both bags, follow train icons to railway station.", notes:"No passport control expected after Schengen entry at CPH." },
+      { id:"tl-0006", travelId:"travel-6", date:"2026-10-04", start:"14:55", end:"17:00", itemType:"Transfer", title:"BOS Terminal A → Terminal E / Delta airside shuttle", from:"BOS - Boston Logan Airport Terminal A", to:"BOS - Boston Logan Airport Terminal E Delta gate", mode:"Delta airside shuttle + gate walk", time:"Transfer + gate buffer; 2h 45m connection", status:"Confirmed", instructions:"Stay inside security after DL2706. Follow internal signs toward Delta's satellite concourse, gates A13–A22. Near the food court at A17–A18, follow Delta shuttle / Terminal E signs and board the internal airside bus. It normally arrives near E13. Check monitors for replacement Delta DL112 to Rome. No TSA reentry.", notes:"Checked luggage is confirmed through to Rome (FCO); collect it in Rome. DL2706 arrives at 2:55 PM and DL112 was originally scheduled for 6:55 PM. Move directly to the shuttle and follow the updated Delta boarding time. Follow the boarding time and deadline on the Delta DL112 boarding pass; DL112 was later delayed. The card window includes transfer and gate buffer, not bus ride duration." },
+      { id:"tl-0007", date:"2026-10-04", start:"18:55", end:"08:40+1", itemType:"Flight", flightId:"flight-dl112", title:"Actual route: Delta DL112 Boston → Rome (replaced Copenhagen connection)", from:"BOS - Boston Logan Airport", to:"FCO - Rome Fiumicino Airport", mode:"Flight DL112", time:"Overnight nonstop; actual duration unverified", status:"Flown — times estimated", instructions:"Historical record: originally scheduled 6:55 PM departure / 8:40 AM Oct 5 arrival. Later status update estimated 7:30 PM departure / 9:27 AM arrival. Neither is verified actual flight time.", notes:"SK928 and SK681 via Copenhagen were superseded; retain those original bookings in flight history." },
+      { id:"tl-0008", travelId:"travel-8", date:"2026-10-05", start:"", end:"", itemType:"Information", title:"Historical booking: Copenhagen connection not taken", from:"CPH - Copenhagen Airport", to:"CPH - Copenhagen Airport", mode:"Superseded SK928/SK681 connection", time:"Not traveled", status:"Superseded", instructions:"The original Copenhagen transfer was replaced by Delta DL112 direct Boston to Rome.", notes:"Original connection retained for historical reference only." },
+      { id:"tl-0009", date:"2026-10-05", start:"", end:"", itemType:"Information", flightId:"flight-sk681", title:"Historical booking: SAS SK681 Copenhagen → Rome not taken", from:"CPH - Copenhagen Airport", to:"FCO - Rome Fiumicino Airport", mode:"Superseded flight SK681", time:"Not traveled", status:"Superseded", instructions:"Replaced by nonstop Delta DL112 from Boston.", notes:"Original booking only; not part of actual flown route." },
+      { id:"tl-0010", travelId:"travel-10", date:"2026-10-05", start:"09:27", end:"", itemType:"Information", title:"Rome FCO arrival → baggage claim / train station", from:"FCO - Rome Fiumicino Airport", to:"FCO Airport baggage claim / train station", mode:"Walk and entry formalities", time:"Actual duration unverified", status:"Historical — arrival estimate", instructions:"Arrival estimate for DL112 was 9:27 AM. Complete passport control, collect bags and follow train signs.", notes:"9:27 AM was an estimated arrival, not independently verified actual time. Original Copenhagen arrival and Schengen-entry assumptions superseded." },
       { id:"tl-0011", travelId:"travel-11", date:"2026-10-05", start:"12:23", end:"", itemType:"Train", title:"Fiumicino Aeroporto → Roma Termini", from:"Fiumicino Aeroporto Train Station", to:"Roma Termini Train Station", mode:"Leonardo Express", time:"Next available train after bags", status:"Buy after baggage claim", instructions:"12:23 PM is a planning placeholder only, not a booked departure. After collecting bags, buy the next available Leonardo Express ticket in the Trenitalia app; the credit card is already loaded. Ride nonstop to Termini. Do not take FL1.", notes:"Revise the time after the ticket is purchased. Existing FCO arrival guides remain in place." },
       { id:"tl-0012", travelId:"travel-12", date:"2026-10-05", start:"13:00", end:"13:20", itemType:"Walk", title:"Roma Termini Train Station → Anantara Palazzo Naiadi Hotel", from:"Roma Termini Train Station", to:"Anantara Palazzo Naiadi Hotel", mode:"Walk", time:"10-15 min", status:"Confirmed", instructions:"Exit toward Piazza dei Cinquecento / Via Luigi Einaudi to Piazza della Repubblica.", notes:"Hotel: Piazza della Repubblica 48-49." },
       { id:"tl-0013", sortAfterTimelineId:"tl-0012", travelId:"travel-13", date:"2026-10-05", start:"13:30", end:"17:00", itemType:"Event", title:"PSA registration", from:"Anantara Palazzo Naiadi", to:"PSA registration desk", mode:"Event", time:"Plan 1:30 PM; desk open 1:00–5:00 PM", status:"Confirmed", instructions:"Plan to complete PSA registration at Anantara Palazzo Naiadi at 1:30 PM, after the hotel walk ends at 1:20 PM. The registration desk is open 1:00–5:00 PM; 5:00 PM is the desk closing time, not the duration of your registration. Hotel check-in begins at 3:00 PM and is consolidated into the primary Anantara hotel card.", notes:"Keep this as the separate operational PSA registration event; hotel confirmation 203390136 is shown on the primary hotel card." },
@@ -160,15 +160,15 @@
       { id:"tl-0046", travelId:"travel-46", date:"2026-10-13", start:"Evening", end:"", itemType:"Walk", title:"Hotel Antiche Figure → Venice personal evening", from:"Hotel Antiche Figure", to:"Venice personal evening", mode:"Walk", time:"Flexible", status:"Pending", instructions:"David and Melody personal evening. Use the hotel location near Piazzale Roma and Venezia Santa Lucia Train Station as the base.", notes:"Use the Food page for dinner ideas and confirm the return route." },
       { id:"tl-0047", travelId:"travel-47", date:"2026-10-14", start:"11:00", end:"", itemType:"To-do", title:"24-hour return-flight check-in", from:"Hotel Antiche Figure / Venice", to:"SAS / Delta", mode:"Airline check-in", time:"11:00 AM", status:"Reminder", instructions:"Check in for the Italy return flights, starting with SAS SK2692 VCE→CPH. Verify boarding passes and seats, confirm checked bags are tagged through to TPA, and verify the Delta-operated JFK→TPA boarding pass.", notes:"Return flight departs VCE Oct 15 at 11:00 AM." },
       { id:"tl-0033", travelId:"travel-33", date:"2026-10-14", start:"Day", end:"", itemType:"Walk", title:"🇮🇹 OPEN VENICE DAY — DAVID & MELODY", from:"Hotel Antiche Figure", to:"Venice", mode:"Walk / wander", time:"No schedule", status:"Open day", instructions:"No reservations. No schedule. Wander Venice. Optional only if you feel like it: Caffè del Doge, Torrefazione Cannaregio, L’Bacaro de’ Bischeri, cicchetti lunch, Antiche Carampane.", notes:"Pack and stage return-travel documents later in the day." },
-      { id:"tl-0048", travelId:"travel-48", date:"2026-10-14", start:"Evening", end:"", itemType:"Walk", title:"Venice → Hotel Antiche Figure", from:"Venice", to:"Hotel Antiche Figure", mode:"Walk", time:"Flexible", status:"Pending", instructions:"Enjoy the final dinner, return to the hotel early enough to finish packing, and reconfirm the first airport-bus departure and ticket.", notes:"Purchase or stage ATVO/ACTV bus tickets before bed." },
-      { id:"tl-0034", travelId:"travel-34", date:"2026-10-15", start:"07:00", end:"07:30", itemType:"Walk", title:"Walk to ATVO Station and buy airport-bus tickets", from:"Hotel Antiche Figure", to:"ATVO Ticket Office / Station", mode:"Walk", time:"7:00–7:30 AM · walk/ticket allowance", status:"Plan Confirmed / Timetable Pending", instructions:"Leave Hotel Antiche Figure at 7:00 AM. Walk to the ATVO ticket office/station at Piazzale Roma and purchase or confirm the airport bus ticket. Allow until 7:30 AM for the walk, luggage, and tickets; buy or stage tickets the evening before if possible.", notes:"Use the verified ATVO office/station location and final walking instructions." },
-      { id:"tl-0050", travelId:"travel-50", date:"2026-10-15", start:"07:30", end:"08:30", itemType:"Bus", title:"Take the ATVO airport bus to VCE Departures", from:"ATVO Station, Piazzale Roma", to:"VCE - Venice Marco Polo Airport Departures", mode:"ATVO Airport Bus", time:"7:30–8:30 AM allowance · ride about 20–30 min plus wait", status:"Plan Confirmed / Timetable Pending", instructions:"After reaching Piazzale Roma, board the next suitable ATVO airport bus to Venice Marco Polo Airport. The 7:30–8:30 AM window allows for waiting and the ride; 7:30 AM is a planning start, not a confirmed bus departure. Enter the terminal and begin airport check-in as soon as you arrive.", notes:"Verify the Oct 15 ATVO timetable and ticket the evening before. Aim for airport arrival around 8:00 AM if the service allows; the planning allowance runs through 8:30 AM." },
-      { id:"tl-0049", travelId:"travel-49", date:"2026-10-15", start:"08:30", end:"10:15", itemType:"Information", title:"VCE - Venice Marco Polo Airport entrance → VCE - Venice Marco Polo Airport SAS departure gate", from:"VCE - Venice Marco Polo Airport entrance", to:"VCE - Venice Marco Polo Airport SAS departure gate", mode:"Airport Check-in / Security", time:"8:30 AM planning start · 2h 30m before flight", status:"Confirmed", instructions:"Begin SAS bag drop and security on airport arrival, earlier than 8:30 AM if possible. Verify both checked bags are tagged to TPA - Tampa International Airport, clear airport security, and proceed to the departure gate by the 10:15 AM planning target for the 11:00 AM flight.", notes:"Verify both checked bags are tagged through to TPA and keep the baggage receipts. Follow the SAS app's flight-specific check-in, bag-drop, and boarding deadlines." },
+      { id:"tl-0048", travelId:"travel-48", date:"2026-10-14", start:"Evening", end:"", itemType:"Walk", title:"Venice → Hotel Antiche Figure", from:"Venice", to:"Hotel Antiche Figure", mode:"Walk", time:"Flexible", status:"Pending", instructions:"Historical planning note: return to Hotel Antiche Figure for final packing. The original airport-bus plan was superseded by the hotel-booked water taxi on October 15.", notes:"Historical note: the planned airport bus was not used; hotel arranged a water taxi." },
+      { id:"tl-0034", travelId:"travel-34", date:"2026-10-15", start:"", end:"", itemType:"Information", title:"Superseded plan: walk to ATVO airport bus", from:"Hotel Antiche Figure", to:"Piazzale Roma", mode:"Original airport-bus plan (not taken)", time:"Not traveled", status:"Superseded", instructions:"Original 7:00 AM bus plan replaced by hotel-booked water taxi.", notes:"Retained for itinerary provenance; do not mistake for actual transport." },
+      { id:"tl-0050", travelId:"travel-50", date:"2026-10-15", start:"08:15", end:"09:15", itemType:"Water Taxi", title:"Actual transfer: Hotel Antiche Figure → Venice Marco Polo Airport", from:"Hotel Antiche Figure", to:"VCE - Venice Marco Polo Airport", mode:"Hotel-booked water taxi", time:"8:15–9:15 AM in David Work Cell export", status:"Recorded on work phone", instructions:"Historical record: hotel arranged the water taxi transfer. No ATVO airport bus was taken.", notes:"Times copied from October 18 David Work Cell export; exact actual departure/arrival and operator not independently verified." },
+      { id:"tl-0049", travelId:"travel-49", date:"2026-10-15", start:"09:15", end:"10:15", itemType:"Information", title:"VCE arrival → SAS check-in and departure gate", from:"VCE - Venice Marco Polo Airport", to:"VCE SAS departure gate", mode:"Airport check-in / security", time:"After water-taxi transfer; times approximate", status:"Historical — timing unverified", instructions:"Check baggage through to Tampa and complete security for SK2692.", notes:"9:15 AM is the work-phone export water-taxi end time, not independently verified airport arrival." },
       { id:"tl-0035", date:"2026-10-15", start:"11:00", end:"13:05", itemType:"Flight", flightId:"flight-sk2692", title:"VCE - Venice Marco Polo Airport → CPH - Copenhagen Airport", from:"VCE - Venice Marco Polo Airport", to:"CPH - Copenhagen Airport", mode:"Flight SK2692", time:"2h 5m", status:"Confirmed", instructions:"Confirm bags tagged to TPA.", notes:"Connection 1h 15m." },
       { id:"tl-0043", travelId:"travel-43", date:"2026-10-15", start:"13:05", end:"14:20", itemType:"Information", title:"CPH - Copenhagen Airport Schengen arrival gate → CPH - Copenhagen Airport U.S. departure gate", from:"CPH - Copenhagen Airport Schengen arrival gate", to:"CPH - Copenhagen Airport U.S. departure gate", mode:"Airport Connection / Exit Passport Control", time:"75-min connection", status:"Verify Day-Of", instructions:"Follow transfer signs to the non-Schengen/U.S. departure area, complete exit passport control and document checks, and proceed directly to the SK915 gate.", notes:"Shortest connection of the return itinerary; do not stop for food." },
       { id:"tl-0036", date:"2026-10-15", start:"14:20", end:"17:00", itemType:"Flight", flightId:"flight-sk915", title:"CPH - Copenhagen Airport → JFK - New York John F. Kennedy Airport Terminal 1", from:"CPH - Copenhagen Airport", to:"JFK - New York John F. Kennedy Airport Terminal 1", mode:"Flight SK915", time:"8h 40m", status:"Confirmed", instructions:"Premium Economy.", notes:"Most time-sensitive connection at CPH (exit passport control)." },
       { id:"tl-0037", travelId:"travel-37", date:"2026-10-15", start:"17:00", end:"19:00", itemType:"Transfer", title:"JFK Terminal 1 → Terminal 4 / Delta gate", from:"JFK Airport Terminal 1", to:"JFK Airport Terminal 4 / Delta gate", mode:"Airport connection", time:"About 2h 50m until 7:50 PM departure", status:"Confirmed / verify day-of", instructions:"Proceed through required U.S. arrival formalities, then continue to Terminal 4 and the Delta gate. Bags are planned to be checked through to TPA; do not plan a JFK baggage reclaim unless airline or airport staff direct otherwise.", notes:"Check the Delta app for the T4 gate and proceed without unnecessary stops." },
-      { id:"tl-0038", date:"2026-10-15", start:"19:50", end:"23:13", itemType:"Flight", flightId:"flight-sk3438", title:"JFK Airport Terminal 4 → TPA - Tampa International Airport", from:"JFK Airport Terminal 4", to:"TPA - Tampa International Airport", mode:"Flight SK3438 (Delta)", time:"3h 23m", status:"Confirmed", instructions:"Check Delta app for gate.", notes:"" },
+      { id:"tl-0038", date:"2026-10-15", start:"19:50", end:"23:13", itemType:"Flight", flightId:"flight-sk3438", title:"JFK Airport Terminal 4 → TPA - Tampa International Airport", from:"JFK Airport Terminal 4", to:"TPA - Tampa International Airport", mode:"Flight DL1636 (Delta)", time:"3h 23m", status:"Confirmed", instructions:"Check Delta app for gate.", notes:"" },
       { id:"tl-0039", travelId:"travel-39", date:"2026-10-15", start:"23:13", end:"23:55", itemType:"Train", title:"Take SkyConnect from TPA baggage claim to Economy Parking", from:"TPA Airport baggage claim", to:"TPA Airport Economy Parking", mode:"SkyConnect Train", time:"30-45 min", status:"Confirmed", instructions:"Collect bags, follow signs to SkyConnect, ride to Economy Parking, and use the parking-location photo.", notes:"Inspect vehicle before leaving." },
       { id:"tl-0040", travelId:"travel-40", date:"2026-10-16", start:"00:00", end:"01:15", itemType:"Car / Drive", title:"Drive home to Spring Hill", from:"TPA Airport Economy Parking", to:"Spring Hill, FL", mode:"Drive", time:"60-75 min", status:"Confirmed", instructions:"Drive via Veterans / Suncoast. Stop if fatigued.", notes:"Post-midnight drive home on Oct 16 following the Oct 15, 11:13 PM TPA arrival. Trip return date and countdown remain Oct 15; allow time to collect bags and retrieve the truck." },
       { id:"tl-0051", travelId:"travel-51", date:"2026-10-06", start:"18:45", end:"", itemType:"Meal", title:"Comodo Mercado Trevi private group dinner", from:"Anantara Palazzo Naiadi", to:"Comodo Mercado Trevi, Via del Lavatore 88b, Rome", mode:"Walk / group plan", time:"6:45 PM", status:"Confirmed", instructions:"Private Joe Lynch group dinner at Comodo Mercado Trevi, Via del Lavatore 88b, 00187 Roma. Restaurant website: https://www.comodomercatotrevi.it/", notes:"Use the linked map. Confirm any final group meeting instructions by text." },
@@ -182,6 +182,11 @@
       { id:"tl-0061", sortAfterTimelineId:"tl-0060", travelId:"travel-61", date:"2026-10-12", start:"", end:"", itemType:"Transfer", title:"Doge’s Palace → JW Marriott return shuttle", from:"Doge’s Palace, Piazza San Marco 1", to:"JW Marriott shuttle pier at Giardini Reali", mode:"Walk / JW Marriott shuttle boat", time:"After tour; next shuttle, no fixed time", status:"Check shuttle day-of", instructions:"Follow guide and public exit signs from Doge’s Palace to Piazza San Marco, then walk to the JW Marriott private shuttle pier at Giardini Reali. Board the next hotel shuttle to Isola delle Rose and follow the hotel signs from the dock to the lobby. The hotel's current information describes complimentary service about every 30 minutes starting at 8:30 AM, with seasonal and event-related changes. Confirm the Oct 12 schedule and correct pier with hotel staff; no tour finish or return time is fixed. Service cannot be reserved and depends on available seats.", notes:"No tour finish time is shown. Use the linked walk map, pier pin, hotel pin, and shuttle timetable. Official schedule: https://www.marriott.com/en-us/hotels/vcejw-jw-marriott-venice-resort-and-spa/overview/. Visual return guide is in All Guides & Maps." },
       { id:"tl-0054", travelId:"travel-54", date:"2026-10-08", start:"15:00", end:"", itemType:"Hotel / Check-in", title:"W Florence check-in", from:"W Florence lobby", to:"W Florence guest room", mode:"Hotel check-in", time:"Check-in begins at 3:00 PM", status:"Confirmed", instructions:"Check in at the front desk when rooms are available. If you arrive before 3:00 PM, ask the desk about early room access and luggage handling. The confirmed room type is KING; use hotel confirmation 186071359.", notes:"W Florence publishes a 3:00 PM check-in time. The hotel stay is event-provided." },
       { id:"tl-0055", travelId:"travel-55", date:"2026-10-08", start:"10:15", end:"10:45", itemType:"To-do", title:"Check out of Anantara Palazzo Naiadi", from:"Anantara Palazzo Naiadi guest room", to:"Anantara Palazzo Naiadi lobby", mode:"Hotel check-out", time:"Complete by 10:45 AM", status:"Confirmed", instructions:"Check out at the front desk and bring your luggage to the lobby before the 10:45 AM Train 10 group meeting.", notes:"Rome hotel checkout is on Oct. 8. Meet the assigned group at 10:45 AM; the group walk to the station starts at 11:00 AM." },
+      // Post-trip historical additions. Approximate dates are identified explicitly; no invented visit clocks.
+      { id:"tl-history-burano-lunch", date:"2026-10-11", start:"", end:"", itemType:"Meal", title:"Burano lunch near the main square", from:"Burano, Venice", to:"Burano town square area", mode:"Lunch stop", time:"Time and restaurant not verified", status:"Reported after trip", instructions:"David and Melody reported eating lunch next to the square during the Murano/Burano excursion.", notes:"Exact venue and receipt/GPS match pending. This is a reported visit, not a confirmed restaurant identification." },
+      { id:"tl-history-venice-pre-tour-lunch", date:"2026-10-12", start:"", end:"", itemType:"Meal", title:"Lunch beside Venice tour meeting point", from:"Calle de le Rasse 4536, Venice", to:"Calle de le Rasse 4536 area", mode:"Lunch stop", time:"Before 11:15 AM tour; exact time unverified", status:"Reported after trip", instructions:"Lunch at a small shop immediately beside the Doge's Palace / St. Mark's tour starting location.", notes:"Venue unidentified; do not infer its name from proximity alone." },
+      { id:"tl-history-venice-luna-walk", date:"2026-10-13", start:"", end:"", itemType:"Walk", title:"Additional Venice neighborhood walk: Luna Sentada → Hotel Antiche Figure", from:"Luna Sentada, Venice", to:"Hotel Antiche Figure, Venice", mode:"Walking route", time:"Exact duration unverified", status:"Post-trip route reference", instructions:"Reference for the requested neighborhood walk away from major attractions, ending at Hotel Antiche Figure.", notes:"Route request is documented; completion and intermediate stops require GPS/photo verification." },
+      { id:"tl-history-venice-cantinone-walk", date:"2026-10-14", start:"", end:"", itemType:"Walk", title:"Additional Venice neighborhood walk: Cantinone Storico → Hotel Antiche Figure", from:"Cantinone Storico, Venice", to:"Hotel Antiche Figure, Venice", mode:"Walking route", time:"Requested 2-hour route; actual duration unverified", status:"Post-trip route reference", instructions:"Requested route through quieter neighborhoods back to the hotel.", notes:"Date is provisional for historical organization. Completion and exact path not independently verified." },
     ];
 
 
@@ -238,7 +243,7 @@
       "tl-0047": {itemType:"To-do",transportation:"None / Not applicable"},
       "tl-0048": {itemType:"Event",transportation:"Walk"},
       "tl-0049": {itemType:"Transfer",transportation:"Walk"},
-      "tl-0050": {itemType:"Transfer",transportation:"Bus / Coach"},
+      "tl-0050": {itemType:"Transfer",transportation:"Boat / Ferry"},
       "tl-0051": {itemType:"Meal",transportation:"Walk"},
 
       "tl-0053": {itemType:"Meal",transportation:"Walk"},
@@ -302,8 +307,8 @@
       { id:"open-0018", pri:3, item:"Confirm Oct 11 Murano & Burano pickup and inclusions", area:"Conference", urgency:"Medium", status:"Pending", why:"The excursion window is 8:00 AM–5:00 PM. PSA transportation is provided; confirm the pickup point, pier, and inclusions." },
       { id:"open-0016", pri:4, item:"Verify Oct 12 Viator payment, tickets, and JW shuttle", area:"Tour / Transportation", urgency:"High", status:"Pending", why:"$241.38 company-card payment is scheduled Oct 10. Confirm the successful charge and ticket delivery, record the Minuteman-paid actual expense for the expense report, then verify the Oct 12 JW shuttle schedule and pier for both outbound and return trips." },
       { id:"open-0017", pri:5, item:"Confirm Osteria Ai Assassini ferry plan and dinner time", area:"Dining / Transportation", urgency:"Medium", status:"Pending", why:"Dinner time remains TBD and a ferry is required from the JW Marriott island hotel." },
-      { id:"open-0013", pri:6, item:"Confirm Hotel Antiche Figure to VCE transport", area:"Transportation", urgency:"Medium", status:"Pending", why:"Hotel is confirmed. Verify the first suitable ATVO/ACTV airport-bus departure and ticket for Oct 15." },
-      { id:"open-0006", pri:7, item:"Confirm remaining flight seat for SK681", area:"Flights", urgency:"Medium", status:"Pending", why:"SK681 is confirmed, but no seat is recorded. Keep this follow-up open until online check-in, then select or confirm a seat if available." },
+      { id:"open-0013", pri:6, item:"Historical record: Hotel Antiche Figure to VCE water taxi", area:"Transportation", urgency:"Medium", status:"Recorded on work phone", why:"Hotel is confirmed. The original airport bus was superseded by the hotel-booked water taxi recorded in the work-phone export." },
+      { id:"open-0006", pri:7, item:"Historical record: SK681 seat request superseded", area:"Flights", urgency:"Medium", status:"Superseded", why:"SK681 was not taken; Delta DL112 replaced the Copenhagen connection." },
       { id:"open-0009", pri:8, item:"Save the PSA Venice Excursions page for offline use", area:"Conference", urgency:"Low", status:"Pending", why:"The authoritative excursion page has not been supplied; the Oct 11 card has the known group details and the remaining pickup information is listed separately." }
     ];
 
@@ -423,11 +428,12 @@
 
     const FLIGHTS = [
       {id:"flight-dl2706",bookingId:"air-main",date:"2026-10-04",flight:"DL2706",op:"Delta",from:"TPA - Tampa International Airport",dep:"11:39 AM",to:"BOS - Boston Logan Airport Terminal A",arr:"2:55 PM",dur:"3h 16m",cabin:"Economy",seats:"29F, 29E",status:"Confirmed",notes:"Luggage confirmed checked through to Rome (FCO). Use Delta's internal airside shuttle in Boston; no TSA reentry. Seat screenshot shows 29F and 29E; traveler order is not identified.",timelineNotes:""},
-      {id:"flight-sk928",bookingId:"air-main",date:"2026-10-04",flight:"SK928",op:"SAS",from:"BOS - Boston Logan Airport Terminal E",dep:"5:40 PM",to:"CPH - Copenhagen Airport",arr:"7:00 AM +1",dur:"7h 20m",cabin:"Premium Economy",seats:"27E, 27D",status:"Confirmed",notes:"Set devices to Rome time, hydrate, and sleep after the meal. Seat screenshot shows 27E and 27D; traveler order is not identified.",timelineNotes:"Arrival is Oct 5."},
-      {id:"flight-sk681",bookingId:"air-main",date:"2026-10-05",flight:"SK681",op:"SAS",from:"CPH - Copenhagen Airport",dep:"8:30 AM",to:"FCO - Rome Fiumicino Airport Terminal 1",arr:"11:05 AM",dur:"2h 35m",cabin:"Premium Economy",status:"Confirmed",notes:"Collect checked bags in Rome. Seat selection remains open until check-in; confirm or choose a seat then if available.",timelineNotes:""},
+      {id:"flight-dl112",bookingId:"air-main",date:"2026-10-04",flight:"DL112",op:"Delta",from:"BOS - Boston Logan Airport",dep:"6:55 PM (original schedule)",to:"FCO - Rome Fiumicino Airport",arr:"8:40 AM +1 (original schedule)",cabin:"Not independently verified",status:"Flown — actual times unverified",notes:"Replacement nonstop flight. Contemporaneous update later showed 7:30 PM delayed departure and 9:27 AM estimated arrival on Oct 5. These are estimates, not verified actual flight times. Replaced the originally planned SK928 and SK681 Copenhagen routing.",timelineNotes:"Arrived in Rome Oct 5; actual gate and touchdown times pending verification."},
+      {id:"flight-sk928",bookingId:"air-main",date:"2026-10-04",flight:"SK928",op:"SAS",from:"BOS - Boston Logan Airport Terminal E",dep:"5:40 PM",to:"CPH - Copenhagen Airport",arr:"7:00 AM +1",dur:"7h 20m",cabin:"Premium Economy",seats:"27E, 27D",status:"Superseded",notes:"Originally booked; replaced by Delta DL112. Set devices to Rome time, hydrate, and sleep after the meal. Seat screenshot shows 27E and 27D; traveler order is not identified.",timelineNotes:"Arrival is Oct 5."},
+      {id:"flight-sk681",bookingId:"air-main",date:"2026-10-05",flight:"SK681",op:"SAS",from:"CPH - Copenhagen Airport",dep:"8:30 AM",to:"FCO - Rome Fiumicino Airport Terminal 1",arr:"11:05 AM",dur:"2h 35m",cabin:"Premium Economy",status:"Superseded",notes:"Originally booked; replaced by Delta DL112. Collect checked bags in Rome. The original seat-selection follow-up was superseded when SK681 was replaced by Delta DL112.",timelineNotes:""},
       {id:"flight-sk2692",bookingId:"air-main",date:"2026-10-15",flight:"SK2692",op:"SAS Connect",from:"VCE - Venice Marco Polo Airport",dep:"11:00 AM",to:"CPH - Copenhagen Airport",arr:"1:05 PM",dur:"2h 5m",cabin:"Premium Economy",status:"Confirmed",notes:"Confirm bags tagged to TPA.",timelineNotes:"Connection 1h 15m."},
-      {id:"flight-sk915",bookingId:"air-main",date:"2026-10-15",flight:"SK915",op:"SAS",from:"CPH - Copenhagen Airport",dep:"2:20 PM",to:"JFK - New York John F. Kennedy Airport Terminal 1",arr:"5:00 PM",dur:"8h 40m",cabin:"Premium Economy",seats:"24G, 24F",status:"Confirmed",notes:"Bags are planned to be checked through to TPA; verify the TPA bag tags at VCE. Seats 24G and 24F; traveler order is not identified.",timelineNotes:"Most time-sensitive connection at CPH (exit passport control)."},
-      {id:"flight-sk3438",bookingId:"air-main",date:"2026-10-15",flight:"SK3438",op:"Delta (operated)",from:"JFK - New York John F. Kennedy Airport Terminal 4",dep:"7:50 PM",to:"TPA - Tampa International Airport",arr:"11:13 PM",dur:"3h 23m",cabin:"Economy",seats:"27A, 27B",status:"Confirmed",notes:"Check the Delta app for the departure gate. Seat screenshot shows 27A and 27B; traveler order is not identified.",timelineNotes:""}
+      {id:"flight-sk915",bookingId:"air-main",date:"2026-10-15",flight:"SK915",op:"SAS",from:"CPH - Copenhagen Airport",dep:"2:20 PM",to:"JFK - New York John F. Kennedy Airport Terminal 1",arr:"5:00 PM",dur:"8h 40m",cabin:"Premium Economy",seats:"24H (David), 24G (Melody)",status:"Confirmed",notes:"Bags are planned to be checked through to TPA; verify the TPA bag tags at VCE. Confirmed return boarding passes: David 24H, Melody 24G.",timelineNotes:"Most time-sensitive connection at CPH (exit passport control)."},
+      {id:"flight-sk3438",bookingId:"air-main",date:"2026-10-15",flight:"DL1636",op:"Delta",from:"JFK - New York John F. Kennedy Airport Terminal 4",dep:"7:50 PM",to:"TPA - Tampa International Airport",arr:"11:13 PM",dur:"3h 23m",cabin:"Economy",seats:"27A, 27B",status:"Confirmed",notes:"Check the Delta app for the departure gate. Seat screenshot shows 27A and 27B; traveler order is not identified.",timelineNotes:""}
     ];
 
 
@@ -454,7 +460,7 @@
 
     const CONTINGENCIES = [
       {scenario:"Transport strikes",action:"Re-check the official MIT strike calendar 72 hours before departure and before important transfers. Match the operator, region, date and service; notices may change. Internet required to open the calendar.",contact:"Hotel concierge / transport operator",avoid:"Do not assume a tram strike also stops buses or trains.",docs:"Save the relevant notice and backup route offline",priority:"High",link:"https://scioperi.mit.gov.it/mit2/public/scioperi"},
-      {scenario:"Delayed TPA→BOS flight",action:"Tell Delta before leaving the TPA/BOS aircraft that SK928 is on the same itinerary; check rebooking options.",contact:"Delta and SAS agents",avoid:"Do not leave the airport campus.",docs:"Boarding passes and delay notices",priority:"Critical"},
+      {scenario:"Delayed TPA→BOS flight",action:"Historical original plan only; replacement was Delta DL112 nonstop BOS–FCO.",contact:"Delta and SAS agents",avoid:"Do not leave the airport campus.",docs:"Boarding passes and delay notices",priority:"Critical"},
       {scenario:"Missed BOS→CPH connection",action:"Go directly to SAS service desk / app; request protected-itinerary rebooking.",contact:"SAS",avoid:"Do not buy a separate ticket before speaking to the airline.",docs:"Original itinerary and bag receipts",priority:"Critical"},
       {scenario:"Short CPH connection (inbound)",action:"Move directly; show boarding pass to staff at the passport-control queue.",contact:"SAS transfer staff",avoid:"Do not stop for food or shopping.",docs:"Boarding pass",priority:"Critical"},
       {scenario:"Bag missing at FCO",action:"File a report before leaving the baggage area; provide hotel address.",contact:"SAS baggage desk",avoid:"Do not leave without a PIR/reference number.",docs:"Bag tag receipts and photos",priority:"High"},
@@ -817,24 +823,24 @@ const MAP_DOOR_ROUTES = [
     "link": "https://www.delta.com/us/en/advisories/airports/boston-airport-update",
     "backupLink": "",
     "status": "Confirmed",
-    "note": "Stay inside security. Follow internal signs toward A13–A22, then Delta shuttle / Terminal E signs near the A17–A18 food court. Take Delta's airside bus to E, normally near E13, and follow the monitors to the SK928 gate. No TSA reentry.",
+    "note": "Stay inside security. Follow internal signs toward A13–A22, then Delta shuttle / Terminal E signs near the A17–A18 food court. Take Delta's airside bus to E, normally near E13, and follow the monitors to the replacement DL112 gate. No TSA reentry.",
     "secondaryNote": "Luggage confirmed through to Rome (FCO). Scheduled connection: 2:55 PM arrival to 5:40 PM departure, 2h 45m. Aim for the SAS gate by 4:45 PM and follow your boarding pass deadline.",
     "from": "BOS - Boston Logan Airport Terminal A"
   },
   {
     "order": 5,
     "dateISO": "2026-10-04",
-    "start": "17:40",
+    "start": "18:55",
     "date": "Oct 4–5",
-    "to": "Copenhagen Terminal 3",
-    "mode": "SAS SK928",
-    "duration": "7h 20m",
+    "to": "Rome FCO (direct from Boston)",
+    "mode": "Delta DL112 — actual replacement flight",
+    "duration": "Actual flight duration unverified",
     "link": "https://www.flysas.com/",
     "backupLink": "",
-    "status": "Ready",
-    "note": "Sleep after meal; prepare passport before landing",
+    "status": "Historical — estimates",
+    "note": "Originally scheduled 18:55/08:40+1; later estimated 19:30/09:27+1. Actual flight times unverified.",
     "secondaryNote": "",
-    "from": "BOS Terminal E"
+    "from": "BOS"
   },
   {
     "order": 6,
@@ -842,12 +848,12 @@ const MAP_DOOR_ROUTES = [
     "start": "07:00",
     "date": "Oct 5",
     "to": "CPH Rome departure gate",
-    "mode": "Walk + passport control",
+    "mode": "Superseded Copenhagen connection",
     "duration": "90-min connection",
     "link": "https://www.cph.dk/en/practical/transfer",
     "backupLink": "",
-    "status": "Verify day-of",
-    "note": "Enter Schengen here; coffee only after reaching gate",
+    "status": "Not traveled",
+    "note": "Originally planned CPH connection was replaced by Delta DL112 direct to Rome.",
     "secondaryNote": "",
     "from": "CPH arrival gate"
   },
@@ -857,12 +863,12 @@ const MAP_DOOR_ROUTES = [
     "start": "08:30",
     "date": "Oct 5",
     "to": "Rome FCO Terminal 1",
-    "mode": "SAS SK681",
+    "mode": "SAS SK681 — superseded, not flown",
     "duration": "2h 35m",
     "link": "https://www.flysas.com/",
     "backupLink": "",
-    "status": "Ready",
-    "note": "Collect bags in Rome",
+    "status": "Not traveled",
+    "note": "Original CPH–FCO booking replaced by DL112 from Boston.",
     "secondaryNote": "",
     "from": "CPH"
   },
@@ -1035,15 +1041,15 @@ const MAP_DOOR_ROUTES = [
   {
     "order": 17,
     "dateISO": "2026-10-15",
-    "start": "07:00",
+    "start": "08:15",
     "date": "Oct 15",
     "to": "VCE - Venice Marco Polo Airport",
-    "mode": "Walk + ATVO/ACTV airport bus",
-    "duration": "90-min planning allowance",
+    "mode": "Hotel-booked water taxi",
+    "duration": "08:15–09:15 recorded on work phone",
     "link": "https://www.veneziaairport.it/en/transport/transfers.html",
     "backupLink": "https://www.alilaguna.it/en",
-    "status": "Pending timetable",
-    "note": "Leave Hotel Antiche Figure at 7:00 AM; walk/tickets through 7:30 AM, then next suitable ATVO bus. Aim for VCE around 8:00 AM; allow through 8:30 AM. Verify the Oct 15 timetable and ticket; no exact bus departure is confirmed.",
+    "status": "Recorded on work phone",
+    "note": "Actual hotel-booked water taxi per October 18 work-phone export; precise clock times and operator unverified.",
     "secondaryNote": "",
     "from": "Hotel Antiche Figure"
   },
@@ -1113,7 +1119,7 @@ const MAP_DOOR_ROUTES = [
     "start": "19:50",
     "date": "Oct 15",
     "to": "TPA - Tampa International Airport",
-    "mode": "Delta-operated SK3438",
+    "mode": "Delta DL1636",
     "duration": "3h 23m",
     "link": "https://www.delta.com/",
     "backupLink": "",
@@ -1326,7 +1332,7 @@ const MAP_AIRPORTS = [
     "official": "https://www.massport.com/logan-airport",
     "secondary": "https://www.delta.com/us/en/advisories/airports/boston-airport-update",
     "concern": "Delta airside shuttle A → E; no TSA reentry",
-    "action": "Stay inside security; follow Delta shuttle signs near A17–A18, then monitors to the SK928 gate. Luggage confirmed through to Rome (FCO).",
+    "action": "Stay inside security; follow Delta shuttle signs near A17–A18, then monitors to the replacement DL112 gate. Luggage confirmed through to Rome (FCO).",
     "status": "Confirmed"
   },
   {
@@ -1356,8 +1362,8 @@ const MAP_AIRPORTS = [
     "official": "https://www.veneziaairport.it/en/",
     "secondary": "https://www.veneziaairport.it/en/transport/transfers.html",
     "concern": "Early-morning hotel transfer",
-    "action": "Verify the first suitable ATVO/ACTV airport-bus departure and ticket",
-    "status": "Pending timetable"
+    "action": "Hotel-booked water taxi used; actual clock times not independently verified",
+    "status": "Historical transfer recorded"
   },
   {
     "name": "New York JFK",
@@ -1596,8 +1602,8 @@ const MAP_SAVED_PENDING = [
     "link": "",
     "owner": "David",
     "due": "Before check-in",
-    "status": "Pending",
-    "dependency": "SK681 seat assignment",
-    "note": "Seats saved for DL2706 (29F/29E), SK928 (27E/27D), SK915 (24G/24F), and SK3438 (27A/27B). SK681 is confirmed; select or confirm its seat at online check-in."
+    "status": "Superseded",
+    "dependency": "Historical reference only — SK681 superseded by DL112",
+    "note": "Historical seat record: DL2706 (29F/29E), superseded SK928 (27E/27D), actually flown SK915 (David 24H / Melody 24G), and DL1636 (27A/27B). SK681 was superseded by DL112."
   }
 ];
