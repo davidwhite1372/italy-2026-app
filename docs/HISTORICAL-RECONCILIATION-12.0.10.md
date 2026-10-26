@@ -43,3 +43,8 @@ Make the *actual trip* the permanent built-in itinerary and Timeline reference. 
 - The revised suite tests actual Venice water-taxi timing from the work-phone export, superseded SK681, return seat records, preservation of private phone notes, and the expanded 66-entry timeline. The complete suite must still pass on the final commit.
 - Corrected Boston boarding-pass guidance from SAS to Delta DL112. Retired stale instructions to buy the Venice airport bus ticket and pursue SK681 seats; original bookings and stable IDs remain in history.
 - No phone import, deletion, offline cache reset, main merge, or production deployment was performed.
+
+## Post-test release audit
+- GitHub Actions run #168 passed 58/58 tests on the historical correction set, before a subsequent category audit.
+- Found and fixed a real misclassification: the October 15 hotel-booked water taxi was still categorized as Bus / Coach in the timeline classification map. It is now Transfer / Boat / Ferry, retaining the descriptive water-taxi wording and stable ID `travel-50`. Added a regression assertion; rerun CI before release.
+- The next release remains v12.0.10. Do not bump offline cache or version labels and deploy without a controlled release review and explicit approval.
