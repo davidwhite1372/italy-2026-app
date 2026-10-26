@@ -1,4 +1,4 @@
-const CACHE = 'italy-2026-github-v12-0-13-offline-shell';
+const CACHE = 'italy-2026-github-v12-0-14-offline-shell';
 const APP_SHELL = [
   './',
   './index.html',
