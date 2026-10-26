@@ -16,3 +16,9 @@ test('historical outbound references preserve superseded Copenhagen flights', ()
   assert.match(data, /flight:"SK928"[^\n]*status:"Superseded"/);
   assert.match(data, /flight:"SK681"[^\n]*status:"Superseded"/);
 });
+
+test('Venice transfer is recorded as water taxi', () => {
+  assert.match(data, /Hotel-booked water taxi/);
+  assert.match(data, /08:15/);
+  assert.match(data, /09:15/);
+});
