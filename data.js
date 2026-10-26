@@ -243,7 +243,7 @@
       "tl-0047": {itemType:"To-do",transportation:"None / Not applicable"},
       "tl-0048": {itemType:"Event",transportation:"Walk"},
       "tl-0049": {itemType:"Transfer",transportation:"Walk"},
-      "tl-0050": {itemType:"Transfer",transportation:"Bus / Coach"},
+      "tl-0050": {itemType:"Transfer",transportation:"Boat / Ferry"},
       "tl-0051": {itemType:"Meal",transportation:"Walk"},
 
       "tl-0053": {itemType:"Meal",transportation:"Walk"},
