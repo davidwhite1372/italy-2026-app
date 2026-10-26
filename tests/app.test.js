@@ -1940,3 +1940,19 @@ test("Travel Details Back navigation retains its viewport and editing closes the
   assert.equal(window.sharedTravelById("travel-28").start,"08:10");
   assert.deepEqual(app.runtimeErrors,[]);
 });
+
+
+test("v12.0.14 shows consolidated hotel cards and transfer guide steps", async t => {
+  const app=await bootApp();
+  t.after(()=>app.dom.window.close());
+  const {window}=app;
+  window.showPage("transport");
+  assert.equal(window.document.querySelectorAll("#travelResults [data-hotel-id]").length,4);
+  assert.equal(window.document.querySelectorAll("#travelResults [data-travel-id='travel-42']").length,0);
+  assert.equal(window.document.querySelectorAll("#travelResults [data-travel-id='travel-54']").length,0);
+  assert.match(window.guideActionsForTravel("travel-56"),/Metro A/);
+  assert.match(window.guideActionsForTravel("travel-30"),/Boat/);
+  assert.match(window.guideActionsForTravel("travel-57"),/Pedicab backup/);
+  assert.match(window.guideActionsForTravel("travel-30"),/venice-tour-outbound-guide.png/);
+  assert.deepEqual(app.runtimeErrors,[]);
+});
