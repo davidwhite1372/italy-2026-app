@@ -3044,7 +3044,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       if (!raw) return "";
       const plusOne = /\+1/.test(raw);
       const clean = raw.replace(/\+1/g, "").trim();
-      const m = clean.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
+      const m = clean.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?(?=\s|\(|$)/i);
       if (!m) return raw;
       let h = Number(m[1]);
       const min = m[2];
@@ -4412,7 +4412,9 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       const doneMap = getTimelineDone();
       const hiddenMap = getTimelineHidden();
       const allTimelineItems = liveTimeline();
-      let items = allTimelineItems;
+      // Preserve superseded outbound records and IDs for backups, but omit them from the actual-trip timeline.
+      const archivedOutboundIds = new Set(["tl-0008", "tl-0009"]);
+      let items = allTimelineItems.filter(t => !archivedOutboundIds.has(t.id));
       items = items.slice().sort((a, b) => parseTimelineSortKey(a).localeCompare(parseTimelineSortKey(b)));
 
       if (tlFilter === "hidden") {
@@ -4434,6 +4436,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       }
 
       const allActive = allTimelineItems
+        .filter(t => !archivedOutboundIds.has(t.id))
         .filter(t => t._isCustom || !hiddenMap[timelineStateId(t)])
         .slice().sort((a,b) => parseTimelineSortKey(a).localeCompare(parseTimelineSortKey(b)));
       const total = allActive.length;
