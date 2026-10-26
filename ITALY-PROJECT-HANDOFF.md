@@ -2,6 +2,16 @@
 
 Updated October 3, 2026 for the approved v12.0.8 Boston airside transfer release. Original continuity guide prepared August 23, 2026 for account transfer.
 
+## October 26 release verification — v12.0.14 (production)
+
+The current GitHub `main` and `develop` branches both identify as v12.0.14. David confirmed on his phone that v12.0.13 saved time edits, automatically resorted Travel Details, persisted after reopening, and restored order when the time was reverted. He subsequently reviewed v12.0.14's consolidated hotel cards and visual transfer guides and responded “green.”
+
+The current source already has four consolidated hotel check-in cards (including confirmation details), hides duplicate hotel activities `travel-42` and `travel-54` in Travel Details, and includes visual transfer sequences. Do not recreate those fixes.
+
+**Historical audit boundary:** The October 6 Comodo dinner, October 7 Eating Europe Twilight Trastevere food tour, October 9 Cucina dinner, October 10 Osteria Ai Assassini, October 11 flexible dinner, and October 12 Ristoteca Oniga appear in current `data.js`. Some older planning conversations use different dates or names. Treat these as historical conflicts to verify against contemporary receipts, GPS and phone records—not authorization to overwrite verified app data. Do not promote tentative dinner plans or inferred food-stop names to confirmed facts.
+
+**Next candidate version:** v12.0.15, only if a verified discrepancy warrants a code/data change. Otherwise close the historical technical checklist without an unnecessary release. Phone-local JSON exports and photos remain separate, protected assets. The older October 25 and October 3 status sections below are historical snapshots, not current release status.
+
 ## October 25 historical archive work — v12.0.10 (unreleased)
 
 Production main is v12.0.9; David verified its basic offline launch in airplane mode. The working develop branch contains corrections for the actual Delta DL112 Boston to Rome flight (original SAS Copenhagen legs superseded), the October 15 hotel-booked Venice airport water taxi (work-phone export 08:15 to 09:15), return flight DL1636, and SK915 seats David 24H and Melody 24G. Actual DL112 departure and arrival times are not verified; preserve schedule versus delay estimates as such.
