@@ -36,3 +36,10 @@ Make the *actual trip* the permanent built-in itinerary and Timeline reference. 
 - Whether DL2706 TPA→BOS was flown as originally scheduled.
 - October 15 water-taxi 08:15–09:15 is recorded in the David Work Cell export, but actual clock precision and operator are not independently verified.
 - Verified receipt/GPS/photo evidence for meal stops and additional walking routes.
+
+## October 25 regression validation (v12.0.10 still unreleased)
+- Draft PR #6 compares `develop` with production `main`; it must not be merged without explicit approval.
+- GitHub Actions initially found eight failures. Most were pre-trip assertions conflicting with actual-flight and hotel-booked water-taxi evidence; the schema-6 phone-export difference retained a legacy `travel-8` override and is now explicitly covered by the revised test.
+- The revised suite tests actual Venice water-taxi timing from the work-phone export, superseded SK681, return seat records, preservation of private phone notes, and the expanded 66-entry timeline. The complete suite must still pass on the final commit.
+- Corrected Boston boarding-pass guidance from SAS to Delta DL112. Retired stale instructions to buy the Venice airport bus ticket and pursue SK681 seats; original bookings and stable IDs remain in history.
+- No phone import, deletion, offline cache reset, main merge, or production deployment was performed.
