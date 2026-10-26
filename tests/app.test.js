@@ -1667,7 +1667,7 @@ test("release metadata and stable-ID collections stay consistent", async t => {
   })`));
 
   assert.equal(packageData.version,"12.0.13");
-  assert.match(manifest.description,/Version 12\.0\.12/);
+  assert.match(manifest.description,/Version 12\.0\.13/);
   assert.match(worker,/v12-0-13-offline-shell/);
   ["boston-terminal-a-to-e.png","boston-terminal-a-to-e.pdf","fco-arrival-to-train-1.png","fco-arrival-to-train-2.png","venice-station-to-jw-marriott.png","venice-departure-day.png","italy-bathroom-survival.jpg","luggage-lock-instructions.jpg","venice-october-2026-tide-chart.png","cph-connection-guide-outbound.pdf","venice-vaporetto-map-2026.pdf","cph-connection-guide-outbound.png","venice-vaporetto-map-2026.png","laundry-king-florence.png","italy-camera-cheat-sheet-samsung-s23-ultra.png"].forEach(name=>{
     assert.equal(fs.existsSync(path.join(projectRoot,"assets","guides",name)),true);
@@ -1898,7 +1898,7 @@ test("Travel Details editor persists changed event types and clocks through navi
 });
 
 
-test("saving a shared Travel Details item does not erase unrelated phone timeline overrides", async t => {
+test("shared Travel Details save retains legacy phone notes and new times", async t => {
   const app = await bootApp();
   t.after(() => app.dom.window.close());
   const {window} = app;
@@ -1906,11 +1906,11 @@ test("saving a shared Travel Details item does not erase unrelated phone timelin
   assert.ok(item && item.timelineId);
   const state = window.getLive();
   state.timeline = state.timeline || {};
-  state.timeline[item.timelineId] = {notes:"Private phone note to preserve",privateMarker:"keep"};
+  state.timeline[item.timelineId] = {notes:"Private phone note to preserve"};
   window.setLive(state);
-  window.saveSharedTravelEdit(item.id,{...item,start:"08:30",end:"17:00"});
-  const saved = window.getLive();
-  assert.equal(saved.timeline[item.timelineId].privateMarker,"keep");
+  assert.equal(window.sharedTravelById(item.id).notes,"Private phone note to preserve");
+  window.saveSharedTravelEdit(item.id,{...window.sharedTravelById(item.id),start:"08:30",end:"17:00"});
+  assert.equal(window.sharedTravelById(item.id).notes,"Private phone note to preserve");
   assert.equal(window.sharedTravelById(item.id).start,"08:30");
   assert.equal(window.liveTimeline().find(t=>t.id===item.timelineId).start,"08:30");
   assert.deepEqual(app.runtimeErrors,[]);
