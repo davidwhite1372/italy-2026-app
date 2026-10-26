@@ -1427,11 +1427,11 @@ test("CPH passport wait tracker appears on both Copenhagen layovers and reviewed
     assert.equal(card.querySelectorAll(`a[href="https://cphsecuritywait.dk/en/passport-control"]`).length, 1);
   });
   window.showPage("timeline");
-  ["tl-0008","tl-0043"].forEach(id => {
-    const card = document.querySelector(`[data-timeline-id="${id}"]`);
-    assert.ok(card, `${id} should be present in Timeline`);
-    assert.equal(card.querySelectorAll(`a[href="https://cphsecuritywait.dk/en/passport-control"]`).length, 1);
-  });
+  assert.equal(document.querySelector(`[data-timeline-id="tl-0008"]`), null, "superseded outbound CPH step is archived");
+  assert.equal(document.querySelector(`[data-timeline-id="tl-0009"]`), null, "superseded outbound CPH flight is archived");
+  const returnCard = document.querySelector(`[data-timeline-id="tl-0043"]`);
+  assert.ok(returnCard, "return CPH layover should remain in Timeline");
+  assert.equal(returnCard.querySelectorAll(`a[href="https://cphsecuritywait.dk/en/passport-control"]`).length, 1);
   assert.deepEqual(app.runtimeErrors, []);
 });
 
