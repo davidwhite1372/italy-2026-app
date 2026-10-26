@@ -1443,8 +1443,8 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "12.0.11",
-      build: "12.0.11",
+      version: "12.0.12",
+      build: "12.0.12",
       backupSchema: 6,
       lastEdited: "October 26, 2026 at 8:02 AM EDT"
     });
@@ -1788,10 +1788,14 @@
     ]);
 
     function timelineItemType(t) {
-      if (ITEM_TYPES[t.itemType]) return t.itemType;
-      // Historical transport categories are data values, not display card types.
+      // Presentation-only categorization: do not rewrite historical records or phone overrides.
+      const title = String(t.title || "").toLowerCase();
+      const id = String(t.id || "");
+      if (["tl-0063", "tl-0064"].includes(id) || /luggage drop/.test(title)) return "To-do";
+      if (["tl-history-burano-lunch", "tl-history-venice-pre-tour-lunch"].includes(id) || /\\blunch\\b/.test(title)) return "Meal";
+      if (["tl-history-venice-luna-walk", "tl-history-venice-cantinone-walk"].includes(id) || /neighborhood walk/.test(title)) return "Transfer";
       if (t.itemType === "Walk" || t.itemType === "Train" || t.itemType === "Car / Drive" || t.itemType === "Boat / Ferry" || t.itemType === "Water Taxi") return "Transfer";
-      return "Information";
+      return ITEM_TYPES[t.itemType] ? t.itemType : "Information";
     }
     function timelineTypeMeta(t) { return ITEM_TYPES[timelineItemType(t)]; }
     function isActualTravelStep(t) { return timelineItemType(t) !== "Information"; }
