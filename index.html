@@ -1443,8 +1443,8 @@
   <script src="data.js"></script>
   <script>
     const APP_METADATA = Object.freeze({
-      version: "12.0.13",
-      build: "12.0.13",
+      version: "12.0.14",
+      build: "12.0.14",
       backupSchema: 6,
       lastEdited: "October 26, 2026 at 8:02 AM EDT"
     });
@@ -5089,6 +5089,19 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       {src:"assets/guides/cph-connection-guide-return.png",pdf:"assets/guides/cph-connection-guide-return.pdf",title:"CPH Return Connection Guide",category:"Oct 15 · Airport connection",verified:"Sep 29, 2026"},
       {src:"assets/guides/italy-bathroom-survival.jpg",title:"Toilets in Italy · Survival Guide",category:"Any day · Comfort"}
     ]);
+    const GUIDE_TRANSFER_STEPS = Object.freeze({
+      "travel-56":["🚶 Walk","🚇 Metro A","🚶 Walk"],
+      "travel-57":["🚶 Walk","🚕 Pedicab backup"],
+      "travel-58":["🚶 Walk"],
+      "travel-59":["🚶 Walk"],
+      "travel-30":["⛴️ Boat","🚶 Walk"],
+      "travel-61":["🚶 Walk","⛴️ Boat"]
+    });
+    function guideTransferStrip(id) {
+      const steps = GUIDE_TRANSFER_STEPS[id];
+      if (!steps) return "";
+      return `<div class="travel-detail-panel"><div class="travel-detail-label">Transfer at a glance</div><div class="travel-detail-text" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">${steps.map((step,i)=>`${i ? '<span aria-hidden="true">→</span>' : ""}<span class="travel-chip">${escapeHtml(step)}</span>`).join("")}</div></div>`;
+    }
     function guideActionsForTravel(id){
       const guides=TRAVEL_GUIDES_BY_ID[id]||[];
       const pages=guides.filter(guide=>!guide.secondary).map(({src,title})=>({src,title}));
@@ -5098,7 +5111,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
         : `<button type="button" class="link-btn" onclick='${gallery ? `openImageGallery(${JSON.stringify(gallery)},${index})` : `openImageViewer(${JSON.stringify(guide.src)},${JSON.stringify(guide.title)})`}'>🖼️ Open ${escapeHtml(guide.title)}</button>`).join("");
       const verified=guides.find(guide=>guide.verified)?.verified;
       const note=guides.find(guide=>guide.note)?.note;
-      return buttons + (note ? `<div class="text-xs" style="width:100%;margin-top:5px;color:var(--danger,#b42318);">${escapeHtml(note)}</div>` : "") + (verified ? `<div class="text-xs text-muted" style="width:100%;margin-top:5px;">Last Verified: ${escapeHtml(verified)}</div>` : "");
+      return guideTransferStrip(id) + buttons + (note ? `<div class="text-xs" style="width:100%;margin-top:5px;color:var(--danger,#b42318);">${escapeHtml(note)}</div>` : "") + (verified ? `<div class="text-xs text-muted" style="width:100%;margin-top:5px;">Last Verified: ${escapeHtml(verified)}</div>` : "");
     }
 
     function trainDisplayTime(value) {
@@ -5205,7 +5218,7 @@ Banknotes: €5, €10, €20, €50, €100, €200, €500`,
       transfers.forEach(t => addRecord("transfer", timelineTransportation(t), t.date, t.start, [t.title,t.from,t.to,t.mode,t.itemType,t.transportation,t.transportationDetails,t.duration,t.status,t.instructions,t.notes].join(" "), `
         <div class="card travel-card transfer-card" data-travel-id="${escapeHtml(t.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">${itemTypeIcon(t.itemType)} ${escapeHtml(t.title || `${t.from} → ${t.to}`)}</div><div class="travel-date-label">${fmtDate(t.date)}</div></div></div><div class="travel-card-main">${travelRouteBlock(t.from,t.start,t.to,t.end)}<div class="travel-chip-row"><span class="travel-chip">Transfer</span><span class="travel-chip">${transportationIcon(timelineTransportation(t))} ${escapeHtml(timelineTransportation(t))}</span>${t.duration ? `<span class="travel-chip">⏱ ${escapeHtml(t.duration)}</span>` : ""}${statusBadge(t.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock("", t.status || "Confirmed")}${travelDetailPanel("Transportation details", t.transportationDetails)}${travelDetailPanel("Steps", t.instructions)}${travelDetailPanel("Travel note", t.notes)}${cphPassportWaitTracker(t.id)}`, `${seeInTimelineButton("travel",t.id)}${guideActionsForTravel(t.id)}${travelMapActions(t.from,t.to)}<button class="edit-btn" onclick="editSharedTravelById('${t.id}')">Edit Transfer</button>`)}</div></div>`, t.title || t.from));
 
-      hotels.forEach(h => addRecord("hotel", "None / Not applicable", h.checkIn, "15:00", [h.name,h.city,h.address,h.dates,h.conf,h.status,h.room,h.payment,h.tax,h.breakfast,h.notes].join(" "), `
+      hotels.forEach(h => addRecord("hotel", "None / Not applicable", h.checkIn, h.id === "hotel-venice-antiche" ? "14:00" : "15:00", [h.name,h.city,h.address,h.dates,h.conf,h.status,h.room,h.payment,h.tax,h.breakfast,h.notes].join(" "), `
         <div class="card travel-card" data-hotel-id="${escapeHtml(h.id)}"><div class="travel-card-top"><div class="travel-service-line"><div class="travel-service-name">🏨 ${escapeHtml(h.name)}</div><div class="travel-date-label">${escapeHtml(h.dates || fmtDate(h.checkIn))}</div></div></div><div class="travel-card-main"><div class="travel-chip-row"><span class="travel-chip">${escapeHtml(h.city)}</span><span class="travel-chip">Check-in ${fmtDate(h.checkIn)}</span><span class="travel-chip">Check-out ${fmtDate(h.checkOut)}</span>${h.conf ? `<span class="travel-chip" style="font-weight:800;color:var(--primary);">CONF ${escapeHtml(h.conf)}</span>` : ""}${statusBadge(h.status || "Confirmed")}</div>${travelCollapsedDetails(`${travelConfirmationBlock(h.conf, h.status || "Confirmed")}${travelDetailPanel("Address", h.address)}${travelDetailPanel("Room", h.room)}${travelDetailPanel("Payment", [h.payment,h.tax].filter(Boolean).join(" · "))}${travelDetailPanel("Hotel note", [h.breakfast,h.notes].filter(Boolean).join(" · "))}`, `${seeInTimelineButton("hotel",h.id)}${travelMapActions(h.address || h.name,"")}<button class="edit-btn" onclick="editHotelById('${h.id}')">Edit Hotel</button>`)}</div></div>`, h.name));
 
       const redundantHotelActivityIds = new Set(["travel-42","travel-54"]);
