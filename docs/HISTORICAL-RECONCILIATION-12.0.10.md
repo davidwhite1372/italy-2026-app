@@ -48,3 +48,8 @@ Make the *actual trip* the permanent built-in itinerary and Timeline reference. 
 - GitHub Actions run #168 passed 58/58 tests on the historical correction set, before a subsequent category audit.
 - Found and fixed a real misclassification: the October 15 hotel-booked water taxi was still categorized as Bus / Coach in the timeline classification map. It is now Transfer / Boat / Ferry, retaining the descriptive water-taxi wording and stable ID `travel-50`. Added a regression assertion; rerun CI before release.
 - The next release remains v12.0.10. Do not bump offline cache or version labels and deploy without a controlled release review and explicit approval.
+
+## Release candidate metadata — October 26, 2026, 8:02 AM EDT
+- Prepared v12.0.10 on `develop`: `index.html` app/build labels, `package.json`, `package-lock.json`, `manifest.json`, and `sw.js` cache namespace `italy-2026-github-v12-0-10-offline-shell`; updated corresponding regression expectations.
+- Backup schema remains 6; no destructive migration or phone-data import.
+- Release candidate requires green CI on final commit, visual and offline review, and David's explicit approval before merging draft PR #6 to production `main`.
