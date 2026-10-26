@@ -9,10 +9,10 @@ Make the *actual trip* the permanent built-in itinerary and Timeline reference. 
 - `data.js` currently contains **no DL112** and still includes `flight-sk928` and `tl-0007` for the October 4 BOS→CPH SK928 flight. The October 4 day summary and Boston transfer guidance also refer to the old itinerary.
 - Current historical itinerary still includes the planned CPH connection; flight changes must be reconciled across flight records, timeline cards, day summary, reservation/wallet notes, airport guidance, and any door-to-door routes. Do not change only one card.
 - Existing October 8 transfers were previously approved; preserve their cards and times while reconciling actual movements.
-- October 15 Venice hotel→VCE transfer was later reported as a water taxi, replacing the earlier ATVO bus plan. Confirm actual operator/times before changing clocks.
+- October 15 Venice hotel→VCE transfer was later reported as a water taxi, replacing the earlier ATVO bus plan. The October 18 **David Work Cell** export records **08:15–09:15**, mode **Water Taxi**, and note **“Hotel booked taxi transfer.”** Preserve this device-labeled evidence and reconcile the conflicting old planned bus cards before editing.
 
 ## User-reported actual itinerary / pending source confirmation
-- Replacement transatlantic flight **Delta DL112 BOS→FCO**, October 4 departure / October 5 arrival, instead of the planned BOS→CPH SK928 and onward CPH→FCO connection. Earlier discussion suggests roughly 19:35 / 09:10 (+1 day); treat these clocks as **unverified until boarding pass, flight record, or dated receipt confirms them**.
+- Replacement transatlantic flight **Delta DL112 BOS→FCO**, October 4 departure / October 5 arrival, instead of planned SK928 and SK681. The user's October 4 Delta screen showed **18:00 boarding, 18:55 scheduled departure, 08:40 scheduled arrival October 5**, gate E14, seat at gate. A later same-day flight update reported **19:30 delayed departure and 09:27 estimated arrival**. These are contemporaneous **schedule/status snapshots, not verified actual wheels-up/wheels-down times**. Keep that distinction in the historical display.
 - Preserve Oct 8 Rome→Florence luggage pickup, PSA lobby meeting, station walk, train and hotel transfer.
 - Incorporate additional actual Venice walks, food stops, Burano lunch, and reconstructed stops only with clear evidence classification.
 
@@ -29,10 +29,10 @@ Make the *actual trip* the permanent built-in itinerary and Timeline reference. 
 - Verify first-load normalization does not reinsert canceled flights or overwrite phone edits.
 - Add regression tests for actual-route Timeline, day summaries, reservation references, sorting, persistence and offline boot.
 - Keep production on v12.0.9 until a reviewed v12.0.10 release; no reset, import, uninstall, or cache clear.
-- Await user's ongoing airplane-mode test result; do not claim offline issue resolved until phone verification.
+- **Phone evidence received:** v12.0.9 opened immediately in airplane mode on David's phone. This verifies core offline startup, not every optional guide/attachment.
 
 ## Open evidence
-- DL112 actual times and the fate of the original Copenhagen segments.
+- DL112 actual operated times remain unverified; two contemporaneous flight status snapshots are documented above. The canceled/superseded SK928 and SK681 should not appear as actually flown.
 - Whether DL2706 TPA→BOS was flown as originally scheduled.
-- Exact October 15 water-taxi departure and VCE arrival.
+- October 15 water-taxi 08:15–09:15 is recorded in the David Work Cell export, but actual clock precision and operator are not independently verified.
 - Verified receipt/GPS/photo evidence for meal stops and additional walking routes.
