@@ -9,3 +9,10 @@ test('historical itinerary contains replacement flight and water taxi', () => {
   assert.match(data, /tl-history-burano-lunch/);
   assert.match(data, /tl-history-venice-pre-tour-lunch/);
 });
+
+test('historical outbound references preserve superseded Copenhagen flights', () => {
+  assert.match(data, /flightId:"flight-dl112"/);
+  assert.match(data, /flight:"DL112"/);
+  assert.match(data, /flight:"SK928"[^\n]*status:"Superseded"/);
+  assert.match(data, /flight:"SK681"[^\n]*status:"Superseded"/);
+});
