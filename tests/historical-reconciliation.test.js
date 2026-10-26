@@ -22,3 +22,8 @@ test('Venice transfer is recorded as water taxi', () => {
   assert.match(data, /08:15/);
   assert.match(data, /09:15/);
 });
+
+test('return journey uses Delta DL1636 and confirmed seats', () => {
+  assert.match(data, /flight:"DL1636"/);
+  assert.match(data, /24H \(David\), 24G \(Melody\)/);
+});
