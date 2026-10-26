@@ -1867,3 +1867,32 @@ test("six historical cards retain category themes regardless of phone overrides"
   assert.match(source, /return "Meal"/);
   assert.match(source, /return "Transfer"/);
 });
+
+
+test("Travel Details editor persists changed event types and clocks through navigation and reload", async t => {
+  const app = await bootApp();
+  t.after(() => app.dom.window.close());
+  const {window} = app;
+  const cases = [
+    {id:"travel-28",start:"08:00",end:"17:15",itemType:"Tour"},
+    {id:"travel-21",start:"09:15",end:"14:45",itemType:"Tour"},
+    {id:"travel-26",start:"19:00",end:"20:30",itemType:"Meal"}
+  ];
+  for (const item of cases) {
+    assert.ok(window.sharedTravelById(item.id),item.id);
+    window.showPage("transport");
+    window.editSharedTravelById(item.id);
+    for (const field of ["start","end","itemType"]) window.document.getElementById("ef_"+field).value=item[field];
+    window.document.getElementById("efSave").click();
+    window.showPage("timeline");
+    window.showPage("transport");
+    for (const field of ["start","end","itemType"]) assert.equal(window.sharedTravelById(item.id)[field],item[field],item.id+" "+field);
+  }
+  const storage=Object.fromEntries(Object.keys(window.localStorage).map(key=>[key,window.localStorage.getItem(key)]));
+  const reload=await bootApp(storage);
+  t.after(()=>reload.dom.window.close());
+  for (const item of cases) for (const field of ["start","end","itemType"])
+    assert.equal(reload.window.sharedTravelById(item.id)[field],item[field],item.id+" after reload "+field);
+  assert.deepEqual(app.runtimeErrors,[]);
+  assert.deepEqual(reload.runtimeErrors,[]);
+});
