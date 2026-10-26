@@ -898,7 +898,7 @@ test("Boston uses the confirmed airside route and both guide formats open everyw
   assert.deepEqual([transfer.start, transfer.end], ["14:55", "17:00"]);
   assert.match(transfer.instructions, /Stay inside security.*A13–A22.*A17–A18.*airside bus.*E13.*No TSA reentry/);
   assert.match(transfer.notes, /confirmed through to Rome \(FCO\)/);
-  assert.match(transfer.notes, /4:45 PM/);
+  assert.match(transfer.notes, /6:55 PM/);
   const timeline = window.liveTimeline().find(item=>item.id==="tl-0006");
   assert.equal(timeline.travelId, "travel-6");
   assert.equal(timeline.instructions, transfer.instructions);
@@ -1690,7 +1690,7 @@ test("release metadata and stable-ID collections stay consistent", async t => {
     assert.match(worker,new RegExp(name.replace(/[.]/g,"\\.")));
   });
   assert.deepEqual(Object.fromEntries(Object.entries(counts).map(([key,ids])=>[key,ids.length])),{
-    timeline:62,restaurants:67,attractions:15,reservations:14,budget:21,packing:74,open:7
+    timeline:66,restaurants:67,attractions:15,reservations:14,budget:21,packing:74,open:7
   });
   Object.values(counts).forEach(ids=>{
     assert.equal(ids.every(Boolean),true);
